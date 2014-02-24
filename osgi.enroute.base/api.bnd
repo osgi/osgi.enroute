@@ -1,0 +1,28 @@
+Bundle-Description:		enRoute is an OSGi project that creates a runtime \
+environment for developing applications. This bundle provides the base API \
+for this environment. In any enRoute ${Bundle-Version} environment you will \
+find implementations for all the contained services. The purpose of this \
+bundle is to be use for compilation, it must not be used in a runtime; in \
+general, providers must carry their service packages.
+
+#
+# Warn the user that this bundle is not supposed to be
+# installed in a framework. This is an API only bundle
+# intended to be used for compilation, not runtime.
+#
+
+Bundle-Activator:	this.bundle.must.not.be.deployed.in.an.osgi.framework
+
+#
+# slf4j drags in implementation details that do not belong to the
+# public API of enRoute base. So we need to remove them.
+#
+Import-Package: \
+	!org.slf4j.*,\
+	*
+	
+# 
+# We export all the base packages
+#
+Export-Package: \
+	${base.packages}

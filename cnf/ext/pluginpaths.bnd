@@ -1,3 +1,5 @@
 -pluginpath:\
-    ${plugin-dir}/aQute.library.bndrepo/aQute.library.bndrepo-1.1.3.jar,\
+    ${plugin-dir}/aQute.library.bndrepo/aQute.library.bndrepo.jar; \
+    	url=http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/2ce4546dc58cd299fd4a22634c87d9de15a9d8aa; \
+    	sha1=2ce4546dc58cd299fd4a22634c87d9de15a9d8aa,\
     ${plugin-dir}/biz.aQute.repository/biz.aQute.repository-2.1.0.jar

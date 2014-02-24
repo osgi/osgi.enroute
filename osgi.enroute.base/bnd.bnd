@@ -1,0 +1,75 @@
+Bundle-Version: 		1.0.0.${tstamp}
+
+Include-Resource: {readme.md}, {LICENSE}
+
+-buildpath: \
+	osgi.core;					version='[5.0.0,6)',\
+	osgi.cmpn;					version='[5.0.0,6)',\
+	slf4j.api;					version='[1.7.0,1.7.1)',\
+	biz.aQute.bndlib;			version='[2.3,3)'
+
+base.services = \
+	org.osgi.service.cm.ConfigurationAdmin, \
+	org.osgi.service.coordinator.Coordinator, \
+	org.osgi.service.event.EventAdmin, \
+	org.osgi.service.log.LogService, \
+	org.osgi.service.metatype.MetaTypeService, \
+	org.osgi.service.useradmin.UserAdmin, \
+	org.slf4j.Logger, \
+	osgi.enroute.authentication.api.Authenticator, \
+	osgi.enroute.authorization.api.Authority, \
+	osgi.enroute.configurer.api.ConfigurationDone, \
+	osgi.enroute.dto.api.DTOs, \
+	java.util.Timer, \
+	java.util.concurrent.Executor
+	
+base.packages =  \
+	aQute.bnd.annotation, \
+	aQute.bnd.annotation.component, \
+ 	aQute.bnd.annotation.headers, \
+	aQute.bnd.annotation.licenses, \
+	aQute.bnd.annotation.metatype, \
+	org.osgi.framework, \
+	org.osgi.framework.hooks.bundle, \
+	org.osgi.framework.hooks.resolver, \
+	org.osgi.framework.hooks.service, \
+	org.osgi.framework.hooks.weaving, \
+	org.osgi.framework.namespace, \
+	org.osgi.framework.startlevel, \
+	org.osgi.framework.wiring, \
+	org.osgi.namespace.contract, \
+	org.osgi.namespace.extender, \
+	org.osgi.namespace.service, \
+	org.osgi.resource, \
+	org.osgi.service.cm, \
+	org.osgi.service.component, \
+	org.osgi.service.component.annotations, \
+	org.osgi.service.coordinator, \
+	org.osgi.service.event, \
+	org.osgi.service.log, \
+	org.osgi.service.metatype, \
+	org.osgi.service.url, \
+	org.osgi.service.useradmin, \
+	org.osgi.util.tracker, \
+	org.slf4j, \
+	osgi.enroute.authentication.api, \
+	osgi.enroute.authorization.api, \
+	osgi.enroute.component.capability, \
+	osgi.enroute.configurer.api, \
+	osgi.enroute.dto.api, \
+	osgi.enroute.guard.dto, \
+	osgi.enroute.logging.api
+
+base.capabilities = \
+	osgi.extender:osgi.component=org.osgi.service.component, \
+	osgi.extender:osgi.enroute.configurer=osgi.enroute.configurer.api  
+
+-sub: \
+	*.bnd
+	
+	
+#
+# bndlib contains some OSGi packages that cause a split package message
+# This ignores them.
+#
+-fixupmessages: "Split package"

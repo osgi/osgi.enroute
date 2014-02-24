@@ -1,3 +1,4 @@
+
 ########################
 ## BND BUILD SETTINGS ##
 ########################
@@ -50,3 +51,13 @@
 ## If you use git, you might want to uncomment the following lines:
 # Git-Descriptor:       ${system-allow-fail;git describe --dirty --always}
 # Git-SHA:              ${system-allow-fail;git rev-list -1 HEAD}
+
+
+Bundle-Copyright: 	OSGi Alliance (c) ${tstamp;yyyy}, All Rights Reserved
+Bundle-Vendor: 		OSGi Alliance
+Bundle-License: 	http://opensource.org/licenses/Apache-2.0;description='Apache Software License 2.0'
+
+-plugin: \
+	aQute.lib.deployer.FileRepo;readonly=true;name=Libs;location=${workspace}/cnf/libs,\
+	aQute.library.bnd.JpmRepository;includeStaged=true;url=http://jpm4j.org;name=JPM;location=~/.bnd/cache;index=${workspace}/cnf/jpm4j.json;depository.group=OSGi;depository.name=bundles, \
+	task.GuardInfoTask; path:=${workspace}/osgi.enroute.base/${bin}
