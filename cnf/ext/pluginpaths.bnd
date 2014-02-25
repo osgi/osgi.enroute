@@ -1,5 +1,5 @@
 -pluginpath:\
-    ${plugin-dir}/aQute.library.bndrepo/aQute.library.bndrepo.jar; \
-    	url=http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/2ce4546dc58cd299fd4a22634c87d9de15a9d8aa; \
-    	sha1=2ce4546dc58cd299fd4a22634c87d9de15a9d8aa,\
+   /Ws/aQute.jpm/aQute.jpm.bndrepo/generated/aQute.jpm.bndrepo.jar; \
+    	xurl=http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/3D8BC61CB729011336C95A366C2804DAF1E8F5D9; \
+    	xsha1=3D8BC61CB729011336C95A366C2804DAF1E8F5D9,\
     ${plugin-dir}/biz.aQute.repository/biz.aQute.repository-2.1.0.jar

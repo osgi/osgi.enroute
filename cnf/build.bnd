@@ -59,5 +59,10 @@ Bundle-License: 	http://opensource.org/licenses/Apache-2.0;description='Apache S
 
 -plugin: \
 	aQute.lib.deployer.FileRepo;readonly=true;name=Libs;location=${workspace}/cnf/libs,\
-	aQute.library.bnd.JpmRepository;includeStaged=true;url=http://jpm4j.org;name=JPM;location=~/.bnd/cache;index=${workspace}/cnf/jpm4j.json;depository.group=OSGi;depository.name=bundles, \
+	aQute.library.bnd.JpmRepository; \
+		includeStaged=true; \
+		url=http://jpm4j.org;name=JPM;location=~/.bnd/cache; \
+		index=${workspace}/cnf/jpm4j.json; \
+		depository.group=OSGi; \
+		depository.name=bundles, \
 	task.GuardInfoTask; path:=${workspace}/osgi.enroute.base/${bin}

@@ -11,7 +11,6 @@ general, providers must carry their service packages.
 # intended to be used for compilation, not runtime.
 #
 
-Bundle-Activator:	this.bundle.must.not.be.deployed.in.an.osgi.framework
 
 #
 # slf4j drags in implementation details that do not belong to the

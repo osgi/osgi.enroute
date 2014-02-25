@@ -36,6 +36,7 @@ import aQute.bnd.annotation.ProviderType;
  * a current set of roles) as the default user for a thread.
  * <p>
  * How to use this service:
+ * 
  * <pre>
  * public void doFilter(ServletRequest rq, ServletResponse rsp, FilterChain downstream) throws IOException {
  * 		...
@@ -59,7 +60,7 @@ import aQute.bnd.annotation.ProviderType;
  *      	// turn the request into a map
  *      	
  *      }
- * } 
+ * }
  */
 @ProviderType
 public interface Authenticator {
@@ -108,12 +109,26 @@ public interface Authenticator {
 	 * sources. If no sources are specified, the authenticator is free to
 	 * inspect the map to see if it can find a way to authenticate a user.
 	 * <p>
-	 * If a user is authenticated, then the system wide unique id must be returned.
-	 * If the authenticator cannot authenticate, it is must return null.
+	 * If a user is authenticated, then the system wide unique id must be
+	 * returned. If the authenticator cannot authenticate, it is must return
+	 * null.
+	 * 
 	 * @param arguments
 	 * @param sources
 	 * @return
 	 * @throws Exception
 	 */
 	String authenticate(Map<String,Object> arguments, String... sources) throws Exception;
+
+	/**
+	 * Remove any login information cached for the given user id. The next time
+	 * this user id is authenticated, the authenticator must refresh the user
+	 * information from its source. For example, if this authenticator is backed
+	 * by an LDAP server that caches the 'roles' then these roles should be removed
+	 * until it is authenticated again. This call will also remove any permissions
+	 * the given user has.
+	 * 
+	 * @param Forget all cached details about this user.
+	 */
+	boolean forget(String userid) throws Exception;
 }
