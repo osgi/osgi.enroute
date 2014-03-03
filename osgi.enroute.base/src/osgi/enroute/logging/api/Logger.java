@@ -2,7 +2,10 @@ package osgi.enroute.logging.api;
 
 import java.util.concurrent.Callable;
 
+import org.osgi.annotation.versioning.ProviderType;
 
+
+@ProviderType
 public interface Logger extends org.slf4j.Logger {
 	interface TRACE {}
 

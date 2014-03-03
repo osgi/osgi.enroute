@@ -2,6 +2,8 @@ package osgi.enroute.authorization.api;
 
 import java.util.concurrent.Callable;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * A service that allows a call to proceed with a user associated with the
  * current thread.
@@ -14,6 +16,7 @@ import java.util.concurrent.Callable;
  * associated with the current user using the {@link Authority} service.
  */
 
+@ProviderType
 public interface AuthorityAdmin {
 	/**
 	 * Associate the current thread with the given user and call the protectedTask.

@@ -1,4 +1,4 @@
-package osgi.enroute.component.capability;
+package osgi.enroute.component.api;
 
 import aQute.bnd.annotation.headers.RequireCapability;
 /**
@@ -6,5 +6,5 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * OSGi component extender. This annotation should be used by developers using
  * the OSGi Component specification.
  */
-@RequireCapability(ns = "osgi.extender", filter = "((osgi.extender=osgi.component)${frange;${@version}})")
+@RequireCapability(ns = "osgi.extender", filter = "(&(osgi.extender=osgi.component)${frange;${@version}})")
 public @interface RequireComponentExtender {}

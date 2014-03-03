@@ -2,8 +2,9 @@ package osgi.enroute.authentication.api;
 
 import java.util.Map;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 import osgi.enroute.authorization.api.Authority;
-import aQute.bnd.annotation.ProviderType;
 
 /**
  * An authenticator is a service that can provide an authenticated id.

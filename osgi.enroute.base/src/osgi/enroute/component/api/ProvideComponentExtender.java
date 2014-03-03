@@ -1,4 +1,4 @@
-package osgi.enroute.component.capability;
+package osgi.enroute.component.api;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
 /**

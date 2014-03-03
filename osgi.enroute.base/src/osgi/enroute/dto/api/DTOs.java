@@ -6,13 +6,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * This service provides a number of utilities to make it easy to work with
  * DTOs. It contains a number of utility functions.
  * <p>
- * DTOs recognize primary fields (annotated with {@link Primary}). If none of
+ * DTOs recognize primary fields (annotated with {@link PrimaryKey}). If none of
  * the fields is annotated, all fields are primary.
  */
+@ProviderType
 public interface DTOs {
 
 	/**

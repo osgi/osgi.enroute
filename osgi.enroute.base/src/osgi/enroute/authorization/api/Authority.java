@@ -2,6 +2,8 @@ package osgi.enroute.authorization.api;
 
 import java.util.List;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * The AuthorityAdmin service establishes a thread context for a current user.
  * This service allows access to this current user and its available
@@ -27,6 +29,7 @@ import java.util.List;
  * 
  * Empty or missing places match any argument.
  */
+@ProviderType
 public interface Authority {
 	/**
 	 * Get the current user id.

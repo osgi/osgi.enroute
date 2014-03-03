@@ -5,11 +5,6 @@ find implementations for all the contained services. The purpose of this \
 bundle is to be use for compilation, it must not be used in a runtime; in \
 general, providers must carry their service packages.
 
-#
-# Warn the user that this bundle is not supposed to be
-# installed in a framework. This is an API only bundle
-# intended to be used for compilation, not runtime.
-#
 
 
 #
@@ -25,3 +20,15 @@ Import-Package: \
 #
 Export-Package: \
 	${base.packages}
+Private-Package: \
+	osgi.enroute.base.provided
+	
+#
+# Warn the user that this bundle is not supposed to be
+# installed in a framework. This is an API only bundle
+# intended to be used for compilation, not runtime. We
+# provide this error by creating an impossible requirement
+#
+Require-Capability: \
+	should.never.resolve; filter:="(should.never.resolve=true)",
+	osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"

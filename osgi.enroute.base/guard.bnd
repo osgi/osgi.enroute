@@ -2,8 +2,11 @@ Bundle-Description: 	This bundle contains the information about the needed \
 	OSGi enRoute base capabilities.   
 
 
--guardinfo: \
-	def;profile='enroute.base';version=${Bundle-Version}, \
-	packages;set='${base.packages}', \
-	services;set='${base.services}', \
-	capabilities;set='${base.capabilities}'
+Import-Package: ${base.packages}, *
+	
+Private-Package: \
+	osgi.enroute.base.required
+	
+	
+Require-Resource: \
+	${replace;${base.${reqrsrc;

@@ -1,6 +1,6 @@
 
 @aQute.bnd.annotation.Version("1.2.1") // THIS MUST TRACK COMPONENT 
-package osgi.enroute.component.capability;
+package osgi.enroute.component.api;
 
 /**
  * Provides the annotations to provide or require a Component Extender. This 

@@ -1,5 +1,7 @@
 package osgi.enroute.configurer.api;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * The purpose of this service is to signal that the configuration for all
  * initially installed bundles is done. Making sure that this class is a
@@ -10,6 +12,7 @@ package osgi.enroute.configurer.api;
  * the type dependencies. It will have a property {@code configuration.done=true}
  * that can be used in its target filter.
  */
+@ProviderType
 public interface ConfigurationDone {
 	String	CONFIGURATION_DONE	= "configuration.done";
 }

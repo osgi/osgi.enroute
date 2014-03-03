@@ -64,5 +64,4 @@ Bundle-License: 	http://opensource.org/licenses/Apache-2.0;description='Apache S
 		url=http://jpm4j.org;name=JPM;location=~/.bnd/cache; \
 		index=${workspace}/cnf/jpm4j.json; \
 		depository.group=OSGi; \
-		depository.name=bundles, \
-	task.GuardInfoTask; path:=${workspace}/osgi.enroute.base/${bin}
+		depository.name=bundles

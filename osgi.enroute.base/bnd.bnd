@@ -24,11 +24,11 @@ base.services = \
 	java.util.concurrent.Executor
 	
 base.packages =  \
-	aQute.bnd.annotation, \
-	aQute.bnd.annotation.component, \
  	aQute.bnd.annotation.headers, \
 	aQute.bnd.annotation.licenses, \
 	aQute.bnd.annotation.metatype, \
+	org.osgi.annotation.versioning, \
+	org.osgi.dto, \
 	org.osgi.framework, \
 	org.osgi.framework.hooks.bundle, \
 	org.osgi.framework.hooks.resolver, \
@@ -46,6 +46,7 @@ base.packages =  \
 	org.osgi.service.component.annotations, \
 	org.osgi.service.coordinator, \
 	org.osgi.service.event, \
+	org.osgi.service.jdbc, \
 	org.osgi.service.log, \
 	org.osgi.service.metatype, \
 	org.osgi.service.url, \
@@ -54,15 +55,11 @@ base.packages =  \
 	org.slf4j, \
 	osgi.enroute.authentication.api, \
 	osgi.enroute.authorization.api, \
-	osgi.enroute.component.capability, \
+	osgi.enroute.component.api, \
 	osgi.enroute.configurer.api, \
+	osgi.enroute.debug.api, \
 	osgi.enroute.dto.api, \
-	osgi.enroute.guard.dto, \
 	osgi.enroute.logging.api
-
-base.capabilities = \
-	osgi.extender:osgi.component=org.osgi.service.component, \
-	osgi.extender:osgi.enroute.configurer=osgi.enroute.configurer.api  
 
 -sub: \
 	*.bnd
