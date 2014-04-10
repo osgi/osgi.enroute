@@ -15,7 +15,7 @@ import osgi.enroute.configurer.api.RequireConfigurerExtender;
 @RequireConfigurerExtender
 @Component(properties = "enroute.profile=base")
 public class Base {
-	
+
 	@Reference
 	void setConfigurationAdmin(org.osgi.service.cm.ConfigurationAdmin v) {}
 
@@ -33,6 +33,9 @@ public class Base {
 
 	@Reference
 	void setUserAdmin(org.osgi.service.useradmin.UserAdmin v) {}
+
+	@Reference
+	void setLauncher(osgi.enroute.launch.api.Launcher v) {}
 
 	@Reference
 	void setLogger(org.slf4j.Logger v) {}

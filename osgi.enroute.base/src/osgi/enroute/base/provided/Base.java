@@ -3,9 +3,14 @@ package osgi.enroute.base.provided;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
+import osgi.enroute.compile.Unresolvable;
 import osgi.enroute.component.api.ProvideComponentExtender;
 import osgi.enroute.configurer.api.ProvideConfigurerExtender;
 
+/*
+ * This bundle should never resolve. Its intention is to be compile only 
+ */
+@Unresolvable 
 @ProvideComponentExtender
 @ProvideConfigurerExtender
 @Component(properties="profile=base")

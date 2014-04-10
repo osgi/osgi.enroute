@@ -3,10 +3,11 @@ Bundle-Version: 		1.0.0.${tstamp}
 Include-Resource: {readme.md}, {LICENSE}
 
 -buildpath: \
-	osgi.core;					version='[5.0.0,6)',\
-	osgi.cmpn;					version='[5.0.0,6)',\
-	slf4j.api;					version='[1.7.0,1.7.1)',\
-	biz.aQute.bndlib;			version='[2.3,3)'
+	osgi.core;version=@5.0.0,\
+	osgi.cmpn;version=@5.0.0,\
+	slf4j.api;version='[1.7.0,1.7.1)',\
+	biz.aQute.bndlib;version=@2.3,\
+	junit__junit;version=@4.11
 
 base.services = \
 	org.osgi.service.cm.ConfigurationAdmin, \
@@ -20,6 +21,8 @@ base.services = \
 	osgi.enroute.authorization.api.Authority, \
 	osgi.enroute.configurer.api.ConfigurationDone, \
 	osgi.enroute.dto.api.DTOs, \
+	osgi.enroute.launch.api.Launched, \
+	osgi.enroute.logger.api.LoggerAdmin, \
 	java.util.Timer, \
 	java.util.concurrent.Executor
 	
@@ -46,7 +49,6 @@ base.packages =  \
 	org.osgi.service.component.annotations, \
 	org.osgi.service.coordinator, \
 	org.osgi.service.event, \
-	org.osgi.service.jdbc, \
 	org.osgi.service.log, \
 	org.osgi.service.metatype, \
 	org.osgi.service.url, \
@@ -59,8 +61,10 @@ base.packages =  \
 	osgi.enroute.configurer.api, \
 	osgi.enroute.debug.api, \
 	osgi.enroute.dto.api, \
-	osgi.enroute.logging.api
-
+	osgi.enroute.launch.api, \
+	osgi.enroute.logger.api, \
+	osgi.enroute.compile
+	
 -sub: \
 	*.bnd
 	
@@ -69,4 +73,4 @@ base.packages =  \
 # bndlib contains some OSGi packages that cause a split package message
 # This ignores them.
 #
--fixupmessages: "Split package"
+-fixupmessages: "Split package", "Unresolved"

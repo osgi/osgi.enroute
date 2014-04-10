@@ -24,4 +24,9 @@ public interface Debug {
 	 * must map to valid public methods on this service.
 	 */
 	String	COMMAND_FUNCTION	= "osgi.command.function";
+
+	/**
+	 * If this framework property is set then the framework runs a test.
+	 */
+	String	TEST_MODE			= "osgi.testmode";
 }

@@ -6,7 +6,3 @@ Import-Package: ${base.packages}, *
 	
 Private-Package: \
 	osgi.enroute.base.required
-	
-	
-Require-Resource: \
-	${replace;${base.${reqrsrc;

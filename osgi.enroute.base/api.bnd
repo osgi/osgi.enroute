@@ -20,6 +20,11 @@ Import-Package: \
 #
 Export-Package: \
 	${base.packages}
+
+#
+# This package provides the capabilities that should be 
+# present in the runtime.
+#
 Private-Package: \
 	osgi.enroute.base.provided
 	
@@ -29,6 +34,8 @@ Private-Package: \
 # intended to be used for compilation, not runtime. We
 # provide this error by creating an impossible requirement
 #
+
+-noee: true
+
 Require-Capability: \
-	should.never.resolve; filter:="(should.never.resolve=true)",
 	osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"

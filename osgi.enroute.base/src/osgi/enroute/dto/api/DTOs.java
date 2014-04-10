@@ -1,12 +1,15 @@
 package osgi.enroute.dto.api;
 
-import java.lang.reflect.Field;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
+import org.osgi.dto.DTO;
 
 /**
  * This service provides a number of utilities to make it easy to work with
@@ -18,70 +21,171 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface DTOs {
 
-	/**
-	 * Convert an object source to the type given in dest. If the conversion
-	 * cannot be done, return null. If the destination type is an interface then
-	 * an attempt is made to detect an implementation class. This works well for
-	 * all the collection interfaces.
-	 * <p>
-	 * The conversion uses the type information and any generic information to
-	 * do a proper conversion. I.e. a {@code List<Integer>} can be converted to
-	 * a {@code String[]} and vice versa. It also recognizes DTOs and allows
-	 * them to be converted to maps and vice versa. Maps can also be converted
-	 * to interfaces, the names of the methods then act as keys in the map. Same
-	 * conventions for name mangling are used as the DS configuration properties
-	 * <p>
-	 * TODO wait for R6 to link this
-	 * 
-	 * @param dest
-	 *            The destination type.
-	 * @param source
-	 *            The source object to be converted. Must not be null.
-	 * @return a converted object that can
-	 */
-	<T> T convert(Class<T> dest, Object source) throws Exception;
+	interface Converter {
+		/**
+		 * Convert an object source to the type given in dest. If the conversion
+		 * cannot be done, return null. If the destination type is an interface
+		 * then an attempt is made to detect an implementation class. This works
+		 * well for all the collection interfaces.
+		 * <p>
+		 * The conversion uses the type information and any generic information
+		 * to do a proper conversion. I.e. a {@code List<Integer>} can be
+		 * converted to a {@code String[]} and vice versa. It also recognizes
+		 * DTOs and allows them to be converted to maps and vice versa. Maps can
+		 * also be converted to interfaces, the names of the methods then act as
+		 * keys in the map. Same conventions for name mangling are used as the
+		 * DS configuration properties
+		 * <p>
+		 * TODO wait for R6 to link this
+		 * 
+		 * @param dest
+		 *            The destination type.
+		 * @param source
+		 *            The source object to be converted. Must not be null.
+		 * @return a converted object that can
+		 */
+		<T> T to(Class<T> dest) throws Exception;
+
+		/**
+		 * Convert an object to the given type reference.For more rules, see
+		 * {@link #convert(Class, Object)}.
+		 * 
+		 * @param dest
+		 *            the destination type specification
+		 * @param source
+		 *            the source object, must not be null
+		 * @return the converted object or null if no conversion could be found.
+		 */
+		<T> T to(TypeReference<T> dest) throws Exception;
+
+		/**
+		 * Convert an object to the given type. This type can be any of the
+		 * given implementers of type, like ParameterizedType, etc. The
+		 * converter must be able to follow these generic chains. For more
+		 * rules, see {@link #convert(Class, Object)}.
+		 * 
+		 * @param dest
+		 *            the destination type
+		 * @param source
+		 *            the source object, must not be null
+		 * @return the converted object or null if no conversion could be found.
+		 */
+		Object to(Type dest) throws Exception;
+	}
+
+	Converter convert(Object source) throws Exception;
 
 	/**
-	 * Convert an object to the given type reference.For more rules, see
-	 * {@link #convert(Class, Object)}.
-	 * 
-	 * @param dest
-	 *            the destination type specification
-	 * @param source
-	 *            the source object, must not be null
-	 * @return the converted object or null if no conversion could be found.
-	 */
-	<T> T convert(TypeReference<T> dest, Object source) throws Exception;
-	/**
-	 * Convert an object to the given type. This type can be any of the given
-	 * implementers of type, like ParameterizedType, etc. The converter must be
-	 * able to follow these generic chains. For more rules, see
-	 * {@link #convert(Class, Object)}.
-	 * 
-	 * @param dest
-	 *            the destination type
-	 * @param source
-	 *            the source object, must not be null
-	 * @return the converted object or null if no conversion could be found.
-	 */
-	Object convert(Type dest, Object source) throws Exception;
-
-	/**
-	 * Return a Map object that maps directly to a DTO.
+	 * Return a partially read only Map object that maps directly to a DTO. I.e.
+	 * changes are reflected in the DTO. If a field is a DTO, then this field
+	 * will also become a Map.
 	 * 
 	 * @param dto
-	 *            the DTO (must have public fields)
+	 *            the DTO (see )
 	 * @return a Map where the keys map to the field names and the values to the
 	 *         field values. This map is not modifiable.
 	 */
 	Map<String,Object> asMap(Object dto) throws Exception;
 
 	/**
-	 * Return a JSON codec.
-	 * 
-	 * @return a JSON codec
+	 * This interface is a the builder for encoding a DTO to JSON.
 	 */
-	Codec json();
+	interface Enc {
+		void put(OutputStream out) throws Exception;
+
+		void put(OutputStream out, String charset) throws Exception;
+
+		void put(Appendable out) throws Exception;
+
+		String put() throws Exception;
+
+		Enc pretty();
+
+		Enc ignoreNull();
+	}
+
+	/**
+	 * Return encoder builder for JSON
+	 * 
+	 * @param source
+	 *            the object to encode
+	 * @return a builder to control the encoding
+	 */
+	Enc encoder(Object source) throws Exception;
+
+	/**
+	 * An interface to control the building of a JSON decoder.
+	 * 
+	 * @param <T>
+	 *            the type to decode to
+	 */
+	interface Dec<T> {
+		/**
+		 * Decode JSON from an input stream with UTF-8 encoding
+		 * 
+		 * @param in
+		 *            the input stream
+		 * @return a JSON decoded object
+		 */
+		T get(InputStream in) throws Exception;
+
+		/**
+		 * Decode JSON from an input stream and specify the character set to b
+		 * used.
+		 * 
+		 * @param in
+		 *            the input stream
+		 * @param charset
+		 *            The character set to use
+		 * @return a JSON decoded object
+		 */
+		T get(InputStream in, String charset) throws Exception;
+
+		/**
+		 * Decode JSON from a reader
+		 * 
+		 * @param in
+		 *            the reader
+		 * @return a JSON decoded object
+		 */
+		T get(Reader in) throws Exception;
+
+		/**
+		 * Decode JSON from a a CharSequence
+		 * 
+		 * @param in
+		 *            the Char Sequence
+		 * @return a JSON decoded object
+		 */
+		T get(CharSequence in) throws Exception;
+	}
+
+	/**
+	 * Return a JSON decoder that uses the type to control the parsing.
+	 * 
+	 * @param type
+	 *            the type that controls actual types for parsing
+	 * @return a decoder
+	 */
+	<T> Dec<T> decoder(Class<T> type) throws Exception;
+
+	/**
+	 * Return a JSON decoder that uses the type to control the parsing.
+	 * 
+	 * @param type
+	 *            the type that controls actual types for parsing
+	 * @return a decoder
+	 */
+	<T> Dec<T> decoder(TypeReference<T> type) throws Exception;
+
+	/**
+	 * Return a JSON decoder that uses the type to control the parsing.
+	 * 
+	 * @param type
+	 *            the type that controls actual types for parsing
+	 * @return a decoder
+	 */
+	Dec< ? > decoder(Type type, InputStream source) throws Exception;
 
 	/**
 	 * Convert a DTO to a human readable string presentation. This is primarily
@@ -95,28 +199,44 @@ public interface DTOs {
 	String toString(Object dto);
 
 	/**
-	 * Check if two dtos primary fields are equal.
+	 * Check if two dtos fields are equal. This is shallow equal, that is the
+	 * fields of this DTO are using the equals() instance method.
 	 * 
 	 * @param a
+	 *            the first object
 	 * @param b
+	 *            the second object
 	 * @return true if both are null or the DTO's primary fields are equal
 	 */
 	boolean equals(Object a, Object b);
 
 	/**
-	 * Calculate a hash Code for the primary fields.
+	 * Check if two dtos fields are equal. This is deep equal, that is the
+	 * fields of this DTO are using this method is the object at a field is a
+	 * DTO, recursively.
+	 * 
+	 * @param a
+	 *            the first object
+	 * @param b
+	 *            the second object
+	 * @return true if both are null or the DTO's primary fields are equal
+	 */
+	boolean deepEquals(Object a, Object b);
+
+	/**
+	 * Calculate a hash Code for the fields in this DTO. The dto must have at
+	 * least one public field.
 	 * 
 	 * @param dto
-	 *            the object to calculate the hashcode for, must not be null.
+	 *            the object to calculate the hashcode for, must not be null .
 	 * @return a hashcode
 	 */
 	int hashCode(Object dto);
 
 	/**
 	 * Access a DTO with a path. A path is a '.' separated string. Each part in
-	 * the path is either a field name, key in a map, or an index in a list.
-	 * This method does not support dots in the path. For paths with dots in the
-	 * keys, use {@link #get(Object, String...)}.
+	 * the path is either a field name, key in a map, or an index in a list. If
+	 * the path segments contain dots or backslashes, then these must be escaped
 	 * 
 	 * @param dto
 	 *            the root
@@ -124,7 +244,8 @@ public interface DTOs {
 	 *            the path, should only contain dots as separators
 	 * @return the value of the object or null if not found.
 	 */
-	Object get(Object dto, String path) throws Exception;
+
+	Retrieve get(Object dto, String path) throws Exception;
 
 	/**
 	 * Access a DTO with a path that consists of an array with segments. Each
@@ -137,7 +258,7 @@ public interface DTOs {
 	 *            the path
 	 * @return the value of the object or null if not found.
 	 */
-	Object get(Object dto, String... path) throws Exception;
+	Retrieve get(Object dto, String... path) throws Exception;
 
 	/**
 	 * Access a DTO with a path. A path is a '.' separated string. Each part in
@@ -152,7 +273,7 @@ public interface DTOs {
 	 *            the path, should only contain dots as separators
 	 * @return the value of the object or null if not found.
 	 */
-	void set(Object dto, Object value, String path) throws Exception;
+	Retrieve set(Object dto, Object value, String path) throws Exception;
 
 	/**
 	 * Set a value in a DTO with a path that consists of an array with segments.
@@ -167,25 +288,33 @@ public interface DTOs {
 	 *            the path
 	 * @return the value of the object or null if not found.
 	 */
-	void set(Object dto, Object value, String... path) throws Exception;
+	Retrieve set(Object dto, Object value, String... path) throws Exception;
 
 	/**
-	 * The implementation of this service maintains a cache of the primary
-	 * services of a DTO. If not field is annotated as primary, all fields are
-	 * considered primary.
-	 * 
-	 * @param dto
-	 *            the primary fields.
-	 * @return the primary fields
+	 * The DTO that contains the result of a path traversal.
 	 */
-	Field[] getPrimaryFields(Object dto);
+	class Retrieve {
+		/**
+		 * Is set when the path could not be traversed. The value is the reason
+		 * of the failure.
+		 */
+		public String	failure;
+
+		/**
+		 * For a set, this returns the old value, for a get, this return the
+		 * value.
+		 */
+		public Object	value;
+	}
 
 	/**
 	 * Return a comparator who works on the primary fields of a DTO class.
 	 * 
 	 * @param dtoClass
 	 *            the dto class
-	 * @return a comparator for the given DTO
+	 * @return a comparator for the given DTO or null if the dtoClass has no
+	 *         fields of a comparable type. If a field has public fields and
+	 *         these are comparable then they are also included recursively.
 	 */
 	<T> Comparator<T> getComparator(Class<T> dtoClass);
 
@@ -193,12 +322,116 @@ public interface DTOs {
 	 * Return a list of paths where the two objects differ. The objects must be
 	 * of the same class.
 	 * 
-	 * @param a
-	 * @param b
-	 * @return null if a and b are equal, otherwise a list of paths that are
-	 *         useful in {@link #get(Object, String...)} and
-	 *         {@link #set(Object, Object, String...)}
+	 * @param older
+	 *            the older object
+	 * @param newer
+	 *            the newer object
+	 * @return A list of differences, if there is no difference, the list is
+	 *         empty.
 	 */
-	List<String[]> diff(Object a, Object b);
+	List<Difference> diff(Object older, Object newer) throws Exception;
 
+	/**
+	 * The details of a difference
+	 */
+	class Difference extends DTO {
+		/**
+		 * The path where there was a difference
+		 */
+		public String	path[];
+
+		/**
+		 * The reason why there was a difference
+		 */
+		public Reason	reason;
+
+		// TODO old/new object?
+	}
+
+	/**
+	 * The reason for a difference.
+	 */
+	enum Reason {
+		UNEQUAL, REMOVED, ADDED, DIFFERENT_TYPES, SIZE, KEYS, NO_STRING_MAP, INVALID_KEY;
+	}
+
+	/**
+	 * Takes a path with escaped '.'and '\' and then turns it into an array of
+	 * unescaped keys
+	 * 
+	 * @param path
+	 *            the path with escaped \ and .
+	 * @return a path array with unescaped segments
+	 */
+	String[] fromPathToSegments(String path);
+
+	/**
+	 * Takes a path with unescaped keys and turns it into a string path where
+	 * the \ and . are escaped.
+	 * 
+	 * @param path
+	 *            The unescaped segments
+	 * @return a string path where the . and \ are escaped.
+	 */
+	String fromSegmentsToPath(String[] segments);
+
+	/**
+	 * Escape a string to be used in a path. This will put a backslash ('\') in
+	 * front of full stops ('.') and the backslash ('\').
+	 * 
+	 * @param unescaped
+	 *            the string to be escaped
+	 * @return a string where all '.' and '\' are escaped with a '\'.
+	 */
+	String escape(String unescaped);
+
+	/**
+	 * Unescapes a string to be used in a path. This will remove a backslash
+	 * ('\') in front of full stops ('.') and the backslash ('\').
+	 * 
+	 * @param escaped
+	 *            the string to be unescaped
+	 * @return a string where all '\.' and '\\' have the preceding backslash
+	 *         removed with a '\'.
+	 */
+	String unescape(String escaped);
+
+	/**
+	 * Return true if the give dto is complex (either Map, Collection, Array, or
+	 * has public fields.
+	 */
+
+	boolean isComplex(Object object);
+
+	/**
+	 * An object with public fields.
+	 * 
+	 * @return true if this object has public fields or extends DTO
+	 */
+	boolean isDTO(Object dto);
+
+	/**
+	 * Verify that the object is a DTO and has no cycles.
+	 */
+	
+	boolean isValidDTO(Object o) throws Exception;
+	
+	/**
+	 * Create a shallow copy of a DTO. This will create a new object of the same
+	 * type and copy the public fields of the source to the new copy. It will
+	 * not create a copy for these values. 
+	 */
+
+	<T> T shallowCopy(T object) throws Exception;
+
+	/**
+	 * Create a deep copy of a DTO. This will copy the fields of the DTO. Copied
+	 * values will also be created anew if they are complex (Map, Collection,
+	 * DTO, or Array). Other objects are assumed to immutable unless they
+	 * implement Cloneable.
+	 */
+
+	<T> T deepCopy(T object) throws Exception;
+
+	
 }

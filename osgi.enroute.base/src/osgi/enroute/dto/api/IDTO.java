@@ -1,8 +1,14 @@
 package osgi.enroute.dto.api;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.osgi.dto.DTO;
@@ -98,5 +104,17 @@ public class IDTO extends DTO {
 		catch (Exception e) {
 			return result;
 		}
+	}
+
+	public static <T> List<T> list() {
+		return new ArrayList<>();
+	}
+
+	public static <T> Set<T> set() {
+		return new LinkedHashSet<>();
+	}
+
+	public static <K, V> Map<K,V> map() {
+		return new LinkedHashMap<>();
 	}
 }

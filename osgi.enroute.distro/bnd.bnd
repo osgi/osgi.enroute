@@ -1,0 +1,30 @@
+Bundle-Version:				0.0.0.${tstamp}
+Bundle-Description:			An enRoute 1.0 Distribution.
+
+
+
+-distribution: \
+	osgi.enroute.base.api;				version=@1.0.0, \
+\
+	osgi.enroute.testing.support;		version=@1.0.0, \
+\
+	org.eclipse.osgi;					version=@3.9.1, \
+\
+	biz.aQute.bnd.annotation;			version=@2.2.0, \
+	org.apache.felix.configadmin;		version=@1.8.0, \
+	org.apache.felix.eventadmin;		version=@1.3.2, \
+	org.apache.felix.metatype; 			version=@1.0.10, \
+	org.apache.felix.scr;				version=@1.8.2, \
+	org.eclipse.equinox.coordinator;	version=@1.2.0, \
+	org.knopflerfish.bundle.useradmin; 	version=@4.1.0, \
+	osgi.authorization.provider; 		version=@1.0.0, \
+	osgi.authenticator.provider; 		version=@1.0.0, \
+	osgi.base.provider; 				version=@1.0.0, \
+	osgi.configurer.provider;			version=@1.0.0, \
+	osgi.logger.provider; 				version=@1.0.0, \
+\
+	org.apache.felix.gogo.command;		version=@0.10.1, \
+	org.apache.felix.gogo.runtime;		version=@0.10.1, \
+	org.apache.felix.gogo.shell;		version=@0.10.1, \
+	osgi.base.debug.provider;			version=@1.0.0, \
+\

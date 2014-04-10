@@ -9,10 +9,11 @@ import org.osgi.annotation.versioning.ProviderType;
  * reinitialize because they receive configuration.
  * <p>
  * This service is registered under its actual name as well as Object to limit
- * the type dependencies. It will have a property {@code configuration.done=true}
- * that can be used in its target filter.
+ * the type dependencies. It will have a property
+ * {@code configuration.done=true} that can be used in its target filter.
  */
 @ProviderType
 public interface ConfigurationDone {
-	String	CONFIGURATION_DONE	= "configuration.done";
+	String	CONFIGURATION_DONE		= "configuration.done";
+	String	BUNDLE_CONFIGURATION	= "Bundle-Configuration";
 }

@@ -1,61 +1,16 @@
 
-########################
-## BND BUILD SETTINGS ##
-########################
-
-
-## Global defaults are loaded from the bnd library (as shown below), place your
-## specific settings here. Additional settings are inherited from ext/*.bnd and
-## they will be overridden by anything you specify in this file.
-
-## General Options
-#project.dependson:     ${p-dependson;:}
-#project.bootclasspath: ${p-bootclasspath;:}
-#project.buildpath:     ${p-buildpath;:}
-#project.sourcepath:    ${p-sourcepath;:}
-#project.allsourcepath: ${p-allsourcepath;:}
-#project.output:        ${p-output}
-#project.testpath:      ${p-testpath;:}
-
-#-verbose:              true
-#project:               ${basedir}
-#src:                   src
-#bin:                   bin
-#testsrc:               test
-#testbin:               bin_test
-#target-dir:            generated
-#target:                ${project}/${target-dir}
-#build:                 ${workspace}/cnf
-#p:                     ${basename;${project}}
-#project.name:          ${p}
-#plugin-dir:            ${build}/plugins
-
-## Java Compiler Options
-#java:                  java
-#javac:                 javac
-#javac.source:          1.5
-#javac.target:          1.5
-#javac.debug:           on
-
-## Bnd Options
-#-sources:              true
-#-sourcepath:           ${project}/src
-
-
-## Properties from ext/*.bnd can be referenced in order to extend them. For
-## example, to add one additional plugin to the list defined in
-## ext/repositories.bnd:
-# -plugin: ${ext.repositories.-plugin}, org.example.MyPlugin
-
-
-## If you use git, you might want to uncomment the following lines:
-# Git-Descriptor:       ${system-allow-fail;git describe --dirty --always}
-# Git-SHA:              ${system-allow-fail;git rev-list -1 HEAD}
-
 
 Bundle-Copyright: 	OSGi Alliance (c) ${tstamp;yyyy}, All Rights Reserved
 Bundle-Vendor: 		OSGi Alliance
 Bundle-License: 	http://opensource.org/licenses/Apache-2.0;description='Apache Software License 2.0'
+
+-pluginpath:\
+   ${build}/plugins/aQute.jpm.bndrepo.jar; \
+    	url=http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/312378cc5cd772a63fc0b9335e81c3e95bcba1b3; \
+    	sha1=312378cc5cd772a63fc0b9335e81c3e95bcba1b3, \
+   ${build}/plugins/org.osgi.impl.bundle.repoindex.lib.jar; \
+    	url=https://bndtools.ci.cloudbees.com/job/bindex.master/126/artifact/cnf/releaserepo/org.osgi.impl.bundle.repoindex.lib/org.osgi.impl.bundle.repoindex.lib-2.1.1.jar; \
+    	sha1=f3b753fc12ec18c9cb7e0977cbe52cd4404e237a
 
 -plugin: \
 	aQute.lib.deployer.FileRepo;readonly=true;name=Libs;location=${workspace}/cnf/libs,\
@@ -64,4 +19,7 @@ Bundle-License: 	http://opensource.org/licenses/Apache-2.0;description='Apache S
 		url=http://jpm4j.org;name=JPM;location=~/.bnd/cache; \
 		index=${workspace}/cnf/jpm4j.json; \
 		depository.group=OSGi; \
-		depository.name=bundles
+		depository.name=bundles, \
+	
+
+-fixupmessages: Unresolved
