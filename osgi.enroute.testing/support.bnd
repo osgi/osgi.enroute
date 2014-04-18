@@ -29,3 +29,8 @@ Bundle-CompileOnly: true
 Bundle-License: ${^Bundle-License}
 
 -includeresource: {readme.md}
+Import-Package:  \
+	COM.jrockit.reflect;resolution:=optional,\
+	jrockit.vm;resolution:=optional,\
+	sun.reflect;resolution:=optional,\
+	*
