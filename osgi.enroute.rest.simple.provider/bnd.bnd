@@ -1,0 +1,41 @@
+#
+# OSGI WEB REST PROVIDER BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	A simple REST endpoint. This service will look for REST services. It then \
+	assumes any public method that has an interface that extends RESTRequest \
+	as first argument is a rest methd. It makes this method available on its \
+	endpoint. The first part of the method name (camel case separated) is \
+	the method (get, delete, option, etc). The second part is the name of the
+	endpoint. The remaining path is mapped to the arguments of the method. The \
+	returned object is returned as JSON.
+
+Export-Package:  \
+	osgi.enroute.rest.api; provide:=true
+
+Private-Package:  \
+	osgi.enroute.rest.simple.provider
+	
+Conditional-Package: aQute.lib*
+
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0, \
+	osgi.enroute.testing.support;version=1.0, \
+	biz.aQute.junit
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.rest.simple.provider)'
+-runbundles:  \
+	org.apache.felix.configadmin;version='[1.8.0,1.8.1)',\
+	org.apache.felix.eventadmin;version='[1.3.2,1.3.3)',\
+	org.apache.felix.http.bundle;version='[2.3.0,2.3.1)',\
+	org.apache.felix.metatype;version='[1.0.10,1.0.11)',\
+	org.apache.felix.scr;version='[1.8.2,1.8.3)',\
+	osgi.enroute.rest.simple.provider;version=latest

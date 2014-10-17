@@ -1,0 +1,77 @@
+#
+# -ENROUTE-
+# 
+# This file contains the setup for OSGi enRoute
+#
+
+bnd-release	=	https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/dist/bundles
+
+ 
+-pluginpath:\
+        ${build}/cache/biz.aQute.repository.jar;url=${bnd-release}/biz.aQute.repository/biz.aQute.repository-latest.jar
+
+
+-plugin.enroute.wrapper: aQute.bnd.deployer.repository.wrapper.Plugin; \
+            location            =	"${build}/cache/wrapper"; \
+            reindex				=	true; \
+            augments			=   ${workspace}/cnf/augments.properties
+            
+-plugin.enroute.localrepo= \
+	aQute.bnd.deployer.repository.LocalIndexedRepo; \
+		name=Local; \
+		local=${build}/local;\
+		pretty=true
+			
+-plugin.enroute.centralrepo = \
+	aQute.bnd.jpm.Repository; \
+	        includeStage	=       true; \
+	        name		=       Central; \
+	        location	=       ~/.bnd/shacache; \
+	        index		=       ${build}/repository.json; \
+	        depository.group	=		OSGi; \
+    		depository.name		=		enRoute.rt
+
+-plugin.enroute.releaserepo = \
+	aQute.bnd.deployer.repository.LocalIndexedRepo; \
+		name=Release; \
+		local=${build}/release;\
+		pretty=true
+
+
+-releaserepo: 					Release
+javac.source: 					1.8
+javac.target: 					1.8
+Service-Component: 				*
+-dsannotations: 				*
+-runee:							JavaSE-1.8
+
+
+-runfw:							org.eclipse.osgi;version=@3.9.1
+-runproperties: 				\
+								osgi.console.enable.builtin=false, \
+								osgi.console=, \
+								org.osgi.service.http.port=8080
+
+-runsystempackages.eqnx:		javax.script
+-runsystemcapabilities.dflt: 	${native_capability}
+
+
+test-cases: 					${classes;NAMED;*Test}
+
+#
+# Make sure active dependencies added by bindex are used for resolving
+#
+-resolve.effective = resolve, active
+
+
+
+debug-bundles: \
+	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.metatype)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.eventadmin)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.log)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)', \
+	osgi.identity;filter:='(osgi.identity=osgi.base.debug.provider)'
+	
+	

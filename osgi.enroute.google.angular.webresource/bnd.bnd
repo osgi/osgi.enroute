@@ -1,0 +1,22 @@
+Bundle-Version:			1.3.0.${tstamp}
+Bundle-License: 		http://opensource.org/licenses/MIT
+Bundle-Description: 	\
+	HTML is great for declaring static documents, but it falters when we try to use \
+	it for declaring dynamic views in web-applications. AngularJS lets you extend HTML vocabulary for \
+	your application. The resulting environment is extraordinarily expressive, readable, and quick to \
+	develop.
+	
+Bundle-DocURL: 			http://angularjs.org/
+Bundle-Vendor: 			Google Inc. (bundled by OSGi enRoute)
+Bundle-Icon: 			angular.png
+
+Provide-Capability: \
+	osgi.webresource; \
+		osgi.webresource=/google/angular/1; \
+		version:Version=${version;===;${Bundle-Version}}
+
+-includeresource: static=static, angular.png, {readme.md}
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.google.angular.webresource)'
+-runbundles:  \
+	osgi.enroute.google.angular.webresource;version=latest

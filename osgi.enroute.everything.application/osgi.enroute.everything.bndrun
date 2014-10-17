@@ -1,0 +1,23 @@
+#
+# OSGI ENROUTE EVERYTHING APPLICATION RUN SPECIFICATION
+#
+
+
+Bundle-Version:				1.0.0.${tstamp}
+Bundle-SymbolicName:		osgi.enroute.everything.application.launch
+JPMCommand:					evrthng
+
+
+-runfw:						org.eclipse.osgi
+
+-runproperties: 			osgi.console.enable.builtin=false, osgi.console=
+
+
+-runsystempackages: javax.script
+
+-runtrace: true
+
+-runbundles: ${error;You must resolve the osgi.enroute.everything.bndrun file before you can run it}
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.everything.application)'

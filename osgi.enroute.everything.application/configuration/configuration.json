@@ -1,0 +1,8 @@
+[
+   { 
+   	  "comment":							"Factory configuration for Everything",
+      "service.factoryPid":					"osgi.enroute.everything",
+      "service.pid":						"initial",
+      "name":								"EVERYTHING"
+   }
+]

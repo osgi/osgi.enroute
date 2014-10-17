@@ -1,0 +1,37 @@
+#
+# OSGI ENROUTE BASE PROVIDER BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	A provider of the basic 
+
+
+Export-Package:  \
+	osgi.enroute.dto.api;provide:=true,\
+	aQute.bnd.annotation.metatype;-noimport:=true;-split-package:=first
+
+Private-Package:  \
+	osgi.enroute.base.dto.provider,\
+	osgi.enroute.base.scheduler.provider,\
+	osgi.enroute.base.timer.provider
+
+Export-Service: \
+	java.util.Timer, \
+	java.util.concurrent.Executor
+	
+Conditional-Package: aQute.lib*
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0, \
+	osgi.enroute.testing.support;version=1.0, \
+	biz.aQute.junit
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.provider)'
+-runbundles:  \
+	osgi.enroute.base.provider;version=latest

@@ -1,0 +1,9 @@
+#
+# EVERYTHING APPLICATION DEBUG RUN SPECIFICATION
+#
+
+-include: ~osgi.enroute.everything.application.bndrun
+
+-runrequires.debug:  ${debug-bundles}
+
+-runtrace: true

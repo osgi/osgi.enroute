@@ -1,0 +1,41 @@
+#
+# OSGI ENROUTE WEBSECURITY ADAPTER BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	Provides a filter that will start a Coordinator 
+
+Export-Package:  \
+	osgi.enroute.websecurity.adapter.api;provide:=true
+
+Private-Package:  \
+	osgi.enroute.websecurity.adapter
+	
+	
+Conditional-Package: aQute.lib*
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0, \
+	osgi.enroute.testing.support;version=1.0, \
+	biz.aQute.junit
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.websecurity.adapter)'
+-runbundles:  \
+	org.apache.felix.configadmin;version='[1.8.0,1.8.1)',\
+	org.apache.felix.eventadmin;version='[1.3.2,1.3.3)',\
+	org.apache.felix.http.bundle;version='[2.3.0,2.3.1)',\
+	org.apache.felix.metatype;version='[1.0.10,1.0.11)',\
+	org.apache.felix.scr;version='[1.8.2,1.8.3)',\
+	org.knopflerfish.bundle.useradmin;version='[4.1.0,4.1.1)',\
+	osgi.base.provider;version='[1.0.0,1.0.1)',\
+	osgi.enroute.authenticator.simple.provider;version=latest,\
+	osgi.enroute.authorization.simple.provider;version=latest,\
+	osgi.enroute.base.simple.provider;version=latest,\
+	osgi.enroute.websecurity.adapter;version=latest,\
+	osgi.logger.provider;version='[1.0.0,1.0.1)'
