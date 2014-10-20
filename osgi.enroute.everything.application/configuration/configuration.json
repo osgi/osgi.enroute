@@ -4,5 +4,9 @@
       "service.factoryPid":					"osgi.enroute.everything",
       "service.pid":						"initial",
       "name":								"EVERYTHING"
+   }, {
+	   "service.factoryPid":"osgi.enroute.web.server.simple",
+	   "service.pid":"singleton",
+	   "alias":"/"
    }
 ]

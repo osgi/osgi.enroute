@@ -9,10 +9,11 @@ Bundle-Description: 	\
 Bundle-DocURL: 			http://angularjs.org/
 Bundle-Vendor: 			Google Inc. (bundled by OSGi enRoute)
 Bundle-Icon: 			angular.png
+Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
 
 Provide-Capability: \
-	osgi.webresource; \
-		osgi.webresource=/google/angular/1; \
+	osgi.enroute.webresource; \
+		osgi.enroute.webresource=/google/angular/1; \
 		version:Version=${version;===;${Bundle-Version}}
 
 -includeresource: static=static, angular.png, {readme.md}

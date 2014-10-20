@@ -1,20 +1,34 @@
 package osgi.enroute.everything.application;
 
+import org.osgi.dto.DTO;
 import org.osgi.service.component.annotations.Component;
 
+import osgi.enroute.capabilities.AngularUIWebResource;
+import osgi.enroute.capabilities.AngularWebResource;
+import osgi.enroute.capabilities.BootstrapWebResource;
 import osgi.enroute.capabilities.WebServerExtender;
-import osgi.enroute.debug.api.Debug;
+import osgi.enroute.rest.api.REST;
+import osgi.enroute.rest.api.RESTRequest;
 
+@AngularWebResource.Require
+@BootstrapWebResource.Require
+@AngularUIWebResource.Require
 @WebServerExtender.Require
-@Component(service=EverythingApplication.class, property = { Debug.COMMAND_SCOPE + "=evrthng",
-	Debug.COMMAND_FUNCTION + "=evrthng" },name="osgi.enroute.everything")
-public class EverythingApplication {
+@Component(name = "osgi.enroute.everything")
+public class EverythingApplication implements REST {
 
-	
-	/*
-	 * Gogo command
-	 */
-	public String evrthng(String m) throws Exception {
-		return m;
+	public static class SignupData extends DTO {
+		public String name;
+		public long time;
 	}
+
+	interface SignupRequest extends RESTRequest {
+		SignupData _body();
+	}
+
+	public String postSignup(SignupRequest rq) {
+		SignupData body = rq._body();
+		return "Welcome " + body.name;
+	}
+
 }

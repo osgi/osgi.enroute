@@ -1,0 +1,35 @@
+#
+# OSGI ENROUTE LOGGER SIMPLE PROVIDER BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	Provides a simple implementation of the OSGi SLF4J bridge, includes shell command
+	
+
+Export-Package:  \
+	osgi.enroute.logger.api;provide:=true,\
+	org.slf4j;provide:=true
+
+Private-Package:  \
+	osgi.enroute.logger.simple.provider,\
+	org.slf4j.impl;-split-package:=first,\
+	org.slf4j.helpers,\
+	org.slf4j.spi
+
+Conditonal-Bundle: aQute.lib*
+	
+-buildpath: \
+	osgi.enroute.base.api;version=1.0, \
+	osgi.enroute.testing.support;version=1.0, \
+	biz.aQute.junit
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.logger.simple.provider)'
+
+-fixupmessages: "Export org.slf4j,  has 1,  private references \\[org.slf4j.spi\\]"
+	

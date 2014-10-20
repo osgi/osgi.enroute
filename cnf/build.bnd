@@ -3,5 +3,4 @@
 #
 
 Bundle-License: 		http://opensource.org/licenses/Apache-2.0
-org.apache.felix.http.bundle: 			cap=osgi.enroute.whiteboard;osgi.enroute.whiteboard=osgi.enroute.servlet;version:Version=1.0.0
-org.knopflerfish.bundle.useradmin: 		cap=osgi.service;objectClass=org.osgi.service.useradmin.UserAdmin
+

@@ -29,7 +29,8 @@ import aQute.lib.json.*;
 	provide = Servlet.class, //
 	name = "osgi.enroute.rest.simple", //
 	designate = RestServlet.Config.class, //
-	configurationPolicy = ConfigurationPolicy.require //
+	configurationPolicy = ConfigurationPolicy.optional, //
+	properties="alias=/rest"
 )
 public class RestServlet extends HttpServlet implements REST {
 	private static final long	serialVersionUID	= 1L;

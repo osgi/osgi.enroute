@@ -124,7 +124,8 @@ public class RestMapper {
 
 			Type post = null;
 			try {
-				post = m.getParameterTypes()[0].getMethod("_").getGenericReturnType();
+				Class<?> rc = m.getParameterTypes()[0];
+				post = rc.getMethod("_body").getGenericReturnType();
 			}
 			catch (Exception e) {
 				// Ignore
@@ -322,8 +323,7 @@ public class RestMapper {
 					if (type != null
 							&& (rq.getMethod().equalsIgnoreCase("POST") || rq.getMethod().equalsIgnoreCase("PUT"))) {
 						Object arguments = codec.dec().from(rq.getInputStream()).get(type);
-						args.put("_", arguments);
-						args.put(".arguments", arguments);
+						args.put("_body", arguments);
 					}
 
 					//

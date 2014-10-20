@@ -9,8 +9,8 @@ Bundle-DocURL: 			https://github.com/twbs/bootstrap/releases/download/v3.2.0/boo
 Bundle-Icon: 			http://flipstorm.co.uk/bwb/img/logo-med.png
 
 Provide-Capability: 	\
-	osgi.webresource; \
-		osgi.webresource=/twitter/bootstrap/3; \
+	osgi.enroute.webresource; \
+		osgi.enroute.webresource=/twitter/bootstrap/3; \
 		version:Version=${version;===;${Bundle-Version}}
 
 -includeresource: static=static, {readme.md}

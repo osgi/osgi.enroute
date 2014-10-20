@@ -22,7 +22,7 @@ public class WebFilter implements Filter {
 
 	int					maxConnections;
 	String				maxConnectionMessage;
-
+	AtomicInteger		counter = new AtomicInteger(1000);
 	AtomicInteger		active	= new AtomicInteger();
 	private Coordinator	coordinator;
 
@@ -48,9 +48,8 @@ public class WebFilter implements Filter {
 					return;
 				}
 			}
-			HttpServletRequest hreq = (HttpServletRequest) req;
 
-			Coordination c = coordinator.begin(hreq.getRequestURI(), 0);
+			Coordination c = coordinator.begin("osgi.enroute.webrequest."+active.incrementAndGet(), 0);
 			try {
 				chain.doFilter(req, rsp);
 				c.end();
