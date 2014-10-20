@@ -17,8 +17,8 @@ import org.osgi.service.useradmin.UserAdmin;
 import osgi.enroute.authorization.api.Authority;
 import osgi.enroute.authorization.api.AuthorityAdmin;
 import osgi.enroute.base.configurer.test.ConfigurerTest;
-import osgi.enroute.testing.DSTestWiring;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.testing.DSTestWiring;
 
 public class AuthorizationTest extends TestCase {
 

@@ -2,13 +2,14 @@
 # OSGI ENROUTE BASE TEST OSGi TEST BUNDLE 
 #
 
-Bundle-Version:1.0.0.${tstamp}
+Bundle-Version: 1.0.0.${tstamp}
 Bundle-Description: \
  	This bundle tests all the bundles for enRoute in this repository.
 
 
 Private-Package:  \
-	osgi.enroute.*.test
+	osgi.enroute.*.test, \
+	aQute.bnd.testing
 
 Test-Cases: ${test-cases}
 
@@ -18,7 +19,7 @@ Test-Cases: ${test-cases}
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\
-	osgi.enroute.testing.support
+	biz.aQute.bndlib;version=2.3
 	
 
 -runrequires:  \
@@ -43,7 +44,6 @@ runsystempackages: org.junit;version=4.11, junit.framework;version=3.8
 	osgi.enroute.base.simple.provider;version=latest,\
 	osgi.enroute.base.test;version=latest,\
 	osgi.enroute.configurer.simple.provider;version=latest,\
-	osgi.enroute.testing.support;version='[1.0.0,1.0.1)',\
 	osgi.logger.provider;version='[1.0.0,1.0.1)'
 	
 -osgitest=true

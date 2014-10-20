@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
+Bundle-Version: 1.0.0.${tstamp}
 Bundle-Description: 				\
 	Provides a filter that will start a Coordinator 
 
@@ -16,10 +16,10 @@ Private-Package:  \
 	
 Conditional-Package: aQute.lib*
 
--buildpath: \
-	osgi.enroute.base.api;version=1.0, \
-	osgi.enroute.testing.support;version=1.0, \
-	biz.aQute.junit
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit,\
+	biz.aQute.bndlib
 
 -includeresource: {readme.md}
 

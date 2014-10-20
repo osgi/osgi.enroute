@@ -21,8 +21,8 @@ import osgi.enroute.logger.api.LoggerAdmin;
 import osgi.enroute.logger.api.LoggerAdmin.Control;
 import osgi.enroute.logger.api.LoggerAdmin.Info;
 import osgi.enroute.logger.api.LoggerAdmin.Settings;
-import osgi.enroute.testing.DSTestWiring;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.testing.DSTestWiring;
 
 public class LoggerTest extends TestCase {
 	BundleContext	context	= FrameworkUtil.getBundle(ConfigurerTest.class).getBundleContext();

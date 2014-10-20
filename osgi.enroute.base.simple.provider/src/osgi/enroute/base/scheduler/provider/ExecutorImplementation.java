@@ -10,12 +10,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.annotation.metatype.Configurable;
 
 /**
@@ -30,7 +30,7 @@ import aQute.bnd.annotation.metatype.Configurable;
 public class ExecutorImplementation implements Executor {
 	ExecutorService			es;
 	BlockingQueue<Runnable>	queue	= new LinkedBlockingQueue<Runnable>();
-	Logger					log;
+	static Logger					log = LoggerFactory.getLogger(ExecutorImplementation.class);
 
 	/*
 	 * Creates a new instance of the underlying implementation of the executor
@@ -76,14 +76,6 @@ public class ExecutorImplementation implements Executor {
 	 */
 	public void execute(Runnable command) {
 		es.submit(command);
-	}
-
-	/*
-	 * Reference to the log
-	 */
-	@Reference
-	void setLogger(Logger log) {
-		this.log = log;
 	}
 
 }

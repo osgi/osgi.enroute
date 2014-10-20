@@ -7,8 +7,8 @@ import org.osgi.framework.FrameworkUtil;
 
 import osgi.enroute.authentication.api.Authenticator;
 import osgi.enroute.base.configurer.test.ConfigurerTest;
-import osgi.enroute.testing.DSTestWiring;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.testing.DSTestWiring;
 
 public class AuthenticatorTest extends TestCase {
 

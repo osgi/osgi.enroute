@@ -1,0 +1,24 @@
+#
+# OSGI ENROUTE BASE DEBUG PROVIDER BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	Provides Gogo shell commands that are quite se
+
+
+Private-Package:  \
+	osgi.enroute.base.debug.provider
+	
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.debug.provider)'
+-runbundles:  \
+	osgi.enroute.base.debug.provider;version=latest

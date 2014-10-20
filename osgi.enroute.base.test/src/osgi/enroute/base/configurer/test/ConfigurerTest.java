@@ -18,11 +18,11 @@ import org.osgi.service.cm.ConfigurationListener;
 
 import osgi.enroute.capabilities.ConfigurerExtender;
 import osgi.enroute.configurer.api.ConfigurationDone;
-import osgi.enroute.testing.DSTestWiring;
 import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.osgi.Builder;
 import aQute.bnd.osgi.JarResource;
 import aQute.bnd.osgi.URLResource;
+import aQute.bnd.testing.DSTestWiring;
 
 @ConfigurerExtender.Require
 public class ConfigurerTest extends TestCase {

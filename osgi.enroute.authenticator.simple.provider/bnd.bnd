@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
+Bundle-Version: 1.0.0.${tstamp}
 Bundle-Description: 				\
 	An implementation of the Authenticator API based on User Admin.
 
@@ -15,10 +15,10 @@ Private-Package:  \
 
 Conditional-Package: aQute.lib*
 	
--buildpath: \
-	osgi.enroute.base.api;version=1.0, \
-	osgi.enroute.testing.support;version=1.0, \
-	biz.aQute.junit
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit,\
+	biz.aQute.bndlib;version=2.3
 
 -includeresource: {readme.md}
 

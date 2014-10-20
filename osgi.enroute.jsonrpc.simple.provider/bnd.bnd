@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
+Bundle-Version: 1.0.0.${tstamp}
 Bundle-Description: 				\
 	A simple implementation of the JSON RPC 2.0 specification. This bundle \
 	tracks any JSONRPC services. It assumes all public methods on the implementation \
@@ -19,10 +19,10 @@ Private-Package:  \
 	
 Conditional-Package: aQute.lib*
 
--buildpath: \
-	osgi.enroute.base.api;version=1.0, \
-	osgi.enroute.testing.support;version=1.0, \
-	biz.aQute.junit
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit,\
+	biz.aQute.bndlib
 
 -includeresource: {readme.md}
 

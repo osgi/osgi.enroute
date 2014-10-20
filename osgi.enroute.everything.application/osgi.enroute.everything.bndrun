@@ -35,16 +35,14 @@ JPMCommand:					evrthng
 	org.eclipse.equinox.coordinator;version='[1.2.0,1.2.1)',\
 	osgi.enroute.base.simple.provider;version=latest,\
 	osgi.enroute.everything.application;version=latest,\
-	osgi.enroute.github.angular-ui;version=latest,\
 	osgi.enroute.google.angular.webresource;version=latest,\
+	osgi.enroute.logger.simple.provider;version=latest,\
 	osgi.enroute.rest.simple.provider;version=latest,\
 	osgi.enroute.twitter.bootstrap.webresource;version=latest,\
-	osgi.enroute.web.simple.provider;version=latest,\
-	osgi.logger.provider;version='[1.0.0,1.0.1)'
+	osgi.enroute.web.simple.provider;version=latest
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.everything.application)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
 	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)',\
-	osgi.identity;filter:='(osgi.identity=osgi.logger.provider)',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.command)(version>=0.12.0))'

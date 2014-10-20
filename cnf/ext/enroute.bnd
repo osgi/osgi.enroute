@@ -14,7 +14,7 @@ bnd-release	=	https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBui
 -plugin.enroute.wrapper: aQute.bnd.deployer.repository.wrapper.Plugin; \
             location            =	"${build}/cache/wrapper"; \
             reindex				=	true; \
-            augments			=   ${workspace}/cnf/augments.properties
+            augments			=   WORKSPACE
             
 -plugin.enroute.localrepo= \
 	aQute.bnd.deployer.repository.LocalIndexedRepo; \
@@ -48,9 +48,11 @@ Service-Component: 				*
 
 -runfw:							org.eclipse.osgi;version=@3.9.1
 -runproperties: 				\
-								osgi.console.enable.builtin=false, \
-								osgi.console=, \
-								org.osgi.service.http.port=8080
+	org.apache.felix.http.jettyEnabled=true, \
+	org.apache.felix.http.whiteboardEnabled=true,\
+	osgi.console.enable.builtin=false, \
+	osgi.console=, \
+	org.osgi.service.http.port=8080
 
 -runsystempackages.eqnx:		javax.script
 -runsystemcapabilities.dflt: 	${native_capability}
@@ -113,7 +115,7 @@ debug-bundles: \
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.log)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)', \
-	osgi.identity;filter:='(osgi.identity=osgi.base.debug.provider)'
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.debug.provider)'
 	
 	
 # 

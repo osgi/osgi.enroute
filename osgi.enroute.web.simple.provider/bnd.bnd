@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
+Bundle-Version: 1.0.1.${tstamp}
 Bundle-Description: 				\
 	Provides a simple implementation of the OSGi enRoute webserver with a number \
 	of useful filters.
@@ -14,10 +14,10 @@ Private-Package:  \
 
 Conditional-Package: aQute.lib*
 	
--buildpath: \
-	osgi.enroute.base.api;version=1.0, \
-	osgi.enroute.testing.support;version=1.0, \
-	biz.aQute.junit
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit,\
+	biz.aQute.bndlib
 
 -includeresource: {readme.md}
 
@@ -33,7 +33,7 @@ Conditional-Package: aQute.lib*
 	org.apache.felix.scr;version='[1.8.2,1.8.3)',\
 	org.eclipse.equinox.coordinator;version='[1.2.0,1.2.1)',\
 	osgi.enroute.base.simple.provider;version=latest,\
-	osgi.enroute.web.simple.provider;version=latest,\
-	osgi.logger.provider;version='[1.0.0,1.0.1)'
+	osgi.enroute.logger.simple.provider;version=latest,\
+	osgi.enroute.web.simple.provider;version=latest
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.web.simple.provider)'

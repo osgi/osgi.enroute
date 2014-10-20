@@ -10,8 +10,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 import osgi.enroute.base.configurer.test.ConfigurerTest;
-import osgi.enroute.testing.DSTestWiring;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.testing.DSTestWiring;
 
 public class ExecutorTester extends TestCase {
 
