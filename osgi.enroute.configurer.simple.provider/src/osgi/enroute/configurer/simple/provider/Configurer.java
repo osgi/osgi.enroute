@@ -114,7 +114,7 @@ public class Configurer implements ConfigurationDone {
 							// We use a default configuration if the header is
 							// not set for convenience
 							//
-							return h = CONFIGURATION_LOC;
+							h = CONFIGURATION_LOC;
 
 						h = h.trim();
 						if (h.isEmpty())
