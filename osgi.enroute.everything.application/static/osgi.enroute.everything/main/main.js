@@ -28,14 +28,14 @@
 		$scope.signup = function() {
 			var name = prompt("Under what name?");
 			if ( name ) {
-				$http.post('/rest/signup', { name: name, time: new Date().getTime() }).then(
+				$http.get('/rest/upper/'+name).then(
 						function(d) {
 							$scope.alerts.push( { type: 'success', msg: d.data });
 						}, function(d) {
 							$scope.alerts.push( { type: 'danger', msg: 'Failed with ['+ d.status + '] '+ d.statusText });
 						}
 				);
-			}
+				}
 		};
 	
 	}
