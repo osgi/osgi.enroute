@@ -1,13 +1,14 @@
-Bundle-Version: 		1.0.0.${tstamp}
+Bundle-Version: 		1.1.0.${tstamp}
 
 Include-Resource: {readme.md}, {LICENSE}
 
--buildpath: \
-	osgi.core;version=@5.0.0,\
+-buildpath:  \
+	osgi.core;version=@6.0.0,\
 	osgi.cmpn;version=@5.0.0,\
-	slf4j.api;version='[1.7.0,1.7.1)',\
+	slf4j.api;version=@1.7.0,\
 	biz.aQute.bndlib;version=@2.3,\
-	junit__junit;version=@4.11
+	javax.servlet,\
+	slf4j.simple;version=@1.7
 
 base.services = \
 	org.osgi.service.cm.ConfigurationAdmin, \
@@ -16,6 +17,7 @@ base.services = \
 	org.osgi.service.log.LogService, \
 	org.osgi.service.metatype.MetaTypeService, \
 	org.osgi.service.useradmin.UserAdmin, \
+	org.osgi.service.http.HttpService, \
 	org.slf4j.Logger, \
 	osgi.enroute.authentication.api.Authenticator, \
 	osgi.enroute.authorization.api.Authority, \
@@ -25,52 +27,66 @@ base.services = \
 	osgi.enroute.logger.api.LoggerAdmin, \
 	java.util.Timer, \
 	java.util.concurrent.Executor
-	
+
 base.packages =  \
  	aQute.bnd.annotation.headers, \
 	aQute.bnd.annotation.licenses, \
 	aQute.bnd.annotation.metatype, \
-	org.osgi.annotation.versioning, \
-	org.osgi.dto, \
-	org.osgi.framework, \
+	javax.servlet, \
+	javax.servlet.http, \
+	javax.servlet.descriptor, \
+	javax.servlet.annotation, \
+ 	org.osgi.dto, \
+ 	org.osgi.annotation.versioning, \
+  	org.osgi.framework, \
+	org.osgi.framework.dto, \
 	org.osgi.framework.hooks.bundle, \
 	org.osgi.framework.hooks.resolver, \
 	org.osgi.framework.hooks.service, \
 	org.osgi.framework.hooks.weaving, \
+	org.osgi.framework.launch, \
 	org.osgi.framework.namespace, \
 	org.osgi.framework.startlevel, \
-	org.osgi.framework.wiring, \
+	org.osgi.framework.startlevel.dto, \
+	org.osgi.framework.wiring,\
+	org.osgi.framework.wiring.dto, \
 	org.osgi.namespace.contract, \
 	org.osgi.namespace.extender, \
-	org.osgi.namespace.service, \
+  	org.osgi.namespace.service, \
 	org.osgi.resource, \
+	org.osgi.resource.dto, \
 	org.osgi.service.cm, \
 	org.osgi.service.component, \
 	org.osgi.service.component.annotations, \
 	org.osgi.service.coordinator, \
 	org.osgi.service.event, \
+	org.osgi.service.http, \
 	org.osgi.service.log, \
 	org.osgi.service.metatype, \
 	org.osgi.service.url, \
 	org.osgi.service.useradmin, \
+	org.osgi.util.function, \
+	org.osgi.util.promise, \
 	org.osgi.util.tracker, \
-	org.slf4j, \
+  	org.slf4j, \
 	osgi.enroute.authentication.api, \
 	osgi.enroute.authorization.api, \
-	osgi.enroute.component.api, \
+	osgi.enroute.capabilities, \
 	osgi.enroute.configurer.api, \
 	osgi.enroute.debug.api, \
 	osgi.enroute.dto.api, \
+	osgi.enroute.jsonrpc.api, \
+	osgi.enroute.jsonrpc.dto, \
 	osgi.enroute.launch.api, \
 	osgi.enroute.logger.api, \
-	osgi.enroute.compile
+	osgi.enroute.namespace, \
+	osgi.enroute.rest.api
 	
 -sub: \
 	*.bnd
-	
 	
 #
 # bndlib contains some OSGi packages that cause a split package message
 # This ignores them.
 #
--fixupmessages: "Split package", "Unresolved"
+-fixupmessages: "Split package"

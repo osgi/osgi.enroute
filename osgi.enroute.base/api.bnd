@@ -12,7 +12,7 @@ general, providers must carry their service packages.
 # public API of enRoute base. So we need to remove them.
 #
 Import-Package: \
-	!org.slf4j.*,\
+	!javax.servlet.annotation, \
 	*
 	
 # 
@@ -23,10 +23,18 @@ Export-Package: \
 
 #
 # This package provides the capabilities that should be 
-# present in the runtime.
+# present in the runtime through an implementation but makes 
+# this bundle also unresolveable so that it cannot be picked 
+# by the resolver. 
 #
+# We also add org.slf4j's default implementation so we use logging
+# in JUnit tests. 
+# 
+
 Private-Package: \
 	osgi.enroute.base.provided
+
+Conditional-Package:	org.slf4j.*
 	
 #
 # Warn the user that this bundle is not supposed to be
@@ -38,4 +46,10 @@ Private-Package: \
 -noee: true
 
 Require-Capability: \
-	osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+	osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+	
+	
+Bundle-Icon: enroute.png
+-includeresource: icon/${Bundle-Icon} 
+
+-fixupmessages: "slf4j"

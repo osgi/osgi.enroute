@@ -20,4 +20,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>bndtools.core.bndnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>osgi.enroute.site</name>
+			<type>2</type>
+			<location>/Ws/enroute/osgi.enroute.site</location>
+		</link>
+	</linkedResources>
 </projectDescription>

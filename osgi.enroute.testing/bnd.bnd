@@ -1,8 +1,0 @@
--sub: \
-	*.bnd
-
--buildpath: \
-	org.mockito.mockito-all;version=1.9.5.rc1,\
-	junit__junit;version=4.11.0.beta-1,\
-	biz.aQute.bndlib;version=2.3,\
-	osgi.enroute.base.api;version=latest

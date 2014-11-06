@@ -1,7 +1,0 @@
-{
-"version"      :1,
-"increment"   :1,
-"date"        :1391757927671,
-"revisionRefs"   : [
-{"artifactId":"biz.aQute.bnd.annotation","baseline":"2.2.0","bsn":"biz.aQute.bnd.annotation","created":1380303289045,"description":"Contains only the annotations for bnd.","groupId":"osgi","md5":"D9FC3415AFD45100CE5C963D0F80F321","name":"bnd Annotations Library","phase":"MASTER","qualifier":"20130927-173449","revision":"771086F98E814D9D5D5024FC4826E7A39A777060","size":27845,"version":"2.2.0.20130927-173449"}
-]}
