@@ -54,11 +54,10 @@ public class WebFilter implements Filter {
 					+ active.incrementAndGet(), 0);
 			try {
 				chain.doFilter(req, rsp);
+				c.end();
 			} catch (Throwable t) {
 				c.fail(t);
 				throw t;
-			} finally {
-				c.end();
 			}
 		} finally {
 			active.decrementAndGet();

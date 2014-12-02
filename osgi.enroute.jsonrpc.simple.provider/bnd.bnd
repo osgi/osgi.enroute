@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version: 1.0.0.${tstamp}
+Bundle-Version: 1.1.0.${tstamp}
 Bundle-Description: 				\
 	A simple implementation of the JSON RPC 2.0 specification. This bundle \
 	tracks any JSONRPC services. It assumes all public methods on the implementation \
@@ -24,7 +24,7 @@ Conditional-Package: aQute.lib*
 	biz.aQute.junit,\
 	biz.aQute.bndlib
 
--includeresource: {readme.md}
+-includeresource: {readme.md}, {static=static}
 
 
 -runrequires:  \

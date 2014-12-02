@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version: 1.0.0.${tstamp}
+Bundle-Version: 1.2.0.${tstamp}
 Bundle-Description: 				\
 	Provides a mapping from Event Admin events to Javascript Server Side Events (SSE). \
 	This bundle registers under /sse/1, the remaining path is treated as the topic. It \
@@ -22,7 +22,7 @@ Conditional-Package: aQute.lib*
 	biz.aQute.junit, \
 	biz.aQute.bndlib
 
--includeresource: {readme.md}
+-includeresource: {readme.md}, {static=static}
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.easse.simple.adapter)'

@@ -35,7 +35,7 @@ import aQute.lib.collections.ExtList;
 
 @ServletWhiteboard.Require
 @Component(properties = {
-	"alias=/"
+	"pattern=.*"
 }, designateFactory = SecurityFilter.Config.class)
 public class SecurityFilter implements Filter {
 	final static String							DEFAULT_REALM		= "OSGi enRoute Default";
@@ -55,7 +55,7 @@ public class SecurityFilter implements Filter {
 
 		String filter();
 
-		String alias();
+		String pattern();
 	}
 
 	/*

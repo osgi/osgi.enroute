@@ -280,7 +280,7 @@ public class Configurer implements ConfigurationDone {
 					configuration = cm.getConfiguration(pid, "?");
 				}
 
-				configuration.setBundleLocation(null);
+				configuration.setBundleLocation("?");
 
 				Dictionary< ? , ? > current = configuration.getProperties();
 				if (current != null && isEqual(dictionary, current))

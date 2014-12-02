@@ -99,6 +99,7 @@ public class DTOMap extends AbstractMap<String,Object> {
 					@Override
 					public java.util.Map.Entry<String,Object> next() {
 						final Field field = fields[n];
+						n++;
 						return new Map.Entry<String,Object>() {
 
 							@Override

@@ -626,7 +626,7 @@ public class DTOsProvider implements DTOs {
 		if (fields == null) {
 			List<Field> publicFields = new ArrayList<>();
 
-			for (Field field : getClass().getFields()) {
+			for (Field field : c.getFields()) {
 				if (field.isEnumConstant() || field.isSynthetic() || Modifier.isStatic(field.getModifiers()))
 					continue;
 				publicFields.add(field);
@@ -639,7 +639,7 @@ public class DTOsProvider implements DTOs {
 				}
 			});
 
-			cache.put(getClass(), fields = publicFields.toArray(new Field[publicFields.size()]));
+			cache.put(c.getClass(), fields = publicFields.toArray(new Field[publicFields.size()]));
 		}
 		return fields;
 	}

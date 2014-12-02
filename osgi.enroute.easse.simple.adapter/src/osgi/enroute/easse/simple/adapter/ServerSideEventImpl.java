@@ -31,10 +31,9 @@ import osgi.enroute.capabilities.EventAdminSSEEndpoint;
 import osgi.enroute.capabilities.ServletWhiteboard;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Deactivate;
 import aQute.bnd.annotation.component.Reference;
-import aQute.bnd.annotation.metatype.Configurable;
-import aQute.bnd.annotation.metatype.Meta;
 import aQute.lib.json.JSONCodec;
 
 /**
@@ -51,40 +50,26 @@ import aQute.lib.json.JSONCodec;
  * For IE-9, this article was very helpfull: <a href=
  * "http://blogs.msdn.com/b/ieinternals/archive/2010/04/06/comet-streaming-in-internet-explorer-with-xmlhttprequest-and-xdomainrequest.aspx"
  * >Comet Streaming in Exlporer with XMLHttpRequest and XDomainRequest</a>
+ * 
  */
 @ServletWhiteboard.Require
 @EventAdminSSEEndpoint.Provide
 @Component(
-		name = "osgi.eventadmin.sse",
-		properties = "alias=/sse/1",
-		provide = Servlet.class,
-		designateFactory = ServerSideEventImpl.Config.class)
+	name = "osgi.eventadmin.sse",
+	properties = "alias=/sse/1",
+	provide = Servlet.class,
+	configurationPolicy = ConfigurationPolicy.require)
 public class ServerSideEventImpl extends HttpServlet {
-
-	interface Config {
-		@Meta.AD(deflt = "/sse/1")
-		String alias();
-
-		@Meta.AD(deflt = "*")
-		String allow_origin();
-	}
-
 	private static final long	serialVersionUID	= 1L;
 	private static JSONCodec	codec				= new JSONCodec();
 	private static byte[]		prelude;
 	private static Random		random				= new SecureRandom();
-	final Map<String,Thread>	threads				= new ConcurrentHashMap<String,Thread>();
+	final Map<String, Thread>	threads				= new ConcurrentHashMap<String, Thread>();
 	BundleContext				context;
 	LogService					log;
-	String						allowOrigin;
 
 	@Activate
-	void activate(BundleContext context, Map<String,Object> map) {
-		Config config = Configurable.createConfigurable(Config.class, map);
-		allowOrigin = config.allow_origin();
-		if ( allowOrigin != null && !allowOrigin.isEmpty())
-			allowOrigin = null;
-		
+	void activate(BundleContext context) {
 		this.context = context;
 	}
 
@@ -133,10 +118,8 @@ public class ServerSideEventImpl extends HttpServlet {
 		// I do not know why??
 		//
 
-		if ( allowOrigin != null) {
-			rsp.setHeader("Access-Control-Allow-Origin", "*");
-			rsp.setContentType("text/event-stream;charset=utf-8");
-		}
+		rsp.setHeader("Access-Control-Allow-Origin", "*");
+		rsp.setContentType("text/event-stream;charset=utf-8");
 
 		final Thread thread = Thread.currentThread();
 		OutputStream out = rsp.getOutputStream();
@@ -153,7 +136,7 @@ public class ServerSideEventImpl extends HttpServlet {
 		final PrintStream pout = new PrintStream(out);
 		final BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>(20);
 		final AtomicReference<Closeable> ref = new AtomicReference<Closeable>(out);
-		ServiceRegistration< ? > registration = register(topic, eventQueue, instanceId, ref, thread);
+		ServiceRegistration<?> registration = register(topic, eventQueue, instanceId, ref, thread);
 
 		try {
 
@@ -176,7 +159,7 @@ public class ServerSideEventImpl extends HttpServlet {
 				if (event == null) {
 					pout.print(":\n\n");
 				} else {
-					Map<String,Object> props = new HashMap<String,Object>();
+					Map<String, Object> props = new HashMap<String, Object>();
 					for (String name : event.getPropertyNames()) {
 						props.put(name, event.getProperty(name));
 					}
@@ -188,27 +171,23 @@ public class ServerSideEventImpl extends HttpServlet {
 				pout.flush();
 			}
 
-		}
-		catch (InterruptedException ie) {
+		} catch (InterruptedException ie) {
 			rsp.setStatus(HttpServletResponse.SC_OK);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.log(LogService.LOG_INFO, "Quiting " + topic, e);
 			// time to close ...
-		}
-		finally {
+		} finally {
 			threads.remove(instanceId);
 			registration.unregister();
 			if (ref.getAndSet(null) == null) {
-
+				
 				//
 				// A little grace period since we could be interrupted
 				// and do not want to kill the next request
 
 				try {
 					Thread.sleep(10);
-				}
-				catch (InterruptedException e) {
+				} catch (InterruptedException e) {
 					// OK, we we're hoping for it
 				}
 			}
@@ -223,53 +202,52 @@ public class ServerSideEventImpl extends HttpServlet {
 	 * @param out
 	 * @return
 	 */
-	private ServiceRegistration< ? > register(final String topic, final BlockingQueue<Event> eventQueue,
+	private ServiceRegistration<?> register(final String topic, final BlockingQueue<Event> eventQueue,
 			String instanceId, final AtomicReference<Closeable> out, final Thread thread) {
-		Hashtable<String,String> p = new Hashtable<String,String>();
+		Hashtable<String, String> p = new Hashtable<String, String>();
 		p.put(EventConstants.EVENT_TOPIC, topic);
 		p.put("instance.id", instanceId);
-		ServiceRegistration< ? > registration = context.registerService(EventHandler.class.getName(),
-				new EventHandler() {
+		ServiceRegistration<?> registration = context.registerService(EventHandler.class.getName(), new EventHandler() {
 
-					@Override
-					public synchronized void handleEvent(Event event) {
+			@Override
+			public synchronized void handleEvent(Event event) {
 
-						if (eventQueue.offer(event))
-							return;
+				if (eventQueue.offer(event))
+					return;
 
-						//
-						// Our queue is filling up, this is likely caused by
-						// a dead SSE thread (browser closed without warning
-						// us. So we kill it
-						//
+				//
+				// Our queue is filling up, this is likely caused by
+				// a dead SSE thread (browser closed without warning
+				// us. So we kill it
+				//
 
-						Closeable o = out.getAndSet(null);
-						if (o == null)
-							//
-							// Already killed
-							//
-							return;
+				Closeable o = out.getAndSet(null);
+				if (o == null)
+					//
+					// Already killed
+					//
+					return;
 
-						log.log(LogService.LOG_WARNING, "Killing orphaned GUI thread beause queue is full");
+				log.log(LogService.LOG_WARNING, "Killing orphaned GUI thread beause queue is full");
 
-						//
-						// First interrupt it so we kill it nicely
-						//
+				//
+				// First interrupt it so we kill it nicely
+				//
 
-						try {
-							thread.interrupt();
+				try {
+					thread.interrupt();
 
-							//
-							// Then the hammer to kill for real
-							//
+					//
+					// Then the hammer to kill for real
+					//
 
-							o.close();
+					o.close();
 
-						}
-						catch (IOException e) {}
+				} catch (IOException e) {
+				}
 
-					}
-				}, p);
+			}
+		}, p);
 		return registration;
 	}
 

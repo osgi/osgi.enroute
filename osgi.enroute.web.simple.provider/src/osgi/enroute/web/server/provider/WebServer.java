@@ -99,6 +99,7 @@ public class WebServer extends HttpServlet {
 	LogService log;
 	Properties mimes = new Properties();
 	boolean proxy;
+	PluginContributions pluginContributions;
 
 	static class Range {
 		Range next;
@@ -184,6 +185,7 @@ public class WebServer extends HttpServlet {
 		long expiration;
 		boolean publc;
 		private Future<File> future;
+		public boolean is404;
 
 		Cache(File f, Bundle b, String path) throws Exception {
 			this(f, b, getEtag(f), path);
@@ -326,7 +328,9 @@ public class WebServer extends HttpServlet {
 		if (alias == null || alias.isEmpty())
 			alias = "/";
 
-		InputStream in = getClass().getResourceAsStream("mimetypes");
+		pluginContributions = new PluginContributions(this,context);
+		
+		InputStream in = WebServer.class.getResourceAsStream("mimetypes");
 		if (in != null)
 			try {
 				mimes.load(in);
@@ -389,20 +393,8 @@ public class WebServer extends HttpServlet {
 				throw new RedirectException("/" + path + "index.html");
 			}
 
-			boolean is404 = false;
 
-			Cache c;
-			synchronized (cached) {
-				c = cached.get(path);
-				if (c == null || c.isExpired()) {
-					c = find(path);
-					if (c == null) {
-						c = do404(path);
-						is404 = true;
-					} else
-						cached.put(path, c);
-				}
-			}
+			Cache c = getCache(path);
 
 			if (c == null || !c.sync()) {
 				rsp.sendError(HttpServletResponse.SC_NOT_FOUND, "File " + path
@@ -470,7 +462,7 @@ public class WebServer extends HttpServlet {
 				}
 			}
 
-			if (is404)
+			if (c.is404)
 				rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			else
 				rsp.setStatus(HttpServletResponse.SC_OK);
@@ -531,12 +523,41 @@ public class WebServer extends HttpServlet {
 		}
 	}
 
+	Cache getCache(String path) throws Exception {
+		Cache c;
+		synchronized (cached) {
+			c = cached.get(path);
+			if (c == null || c.isExpired()) {
+				c = find(path);
+				if (c == null) {
+					c = do404(path);
+				} else
+					cached.put(path, c);
+			}
+		}
+		return c;
+	}
+	
+	File getFile(String path) throws Exception {
+		Cache c = getCache(path);
+		if ( c == null)
+			return null;
+
+		if ( !c.sync() )
+			return null;
+		
+		return c.file;
+	}
+
 	private Cache do404(String path) throws Exception {
 		log.log(LogService.LOG_INFO, "404 " + path);
 		Cache c = find("404.html");
+		if (c == null)
+			c = findBundle("default/404.html");
 		if (c != null)
-			return c;
-		return findBundle("default/404.html");
+			c.is404=true;
+		
+		return c;
 	}
 
 	public void doHead(HttpServletRequest rq, HttpServletResponse rsp)
@@ -547,6 +568,9 @@ public class WebServer extends HttpServlet {
 	Cache find(String path) throws Exception {
 		if (proxy && path.startsWith("$"))
 			return findCachedUrl(path);
+
+		if (path.startsWith(PluginContributions.CONTRIBUTIONS+"/"))
+			return pluginContributions.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length()+1));
 
 		Cache c = findFile(path);
 		if (c != null)
@@ -676,6 +700,7 @@ public class WebServer extends HttpServlet {
 	@Deactivate
 	void deactivate() {
 		tracker.close();
+		pluginContributions.close();
 		if (exceptionFilter != null)
 			webfilter.unregister();
 		if (exceptionFilter != null)
