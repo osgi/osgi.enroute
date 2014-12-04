@@ -1,0 +1,39 @@
+#
+# SHOWDOWN MARKDOWN CONVERTER
+#
+# This is a github project at https://code.google.com/p/pagedown with an
+# additional angular module to make it usable in angular.
+#
+# To update to a new version, change the src directory. Replace the files with the 
+# corresponding files at github: compressed and src. The enshowdown.js is the angular
+# module that includes the compressed showdown.
+#
+
+# The showdown js version
+sversion=1.1.0
+spath = stackexchange/pagedown/${version;==;${sversion}}
+
+Bundle-Version: 		${sversion}.${tstamp}
+Bundle-Description: \
+	PageDown is the JavaScript Markdown previewer used on Stack Overflow and the rest of \
+	the Stack Exchange network. It includes a Markdown-to-HTML converter and an \
+	in-page Markdown editor with live preview. The largest part is based on work by \
+	John Fraser, a.k.a. Attacklab. He created the converter under the name \
+	Showdown and the editor under the name WMD. See this post on the \
+	Stack Exchange blog (http://blog.stackoverflow.com/2008/12/reverse-engineering-the-wmd-editor/) for some historical information.
+
+Bundle-DocURL: 			https://code.google.com/p/pagedown/wiki/PageDown
+Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
+
+Provide-Capability: \
+	osgi.enroute.webresource; \
+		osgi.enroute.webresource=/${spath}; \
+		version:Version=${sversion}
+
+-includeresource: \
+	{static/${spath}=pagedown}, \
+	static/${spath}/enmarkdown.js; \
+		requires='${project}/src/enmarkdown.js,${project}/pagedown/Markdown.Converter.js'; \
+		cmd='cat ${project}/src/enmarkdown.js ${project}/pagedown/Markdown.Converter.js', \
+	pagedown/LICENSE.txt, \
+	{readme.md}
