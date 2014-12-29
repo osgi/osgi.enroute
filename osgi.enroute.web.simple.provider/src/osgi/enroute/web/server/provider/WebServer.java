@@ -85,7 +85,7 @@ public class WebServer extends HttpServlet {
 		}
 	}
 
-	private static final long DEFAULT_NOT_FOUND_EXPIRATION = TimeUnit.MINUTES
+	static final long DEFAULT_NOT_FOUND_EXPIRATION = TimeUnit.MINUTES
 			.toMillis(20);
 	static String BYTE_RANGE_SET_S = "(\\d+)?\\s*-\\s*(\\d+)?";
 	static Pattern BYTE_RANGE_SET = Pattern.compile(BYTE_RANGE_SET_S);
@@ -100,6 +100,7 @@ public class WebServer extends HttpServlet {
 	Properties mimes = new Properties();
 	boolean proxy;
 	PluginContributions pluginContributions;
+	WebResources webResources;
 
 	static class Range {
 		Range next;
@@ -329,6 +330,7 @@ public class WebServer extends HttpServlet {
 			alias = "/";
 
 		pluginContributions = new PluginContributions(this,context);
+		webResources = new WebResources(this,context);
 		
 		InputStream in = WebServer.class.getResourceAsStream("mimetypes");
 		if (in != null)
@@ -572,7 +574,11 @@ public class WebServer extends HttpServlet {
 		if (path.startsWith(PluginContributions.CONTRIBUTIONS+"/"))
 			return pluginContributions.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length()+1));
 
-		Cache c = findFile(path);
+		Cache c = webResources.find(path);
+		if ( c != null)
+			return c;
+		
+		c = findFile(path);
 		if (c != null)
 			return c;
 		// if (config.noBundles())

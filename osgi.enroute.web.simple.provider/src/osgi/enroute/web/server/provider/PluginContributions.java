@@ -48,13 +48,13 @@ public class PluginContributions extends HttpServlet implements Closeable {
 	private static final long serialVersionUID = 1L;
 	private static final Set<String> EMPTY = new HashSet<String>();
 	ServiceTracker<Object, ServiceReference<?>> pluginTracker;
-	private WebServer webserver;
+	WebServer webserver;
 	Map<String, PluginCache> pluginCache = new ConcurrentHashMap<>();
 
 	class PluginCache extends Cache {
 
 		private int count = -1;
-		private Set<ServiceReference<?>> dependencies = new HashSet<>();
+		Set<ServiceReference<?>> dependencies = new HashSet<>();
 
 		public PluginCache(WebServer webServer, String application)
 				throws Exception {
@@ -165,7 +165,7 @@ public class PluginContributions extends HttpServlet implements Closeable {
 		return pluginCache.get(m.group(1));
 	}
 
-	private Set<String> toSet(Object object) {
+	Set<String> toSet(Object object) {
 		try {
 			return Converter.cnv(new TypeReference<Set<String>>() {
 			}, object);
