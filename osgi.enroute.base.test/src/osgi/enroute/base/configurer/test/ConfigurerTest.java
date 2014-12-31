@@ -24,7 +24,7 @@ import aQute.bnd.osgi.JarResource;
 import aQute.bnd.osgi.URLResource;
 import aQute.bnd.testing.DSTestWiring;
 
-@ConfigurerExtender.Require
+@ConfigurerExtender
 public class ConfigurerTest extends TestCase {
 	BundleContext				context	= FrameworkUtil.getBundle(ConfigurerTest.class).getBundleContext();
 	DSTestWiring				ds		= new DSTestWiring();
