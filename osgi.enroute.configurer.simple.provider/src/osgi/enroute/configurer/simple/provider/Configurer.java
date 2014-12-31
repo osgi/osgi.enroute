@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.namespace.extender.ExtenderNamespace;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
@@ -30,8 +31,8 @@ import org.osgi.service.coordinator.Coordinator;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.BundleTracker;
 
-import osgi.enroute.capabilities.ConfigurerExtender;
 import osgi.enroute.configurer.api.ConfigurationDone;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.collections.ExtList;
 import aQute.lib.converter.Converter;
 import aQute.lib.converter.TypeReference;
@@ -62,7 +63,7 @@ import aQute.libg.sed.ReplacerAdapter;
  * The configurer reads
  */
 
-@ConfigurerExtender.Provide
+@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.configurer", version="1.2.0", effective="active")
 @Component(service = {
 		ConfigurationDone.class, Object.class
 }, immediate = true)
@@ -126,7 +127,6 @@ public class Configurer implements ConfigurationDone {
 
 						URL url = bundle.getEntry(h);
 						if (url == null) {
-							log.log(LogService.LOG_ERROR, "Cannot find configuration for bundle in " + h);
 							return null;
 						}
 

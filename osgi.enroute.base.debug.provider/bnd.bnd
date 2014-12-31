@@ -3,13 +3,16 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
+Bundle-Version: 1.1.0.${tstamp}
 Bundle-Description: 				\
 	Provides Gogo shell commands that are quite se
 
 
 Private-Package:  \
 	osgi.enroute.base.debug.provider
+	
+Export-Package: osgi.enroute.debug.api
+
 	
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\

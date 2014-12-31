@@ -42,7 +42,7 @@ import aQute.lib.json.JSONCodec;
  * on JSONRPC services.
  * <p/>
  */
-@ServletWhiteboard.Require
+@ServletWhiteboard
 @Component(//
 name = "osgi.web.jsonrpc", //
 provide = Servlet.class, //

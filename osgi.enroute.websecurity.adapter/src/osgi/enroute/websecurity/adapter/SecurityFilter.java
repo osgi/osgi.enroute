@@ -33,7 +33,7 @@ import aQute.bnd.annotation.metatype.Meta;
 import aQute.lib.base64.Base64;
 import aQute.lib.collections.ExtList;
 
-@ServletWhiteboard.Require
+@ServletWhiteboard
 @Component(properties = {
 	"pattern=.*"
 }, designateFactory = SecurityFilter.Config.class)

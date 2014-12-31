@@ -27,13 +27,14 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.osgi.service.log.LogService;
 
-import osgi.enroute.capabilities.EventAdminSSEEndpoint;
 import osgi.enroute.capabilities.ServletWhiteboard;
+import osgi.enroute.namespace.EndpointNamespace;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Deactivate;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.json.JSONCodec;
 
 /**
@@ -52,8 +53,8 @@ import aQute.lib.json.JSONCodec;
  * >Comet Streaming in Exlporer with XMLHttpRequest and XDomainRequest</a>
  * 
  */
-@ServletWhiteboard.Require
-@EventAdminSSEEndpoint.Provide
+@ProvideCapability(ns=EndpointNamespace.NS, name="/sse/1", version="1.1.0",effective="active")
+@ServletWhiteboard
 @Component(
 	name = "osgi.eventadmin.sse",
 	properties = "alias=/sse/1",
