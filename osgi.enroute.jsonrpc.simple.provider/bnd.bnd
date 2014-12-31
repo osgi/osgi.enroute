@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version: 1.1.0.${tstamp}
+Bundle-Version: 1.1.1.${tstamp}
 Bundle-Description: 				\
 	A simple implementation of the JSON RPC 2.0 specification. This bundle \
 	tracks any JSONRPC services. It assumes all public methods on the implementation \

@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version: 1.2.0.${tstamp}
+Bundle-Version: 1.2.1.${tstamp}
 Bundle-Description: 		This component is an extender that reads the /configuration/configuration.json file \
 and installs the list of maps in there as configuration. The configurer supports a number of features \
 like profiles, macro expansion, binary resource handling, and configuration through system properties. \
