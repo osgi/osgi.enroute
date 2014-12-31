@@ -3,14 +3,14 @@
 #
 
 
-Bundle-Version: 1.0.2.${tstamp}
+Bundle-Version: 1.1.0.${tstamp}
 Bundle-Description: 				\
 	Provides a simple implementation of the OSGi SLF4J bridge, includes shell command
 	
 
 Export-Package:  \
 	osgi.enroute.logger.api;provide:=true,\
-	org.slf4j;provide:=true;-split-package:=first
+	org.slf4j;provide:=true;-split-package:=merge-first
 
 Private-Package:  \
 	osgi.enroute.logger.simple.provider,\
