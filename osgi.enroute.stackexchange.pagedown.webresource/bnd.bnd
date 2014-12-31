@@ -8,12 +8,14 @@
 # corresponding files at github: compressed and src. The enshowdown.js is the angular
 # module that includes the compressed showdown.
 #
+# https://github.com/ujifgc/pagedown
+#
 
 # The showdown js version
-sversion=1.1.0
-spath = stackexchange/pagedown/${version;==;${sversion}}
+vrs=1.1.1
+path = static/stackexchange/pagedown/${version;===;${vrs}}
 
-Bundle-Version: 		${sversion}.${tstamp}
+Bundle-Version: 1.1.1.${tstamp}
 Bundle-Description: \
 	PageDown is the JavaScript Markdown previewer used on Stack Overflow and the rest of \
 	the Stack Exchange network. It includes a Markdown-to-HTML converter and an \
@@ -27,12 +29,13 @@ Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedi
 
 Provide-Capability: \
 	osgi.enroute.webresource; \
-		osgi.enroute.webresource=/${spath}; \
-		version:Version=${sversion}
+		osgi.enroute.webresource=/stackexchange/pagedown; \
+		root=${path}; \
+		version:Version=${vrs}
 
 -includeresource: \
-	{static/${spath}=pagedown}, \
-	static/${spath}/enmarkdown.js; \
+	{${path}=pagedown}, \
+	${path}/enmarkdown.js; \
 		requires='${project}/src/enmarkdown.js,${project}/pagedown/Markdown.Converter.js'; \
 		cmd='cat ${project}/src/enmarkdown.js ${project}/pagedown/Markdown.Converter.js', \
 	pagedown/LICENSE.txt, \
