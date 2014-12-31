@@ -1,0 +1,28 @@
+#
+# OSGI ENROUTE EQUINOX LOG ADAPTER BUNDLE 
+#
+
+
+Bundle-Version: 1.0.1.${tstamp}
+Bundle-Description: 				\
+	This bundle must be placed on the run path or test path. It will then hide the Equinox Log Service \
+	while forwarding all events to all registered Log Services. If not running on \
+	Equinox then this bundle does nothing.
+
+Private-Package:  \
+	osgi.enroute.equinox.log.adapter
+	
+Embedded-Activator: osgi.enroute.equinox.log.adapter.HideEquinoxLog
+
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.equinox.log.adapter)'
+	
+-runbundles: \
+	${error;Resolve first}
