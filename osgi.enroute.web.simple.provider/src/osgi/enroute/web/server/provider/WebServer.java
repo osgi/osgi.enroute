@@ -1,75 +1,42 @@
 package osgi.enroute.web.server.provider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.DeflaterInputStream;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipInputStream;
+import java.io.*;
+import java.net.*;
+import java.nio.channels.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+import java.util.zip.*;
 
+import javax.servlet.*;
 import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.coordinator.Coordinator;
-import org.osgi.service.log.LogService;
-import org.osgi.util.tracker.BundleTracker;
+import org.osgi.framework.*;
+import org.osgi.namespace.extender.*;
+import org.osgi.service.coordinator.*;
+import org.osgi.service.log.*;
+import org.osgi.util.tracker.*;
 
-import osgi.enroute.capabilities.ServletWhiteboard;
-import osgi.enroute.capabilities.WebServerExtender;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.ConfigurationPolicy;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
+import osgi.enroute.capabilities.*;
+import aQute.bnd.annotation.component.*;
+import aQute.bnd.annotation.headers.*;
 import aQute.lib.base64.Base64;
-import aQute.lib.converter.Converter;
-import aQute.lib.hex.Hex;
-import aQute.lib.io.IO;
-import aQute.libg.cryptography.Digester;
-import aQute.libg.cryptography.MD5;
-import aQute.libg.cryptography.SHA1;
+import aQute.lib.converter.*;
+import aQute.lib.hex.*;
+import aQute.lib.io.*;
+import aQute.libg.cryptography.*;
 
-@WebServerExtender.Provide
-@ServletWhiteboard.Require
+@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.webserver", version="1.1.0", effective="active")
+@ServletWhiteboard
 @Component(provide = { Servlet.class }, configurationPolicy = ConfigurationPolicy.optional, immediate = true, properties = {
 		"alias=/", "name=" + WebServer.NAME }, name = WebServer.NAME)
 public class WebServer extends HttpServlet {
 
+	public WebServer() {
+		System.out.println("Web server");
+	}
 	static final String NAME = "osgi.enroute.simple.server";
 
 	public class RedirectException extends RuntimeException {
@@ -317,6 +284,7 @@ public class WebServer extends HttpServlet {
 	private Coordinator coordinator;
 	private ServiceRegistration<Filter> exceptionFilter;
 
+	
 	@Activate
 	void activate(Map<String, Object> props, BundleContext context)
 			throws Exception {
