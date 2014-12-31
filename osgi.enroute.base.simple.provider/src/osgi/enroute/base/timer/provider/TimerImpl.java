@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @see <a
  *      href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Timer.html">java.util.Timer</a>
  */
-@Component(service = java.util.Timer.class, property = "service.ranking=-1000")
+@Component(service = java.util.Timer.class, property = "service.ranking:Integer=-1000")
 public class TimerImpl extends java.util.Timer {
 	static Timer	actTimer	= new Timer("enRoute :: Timer", true);
 	Executor		executor;
