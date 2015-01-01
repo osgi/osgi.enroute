@@ -22,7 +22,9 @@ bnd-release	=	https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBui
     		depository.name		=		enRoute.rt
 
 -runfw:							org.eclipse.osgi;version=@3.9.1
--runproperties: 				\
+-runpath.eqnx:					osgi.enroute.equinox.log.adapter
+
+-runproperties.eqnx: 				\
 	org.apache.felix.http.jettyEnabled=true, \
 	org.apache.felix.http.whiteboardEnabled=true,\
 	osgi.console.enable.builtin=false, \
