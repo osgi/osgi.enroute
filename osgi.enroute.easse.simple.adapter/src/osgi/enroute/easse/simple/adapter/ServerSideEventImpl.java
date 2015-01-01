@@ -53,21 +53,17 @@ import aQute.lib.json.JSONCodec;
  * >Comet Streaming in Exlporer with XMLHttpRequest and XDomainRequest</a>
  * 
  */
-@ProvideCapability(ns=EndpointNamespace.NS, name="/sse/1", version="1.1.0",effective="active")
+@ProvideCapability(ns = EndpointNamespace.NS, name = "/sse/1", version = "1.1.0", effective = "active")
 @ServletWhiteboard
-@Component(
-	name = "osgi.eventadmin.sse",
-	properties = "alias=/sse/1",
-	provide = Servlet.class,
-	configurationPolicy = ConfigurationPolicy.require)
+@Component(name = "osgi.eventadmin.sse", properties = "alias=/sse/1", provide = Servlet.class, configurationPolicy = ConfigurationPolicy.require)
 public class ServerSideEventImpl extends HttpServlet {
-	private static final long	serialVersionUID	= 1L;
-	private static JSONCodec	codec				= new JSONCodec();
-	private static byte[]		prelude;
-	private static Random		random				= new SecureRandom();
-	final Map<String, Thread>	threads				= new ConcurrentHashMap<String, Thread>();
-	BundleContext				context;
-	LogService					log;
+	private static final long serialVersionUID = 1L;
+	private static JSONCodec codec = new JSONCodec();
+	private static byte[] prelude;
+	private static Random random = new SecureRandom();
+	final Map<String, Thread> threads = new ConcurrentHashMap<String, Thread>();
+	BundleContext context;
+	LogService log;
 
 	@Activate
 	void activate(BundleContext context) {
@@ -82,7 +78,8 @@ public class ServerSideEventImpl extends HttpServlet {
 	}
 
 	@Override
-	public void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws IOException {
+	public void doGet(HttpServletRequest rq, HttpServletResponse rsp)
+			throws IOException {
 		//
 		// First some house cleaning. The caller can abort
 		// a previous connection. The request then passes abort=instanceId.
@@ -108,7 +105,8 @@ public class ServerSideEventImpl extends HttpServlet {
 
 		String path = rq.getPathInfo();
 		if (path == null || path.isEmpty()) {
-			rsp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect path");
+			rsp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect path "
+					+ path);
 			return;
 		}
 
@@ -135,9 +133,12 @@ public class ServerSideEventImpl extends HttpServlet {
 		threads.put(instanceId, thread);
 
 		final PrintStream pout = new PrintStream(out);
-		final BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>(20);
-		final AtomicReference<Closeable> ref = new AtomicReference<Closeable>(out);
-		ServiceRegistration<?> registration = register(topic, eventQueue, instanceId, ref, thread);
+		final BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>(
+				20);
+		final AtomicReference<Closeable> ref = new AtomicReference<Closeable>(
+				out);
+		ServiceRegistration<?> registration = register(topic, eventQueue,
+				instanceId, ref, thread);
 
 		try {
 
@@ -154,9 +155,10 @@ public class ServerSideEventImpl extends HttpServlet {
 			}
 
 			pout.printf(": welcome\n\n");
+			pout.flush();
 
 			while (true) {
-				Event event = eventQueue.poll(40, TimeUnit.SECONDS);
+				Event event = eventQueue.poll(2, TimeUnit.SECONDS);
 				if (event == null) {
 					pout.print(":\n\n");
 				} else {
@@ -164,10 +166,11 @@ public class ServerSideEventImpl extends HttpServlet {
 					for (String name : event.getPropertyNames()) {
 						props.put(name, event.getProperty(name));
 					}
-					pout.printf("type: org.osgi.service.eventadmin;topic=%s\n", topic);
-					pout.printf("data: ");
-					codec.enc().to((Appendable) pout).charset("UTF-8").put(props);
-					pout.print("\n\n");
+					pout.printf("type: org.osgi.service.eventadmin;topic=%s\n",
+							topic);
+
+					String json = codec.enc().put(props).toString();
+					pout.printf("data: %s\n\n", json);
 				}
 				pout.flush();
 			}
@@ -203,52 +206,55 @@ public class ServerSideEventImpl extends HttpServlet {
 	 * @param out
 	 * @return
 	 */
-	private ServiceRegistration<?> register(final String topic, final BlockingQueue<Event> eventQueue,
-			String instanceId, final AtomicReference<Closeable> out, final Thread thread) {
+	private ServiceRegistration<?> register(final String topic,
+			final BlockingQueue<Event> eventQueue, String instanceId,
+			final AtomicReference<Closeable> out, final Thread thread) {
 		Hashtable<String, String> p = new Hashtable<String, String>();
 		p.put(EventConstants.EVENT_TOPIC, topic);
 		p.put("instance.id", instanceId);
-		ServiceRegistration<?> registration = context.registerService(EventHandler.class.getName(), new EventHandler() {
+		ServiceRegistration<?> registration = context.registerService(
+				EventHandler.class.getName(), new EventHandler() {
 
-			@Override
-			public synchronized void handleEvent(Event event) {
+					@Override
+					public synchronized void handleEvent(Event event) {
 
-				if (eventQueue.offer(event))
-					return;
+						if (eventQueue.offer(event))
+							return;
 
-				//
-				// Our queue is filling up, this is likely caused by
-				// a dead SSE thread (browser closed without warning
-				// us. So we kill it
-				//
+						//
+						// Our queue is filling up, this is likely caused by
+						// a dead SSE thread (browser closed without warning
+						// us. So we kill it
+						//
 
-				Closeable o = out.getAndSet(null);
-				if (o == null)
-					//
-					// Already killed
-					//
-					return;
+						Closeable o = out.getAndSet(null);
+						if (o == null)
+							//
+							// Already killed
+							//
+							return;
 
-				log.log(LogService.LOG_WARNING, "Killing orphaned GUI thread beause queue is full");
+						log.log(LogService.LOG_WARNING,
+								"Killing orphaned GUI thread beause queue is full");
 
-				//
-				// First interrupt it so we kill it nicely
-				//
+						//
+						// First interrupt it so we kill it nicely
+						//
 
-				try {
-					thread.interrupt();
+						try {
+							thread.interrupt();
 
-					//
-					// Then the hammer to kill for real
-					//
+							//
+							// Then the hammer to kill for real
+							//
 
-					o.close();
+							o.close();
 
-				} catch (IOException e) {
-				}
+						} catch (IOException e) {
+						}
 
-			}
-		}, p);
+					}
+				}, p);
 		return registration;
 	}
 
