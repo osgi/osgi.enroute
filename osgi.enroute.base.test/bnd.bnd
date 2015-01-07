@@ -58,6 +58,7 @@ runsystempackages: org.junit;version=4.11, junit.framework;version=3.8
 	osgi.enroute.jsonrpc.simple.provider;version=latest,\
 	osgi.enroute.logger.simple.provider;version=latest,\
 	osgi.enroute.rest.simple.provider;version=latest,\
+	osgi.enroute.scheduler.simple.provider;version='[1.0.1,1.0.2)',\
 	osgi.enroute.stackexchange.pagedown.webresource;version=latest,\
 	osgi.enroute.twitter.bootstrap.webresource;version=latest,\
 	osgi.enroute.web.simple.provider;version=latest
@@ -78,3 +79,4 @@ Require-Capability:		\
 		filter:='(osgi.enroute.webresource=/twitter/bootstrap)'; \
 		resource:List<String>='css/bootstrap.css'
 		
+-runtrace: true

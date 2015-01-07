@@ -51,6 +51,4 @@ org.apache.felix.http.bundle: 		cap=osgi.enroute.whiteboard;osgi.enroute.whitebo
 	cap=osgi.service;objectClass=org.osgi.service.http.HttpService;effective:=active
 org.knopflerfish.bundle.useradmin: 	cap=osgi.service;objectClass=org.osgi.service.useradmin.UserAdmin;effective:=active
 org.eclipse.equinox.coordinator: 	cap=osgi.service;objectClass=org.osgi.service.coordinator.Coordinator;effective:=active
-org.apache.felix.scr:				cap=osgi.extender;osgi.extender=osgi.component;;version:Version=1.2.1;effective:=active
-
-	
+org.apache.felix.scr:				cap=osgi.extender;osgi.extender=osgi.component;version:Version=1.2.1;effective:=active

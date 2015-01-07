@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.PrimitiveIterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,7 +19,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -297,11 +297,11 @@ public class SchedulerImpl implements Scheduler {
 		}
 	}
 
-	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	<T> void addSchedule(CronJob<T> s, ServiceReference<Schedule> ref)
+	@Reference(policy=ReferencePolicy.DYNAMIC, cardinality=ReferenceCardinality.MULTIPLE)
+	<T> void addSchedule(CronJob<T> s, Map<String,Object> map)
 			throws Exception {
 		String[] schedules = Converter.cnv(String[].class,
-				ref.getProperty(CronJob.CRON));
+				map.get(CronJob.CRON));
 		if (schedules == null || schedules.length == 0)
 			return;
 
@@ -313,7 +313,21 @@ public class SchedulerImpl implements Scheduler {
 				crons.add(cron);
 			} catch (Exception e) {
 				logger.error("Invalid  cron expression " + schedule + " from "
-						+ ref, e);
+						+ map, e);
+			}
+		}
+	}
+
+	void removeSchedule(CronJob<?> s) {
+		for (Iterator<Cron<?>> cron = crons.iterator(); cron.hasNext();) {
+			try {
+				Cron<?> c = cron.next();
+				if (c.target == c) {
+					cron.remove();
+					c.schedule.close();
+				}
+			} catch (IOException e) {
+				// we're closing, so ignore any errors
 			}
 		}
 	}
@@ -331,17 +345,4 @@ public class SchedulerImpl implements Scheduler {
 		return null;
 	}
 
-	void removeSchedule(Schedule s) {
-		for (Iterator<Cron<?>> cron = crons.iterator(); cron.hasNext();) {
-			try {
-				Cron<?> c = cron.next();
-				if (c.target == c) {
-					cron.remove();
-					c.schedule.close();
-				}
-			} catch (IOException e) {
-				// we're closing, so ignore any errors
-			}
-		}
-	}
 }

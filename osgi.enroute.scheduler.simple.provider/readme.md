@@ -16,7 +16,9 @@ Print a message every day:
 	...
 	c.close();
 	
+Create a Promise with a Timeout
 
+	CancellablePromise<Integer> p = scheduler.before( promise, 1000);
 
 ## Configuration
 

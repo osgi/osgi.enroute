@@ -3,13 +3,18 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
+Bundle-Version: 1.0.1.${tstamp}
 Bundle-Description: 				\
   This bundle implements a scheduler and some Promise support methods related to time.
   
 Private-Package:  \
 	osgi.enroute.scheduler.simple.provider
 	
+Export-Package: \
+	osgi.enroute.scheduler.api;provide:=true
+
+Conditional-Package: aQute.lib*
+
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\
