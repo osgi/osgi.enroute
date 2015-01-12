@@ -1,4 +1,4 @@
-Bundle-Version: 		1.1.0.${tstamp}
+Bundle-Version: 		1.4.0.${tstamp}
 
 Include-Resource: {readme.md}, {LICENSE}
 
@@ -8,7 +8,8 @@ Include-Resource: {readme.md}, {LICENSE}
 	slf4j.api;version=@1.7.0,\
 	biz.aQute.bndlib;version=@2.3,\
 	javax.servlet,\
-	slf4j.simple;version=@1.7
+	slf4j.simple;version=@1.7, \
+	biz.aQute.junit
 
 base.services = \
 	org.osgi.service.cm.ConfigurationAdmin, \
@@ -25,6 +26,7 @@ base.services = \
 	osgi.enroute.dto.api.DTOs, \
 	osgi.enroute.launch.api.Launched, \
 	osgi.enroute.logger.api.LoggerAdmin, \
+	osgi.enroute.scheduler.Scheduler,  \
 	java.util.Timer, \
 	java.util.concurrent.Executor
 
@@ -80,7 +82,8 @@ base.packages =  \
 	osgi.enroute.launch.api, \
 	osgi.enroute.logger.api, \
 	osgi.enroute.namespace, \
-	osgi.enroute.rest.api
+	osgi.enroute.rest.api,  \
+	osgi.enroute.scheduler.api
 	
 -sub: \
 	*.bnd
