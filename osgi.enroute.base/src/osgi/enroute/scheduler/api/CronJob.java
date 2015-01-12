@@ -1,6 +1,5 @@
 package osgi.enroute.scheduler.api;
 
-import org.osgi.dto.DTO;
 
 /**
  * The software utility Cron is a time-based job scheduler in Unix-like computer
@@ -13,16 +12,16 @@ import org.osgi.dto.DTO;
  * chronos.
  * <p>
  * The Unix Cron defines a syntax that is used by the Cron service. A user
- * should register a Cron service with the {@link Schedule#CRON} property. The value
- * is according to the {@see http://en.wikipedia.org/wiki/Cron}.
+ * should register a Cron service with the {@link CronJob#CRON} property. The
+ * value is according to the {@see http://en.wikipedia.org/wiki/Cron}.
  * <p>
  * 
  * <pre>
  * * * * * * * *
  * | │ │ │ │ │ |
  * | │ │ │ │ │ └ year (optional)
- * | │ │ │ │ └── day of week (0 - 6) (0 to 6 are Sunday to Saturday, or use names; 7 is Sunday, the same as 0)
- * | │ │ │ └──── month (1 - 12)
+ * | │ │ │ │ └── day of week from Monday (1) to Sunday (7).
+ * | │ │ │ └──── month (1 - 12) from January (1) to December (12).
  * | │ │ └────── day of month (1 - 31)
  * | │ └──────── hour (0 - 23)
  * | └────────── min (0 - 59)
@@ -36,7 +35,7 @@ import org.osgi.dto.DTO;
  * Hours	    Yes	        0-23	           * / , -
  * Day of month	Yes	        1-31	           * / , - ? L W
  * Month	    Yes	        1-12 or JAN-DEC	   * / , -
- * Day of week	Yes	        0-6 or SUN-SAT	   * / , - ? L #
+ * Day of week	Yes	        1-7 or MON-SUN	   * / , - ? L #
  * Year	        No	       1970–2099	       * / , -
  * </pre>
  * 
@@ -57,9 +56,28 @@ import org.osgi.dto.DTO;
  * in the 5th field (day of week) means Mondays, Wednesdays and Fridays. Hyphen
  * ( - ) Hyphens define ranges. For example, 2000-2010 indicates every year
  * between 2000 and 2010 AD, inclusive.
+ * <p>
+ * Additionally, you can use some fixed formats:
+ * 
+ * <pre>
+ * @yearly (or @annually)	Run once a year at midnight on the morning of January 1	0 0 1 1 *
+ * @monthly	Run once a month at midnight on the morning of the first day of the month	0 0 1 * *
+ * @weekly	Run once a week at midnight on Sunday morning	0 0 * * 0
+ * @daily	Run once a day at midnight	0 0 * * *
+ * @hourly	Run once an hour at the beginning of the hour	0 * * * *
+ * @reboot	Run at startup	@reboot (at service registration time)
+ * </pre>
+ * <p>
+ * Please not that for the constants we follow the Java 8 Date & Time constants.
+ * Major difference is the day number. In Quartz this is 0-6 for SAT-SUN while
+ * here it is 1-7 for MON-SUN.
  */
-public class Schedule extends DTO {
-	String	CRON		= "cron";
+public interface CronJob<T> {
+	/**
+	 * The service property that specifies the cron schedule. The type is
+	 * String+.
+	 */
+	String	CRON	= "cron";
 
-	
+	public void run(T data) throws Exception;
 }

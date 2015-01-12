@@ -3,169 +3,200 @@ package osgi.enroute.scheduler.api;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
-import org.osgi.util.promise.Success;
+
+import osgi.enroute.dto.api.DTOs;
 
 /**
  * A Scheduler service provides timed semantics to Promises. A Scheduler can
  * delay a promise, it can resolve a promise at a certain time, or it can
  * provide a timeout to a promise.
+ * <p>
+ * This scheduler has a millisecond resolution.
  */
 public interface Scheduler {
-
-	/**
-	 * Execute a callable after a number of milliseconds. This promise will fail
-	 * with a ShutdownException if this scheduler is closed.
-	 * 
-	 * @param callable
-	 *            The callable to call
-	 * @param ms
-	 *            Number of milliseconds to delay
-	 * @return a Promise that is resolved after the callable has returned.
-	 */
-
-	<T> Promise<T> delay(Callable<T> callable, long ms);
-
-	default <T> Promise<T> delay(Callable<T> callable, Duration duration) {
-		return delay(callable, duration.toMillis());
-	}
-
-	default <T> Promise<T> at(Callable<T> callable, Instant instant) {
-		return delay(callable, ChronoUnit.MILLIS.between(instant, Instant.now()));
+	interface RunnableWithException {
+		void run() throws Exception;
 	}
 
 	/**
-	 * Return a promise that will resolve in the given number of milliseconds
-	 * with the given value. This promise will fail with a ShutdownException if
-	 * this scheduler is closed.
-	 * 
-	 * @param value
-	 *            The value to resolve with
-	 * @param ms
-	 *            The number of milliseconds to delay
-	 * @return a Promise that will be resolve with the given value after
-	 *         milliseconds.
-	 */
-	default <T> Promise<T> delay(T value, long ms) {
-		return delay(() -> value, ms);
-	}
-
-	default <T> Promise<T> delay(T value, Duration duration) {
-		return delay(() -> value, duration.toMillis());
-	}
-
-	/**
-	 * Return a promise that will resolve at the given epoch time. This promise
-	 * will fail with a ShutdownException if this scheduler is closed.
-	 * 
-	 * @param value
-	 *            The value to resolve with
-	 * @param epochTimeInMs
-	 *            the epoch time
-	 * @return a promise that will be resolve at the given epoch time
-	 */
-	default <T> Promise<T> at(T value, long epochTimeInMs) {
-		return delay(value, epochTimeInMs - System.currentTimeMillis());
-	}
-
-	/**
-	 * Return a promise that will resolve at the given epoch time with the value
-	 * that is returned from the callable. This promise will fail with a
-	 * ShutdownException if this scheduler is closed.
-	 * 
-	 * @param callable
-	 *            The value to resolve with
-	 * @param epochTimeInMs
-	 *            the epoch time
-	 * @return a promise that will be resolve at the given epoch time
-	 */
-	default <T> Promise<T> at(Callable<T> callable, long epochTimeInMs) {
-		return delay(callable, epochTimeInMs - System.currentTimeMillis());
-	}
-
-	/**
-	 * Return a (Curried) function that returns a {@link Success} object. If the
-	 * {@link Success#call(Promise)} method is called, this will return a new
-	 * Promise that is delayed for the given number of milliseconds.
+	 * Return a promise that will resolve after the given number of
+	 * milliseconds. This promise can be canceled.
 	 * 
 	 * @param ms
 	 *            Number of milliseconds to delay
-	 * @return a function that will return a delayed promise
+	 * @return A cancellable Promise
 	 */
+	CancellablePromise<Instant> after(long ms);
 
-	default <T> Success<T,T> delay(long ms) {
-		return (p) -> delay(p.getValue(), ms);
+	/**
+	 * Return a promise that resolves after delaying ms with the result of the
+	 * call that is executed after the delay.
+	 * 
+	 * @param call
+	 *            provides the result
+	 * @param ms
+	 *            Number of ms to delay
+	 * @return A cancellable Promise
+	 */
+	<T> CancellablePromise<T> after(Callable<T> call, long ms);
+
+	/**
+	 * Return a promise that resolves at the given epochTime
+	 * 
+	 * @param epochTime
+	 *            The Java (System.currentMillis) time
+	 * @return A cancellable Promise
+	 */
+	CancellablePromise<Instant> at(long epochTime);
+
+	/**
+	 * Return a promise that resolves at the given epochTime with the result of
+	 * the call.
+	 * 
+	 * @param call
+	 *            provides the result
+	 * @param epochTime
+	 *            The Java (System.currentMillis) time
+	 * @return A cancellable Promise
+	 */
+	<T> CancellablePromise<T> at(Callable<T> callable, long epochTime);
+
+	/**
+	 * Schedule a runnable to be executed for the give cron expression (See
+	 * {@link CronJob}). Every time when the cronExpression matches the current
+	 * time, the runnable will be run. The method returns a closeable that can
+	 * be used to stop scheduling. This variation does not take an environment 
+	 * object.
+	 * 
+	 * @param r
+	 *            The Runnable to run
+	 * @param cronExpression
+	 *            A Cron Expression
+	 * @return A closeable to terminate the schedule
+	 */
+	Closeable schedule(RunnableWithException r, String cronExpression) throws Exception;
+
+	/**
+	 * Schedule a runnable to be executed for the give cron expression (See
+	 * {@link CronJob}). Every time when the cronExpression matches the current
+	 * time, the runnable will be run. The method returns a closeable that can
+	 * be used to stop scheduling. The run metjod of r takes an environment object.
+	 * An environment object is a custom interface where the names of the methods
+	 * are the keys in the properties (see {@link DTOs}). 
+	 * 
+	 * @param r
+	 *            The Runnable to run
+	 * @param cronExpression
+	 *            A Cron Expression
+	 * @return A closeable to terminate the schedule
+	 */
+	<T> Closeable schedule(Class<T> type, CronJob<T> r, String cronExpression) throws Exception;
+	
+	/**
+	 * Schedule a runnable to be executed in a loop. The first time the first is
+	 * as delay, later the values in ms are used sequentially. If no more values
+	 * are present, the last value is re-used. The method returns a closeable
+	 * that can be used to stop scheduling. This is a fixed rate scheduler. That is,
+	 * a base time is established when this method is called and subsequent firings 
+	 * are always calculated relative to this start time.
+	 * 
+	 * @param r
+	 *            The Runnable to run
+	 * @param first
+	 *            The first time to use
+	 * @param ms
+	 *            The subsequent times to use.
+	 * @return A closeable to terminate the schedule
+	 */
+	Closeable schedule(RunnableWithException r, long first, long... ms) throws Exception;
+
+	/**
+	 * Return a cancellable promise that fails with a {@link TimeoutException}
+	 * when the given promise is not resolved before the given timeout. If the
+	 * given promise fails or is resolved before the timeout then the returned
+	 * promise will be treated accordingly. The cancelation does not influence
+	 * the final result of the given promise since a Promise can only be failed
+	 * or resolved by its creator.
+	 * 
+	 * @param promise
+	 *            The promise to base the returned promise on
+	 * @param timeout
+	 *            The number of milliseconds to wait.
+	 * @return A cancellable Promise
+	 */
+	<T> CancellablePromise<T> before(Promise<T> promise, long timeout);
+
+	/**
+	 * Convenience method to use an Instant. See {@link #at(long)}
+	 * 
+	 * @param instant
+	 *            The instant for the time
+	 * @return
+	 */
+	default CancellablePromise<Instant> at(Instant instant) {
+		return at(instant.toEpochMilli());
 	}
 
-	default <T> Success<T,T> delay(Duration duration) {
-		return (p) -> delay(p.getValue(), duration);
+	/** 
+	 * Convenience method to use an instant and a Callable. See {@link #at(Callable, long)}.
+	 */
+	default <T> CancellablePromise<T> at(Callable<T> callable, Instant instant) {
+		return at(callable, instant.toEpochMilli());
 	}
 
-	static class Unique {
-		AtomicBoolean	done	= new AtomicBoolean();
+	/** 
+	 * Convenience method to use an instant and a RunnableWithException. See {@link #at(RunnableWithException, long)}.
+	 */
+	default CancellablePromise<Void> at(RunnableWithException r, Instant instant) {
+		return at(r, instant.toEpochMilli());
+	}
 
-		interface RunnableException {
-			public void run() throws Exception;
-		}
-
-		void once(RunnableException o) throws Exception {
-			if (done.getAndSet(true) == false)
-				o.run();
-		}
+	/** 
+	 * Convenience method to use an instant and a RunnableWithException. See {@link #at(RunnableWithException, long)}.
+	 */
+	default CancellablePromise<Void> at(RunnableWithException r, long epochMilli) {
+		return at(() -> {
+			r.run();
+			return null;
+		}, epochMilli);
 	}
 
 	/**
-	 * Return a new Promise that will fail after timeout ms with a
-	 * {@link TimeoutException}
+	 * Convenience method to use a Duration instead of a millisecond delay. See {@link #after(long)}.
 	 */
-	default <T> Promise<T> before(Promise<T> promise, long timeout) {
-		Deferred<T> d = new Deferred<T>();
-		Unique only = new Unique();
+	default CancellablePromise<Instant> after(Duration d) {
+		return after(d.toMillis());
+	}
 
-		delay(() -> {
-			only.once(() -> d.fail(new TimeoutException()));
+	/**
+	 * Convenience method to to a duration and a callable. See {@link #after(Callable, long)}.
+	 */
+	default <T> CancellablePromise<T> after(Callable<T> call, Duration d) {
+		return after(call, d.toMillis());
+	}
+
+	/**
+	 * Convenience method to to a duration and a RunnableWithException. See {@link #after(Callable, long)}.
+	 */
+	default <T> CancellablePromise<T> after(RunnableWithException call, long ms) {
+		return after(() -> {
+			call.run();
 			return null;
-		}, timeout);
-
-		promise.then((p) -> {
-			only.once(() -> d.resolve(p.getValue()));
-			return null;
-		}, (p) -> {
-			only.once(() -> d.fail(p.getFailure()));
-		});
-		return d.getPromise();
+		}, ms);
 	}
 
-	default <T> Promise<T> after(Promise<T> promise, long timeout) {
-		return after(promise, Instant.now().plusMillis(timeout));
+	/**
+	 * Convenience method to use durations instead of milliseconds. See {@link #schedule(Runnable, long, long...)}
+	 */
+	default Closeable schedule(RunnableWithException r, Duration first, Duration... duration) throws Exception {
+		long[] ms = new long[duration.length];
+		for (int i = 0; i < ms.length; i++) {
+			ms[i] = duration[i].toMillis();
+		}
+		return schedule(r, first.toMillis(), ms);
 	}
 
-	default <T> Promise<T> after(Promise<T> promise, Instant instant) {
-		Deferred<T> d = new Deferred<T>();
-
-		promise.then((p) -> {
-			long duration = Duration.between(Instant.now(), instant).toMillis();
-			if (duration > 0) {
-				delay( ()-> { 
-					d.resolve(p.getValue()); 
-					return null;
-				}, duration);
-			} else
-				d.resolve(p.getValue());
-			return null;
-		}, (p)->{
-			d.fail(p.getFailure());
-		});
-		return d.getPromise();
-	}
-
-	default Closeable schedule(Runnable r, TemporalAdjuster tj) {
-		return null;
-	}
 }
