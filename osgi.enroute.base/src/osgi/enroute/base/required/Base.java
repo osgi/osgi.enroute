@@ -6,28 +6,33 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 
+import osgi.enroute.capabilities.AngularUIWebResource;
 import osgi.enroute.capabilities.AngularWebResource;
 import osgi.enroute.capabilities.BootstrapWebResource;
 import osgi.enroute.capabilities.ComponentExtender;
 import osgi.enroute.capabilities.ConfigurerExtender;
 import osgi.enroute.capabilities.EventAdminSSEEndpoint;
+import osgi.enroute.capabilities.PagedownWebResource;
 import osgi.enroute.capabilities.ServletWhiteboard;
 import osgi.enroute.capabilities.WebServerExtender;
 import osgi.enroute.jsonrpc.api.JSONRPC;
 import osgi.enroute.rest.api.REST;
+import osgi.enroute.scheduler.api.Scheduler;
 
 /**
  * The purpose of this class is to require all the parts that are part of
  * enRoute base in their right version. This bundle can be deployed in an
  * enRoute distribution to verify that the profile is completely present.
  */
-@AngularWebResource.Require
-@BootstrapWebResource.Require
-@ComponentExtender.Require
-@ConfigurerExtender.Require
-@EventAdminSSEEndpoint.Require
-@ServletWhiteboard.Require
-@WebServerExtender.Require
+@AngularUIWebResource
+@AngularWebResource
+@BootstrapWebResource
+@ComponentExtender
+@ConfigurerExtender
+@EventAdminSSEEndpoint
+@PagedownWebResource
+@ServletWhiteboard
+@WebServerExtender
 @Component(property = "enroute.profile=base")
 public class Base //
 		extends HttpServlet // drag in http server
@@ -35,7 +40,7 @@ public class Base //
 		JSONRPC // JSON RPC server
 {
 	private static final long	serialVersionUID	= 1L;
-	
+
 	@Reference
 	void setConfigurationAdmin(org.osgi.service.cm.ConfigurationAdmin v) {}
 
@@ -73,6 +78,9 @@ public class Base //
 	void setDTO(osgi.enroute.dto.api.DTOs v) {}
 
 	@Reference
+	void setSchedule(Scheduler s) {}
+
+	@Reference
 	void setTimer(java.util.Timer v) {}
 
 	@Reference
@@ -80,6 +88,9 @@ public class Base //
 
 	@Reference
 	void setHttp(HttpService v) {}
+
+	@Reference
+	void setScheduler(Scheduler scheduler) {}
 
 	@Override
 	public Object getDescriptor() throws Exception {

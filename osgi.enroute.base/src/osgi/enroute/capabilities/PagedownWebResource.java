@@ -7,14 +7,14 @@ import osgi.enroute.namespace.WebResourceNamespace;
 import aQute.bnd.annotation.headers.RequireCapability;
 
 /**
- * A Web Resource that provides Twitter's Bootstrap files.
+ * A Web Resource that provides Showdown markdown converter's javascript files.
  */
 @RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
-		+ "=/twitter/bootstrap)${frange;3.3.1})")
+		+ "=/stackexchange/pagedown)${frange;1.1.1})")
 @Retention(RetentionPolicy.CLASS)
-public @interface BootstrapWebResource {
+public @interface PagedownWebResource {
 
-	String[] resource() default "bootstrap.css";
+	String[] resource() default "enmarkdown.js";
 
-	int priority() default 1000;
+	int priority() default 0;
 }

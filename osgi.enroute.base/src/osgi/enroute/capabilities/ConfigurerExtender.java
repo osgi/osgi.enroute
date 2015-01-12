@@ -5,7 +5,6 @@ import java.lang.annotation.RetentionPolicy;
 
 import org.osgi.namespace.extender.ExtenderNamespace;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.bnd.annotation.headers.RequireCapability;
 
 /**
@@ -29,21 +28,9 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * factory instance already exists with that name then the data is updated,
  * otherwise a new record is created.
  */
-public interface ConfigurerExtender {
-	String	VERSION				= "1.0.0";
-	String	NAME				= "osgi.enroute.configurer";
-	String	NS					= ExtenderNamespace.EXTENDER_NAMESPACE;
-	String	CONFIGURATION_LOC	= "configuration/configuration.json";
-
-	@RequireCapability(ns = NS, filter = "(&(" + NS + "=" + NAME + ")${frange;" + VERSION + "})", effective = "active")
-	@Retention(RetentionPolicy.CLASS)
-	public @interface Require {
-
-	}
-
-	@ProvideCapability(ns = NS, name = NAME, version = VERSION, effective = "active")
-	@Retention(RetentionPolicy.CLASS)
-	public @interface Provide {
-
-	}
+@RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
+		+ "=osgi.enroute.configurer)${frange;1.2.0})", effective = "active")
+@Retention(RetentionPolicy.CLASS)
+public @interface ConfigurerExtender {
+	String configuration_loc() default "configuration/configuration.json";
 }

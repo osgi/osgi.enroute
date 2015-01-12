@@ -4,7 +4,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import osgi.enroute.namespace.EndpointNamespace;
-import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.bnd.annotation.headers.RequireCapability;
 
 /**
@@ -21,20 +20,6 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * is a JSON string from the Event Admin properties that could be serialized to
  * JSON.
  */
-public interface EventAdminSSEEndpoint {
-	String	VERSION	= "1.0.0";
-	String	NAME	= "/sse/1";
-	String	NS		= EndpointNamespace.NS;
-
-	@RequireCapability(ns = NS, filter = "(&(" + NS + "=" + NAME + ")${frange;" + VERSION + "})", effective = "active")
-	@Retention(RetentionPolicy.CLASS)
-	public @interface Require {
-
-	}
-
-	@ProvideCapability(ns = NS, name = NAME, version = VERSION, effective = "active")
-	@Retention(RetentionPolicy.CLASS)
-	public @interface Provide {
-
-	}
-}
+@RequireCapability(ns = EndpointNamespace.NS, filter = "(&(" + EndpointNamespace.NS + "=/sse/1)${frange;1.1.0})", effective = "active")
+@Retention(RetentionPolicy.CLASS)
+public @interface EventAdminSSEEndpoint {}

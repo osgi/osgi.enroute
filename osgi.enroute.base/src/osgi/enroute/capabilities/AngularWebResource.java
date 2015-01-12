@@ -4,24 +4,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import osgi.enroute.namespace.WebResourceNamespace;
-import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.bnd.annotation.headers.RequireCapability;
 
 /**
- * A Web Resource that provides Google's Angular JS javascript files under
- * {@value #NAME} as laid out in their ZIP file. That is, the {@value #NAME}
- * {@code /angular.js} file must be available.
+ * A Web Resource that provides Google's Angular JS javascript files.
  */
-public interface AngularWebResource {
-	String	VERSION	= "1.3.0";
-	String	NAME	= "/google/angular/1";
-	String	NS		= WebResourceNamespace.NS;
+@RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
+		+ "=/google/angular)${frange;1.3.8})")
+@Retention(RetentionPolicy.CLASS)
+public @interface AngularWebResource {
 
-	@RequireCapability(ns = NS, filter = "(&(" + NS + "=" + NAME + ")${frange;" + VERSION + "})", effective = "active")
-	@Retention(RetentionPolicy.CLASS)
-	public @interface Require {}
+	String[] resource() default {"angular.js", "angular-route.js"};
 
-	@ProvideCapability(ns = NS, name = NAME, version = VERSION, effective = "active")
-	@Retention(RetentionPolicy.CLASS)
-	public @interface Provide {}
+	int priority() default 1000;
 }
