@@ -9,6 +9,10 @@ import org.osgi.dto.DTO;
 /**
  * An administrative interface to the logger.
  */
+
+// TODO make loggers persistent
+// TODO triggers?
+
 @ProviderType
 public interface LoggerAdmin {
 
