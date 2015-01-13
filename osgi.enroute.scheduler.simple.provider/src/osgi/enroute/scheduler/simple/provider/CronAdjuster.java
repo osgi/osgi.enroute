@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -136,8 +137,8 @@ class CronAdjuster implements TemporalAdjuster {
 	}
 
 	private Map<String,String> doEnv(String[] entries) {
+		Map<String,String> map = new HashMap<String, String>();
 		if (entries.length > 1) {
-			Map<String,String> map = new HashMap<String, String>();
 			for (int i = 0; i < entries.length - 1; i++) {
 
 				if (entries[i].startsWith("#") || entries[i].isEmpty())
@@ -154,7 +155,7 @@ class CronAdjuster implements TemporalAdjuster {
 			}
 			return map;
 		} else
-			return null;
+			return Collections.emptyMap();
 	}
 
 	/**

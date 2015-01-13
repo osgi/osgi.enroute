@@ -6,13 +6,13 @@ import java.lang.reflect.ParameterizedType;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.PrimitiveIterator;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -40,9 +40,9 @@ import aQute.lib.converter.Converter;
 /**
  * 
  */
-@Component(name = "osgi.enroute.scheduler.simple", service=InternalSchedulerImpl.class)
+@Component(name = "osgi.enroute.scheduler.simple", service = InternalSchedulerImpl.class)
 public class InternalSchedulerImpl implements Scheduler {
-	final List<Cron<?>> crons = new CopyOnWriteArrayList<>();
+	final List<Cron<?>> crons = new ArrayList<>();
 	final Logger logger = LoggerFactory.getLogger(InternalSchedulerImpl.class);
 
 	Clock clock = Clock.systemDefaultZone();
@@ -260,7 +260,8 @@ public class InternalSchedulerImpl implements Scheduler {
 		ScheduleCron<T> s = new ScheduleCron<>();
 		s.cron = new CronAdjuster(cronExpression);
 		s.job = job;
-		s.env = type != null && type != Object.class ? Converter.cnv(type, s.cron.getEnv()) : null;
+		s.env = type != null && type != Object.class ? Converter.cnv(type,
+				s.cron.getEnv()) : null;
 		schedule(s, s.cron.isReboot() ? 1 : s.next());
 		return () -> {
 			s.canceled = true;
@@ -296,8 +297,8 @@ public class InternalSchedulerImpl implements Scheduler {
 		}
 	}
 
-	@Reference(policy=ReferencePolicy.DYNAMIC, cardinality=ReferenceCardinality.MULTIPLE)
-	<T> void addSchedule(CronJob<T> s, Map<String,Object> map)
+	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
+	<T> void addSchedule(CronJob<T> s, Map<String, Object> map)
 			throws Exception {
 		String[] schedules = Converter.cnv(String[].class,
 				map.get(CronJob.CRON));
@@ -306,27 +307,31 @@ public class InternalSchedulerImpl implements Scheduler {
 
 		Class<T> type = getType(s);
 
-		for (String schedule : schedules) {
-			try {
-				Cron<T> cron = new Cron<>(type, s, schedule);
-				crons.add(cron);
-			} catch (Exception e) {
-				logger.error("Invalid  cron expression " + schedule + " from "
-						+ map, e);
+		synchronized (crons) {
+			for (String schedule : schedules) {
+				try {
+					Cron<T> cron = new Cron<>(type, s, schedule);
+					crons.add(cron);
+				} catch (Exception e) {
+					logger.error("Invalid  cron expression " + schedule
+							+ " from " + map, e);
+				}
 			}
 		}
 	}
 
 	void removeSchedule(CronJob<?> s) {
-		for (Iterator<Cron<?>> cron = crons.iterator(); cron.hasNext();) {
-			try {
-				Cron<?> c = cron.next();
-				if (c.target == s) {
-					cron.remove();
-					c.schedule.close();
+		synchronized (crons) {
+			for (Iterator<Cron<?>> cron = crons.iterator(); cron.hasNext();) {
+				try {
+					Cron<?> c = cron.next();
+					if (c.target == s) {
+						cron.remove();
+						c.schedule.close();
+					}
+				} catch (IOException e) {
+					// we're closing, so ignore any errors
 				}
-			} catch (IOException e) {
-				// we're closing, so ignore any errors
 			}
 		}
 	}

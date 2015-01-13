@@ -12,11 +12,31 @@ import org.osgi.util.promise.Deferred;
 
 import osgi.enroute.scheduler.api.CancelException;
 import osgi.enroute.scheduler.api.CancellablePromise;
+import osgi.enroute.scheduler.api.CronJob;
 import osgi.enroute.scheduler.api.TimeoutException;
 
 public class SchedulerTest extends TestCase {
 	InternalSchedulerImpl si = new InternalSchedulerImpl();
 
+	
+	public static class TestData {
+		
+	}
+	public void testCronJobType() {
+//		CronJob<TestData> cj = (data) -> {};
+		CronJob<TestData> cj = new CronJob<SchedulerTest.TestData>() {
+
+			@Override
+			public void run(TestData data) throws Exception {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		assertEquals(TestData.class, si.getType(cj));
+	}
+	
+	
+	
 	@Override
 	public void setUp() {
 		si.activate();
