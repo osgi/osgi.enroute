@@ -443,6 +443,9 @@ class CronAdjuster implements TemporalAdjuster {
 	}
 
 	private int parseInt(String string, int min, int max, String[] names) {
+		if (string.isEmpty())
+			return 0;
+		
 		for (int n = 0; n < names.length; n++) {
 			if (names[n].equals(string))
 				return n + min;

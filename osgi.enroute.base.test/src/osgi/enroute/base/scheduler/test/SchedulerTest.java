@@ -7,8 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.promise.Promise;
 import org.osgi.util.promise.Success;
@@ -17,6 +19,9 @@ import osgi.enroute.base.configurer.test.ConfigurerTest;
 import osgi.enroute.scheduler.api.CronJob;
 import osgi.enroute.scheduler.api.Scheduler;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.osgi.Builder;
+import aQute.bnd.osgi.Jar;
+import aQute.bnd.osgi.JarResource;
 import aQute.bnd.testing.DSTestWiring;
 
 @SuppressWarnings("rawtypes")
@@ -31,6 +36,54 @@ public class SchedulerTest extends TestCase {
 		ds.add(this);
 		ds.wire();
 	}
+
+	public void testBundleCleanup() throws Exception {
+		Builder b = new Builder();
+		b.setBundleSymbolicName("test.1");
+		b.setProperty("-resourceonly", "true");
+		Jar j = b.build();
+		Bundle btest1 = context.installBundle("test.1", new JarResource(j).openInputStream());
+		btest1.start();
+		
+		BundleContext bc = btest1.getBundleContext();
+		
+		ServiceReference<Scheduler> ref = bc.getServiceReference(Scheduler.class);
+		assertNotNull(ref);
+		
+		Scheduler s = bc.getService(ref);
+		assertNotNull(s);
+		
+		assertNotSame(scheduler, s);
+		
+		Semaphore semaphore = new Semaphore(0);
+		
+		s.after(() -> semaphore.release(), 100);
+		
+		assertBetween( semaphore, 90, 110);
+		
+		s.after(() -> semaphore.release(), 100);
+		btest1.stop();
+		
+		if (semaphore.tryAcquire(1, 200, TimeUnit.MILLISECONDS))
+			fail("Stopping the bundle did not clean up");
+		
+		b.close();
+	}
+	
+	
+	
+	private void assertBetween(Semaphore s, int min, int max) throws InterruptedException {
+		long now = System.currentTimeMillis();
+		if (!s.tryAcquire(1, max, TimeUnit.MILLISECONDS))
+				fail("Took more than " + max + "ms to get semaphore");
+
+		long diff = System.currentTimeMillis() - now;
+		System.out.println("time it took " + diff );
+		
+		assertTrue("Took less than " + min + "ms to get permit", diff >= min);
+	}
+
+
 
 	static class Chk implements Success<Instant, Integer> {
 		long start = System.currentTimeMillis();

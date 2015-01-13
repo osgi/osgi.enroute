@@ -15,7 +15,7 @@ import osgi.enroute.scheduler.api.CancellablePromise;
 import osgi.enroute.scheduler.api.TimeoutException;
 
 public class SchedulerTest extends TestCase {
-	SchedulerImpl si = new SchedulerImpl();
+	InternalSchedulerImpl si = new InternalSchedulerImpl();
 
 	@Override
 	public void setUp() {

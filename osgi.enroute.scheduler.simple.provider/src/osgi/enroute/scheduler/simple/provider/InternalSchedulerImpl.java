@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import osgi.enroute.scheduler.api.CancelException;
-import osgi.enroute.scheduler.api.CancellablePromise;
 import osgi.enroute.scheduler.api.CronJob;
 import osgi.enroute.scheduler.api.Scheduler;
 import osgi.enroute.scheduler.api.TimeoutException;
@@ -41,10 +40,10 @@ import aQute.lib.converter.Converter;
 /**
  * 
  */
-@Component(name = "osgi.enroute.scheduler.simple")
-public class SchedulerImpl implements Scheduler {
+@Component(name = "osgi.enroute.scheduler.simple", service=InternalSchedulerImpl.class)
+public class InternalSchedulerImpl implements Scheduler {
 	final List<Cron<?>> crons = new CopyOnWriteArrayList<>();
-	final Logger logger = LoggerFactory.getLogger(SchedulerImpl.class);
+	final Logger logger = LoggerFactory.getLogger(InternalSchedulerImpl.class);
 
 	Clock clock = Clock.systemDefaultZone();
 	ScheduledExecutorService executor;
@@ -62,7 +61,7 @@ public class SchedulerImpl implements Scheduler {
 	}
 
 	@Override
-	public CancellablePromise<Instant> after(long ms) {
+	public CancellablePromiseImpl<Instant> after(long ms) {
 		Deferred<Instant> deferred = new Deferred<>();
 		Instant start = Instant.now();
 		ScheduledFuture<?> schedule = executor.schedule(() -> {
@@ -81,7 +80,7 @@ public class SchedulerImpl implements Scheduler {
 	}
 
 	@Override
-	public <T> CancellablePromise<T> after(Callable<T> callable, long ms) {
+	public <T> CancellablePromiseImpl<T> after(Callable<T> callable, long ms) {
 		Deferred<T> deferred = new Deferred<>();
 
 		ScheduledFuture<?> schedule = executor.schedule(() -> {
@@ -135,7 +134,7 @@ public class SchedulerImpl implements Scheduler {
 	 * {@link TimeoutException}
 	 */
 	// @Override
-	public <T> CancellablePromise<T> before(Promise<T> promise, long timeout) {
+	public <T> CancellablePromiseImpl<T> before(Promise<T> promise, long timeout) {
 		Deferred<T> d = new Deferred<T>();
 		Unique only = new Unique();
 
@@ -162,7 +161,7 @@ public class SchedulerImpl implements Scheduler {
 	}
 
 	static abstract class Schedule {
-		volatile CancellablePromise<?> promise;
+		volatile CancellablePromiseImpl<?> promise;
 		volatile boolean canceled;
 		long start = System.currentTimeMillis();
 		Throwable exception;
@@ -270,13 +269,13 @@ public class SchedulerImpl implements Scheduler {
 	}
 
 	@Override
-	public CancellablePromise<Instant> at(long epochTime) {
+	public CancellablePromiseImpl<Instant> at(long epochTime) {
 		long delay = epochTime - System.currentTimeMillis();
 		return after(delay);
 	}
 
 	@Override
-	public <T> CancellablePromise<T> at(Callable<T> callable, long epochTime) {
+	public <T> CancellablePromiseImpl<T> at(Callable<T> callable, long epochTime) {
 		long delay = epochTime - System.currentTimeMillis();
 		return after(callable, delay);
 	}
@@ -322,7 +321,7 @@ public class SchedulerImpl implements Scheduler {
 		for (Iterator<Cron<?>> cron = crons.iterator(); cron.hasNext();) {
 			try {
 				Cron<?> c = cron.next();
-				if (c.target == c) {
+				if (c.target == s) {
 					cron.remove();
 					c.schedule.close();
 				}

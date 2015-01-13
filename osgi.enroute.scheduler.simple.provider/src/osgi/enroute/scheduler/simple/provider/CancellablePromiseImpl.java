@@ -1,5 +1,6 @@
 package osgi.enroute.scheduler.simple.provider;
 
+import java.io.Closeable;
 import java.lang.reflect.InvocationTargetException;
 
 import org.osgi.util.function.Function;
@@ -11,7 +12,7 @@ import org.osgi.util.promise.Success;
 import osgi.enroute.scheduler.api.CancellablePromise;
 
 
-abstract class CancellablePromiseImpl<T> implements CancellablePromise<T> {
+abstract class CancellablePromiseImpl<T> implements CancellablePromise<T>, Closeable {
 
 	private Promise<T> promise;
 
@@ -72,4 +73,7 @@ abstract class CancellablePromiseImpl<T> implements CancellablePromise<T> {
 		this.promise = promise;
 	}
 
+	public void close() {
+		cancel();
+	}
 }
