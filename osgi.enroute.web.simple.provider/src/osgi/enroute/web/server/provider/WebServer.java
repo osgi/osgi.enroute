@@ -225,9 +225,6 @@ public class WebServer extends HttpServlet {
 			if (bundle != null && bundle.getLastModified() > time)
 				return true;
 
-			if (expiration >= System.currentTimeMillis())
-				return true;
-
 			return false;
 		}
 

@@ -288,7 +288,7 @@ public class WebResources {
 
 		tmp.renameTo(file);
 
-		return ws.new Cache(file);
+		return ws.new Cache(file, b, file.getAbsolutePath());
 	}
 
 	/*
