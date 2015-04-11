@@ -2,12 +2,11 @@ package osgi.enroute.pi.provider;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.iot.gpio.config.Config;
 import osgi.enroute.iot.gpio.config.Direction;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -16,7 +15,7 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
-@Component(name="osgi.enroute.iot.gpio.config")
+@Component(name="osgi.enroute.iot.gpio.config", designateFactory=Config.class)
 public class GPIOConfig {
 	DTOs		dtos;
 	static GpioController controller = GpioFactory.getInstance();
