@@ -1,0 +1,29 @@
+#
+# OSGI ENROUTE PI PROVIDER BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	A provider for the Raspberry Pi
+
+Private-Package:  \
+	osgi.enroute.pi.provider
+
+-includeresource: @${repo;pi4j-core}, {readme.md}
+
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit,\
+	osgi.enroute.iot.api;version=latest,\
+	biz.aQute.bndlib,\
+	pi4j-core;version=0.0
+
+-runrequires: \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.pi.provider)',\
+	osgi.identity;filter:='(osgi.identity=org.eclipse.equinox.coordinator)'
+	
+-runbundles: \
+	${error;Resolve first}
+

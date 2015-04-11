@@ -1,0 +1,5 @@
+{
+ "revisionRefs":[{
+  "artifactId":"pi4j-core","baseline":"0.0.5","bsn":"pi4j-core","created":1363583905002,"description":"Pi4J Java Library for the Raspberry Pi","groupId":"com.pi4j","md5":"FFD183E92859197B93727B359328A716","name":"Pi4J :: Java Library (Core)","phase":"MASTER","revision":"614A071E0EC9E3FC9A5A69938745CC4C8F776222","size":170200,"urls":["http://repo1.maven.org/maven2/com/pi4j/pi4j-core/0.0.5/pi4j-core-0.0.5.jar"],"version":"0.0.5"
+ }]
+}
