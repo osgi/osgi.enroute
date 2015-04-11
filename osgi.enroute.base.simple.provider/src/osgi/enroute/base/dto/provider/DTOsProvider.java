@@ -169,30 +169,9 @@ public class DTOsProvider implements DTOs {
 
 	@Override
 	public boolean equals(Object a, Object b) {
-		if (b == a)
-			return true;
-
-		if (b == null || a == null)
-			return false;
-
-		Class< ? > ac = a.getClass();
-		if (ac != b.getClass())
-			return false;
-
 		try {
-			Field fields[] = getFields(a);
-			if (fields.length == 0)
-				return a.equals(b);
-
-			for (Field f : getFields(a)) {
-				Object aa = f.get(a);
-				Object bb = f.get(b);
-				if (!equals(aa, bb))
-					return false;
-			}
-			return true;
-		}
-		catch (Exception e) {
+			return diff(a,b).isEmpty();
+		} catch (Exception e) {
 			return false;
 		}
 	}
@@ -493,7 +472,7 @@ public class DTOsProvider implements DTOs {
 		if (fields.length > 0) {
 			for (Field field : fields) {
 				Object o = field.get(older);
-				Object n = field.get(older);
+				Object n = field.get(newer);
 				diff(diffs, new Link(link, field.getName(), older), o, n);
 			}
 			return true;
