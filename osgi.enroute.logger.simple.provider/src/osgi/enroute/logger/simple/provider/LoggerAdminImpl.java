@@ -16,6 +16,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
 
 import osgi.enroute.debug.api.Debug;
 import osgi.enroute.logger.api.Level;
@@ -40,7 +41,7 @@ import aQute.libg.glob.Glob;
 		provide = LoggerAdmin.class,
 		configurationPolicy = ConfigurationPolicy.optional,
 		properties = {
-				Debug.COMMAND_SCOPE + "=logger", Debug.COMMAND_FUNCTION + "=add|remove|settings"
+				Debug.COMMAND_SCOPE + "=logger", Debug.COMMAND_FUNCTION + "=add|remove|settings|list"
 		})
 public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 
@@ -259,7 +260,9 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 		});
 		return infos;
 	}
-
+	public List<Info> list() throws Exception {
+		return list("*");
+	}
 	/*
 	 * Get the current settings
 	 */
