@@ -16,7 +16,7 @@ Test-Cases: ${test-cases}
 -includeresource: {readme.md}
 
 -buildpath: \
-	osgi.enroute.base.api;version=1.0,\
+	osgi.enroute.base.api;version=1.4,\
 	biz.aQute.junit,\
 	biz.aQute.bndlib;version=2.3,\
 	net.sourceforge.htmlunit;version=2.15,\
