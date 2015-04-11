@@ -3,7 +3,11 @@ package osgi.enroute.iot.gpio.api;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.api.Pin;
 
-public class Or extends IC<Binary<Boolean>,Pin<Boolean>> implements Binary<Boolean>{
+
+/**
+ * A 2 input AND
+ */
+public class Or extends IC<Binary<Boolean,Boolean>,Pin<Boolean>> implements Binary<Boolean,Boolean>{
 	volatile Boolean a;
 	volatile Boolean b;
 	volatile Boolean out;
@@ -25,5 +29,9 @@ public class Or extends IC<Binary<Boolean>,Pin<Boolean>> implements Binary<Boole
 			out().set(out = !out);
 	}
 
+	@Override
+	public void flush(Pin<Boolean> output) throws Exception {
+		output.set(out);
+	}
 
 }

@@ -4,21 +4,21 @@
 
 Bundle-Version:1.0.0.${tstamp}
 Bundle-Description: 				\
-	This is OSGI ENROUTE IOT API project. An API project should in general not contain any \
-	implementation code.\
-	\
-	${warning;Please update this Bundle-Description in osgi.enroute.iot.api/bnd.bnd}
+	This project is for here now to help develop a Raspberry Pi provider and \
+	maybe an emulator for this API. Once this stablizes we can move it to \
+	the base (or IoT?) profile.
+
 
 	
 Export-Package: \
 	osgi.enroute.iot.gpio.api;provide:=true,\
-	osgi.enroute.iot.gpio.config
+	osgi.enroute.iot.gpio.config;provide:=true,\
+	osgi.enroute.iot.admin.api;provide:=true,\
+	osgi.enroute.iot.admin.dto;provide:=true
 
 
 Require-Capability: \
 	compile-only
 
 -buildpath: \
-	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.bndlib;version=2.4;packages=*,\
-	pi4j-core
+	osgi.enroute.base.api;version=1.0

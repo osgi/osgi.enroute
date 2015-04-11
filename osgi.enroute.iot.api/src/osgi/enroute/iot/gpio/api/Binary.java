@@ -1,6 +1,11 @@
 package osgi.enroute.iot.gpio.api;
 
-public interface Binary<T> {
-	void a(T value) throws Exception;
-	void b(T value) throws Exception;
+/**
+ * For ICs with 2 inputs
+ *
+ * @param <T> the 
+ */
+public interface Binary<A,B> {
+	void a(A value) throws Exception;
+	void b(B value) throws Exception;
 }

@@ -1,6 +1,9 @@
 package osgi.enroute.iot.gpio.api;
 
-
-public abstract class GPO extends IC<Pin<Boolean>,Void> {
+/**
+ * IC that acts as a general purpose output of the real hardware. Calling the
+ * input method will set the output.
+ */
+public abstract class GPO extends IC<Pin<Boolean>, Void> {
 
 }

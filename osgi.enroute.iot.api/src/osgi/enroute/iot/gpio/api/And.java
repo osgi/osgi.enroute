@@ -1,7 +1,10 @@
 package osgi.enroute.iot.gpio.api;
 
 
-public class And extends IC<Binary<Boolean>,Pin<Boolean>> implements Binary<Boolean>{
+/**
+ * A simple implementation of an AND circuit with an a & b input.
+ */
+public class And extends IC<Binary<Boolean,Boolean>,Pin<Boolean>> implements Binary<Boolean,Boolean>{
 	volatile Boolean a;
 	volatile Boolean b;
 	volatile Boolean out;
@@ -21,6 +24,11 @@ public class And extends IC<Binary<Boolean>,Pin<Boolean>> implements Binary<Bool
 	private synchronized void update() throws Exception {
 		if (a && b != out)
 			out().set(out = !out);
+	}
+
+	@Override
+	public void flush(Pin<Boolean> output) throws Exception {
+		output.set(out);
 	}
 
 }

@@ -5,21 +5,39 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 
+ * An IC (from Integrated Circuit) is a component with n inputs and m outputs.
+ * The inputs & outputs of an IC are typed by an interface. This interface must
+ * have <em>IO</em> methods with simple names that would match names on an IC.
+ * This method must have a void or boolean return type. It must take a single
+ * parameter of any scalar or DTO type. Surprisingly, this method prototype
+ * pattern is for the inputs and the outputs. Since inputs and outputs are
+ * fundamentally different, this requires some explanation.
+ * <p>
+ * The purpose of the IC is to allow them to be wired with an external
+ * configurator. This configurator can be a GUI that connects the named outputs
+ * from one IC to the named inputs of another (or the same) IC. The configurator
+ * will signal the IC when the signal changes (or when it feels like it).
+ * <p>
+ * If the IC has a change in signal (or just feels like it) it can call a proxy
+ * with the {@link #out()} method. This proxy implements the Output interface
+ * and thus has all the methods to set the output.
+ * <p>
+ * The configurator can connect to the output pins by calling
+ * {@link #connect(Output)} and should call disconnect before it goes away. The
+ * IC class will call any output on all registered Output objects.
  */
 public abstract class IC<Input, Output> {
-	private Output out;
-	private final Map<String, Pin<Object>> outputs = new HashMap<String, Pin<Object>>();
-	private Class<Output> output;
-	private Class<Input> input;
+	private final CopyOnWriteArrayList<Output> outputs = new CopyOnWriteArrayList<Output>();
+	private final Class<Output> output;
+	private final Class<Input> input;
+	private Output out = null;
 
+	/**
+	 * Constructor.
+	 */
 	public IC() {
 		Class<?> rover = this.getClass();
 		while (rover.getSuperclass() != IC.class) {
@@ -31,19 +49,28 @@ public abstract class IC<Input, Output> {
 		this.output = resolve(zuper.getActualTypeArguments()[1], "output");
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T> Class<T> resolve(Type type, String msg) {
-		if (type instanceof Class) {
-			return (Class<T>) type;
+	/**
+	 * Connect the output and flush all output pins to this output object. After
+	 * this call output changes will update the output object.
+	 * 
+	 * @param output
+	 *            the output object
+	 */
+	public void connect(Output output) throws Exception {
+		synchronized (outputs) {
+			outputs.add(output);
+			flush(output);
 		}
-		throw new RuntimeException(
-				"The "
-						+ msg
-						+ " type variable is not a class. You must use a concrete interface or class without wildcards, variables, arrays. or parameterized types");
 	}
 
-	public void connect(String name, Pin<Object> pin) {
-		outputs.put(name, pin);
+	/**
+	 * Disconnect the output object from this IC.
+	 * 
+	 * @param output
+	 *            the output object
+	 */
+	public void disconnect(Output output) throws Exception {
+		outputs.remove(output);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,15 +83,11 @@ public abstract class IC<Input, Output> {
 						@Override
 						public Object invoke(Object proxy, Method method,
 								Object[] args) throws Throwable {
-							if (args.length != 1)
-								return null;
-
-							if (args[0] == null)
-								return null;
-
-							Pin<Object> pin = outputs.get(method.getName());
-							if (pin != null)
-								pin.set(args[0]);
+							synchronized (outputs) {
+								for (Output output : outputs) {
+									method.invoke(output, args);
+								}
+							}
 							return null;
 						}
 					});
@@ -72,16 +95,27 @@ public abstract class IC<Input, Output> {
 		return out;
 	}
 
-	public List<String> getInputs() {
-		return names(input);
+	Class<Input> getInputType() {
+		return input;
 	}
 
-	public List<String> getOutputs() {
-		return names(output);
+	Class<Output> getOutputType() {
+		return output;
 	}
 
-	private List<String> names(Class<?> c) {
-		return Stream.of(c.getMethods()).map((m) -> m.getName())
-				.collect(Collectors.toList());
+	public abstract void flush(Output output) throws Exception;
+	/*
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	private <T> Class<T> resolve(Type type, String msg) {
+		if (type instanceof Class) {
+			return (Class<T>) type;
+		}
+		throw new RuntimeException(
+				"The "
+						+ msg
+						+ " type variable is not a class. You must use a concrete interface or class without wildcards, variables, arrays. or parameterized types");
 	}
+
 }
