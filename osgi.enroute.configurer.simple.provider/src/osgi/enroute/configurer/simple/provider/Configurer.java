@@ -132,7 +132,7 @@ public class Configurer implements ConfigurationDone {
 
 						String s = IO.collect(url);
 						if (s == null) {
-							log.log(LogService.LOG_ERROR, "Cannot find configuration for bundle in " + h);
+							log.log(LogService.LOG_INFO, "Cannot find configuration for bundle "+bundle+" in " + h + " " + url);
 							return null;
 						}
 
