@@ -7,3 +7,4 @@ buildfiles
 /.gradle/
 /reports/
 /generated/
+osgi.enroute.doc/

@@ -44,7 +44,7 @@ public interface Authority {
 	 * @return the set of permissions. If there are no permissions, an empty
 	 *         list is returned. This list is read only.
 	 */
-	List<String> getPermissions() throws Exception;
+	List<String> getPermissions(/*String context?*/) throws Exception;
 
 	/**
 	 * Verify if the current user has the given permission. First, a check is
