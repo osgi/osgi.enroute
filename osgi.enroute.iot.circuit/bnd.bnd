@@ -1,0 +1,14 @@
+#
+# OSGI ENROUTE IOT CIRCUIT
+#
+
+Bundle-Version:					1.0.0.${tstamp}
+	
+-buildpath: \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit,\
+	osgi.enroute.iot.api;version=latest,\
+	biz.aQute.bndlib;version=2.4;packages=*
+
+-sub:  \
+	*.bnd

@@ -1,0 +1,24 @@
+#
+# OSGI ENROUTE IOT CIRCUIT APPLICATION APPLICATION
+#
+
+Bundle-Version: 1.0.0.${tstamp}
+Bundle-Description: \
+	A GUI for the Circuit Admin. This application shows the registered ICs + wires \
+	and can wire ICs together.
+
+Private-Package:  \
+	osgi.enroute.iot.circuit.application
+	
+-includeresource: \
+	{readme.md}, \
+	{configuration=configuration}, \
+	{static=static}, \
+	web=web
+
+-buildpath: \
+	osgi.enroute.base.api,\
+	osgi.enroute.logger.simple.provider,\
+	osgi.enroute.web.simple.provider;version=1.2,\
+	osgi.enroute.iot.api;version=latest
+	

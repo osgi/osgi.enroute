@@ -1,0 +1,23 @@
+#
+# OSGI ENROUTE IOT CIRCUIT	BUNDLE 
+#
+
+Bundle-Description: \
+	Implements a Circuit Board for ICs. ICs have inputs and outputs. The Circuit board \
+	can fire events to the ICs and ICs can fire events to the board. The board then dispatches \
+	the event to the connected inputs.
+
+Conditional-Package: aQute.lib*
+
+Export-Package: \
+	osgi.enroute.iot.admin.dto,\
+	osgi.enroute.iot.admin.api,\
+	osgi.enroute.iot.gpio.api,\
+	osgi.enroute.iot.gpio.util
+
+Private-Package: \
+	osgi.enroute.iot.circuit.provider,\
+	osgi.enroute.iot.circuit.command,\
+	osgi.enroute.iot.circuit.toolkit
+
+-includeresource: {readme.md}

@@ -1,0 +1,13 @@
+#
+# OSGI ENROUTE IOT CIRCUIT	DEBUG LAUNCH SPECFICATION 
+#
+
+-include: ~osgi.enroute.iot.circuit.bndrun
+
+-runrequires.debug:  \
+	${debug-bundles}
+
+-runtrace: true
+
+-runbundles: \
+	${error;Resolve first}
