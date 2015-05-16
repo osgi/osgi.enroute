@@ -14,7 +14,8 @@ Export-Package: \
 	osgi.enroute.iot.gpio.api;provide:=true,\
 	osgi.enroute.iot.gpio.config;provide:=true,\
 	osgi.enroute.iot.admin.api;provide:=true,\
-	osgi.enroute.iot.admin.dto;provide:=true
+	osgi.enroute.iot.admin.dto;provide:=true,\
+	osgi.enroute.iot.gpio.util
 
 
 Require-Capability: \

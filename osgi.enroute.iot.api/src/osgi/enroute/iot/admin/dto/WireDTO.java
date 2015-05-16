@@ -12,11 +12,28 @@ public class WireDTO extends DTO {
 	public int wireId;
 
 	/**
-	 * The from Connector id
+	 * From device id
 	 */
-	public int from;
+	public String fromDevice;
+
 	/**
-	 * The to Connector id
+	 * From pin
+	 * 
 	 */
-	public int to;
+	public String fromPin;
+
+	/**
+	 * To device id
+	 */
+	public String toDevice;
+
+	/**
+	 * To device pin
+	 */
+	public String toPin;
+	
+	/**
+	 * The wire is actually wiring two pins.
+	 */
+	public boolean wired = false;
 }

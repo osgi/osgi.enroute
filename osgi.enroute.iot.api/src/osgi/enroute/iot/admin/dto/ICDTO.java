@@ -1,7 +1,6 @@
 package osgi.enroute.iot.admin.dto;
 
 import java.net.URI;
-import java.util.List;
 
 import org.osgi.dto.DTO;
 
@@ -10,9 +9,9 @@ import org.osgi.dto.DTO;
  */
 public class ICDTO extends DTO {
 	/**
-	 * The unique IC id
+	 * The unique IC id, generally the PID
 	 */
-	public int deviceId;
+	public String deviceId;
 
 	/**
 	 * The IC type, the java implementation class name.
@@ -25,16 +24,16 @@ public class ICDTO extends DTO {
 	public String name;
 
 	/**
-	 * The optional icon URI, will return null if no icon
+	 * The optional icon URI, will be null if no icon
 	 */
 	public URI icon;
 
 	/**
 	 * The input Pins on this device
 	 */
-	public List<PinDTO> inputs;
+	public PinDTO inputs[];
 	/**
 	 * The output Pins on this device
 	 */
-	public List<PinDTO> outputs;
+	public PinDTO outputs[];
 }
