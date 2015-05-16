@@ -1,0 +1,22 @@
+#
+# JSPLUMB – Diagram Editor
+#
+
+vrs = 1.7.5
+path = static/jsplumb/jsplumb/${version;===;${vrs}}
+
+Bundle-Version: ${vrs}.${tstamp}
+Bundle-Description: \
+	jsPlumb provides a means for a developer to visually connect elements \
+	on their web pages. It uses SVG or Canvas in modern browsers.
+
+Provide-Capability: 	\
+	osgi.enroute.webresource; \
+		osgi.enroute.webresource=/jsplumb/jsplumb; \
+		root=${path}; \
+		version:Version=${vrs}
+
+Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
+Bundle-DocURL:			http://jsplumb.org/doc/home.html
+
+-includeresource: static
