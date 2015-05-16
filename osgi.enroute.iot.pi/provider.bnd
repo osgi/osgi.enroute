@@ -1,0 +1,20 @@
+#
+# OSGI ENROUTE IOT PI	BUNDLE 
+#
+
+Bundle-Description: 				\
+	A provider for the Raspberry Pi
+
+	
+Export-Package: \
+	osgi.enroute.iot.pi.api,\
+	com.pi4j.io.gpio,\
+	com.pi4j.system
+
+Private-Package: \
+	osgi.enroute.iot.pi.provider,\
+	aQute.bnd.annotation.metatype;-split-package:=first;resolution:=optional
+
+-includeresource: @jar/pi4j-core.jar, {readme.md}
+
+Provide-Capability: osgi.service;objectClass=com.pi4j.io.gpio.GpioController

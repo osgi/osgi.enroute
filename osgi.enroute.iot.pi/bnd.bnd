@@ -1,0 +1,19 @@
+#
+# OSGI ENROUTE IOT PI DEFAULTS
+#
+
+Bundle-Version:					1.0.0.${tstamp}
+
+	
+-buildpath: \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit,\
+	osgi.enroute.iot.api;version=latest,\
+	biz.aQute.bndlib,\
+	jar/pi4j-core.jar;version=file, \
+	biz.aQute.remote.agent
+
+-sub:  \
+	*.bnd
+
+-fixupmessages: "Export com.pi4j.io.gpio,  has "
