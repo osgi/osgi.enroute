@@ -10,7 +10,7 @@ Bundle-Description: 				\
 
 Export-Package:  \
 	osgi.enroute.logger.api;provide:=true,\
-	org.slf4j;provide:=true;-split-package:=merge-first
+	org.slf4j;provide:=true;-split-package:=merge-last;version=1.7.1
 
 Private-Package:  \
 	osgi.enroute.logger.simple.provider,\
@@ -21,9 +21,9 @@ Private-Package:  \
 Conditional-Package: aQute.lib*
 	
 -buildpath:  \
-	osgi.enroute.base.api;version=1.0,\
+	osgi.enroute.base.api;version=1.0;packages=*,\
 	biz.aQute.junit,\
-	biz.aQute.bndlib
+	biz.aQute.bndlib;packages=*
 
 -includeresource: {readme.md}
 

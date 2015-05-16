@@ -25,7 +25,7 @@ Conditional-Package: aQute.lib*
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\
-	biz.aQute.bndlib
+	biz.aQute.bndlib;packages=*
 
 -includeresource: {readme.md}
 
