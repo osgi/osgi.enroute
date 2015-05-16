@@ -16,8 +16,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
-import org.slf4j.Logger;
-
 import osgi.enroute.debug.api.Debug;
 import osgi.enroute.logger.api.Level;
 import osgi.enroute.logger.api.LoggerAdmin;

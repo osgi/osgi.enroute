@@ -20,7 +20,6 @@ import osgi.enroute.dto.api.DTOs.Difference;
 import osgi.enroute.dto.api.TypeReference;
 import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.testing.DSTestWiring;
-import aQute.lib.strings.Strings;
 
 public class DTOsTest extends TestCase {
 	BundleContext context = FrameworkUtil.getBundle(ConfigurerTest.class)

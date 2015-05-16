@@ -50,7 +50,7 @@ import aQute.lib.json.JSONCodec;
  * <p>
  * For IE-9, this article was very helpfull: <a href=
  * "http://blogs.msdn.com/b/ieinternals/archive/2010/04/06/comet-streaming-in-internet-explorer-with-xmlhttprequest-and-xdomainrequest.aspx"
- * >Comet Streaming in Exlporer with XMLHttpRequest and XDomainRequest</a>
+ * >Comet Streaming in Explorer with XMLHttpRequest and XDomainRequest</a>
  * 
  */
 @ProvideCapability(ns = EndpointNamespace.NS, name = "/sse/1", version = "1.1.0", effective = "active")
