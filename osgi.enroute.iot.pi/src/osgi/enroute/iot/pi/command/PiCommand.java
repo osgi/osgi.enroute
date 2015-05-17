@@ -22,14 +22,13 @@ import com.pi4j.system.SystemInfo;
  * This is the implementation. It registers the Pi interface and calls it
  * through a Gogo command.
  * 
- * TODO handle differences in Pi types 
+ * TODO handle differences in Pi types
  */
-@Component(service = PiCommand.class, property = { Debug.COMMAND_SCOPE + "=pi",
+@Component(service = PiCommand.class, property = { Debug.COMMAND_SCOPE + "=pi",Debug.COMMAND_FUNCTION + "=pi", 
 		Debug.COMMAND_FUNCTION + "=pins", Debug.COMMAND_FUNCTION + "=high",
 		Debug.COMMAND_FUNCTION + "=blink", Debug.COMMAND_FUNCTION + "=low",
 		Debug.COMMAND_FUNCTION + "=create", Debug.COMMAND_FUNCTION + "=info",
-		Debug.COMMAND_FUNCTION + "=test", Debug.COMMAND_FUNCTION + "=reset",
-		Debug.COMMAND_FUNCTION + "=pi" }, name = "osgi.enroute.iot.pi.command")
+		Debug.COMMAND_FUNCTION + "=test", Debug.COMMAND_FUNCTION + "=reset" }, name = "osgi.enroute.iot.pi.command")
 public class PiCommand {
 
 	GpioController gpio;
@@ -46,7 +45,15 @@ public class PiCommand {
 			RaspiPin.GPIO_27, RaspiPin.GPIO_28, RaspiPin.GPIO_29 };
 
 	public String pi() {
-		return "pin create a digital pin\n";
+		return "pi:* commands. These directly manipulate the GpioController.\n"
+				+ "create <name> <pin>           – create a digital pin\n"
+				+ "test <name>                   – set a pin low/high 20 times\n"
+				+ "pins                          – show the pins\n"
+				+ "blink <name> <time>           – use the Pi4J blink function\n"
+				+ "high <name>                   – set a pin high\n" 
+				+ "low <name>                    – set a pin low\n" 
+				+ "info                          – show all the info of the board\n" 
+				+ "reset                         – reset the controller";
 	}
 
 	public void create(String name, int n) {
