@@ -21,3 +21,4 @@ Private-Package: \
 	osgi.enroute.iot.circuit.toolkit
 
 -includeresource: {readme.md}
+Bundle-Version: 1.0.0.${tstamp}

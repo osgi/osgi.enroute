@@ -18,3 +18,4 @@ Private-Package: \
 -includeresource: @jar/pi4j-core.jar, {readme.md}
 
 Provide-Capability: osgi.service;objectClass=com.pi4j.io.gpio.GpioController
+Bundle-Version: 1.0.0.${tstamp}

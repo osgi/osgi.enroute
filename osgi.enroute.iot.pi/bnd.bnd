@@ -10,8 +10,7 @@ Bundle-Version:					1.0.0.${tstamp}
 	biz.aQute.junit,\
 	osgi.enroute.iot.api;version=latest,\
 	biz.aQute.bndlib,\
-	jar/pi4j-core.jar;version=file, \
-	biz.aQute.remote.agent
+	jar/pi4j-core.jar;version=file
 
 -sub:  \
 	*.bnd
