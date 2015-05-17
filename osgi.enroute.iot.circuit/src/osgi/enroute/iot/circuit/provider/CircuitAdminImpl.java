@@ -49,6 +49,10 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	ServiceTracker<IC, ICTracker>	tracker;
 	EventAdmin						ea;
 
+	/*
+	 * Activate the circuit board. We first read the board and then allow the 
+	 */
+	
 	@Activate
 	void activate(Map<String, Object> map, BundleContext context)
 			throws Exception {

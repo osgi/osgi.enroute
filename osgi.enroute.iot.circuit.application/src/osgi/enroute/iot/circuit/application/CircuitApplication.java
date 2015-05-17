@@ -15,6 +15,9 @@ import osgi.enroute.iot.admin.dto.ICDTO;
 import osgi.enroute.iot.admin.dto.WireDTO;
 import osgi.enroute.jsonrpc.api.JSONRPC;
 
+/**
+ * Main application class for the Circuit editor/viewer.
+ */
 @AngularWebResource(resource={"angular.js","angular-resource.js", "angular-route.js"}, priority=1000)
 @BootstrapWebResource(resource="css/bootstrap.css")
 @WebServerExtender

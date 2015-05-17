@@ -39,14 +39,13 @@ import osgi.enroute.scheduler.api.Scheduler;
 		Debug.COMMAND_FUNCTION + "=gpo", //
 		Debug.COMMAND_FUNCTION + "=clock", //
 		Debug.COMMAND_FUNCTION + "=disconnect", //
-		Debug.COMMAND_FUNCTION + "=pid" //
 }, name = "osgi.enroute.iot.circuit.command")
 public class CircuitCommand {
 	CircuitAdmin						ca;
 	private BundleContext				context;
 	Map<String, ServiceRegistration<?>>	regs	= new ConcurrentHashMap<>();
-	private CircuitBoard	board;
-	private DTOs	dtos;
+	private CircuitBoard				board;
+	private DTOs						dtos;
 
 	@Activate
 	void activate(BundleContext context) {
@@ -54,23 +53,128 @@ public class CircuitCommand {
 	}
 
 	public String circuit() {
-		return "help";
+		return //
+		"wires                           – Show the existing wires\n"
+				+ "ics                             – Show the current ICs\n"
+				+ "connect <from> <pin> <to> <pin> – Connect two ics\n"
+				+ "gpo <id>                        – Create a test output to the Console\n"
+				+ "clock <id>                      – Create a test clock\n"
+				+ "disconnect id                   – Disconnect a write\n"
+				+ "\n";
 	}
 
+	/**
+	 * List the wires
+	 */
 	public List<WireDTO> wires() {
 		return ca.getWires();
 	}
 
+	/**
+	 * List the ICs
+	 */
 	public ICDTO[] ics() {
 		return ca.getICs();
 	}
 
+	/**
+	 * Connect 2 ICs from an input pin to an output pin
+	 * 
+	 * @param fromDevice
+	 *            The IC's id that is the source
+	 * @param fromPin
+	 *            the source's pin
+	 * @param toDevice
+	 *            the IC's id that is the destination
+	 * @param toPin
+	 *            the destination's pin
+	 * @return A description of the wire
+	 */
 	public WireDTO connect(String fromDevice, String fromPin, String toDevice,
 			String toPin) throws Exception {
 		fromDevice = pid(fromDevice);
 		toDevice = pid(toDevice);
 		return ca.connect(fromDevice, fromPin, toDevice, toPin);
 	}
+
+	/**
+	 * Disconnect a wire by its ide
+	 * 
+	 * @param wireId
+	 *            the wire's id
+	 * @return if the wire existed
+	 */
+	public boolean disconnect(int wireId) throws Exception {
+		return ca.disconnect(wireId);
+	}
+
+	/**
+	 * The class that implements a GPO by sending any input to the System.out
+	 */
+	class SysOut extends GPO {
+		public SysOut(String name, CircuitBoard board, DTOs dtos) {
+			super(name, board, dtos);
+		}
+
+		@Override
+		public void set(boolean value) throws Exception {
+			System.out.println("Setting " + value);
+		}
+	}
+
+	/**
+	 * Create an IC that sends any input to System.out. The life cycle of this
+	 * IC is depending on this component, so it is not persistent.
+	 * 
+	 * @param name the name/id of this IC
+	 */
+	public void gpo(String name) {
+		SysOut gpo = new SysOut(name, board, dtos);
+		Hashtable<String, Object> properties = new Hashtable<>();
+		properties.put(Constants.SERVICE_PID, name);
+		ServiceRegistration<?> reg = context.registerService(IC.class, gpo,
+				properties);
+		ServiceRegistration<?> old = regs.put(name, reg);
+		if (old != null)
+			old.unregister();
+	}
+
+	/**
+	 * Create an IC that reverses the output every second. 
+	 */
+	class Clock extends GPI implements CronJob<Object> {
+		boolean	value;
+
+		public Clock(String name, CircuitBoard board, DTOs dtos) {
+			super(name, board, dtos);
+		}
+
+		@Override
+		public void run(Object data) throws Exception {
+			out().set(value = !value);
+		}
+	}
+	
+	/**
+	 * Create a clock that reverses its output pin ever second. The life cycle of this
+	 * IC is depending on this component, so it is not persistent.
+	 * 
+	 * @param name The name/id of this IC
+	 */
+
+	public void clock(String name) {
+		Clock clock = new Clock(name, board, dtos);
+		Hashtable<String, Object> properties = new Hashtable<>();
+		properties.put(Constants.SERVICE_PID, name);
+		properties.put(CronJob.CRON, "/1 * * * * ?");
+		ServiceRegistration<?> reg = context.registerService(new String[] {
+				IC.class.getName(), CronJob.class.getName() }, clock,
+				properties);
+		ServiceRegistration<?> old = regs.put(name, reg);
+		if (old != null)
+			old.unregister();
+	}
+
 
 	private String pid(String pid) throws InvalidSyntaxException {
 		try {
@@ -88,72 +192,21 @@ public class CircuitCommand {
 		return pid;
 	}
 
-	public boolean disconnect(int wireId) throws Exception {
-		return ca.disconnect(wireId);
-	}
-
-	class SysOut extends GPO {
-		public SysOut(String name, CircuitBoard board, DTOs dtos) {
-			super(name, board, dtos);
-		}
-
-		@Override
-		public void set(boolean value) throws Exception {
-			System.out.println("Setting " + value);
-		}
-	}
-
-	public void gpo(String name) {
-		SysOut gpo = new SysOut(name, board, dtos);
-		Hashtable<String, Object> properties = new Hashtable<>();
-		properties.put(Constants.SERVICE_PID, name);
-		ServiceRegistration<?> reg = context.registerService(IC.class, gpo,
-				properties);
-		ServiceRegistration<?> old = regs.put(name, reg);
-		if (old != null)
-			old.unregister();
-	}
-
-	class Clock extends GPI implements CronJob<Object> {
-		boolean	value;
-
-		public Clock(String name, CircuitBoard board, DTOs dtos) {
-			super(name, board, dtos);
-		}
-		@Override
-		public void run(Object data) throws Exception {
-			out().set(value = !value);
-		}
-	};
-
-	public void clock(String name) {
-		Clock clock = new Clock(name, board,dtos);
-		Hashtable<String, Object> properties = new Hashtable<>();
-		properties.put(Constants.SERVICE_PID, name);
-		properties.put(CronJob.CRON, "/5 * * * * ?");
-		ServiceRegistration<?> reg = context.registerService(new String[] {
-				IC.class.getName(), CronJob.class.getName() }, clock,
-				properties);
-		ServiceRegistration<?> old = regs.put(name, reg);
-		if (old != null)
-			old.unregister();
-	}
-
 	@Reference
 	void setCircuitAdmin(CircuitAdmin ca) {
 		this.ca = ca;
 	}
-	
+
 	@Reference
 	void setCircuitBoard(CircuitBoard board) {
 		this.board = board;
 	}
-	
+
 	@Reference
 	void setDTOs(DTOs dtos) {
 		this.dtos = dtos;
 	}
-	
+
 	@Reference
 	void setScheduler(Scheduler scheduler) {
 	}
