@@ -112,6 +112,11 @@ public class Counter extends ICAdapter<Digital, Octionary> implements Digital {
 		}
 	}
 
+	@Override
+	public void set(boolean value) throws Exception {
+		enable = value;
+	}
+
 	@Reference
 	void setScheduler(Scheduler sch) {
 		this.scheduler = sch;
@@ -121,11 +126,6 @@ public class Counter extends ICAdapter<Digital, Octionary> implements Digital {
 	protected
 	void setCircuitBoard(CircuitBoard board) {
 		super.setCircuitBoard(board);
-	}
-
-	@Override
-	public void set(boolean value) throws Exception {
-		enable = value;
 	}
 
 	

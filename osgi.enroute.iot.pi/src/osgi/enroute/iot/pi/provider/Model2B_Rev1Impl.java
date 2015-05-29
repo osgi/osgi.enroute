@@ -10,6 +10,7 @@ import org.osgi.framework.Constants;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
+import osgi.enroute.iot.gpio.util.Analog;
 import osgi.enroute.iot.gpio.util.GPI;
 import osgi.enroute.iot.gpio.util.GPO;
 import osgi.enroute.iot.gpio.util.ICAdapter;
@@ -24,6 +25,7 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.RaspiPin;
@@ -400,8 +402,33 @@ public class Model2B_Rev1Impl {
 		throw new IllegalArgumentException("PCM not yet implemented");
 	}
 
+	class PWMO extends ICAdapter<Analog,Void> implements Analog {
+
+		private GpioPinPwmOutput pwm;
+
+		public PWMO(GpioPinPwmOutput pwm) {
+			this.pwm = pwm;
+		}
+
+		@Override
+		public void set(double value) {
+			value = value * 1024;
+			if ( value < 0 ) value = 0;
+			else if ( value > 1024 )
+				value=1024;
+			
+			pwm.setPwm((int) Math.round(value));
+		}
+		
+	}
 	private void pwm(Pin pin) {
-		throw new IllegalArgumentException("PWM not yet implemented");
+		GpioPinPwmOutput pwm = this.gpio
+				.provisionPwmOutputPin(pin);
+		
+		unprovision(pin);
+		PWMO pwmo = new PWMO(pwm);
+		
+		register(pin, PWMO.class, pwmo, pwm, pin.getName());
 	}
 
 	private void serial(Baud baud, DataBits dataBits, Parity parity,

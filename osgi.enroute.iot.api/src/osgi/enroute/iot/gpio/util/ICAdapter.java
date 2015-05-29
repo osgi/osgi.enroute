@@ -248,4 +248,7 @@ public abstract class ICAdapter<Input, Output> implements IC {
 		return (InputPin) icdto.inputs[index];
 	}
 
+	protected DTOs getDTOs() {
+		return dtos;
+	}
 }

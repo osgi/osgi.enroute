@@ -1,10 +1,12 @@
 package osgi.enroute.iot.circuit.toolkit;
 
+import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.iot.circuit.toolkit.Flip.FlipConfig;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.Digital;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
 
 @Component(designateFactory=FlipConfig.class, provide=IC.class)
 public class Flip extends ICAdapter<Digital, Digital> implements Digital {
@@ -21,4 +23,11 @@ public class Flip extends ICAdapter<Digital, Digital> implements Digital {
 		}
 		out().set(state);
 	}
+	
+	@Reference
+	protected void setDTOs(DTOs dtos) {
+		super.setDTOs(dtos);
+	}
+
+
 }
