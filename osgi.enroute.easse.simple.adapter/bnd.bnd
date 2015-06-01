@@ -16,6 +16,12 @@ Private-Package:  \
 	osgi.enroute.easse.simple.adapter
 
 Conditional-Package: aQute.lib*
+
+Provide-Capability: 	\
+	osgi.enroute.webresource; \
+		osgi.enroute.webresource=/osgi/enroute/easse; \
+		root=/static/osgi/enroute/easse; \
+		version:Version=${Bundle-Version}
 	
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
