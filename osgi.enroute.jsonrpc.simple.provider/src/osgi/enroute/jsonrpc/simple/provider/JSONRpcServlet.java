@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.dto.DTO;
+import org.osgi.namespace.extender.ExtenderNamespace;
 import org.osgi.service.log.LogService;
 
 import osgi.enroute.capabilities.ServletWhiteboard;
@@ -33,6 +34,7 @@ import osgi.enroute.jsonrpc.dto.JSON.Response;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.converter.Converter;
 import aQute.lib.hex.Hex;
 import aQute.lib.json.JSONCodec;
@@ -43,6 +45,7 @@ import aQute.lib.json.JSONCodec;
  * <p/>
  */
 @ServletWhiteboard
+@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.jsonrpc", version="1.1.1", effective="active")
 @Component(//
 name = "osgi.web.jsonrpc", //
 provide = Servlet.class, //
