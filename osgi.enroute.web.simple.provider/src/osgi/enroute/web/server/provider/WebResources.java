@@ -260,10 +260,10 @@ public class WebResources {
 		//
 		// Write a cache file in the directory of the bundle
 		//
-
-		File file = b.getDataFile(OSGI_ENROUTE_WEBRESOURCE + "/" + version + "/" + glob.toString());
+		String validFileName = toValidFileName(glob.toString());
+		File file = b.getDataFile(OSGI_ENROUTE_WEBRESOURCE + "/" + version + "/" + validFileName);
 		file.getParentFile().mkdirs();
-		File tmp = new File(file.getParentFile(), glob.toString() + "-tmp");
+		File tmp = new File(file.getParentFile(), validFileName + "-tmp");
 
 		//
 		// Collect the resources in the proper order and duplicates removed.
@@ -289,6 +289,28 @@ public class WebResources {
 		tmp.renameTo(file);
 
 		return ws.new Cache(file, b, file.getAbsolutePath());
+	}
+	
+	/**
+	 * make sure the name does not contain any offending characters
+	 */
+
+	static Pattern BADCHAR_P = Pattern.compile("[^a-zA-Z-_.$@%+]");
+	
+	static String toValidFileName(String string) throws UnsupportedEncodingException {
+		StringBuffer sb = new StringBuffer();
+		Matcher m = BADCHAR_P.matcher(string);
+		while (m.find()) {
+			char x = m.group(0).charAt(0);
+			if ( x >= 128 || x <= 0)
+				m.appendReplacement(sb,"");
+			else if ( x <= 15 )
+				m.appendReplacement(sb,"%0" +  Integer.toHexString(x));
+			else 
+				m.appendReplacement(sb,"%" +  Integer.toHexString(x));
+		}
+		m.appendTail(sb);
+		return sb.toString();
 	}
 
 	/*
