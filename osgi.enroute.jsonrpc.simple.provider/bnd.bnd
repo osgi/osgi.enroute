@@ -19,6 +19,12 @@ Private-Package:  \
 	
 Conditional-Package: aQute.lib*
 
+Provide-Capability: 	\
+	osgi.enroute.webresource; \
+		osgi.enroute.webresource=/osgi/enroute/jsonrpc; \
+		root=/static/osgi/enroute/jsonrpc; \
+		version:Version=${Bundle-Version}
+
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\
