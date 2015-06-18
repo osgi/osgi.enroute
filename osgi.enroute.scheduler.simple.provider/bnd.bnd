@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version: 1.0.2.${tstamp}
+Bundle-Version: 1.1.0.${tstamp}
 Bundle-Description: 				\
   This bundle implements a scheduler and some Promise support methods related to time.
   

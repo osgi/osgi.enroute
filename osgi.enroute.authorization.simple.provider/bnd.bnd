@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version: 1.0.1.${tstamp}
+Bundle-Version: 1.1.0.${tstamp}
 Bundle-Description: 				\
 	An implementation of the OSGi enRoute Authorization API based on the \
 	User Admin roles. For a user, the Authorization object is maintained and \

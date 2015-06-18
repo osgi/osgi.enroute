@@ -2,7 +2,7 @@
 # OSGI ENROUTE BASE TEST OSGi TEST BUNDLE 
 #
 
-Bundle-Version: 1.0.1.${tstamp}
+Bundle-Version: 1.0.2.${tstamp}
 Bundle-Description: \
  	This bundle tests all the bundles for enRoute in this repository.
 
