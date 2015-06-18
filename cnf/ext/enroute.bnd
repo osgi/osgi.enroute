@@ -39,7 +39,7 @@ javac.target: 			1.8
 
 Service-Component: 		*
 -dsannotations: 		*
--runfw:					org.eclipse.osgi;version=@3.9.1
+-runfw:					org.eclipse.osgi;version=@3.10.1
 -runee:					JavaSE-1.8
 -runproperties: 		osgi.console.enable.builtin=false, osgi.console=
 -runsystempackages.eqnx:javax.script

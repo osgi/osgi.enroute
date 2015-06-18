@@ -10,5 +10,3 @@ Private-Package: \
 	
 Test-Cases: osgi.enroute.base.test.TestTest
 
--runfw:org.eclipse.osgi;version='[3.9.1.v20130814-1242,3.9.1.v20130814-1242]'
-
