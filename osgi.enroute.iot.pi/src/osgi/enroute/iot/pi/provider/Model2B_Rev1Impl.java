@@ -492,24 +492,27 @@ public class Model2B_Rev1Impl {
 			unprovision(pin);
 			GpioPinDigitalOutput digitalOut = this.gpio
 					.provisionDigitalOutputPin(pin);
+			
+			boolean invert = false;
 			switch (level) {
 			case high:
 				digitalOut.setState(true);
-				;
+				invert = true; // assume the off value is high
+				// therefore invert
 				break;
 
 			default:
 			case off:
 			case low:
 				digitalOut.setState(false);
-				;
+				invert = false; // assume the off value is low
 				break;
 			}
-
+			boolean inverted = invert;
 			GPO gpo = new GPO(name, board, dtos) {
 				@Override
 				public void set(boolean value) throws Exception {
-					digitalOut.setState(value);
+					digitalOut.setState(value ^ inverted);
 				}
 			};
 			register(pin, GPO.class, gpo, digitalOut, name);
