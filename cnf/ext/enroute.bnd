@@ -20,8 +20,7 @@
 	        location            =       ~/.bnd/shacache; \
 	        index               =       ${build}/repository.json; \
 	        depository.group	=		OSGi; \
-    		depository.name		=		enRoute.rt 
-	        , \
+    		depository.name		=		enRoute.rt, \
 \
         aQute.lib.deployer.FileRepo; \
             name                =       'Release' ; \
