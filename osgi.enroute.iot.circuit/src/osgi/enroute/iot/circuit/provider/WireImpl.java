@@ -1,5 +1,7 @@
 package osgi.enroute.iot.circuit.provider;
 
+import java.util.Map;
+
 import osgi.enroute.iot.admin.dto.WireDTO;
 import osgi.enroute.iot.circuit.provider.ICTracker.InputPin;
 import osgi.enroute.iot.circuit.provider.ICTracker.OutputPin;
@@ -13,6 +15,9 @@ public class WireImpl extends WireDTO {
 	OutputPin			output;
 	InputPin			input;
 	CircuitAdminImpl	circuit;
+	public Map<String,Object> __extra;
+	public String factoryPid;
+	
 
 	boolean connect() {
 		ICTracker from = circuit.getIC(fromDevice);

@@ -89,9 +89,11 @@ body {
 
 .input {
 	font-family: Courier;
+	font-size: 8pt;
 }
 .output {
 	font-family: Courier;
+	font-size: 8pt;
 }
 .input .value, .output .value {
 	font-height: smaller;

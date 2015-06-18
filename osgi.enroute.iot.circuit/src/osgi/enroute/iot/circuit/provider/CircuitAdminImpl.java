@@ -1,10 +1,10 @@
 package osgi.enroute.iot.circuit.provider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +14,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -37,34 +42,77 @@ import aQute.lib.collections.MultiMap;
  */
 @Component(immediate = true, name = "osgi.enroute.iot.circuit")
 public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
+	private static final String							WIREFACTORYPID	= "osgi.enroute.iot.circuit.wires";
+	final Map<IC, ICTracker>							ics				= new IdentityHashMap<>();
+	final MultiMap<String, ICTracker>					index			= new MultiMap<>();
+	final Map<String, WireImpl>							wires			= new ConcurrentHashMap<>();
+	final AtomicInteger									id				= new AtomicInteger(
+																				1000);
+	final Object										lock			= new Object();						;
 
-	final Map<IC, ICTracker>		ics		= new IdentityHashMap<>();
-	final MultiMap<String, ICTracker>	index	= new MultiMap<>();
-	final Map<Integer, WireImpl>	wires	= new ConcurrentHashMap<>();
-	final AtomicInteger				id		= new AtomicInteger(1000);
-	final Object					lock	= new Object();					;
-
-	File							schema;
-	DTOs							dtos;
-	ServiceTracker<IC, ICTracker>	tracker;
-	EventAdmin						ea;
+	DTOs												dtos;
+	ServiceTracker<IC, ICTracker>						tracker;
+	EventAdmin											ea;
+	private ConfigurationAdmin							cm;
+	private ServiceRegistration<ManagedServiceFactory>	msf;
 
 	/*
-	 * Activate the circuit board. We first read the board and then allow the 
+	 * Activate the circuit board. We first read the board and then allow the
 	 */
-	
+
 	@Activate
 	void activate(Map<String, Object> map, BundleContext context)
 			throws Exception {
-		schema = context.getDataFile("circuit.schema");
-		readCircuit(schema);
+		System.out.println("Where is my data " + context.getDataFile("foo"));
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		props.put(Constants.SERVICE_PID, WIREFACTORYPID);
+		msf = context.registerService(ManagedServiceFactory.class,
+				new ManagedServiceFactory() {
 
+					@Override
+					public void updated(String pid,
+							Dictionary<String, ?> properties)
+							throws ConfigurationException {
+						try {
+							Map<String, Object> map = new  HashMap<>();
+							Enumeration<String> keys = properties.keys();
+							while ( keys.hasMoreElements()) {
+								String key = keys.nextElement();
+								Object value = properties.get(key);
+								map.put(key, value);
+							}
+
+							WireImpl wire = dtos.convert(map).to(
+									WireImpl.class);
+							wire.circuit = CircuitAdminImpl.this;
+							addWire(wire, pid);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public String getName() {
+						return WIREFACTORYPID;
+					}
+
+					@Override
+					public void deleted(String pid) {
+						WireImpl wire = wires.get(pid);
+						if (wire == null)
+							return;
+
+						removeWire(wire, pid);
+					}
+				}, props);
 		tracker = getTracker(context);
 		tracker.open();
 	}
 
 	@Deactivate
 	void deactivate(Map<String, Object> map) {
+		msf.unregister();
 		tracker.close();
 	}
 
@@ -76,16 +124,20 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	@Override
 	public WireDTO connect(String fromDevice, String fromPin, String toDevice,
 			String toPin) throws Exception {
-		WireImpl wire = new WireImpl();
-		wire.circuit = this;
+
+		WireDTO wire = new WireDTO();
 		wire.wireId = id.incrementAndGet();
 		wire.fromDevice = fromDevice;
 		wire.fromPin = fromPin;
 		wire.toDevice = toDevice;
 		wire.toPin = toPin;
 		wire.wired = false;
-		addWire(wire);
-		save();
+
+		Hashtable<String, Object> ht = new Hashtable<>(dtos.asMap(wire));
+
+		Configuration config = cm.createFactoryConfiguration(WIREFACTORYPID,
+				"?");
+		config.update(ht);
 		return wire;
 	}
 
@@ -94,15 +146,12 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	 */
 	@Override
 	public boolean disconnect(int wireId) throws Exception {
-		WireImpl wire = wires.get(wireId);
-		if (wire == null)
+		Configuration[] list = cm.listConfigurations("(wireId=" + wireId + ")");
+		if (list == null || list.length == 0)
 			return false;
 
-		if (removeWire(wire)) {
-			save();
-			return true;
-		}
-		return false;
+		list[0].delete();
+		return true;
 	}
 
 	/**
@@ -120,27 +169,14 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	}
 
 	/*
-	 * Save the current circuit
-	 */
-	private void save() throws Exception {
-		synchronized (lock) {
-			try (FileOutputStream fout = new FileOutputStream(schema)) {
-				CircuitDTO c = new CircuitDTO();
-				c.wires = new ArrayList<>(wires.values());
-				dtos.encoder(c.wires).put(fout);
-			}
-		}
-	}
-
-	/*
 	 * Add a new IC to the circuit and wire it up if necessary
 	 */
 	void addTracker(ICTracker tracker) {
 		synchronized (lock) {
-			
+
 			ics.put(tracker.ic, tracker);
 			index.add(tracker.icdto.deviceId, tracker);
-			
+
 			for (WireImpl wire : wires.values()) {
 				if (!wire.wired) {
 					if (wire.fromDevice.equals(tracker.icdto.deviceId)
@@ -156,9 +192,9 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 		Map<String, Object> props = new HashMap<String, Object>();
 		Delta delta = new Delta();
 		delta.time = System.currentTimeMillis();
-		
+
 		// TODO Add the data
-		
+
 		Event e = new Event(CircuitAdmin.TOPIC, props);
 		ea.postEvent(e);
 	}
@@ -193,9 +229,9 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	/*
 	 * Add a new wire
 	 */
-	void addWire(WireImpl wire) {
+	void addWire(WireImpl wire, String pid) {
 		synchronized (lock) {
-			wires.put(wire.wireId, wire);
+			wires.put(pid, wire);
 			wire.connect();
 		}
 		event();
@@ -204,10 +240,10 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	/*
 	 * Remove an existing wire
 	 */
-	boolean removeWire(WireImpl wire) {
+	boolean removeWire(WireImpl wire, String pid) {
 		boolean result;
 		synchronized (lock) {
-			result = wires.remove(wire.wireId) != null;
+			result = wires.remove(pid) != null;
 			wire.disconnect();
 		}
 		event();
@@ -260,27 +296,6 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 		};
 	}
 
-	/*
-	 * Read the circuit from disk
-	 */
-	private void readCircuit(File schema) {
-		if (schema.isFile())
-			try {
-				FileInputStream in = new FileInputStream(schema);
-				CircuitDTO circuit = dtos.decoder(CircuitDTO.class).get(in);
-				if (circuit.wires != null) {
-					for (WireImpl wire : circuit.wires) {
-						wire.circuit = this;
-						wire.wireId = id.incrementAndGet();
-						wires.put(wire.wireId, wire);
-					}
-				}
-			} catch (Exception e) {
-				// TODO
-				// System.err.println("Cannot read circuit " + e);
-			}
-	}
-
 	@Override
 	public boolean fire(IC ic, String pin, Object value) {
 
@@ -302,9 +317,9 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 
 	ICTracker getIC(String toDevice) {
 		List<ICTracker> list = index.get(toDevice);
-		if ( list == null || list.isEmpty())
+		if (list == null || list.isEmpty())
 			return null;
-		
+
 		return list.get(0);
 	}
 
@@ -314,8 +329,12 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	}
 
 	@Reference
+	void setCm(ConfigurationAdmin cm) {
+		this.cm = cm;
+	}
+
+	@Reference
 	void setEventAdmin(EventAdmin ea) {
 		this.ea = ea;
 	}
-
 }
