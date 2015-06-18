@@ -6,7 +6,7 @@ Include-Resource: {readme.md}, {LICENSE}
 	osgi.core;version=@6.0.0,\
 	osgi.cmpn;version=@5.0.0,\
 	slf4j.api;version=@1.7.0,\
-	biz.aQute.bndlib;version=@2.3,\
+	biz.aQute.bndlib;version=@2.4.0,\
 	javax.servlet,\
 	slf4j.simple;version=@1.7, \
 	biz.aQute.junit
