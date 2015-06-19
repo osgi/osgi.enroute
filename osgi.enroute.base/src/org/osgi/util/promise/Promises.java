@@ -17,6 +17,7 @@
 package org.osgi.util.promise;
 
 import static org.osgi.util.promise.PromiseImpl.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -121,6 +122,7 @@ public class Promises {
 	 *         {@link FailedPromisesException} must contain all of the specified
 	 *         Promises which resolved with a failure.
 	 */
+	@SafeVarargs
 	public static <T> Promise<List<T>> all(Promise<? extends T>... promises) {
 		@SuppressWarnings("unchecked")
 		List<Promise<T>> list = Arrays.asList((Promise<T>[]) promises);
