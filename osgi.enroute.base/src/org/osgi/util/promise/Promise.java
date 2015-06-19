@@ -25,7 +25,7 @@ import org.osgi.util.function.Predicate;
  * A Promise of a value.
  * 
  * <p>
- * A Promise represents a future value. It handles the interactions to for
+ * A Promise represents a future value. It handles the interactions for
  * asynchronous processing. A {@link Deferred} object can be used to create a
  * Promise and later resolve the Promise. A Promise is used by the caller of an
  * asynchronous function to get the result or handle the error. The caller can
@@ -55,7 +55,7 @@ import org.osgi.util.function.Predicate;
  * <pre>
  * Success&lt;String,String&gt; doubler = new Success&lt;String,String&gt;() {
  *   public Promise&lt;String&gt; call(Promise&lt;String&gt; p) throws Exception {
- *     return Promises.newResolvedPromise(p.getValue()+p.getValue());
+ *     return Promises.resolved(p.getValue()+p.getValue());
  *   }
  * };
  * final Promise&lt;String&gt; foo = foo().then(doubler).then(doubler);
@@ -69,7 +69,7 @@ import org.osgi.util.function.Predicate;
  * @param <T> The value type associated with this Promise.
  * 
  * @ThreadSafe
- * @author $Id: 0ce218dae513ee7bf590451ca976744eb23b30f1 $
+ * @author $Id: ffa193393576e4940a9b38635c5900ddf9067ce2 $
  */
 @ProviderType
 public interface Promise<T> {
@@ -234,15 +234,15 @@ public interface Promise<T> {
 	 * Filter the value of this Promise.
 	 * 
 	 * <p>
-	 * If this Promise is successfully resolved, the returned Promise will
-	 * either be resolved with the value of this Promise if the specified
-	 * Predicate accepts that value or failed with a
-	 * {@code NoSuchElementException} if the specified Predicate does not accept
-	 * that value. If the specified Predicate throws an exception, the returned
-	 * Promise will be failed with the exception.
+	 * If this Promise is successfully resolved, the returned Promise must
+	 * either be resolved with the value of this Promise, if the specified
+	 * Predicate accepts that value, or failed with a
+	 * {@code NoSuchElementException}, if the specified Predicate does not
+	 * accept that value. If the specified Predicate throws an exception, the
+	 * returned Promise must be failed with the exception.
 	 * 
 	 * <p>
-	 * If this Promise is resolved with a failure, the returned Promise will be
+	 * If this Promise is resolved with a failure, the returned Promise must be
 	 * failed with that failure.
 	 * 
 	 * <p>
@@ -259,13 +259,13 @@ public interface Promise<T> {
 	 * Map the value of this Promise.
 	 * 
 	 * <p>
-	 * If this Promise is successfully resolved, the returned Promise will be
+	 * If this Promise is successfully resolved, the returned Promise must be
 	 * resolved with the value of specified Function as applied to the value of
 	 * this Promise. If the specified Function throws an exception, the returned
-	 * Promise will be failed with the exception.
+	 * Promise must be failed with the exception.
 	 * 
 	 * <p>
-	 * If this Promise is resolved with a failure, the returned Promise will be
+	 * If this Promise is resolved with a failure, the returned Promise must be
 	 * failed with that failure.
 	 * 
 	 * <p>
@@ -273,8 +273,8 @@ public interface Promise<T> {
 	 * Promise has been resolved.
 	 * 
 	 * @param <R> The value type associated with the returned Promise.
-	 * @param mapper The Function that will map the value of this Promise to the
-	 *        value that will be used to resolve the returned Promise. Must not
+	 * @param mapper The Function that must map the value of this Promise to the
+	 *        value that must be used to resolve the returned Promise. Must not
 	 *        be {@code null}.
 	 * @return A Promise that returns the value of this Promise as mapped by the
 	 *         specified Function.
@@ -285,13 +285,13 @@ public interface Promise<T> {
 	 * FlatMap the value of this Promise.
 	 * 
 	 * <p>
-	 * If this Promise is successfully resolved, the returned Promise will be
+	 * If this Promise is successfully resolved, the returned Promise must be
 	 * resolved with the Promise from the specified Function as applied to the
 	 * value of this Promise. If the specified Function throws an exception, the
-	 * returned Promise will be failed with the exception.
+	 * returned Promise must be failed with the exception.
 	 * 
 	 * <p>
-	 * If this Promise is resolved with a failure, the returned Promise will be
+	 * If this Promise is resolved with a failure, the returned Promise must be
 	 * failed with that failure.
 	 * 
 	 * <p>
@@ -299,8 +299,8 @@ public interface Promise<T> {
 	 * Promise has been resolved.
 	 * 
 	 * @param <R> The value type associated with the returned Promise.
-	 * @param mapper The Function that will flatMap the value of this Promise to
-	 *        a Promise that will be used to resolve the returned Promise. Must
+	 * @param mapper The Function that must flatMap the value of this Promise to
+	 *        a Promise that must be used to resolve the returned Promise. Must
 	 *        not be {@code null}.
 	 * @return A Promise that returns the value of this Promise as mapped by the
 	 *         specified Function.
@@ -311,19 +311,19 @@ public interface Promise<T> {
 	 * Recover from a failure of this Promise with a recovery value.
 	 * 
 	 * <p>
-	 * If this Promise is successfully resolved, the returned Promise will be
+	 * If this Promise is successfully resolved, the returned Promise must be
 	 * resolved with the value of this Promise.
 	 * 
 	 * <p>
 	 * If this Promise is resolved with a failure, the specified Function is
 	 * applied to this Promise to produce a recovery value.
 	 * <ul>
-	 * <li>If the recovery value is not {@code null}, the returned Promise will
+	 * <li>If the recovery value is not {@code null}, the returned Promise must
 	 * be resolved with the recovery value.</li>
-	 * <li>If the recovery value is {@code null}, the returned Promise will be
+	 * <li>If the recovery value is {@code null}, the returned Promise must be
 	 * failed with the failure of this Promise.</li>
 	 * <li>If the specified Function throws an exception, the returned Promise
-	 * will be failed with that exception.</li>
+	 * must be failed with that exception.</li>
 	 * </ul>
 	 * 
 	 * <p>
@@ -348,7 +348,7 @@ public interface Promise<T> {
 	 * Recover from a failure of this Promise with a recovery Promise.
 	 * 
 	 * <p>
-	 * If this Promise is successfully resolved, the returned Promise will be
+	 * If this Promise is successfully resolved, the returned Promise must be
 	 * resolved with the value of this Promise.
 	 * 
 	 * <p>
@@ -356,11 +356,11 @@ public interface Promise<T> {
 	 * applied to this Promise to produce a recovery Promise.
 	 * <ul>
 	 * <li>If the recovery Promise is not {@code null}, the returned Promise
-	 * will be resolved with the recovery Promise.</li>
-	 * <li>If the recovery Promise is {@code null}, the returned Promise will be
+	 * must be resolved with the recovery Promise.</li>
+	 * <li>If the recovery Promise is {@code null}, the returned Promise must be
 	 * failed with the failure of this Promise.</li>
 	 * <li>If the specified Function throws an exception, the returned Promise
-	 * will be failed with that exception.</li>
+	 * must be failed with that exception.</li>
 	 * </ul>
 	 * 
 	 * <p>
@@ -376,23 +376,24 @@ public interface Promise<T> {
 	Promise<T> recoverWith(Function<Promise<?>, Promise<? extends T>> recovery);
 
 	/**
-	 * Fall back to another Promise if this Promise fails.
+	 * Fall back to the value of the specified Promise if this Promise fails.
 	 * 
 	 * <p>
-	 * If this Promise is successfully resolved, the returned Promise will be
+	 * If this Promise is successfully resolved, the returned Promise must be
 	 * resolved with the value of this Promise.
 	 * 
 	 * <p>
 	 * If this Promise is resolved with a failure, the successful result of the
 	 * specified Promise is used to resolve the returned Promise. If the
-	 * specified Promise is resolved with a failure, the returned Promise will
-	 * be failed with the failure of this Promise.
+	 * specified Promise is resolved with a failure, the returned Promise must
+	 * be failed with the failure of this Promise rather than the failure of the
+	 * specified Promise.
 	 * 
 	 * <p>
 	 * This method may be called at any time including before and after this
 	 * Promise has been resolved.
 	 * 
-	 * @param fallback The Promise whose value will be used to resolve the
+	 * @param fallback The Promise whose value must be used to resolve the
 	 *        returned Promise if this Promise resolves with a failure. Must not
 	 *        be {@code null}.
 	 * @return A Promise that returns the value of this Promise or falls back to

@@ -35,7 +35,7 @@ import org.osgi.annotation.versioning.ConsumerType;
  * @param <R> The value type of the returned Promise from this callback.
  * 
  * @ThreadSafe
- * @author $Id: 58eef5ba732ef999d57a1feaaf1e5229356647e3 $
+ * @author $Id: c29fc4fb6df284dd08c4a18e231fe626e820ffab $
  */
 @ConsumerType
 public interface Success<T, R> {
@@ -53,16 +53,16 @@ public interface Success<T, R> {
 	 * registered as the chained Promise.
 	 * 
 	 * <p>
-	 * If the returned Promise is {@code null} then the chained Promise will
+	 * If the returned Promise is {@code null} then the chained Promise must
 	 * resolve immediately with a successful value of {@code null}. If the
-	 * returned Promise is not {@code null} then the chained Promise will be
+	 * returned Promise is not {@code null} then the chained Promise must be
 	 * resolved when the returned Promise is resolved.
 	 * 
 	 * @param resolved The successfully resolved {@link Promise}.
 	 * @return The Promise to use to resolve the chained Promise, or
 	 *         {@code null} if the chained Promise is to be resolved immediately
 	 *         with the value {@code null}.
-	 * @throws Exception The chained Promise will be failed with the thrown
+	 * @throws Exception The chained Promise must be failed with the thrown
 	 *         exception.
 	 */
 	Promise<R> call(Promise<T> resolved) throws Exception;

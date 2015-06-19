@@ -22,7 +22,7 @@ import java.util.Collections;
 /**
  * Promise failure exception for a collection of failed Promises.
  * 
- * @author $Id: 2c65e5ee31944959ce6961faef48ec4407fcdb98 $
+ * @author $Id: 95546abe53fcca0c3daa3d2847a915fe94b9cef8 $
  */
 public class FailedPromisesException extends RuntimeException {
 	private static final long				serialVersionUID	= 1L;
@@ -32,10 +32,13 @@ public class FailedPromisesException extends RuntimeException {
 	 * Create a new FailedPromisesException with the specified Promises.
 	 * 
 	 * @param failed A collection of Promises that have been resolved with a
-	 *        failure. Must not be {@code null}.
+	 *        failure. Must not be {@code null}, must not be empty and all of
+	 *        the elements in the collection must not be {@code null}.
+	 * @param cause The cause of this exception. This is typically the failure
+	 *        of the first Promise in the specified collection.
 	 */
-	public FailedPromisesException(Collection<Promise<?>> failed) {
-		super();
+	public FailedPromisesException(Collection<Promise<?>> failed, Throwable cause) {
+		super(cause);
 		this.failed = Collections.unmodifiableCollection(failed);
 	}
 

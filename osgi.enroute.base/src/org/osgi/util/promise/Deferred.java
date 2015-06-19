@@ -36,7 +36,7 @@ import static org.osgi.util.promise.PromiseImpl.requireNonNull;
  * @param <T> The value type associated with the created Promise.
  * 
  * @Immutable
- * @author $Id: b12288b7edc994f615dc1305d6aeaeeb56208df7 $
+ * @author $Id: e9ff0a6fa2189934a38d3cf210d5418f8cfaeac7 $
  */
 public class Deferred<T> {
 	private final PromiseImpl<T>	promise;
@@ -126,14 +126,14 @@ public class Deferred<T> {
 	 * {@link Promise#getValue()} and {@link Promise#getFailure()} must not
 	 * block.
 	 * 
-	 * @param with A Promise whose value or failure will be used to resolve the
+	 * @param with A Promise whose value or failure must be used to resolve the
 	 *        associated Promise. Must not be {@code null}.
 	 * @return A Promise that is resolved only when the associated Promise is
-	 *         resolved by the specified Promise. The returned Promise will be
-	 *         successfully resolved, with the value {@code null}, if the
+	 *         resolved by the specified Promise. The returned Promise must be
+	 *         successfully resolved with the value {@code null}, if the
 	 *         associated Promise was resolved by the specified Promise. The
-	 *         returned Promise will be resolved with a failure of
-	 *         {@link IllegalStateException} if the associated Promise was
+	 *         returned Promise must be resolved with a failure of
+	 *         {@link IllegalStateException}, if the associated Promise was
 	 *         already resolved when the specified Promise was resolved.
 	 */
 	public Promise<Void> resolveWith(Promise<? extends T> with) {

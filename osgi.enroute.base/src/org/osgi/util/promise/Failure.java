@@ -31,7 +31,7 @@ import org.osgi.annotation.versioning.ConsumerType;
  * lambda expression or method reference.
  * 
  * @ThreadSafe
- * @author $Id: a4bd1ef9948a4abb9fc01a140bd9562be0beb9aa $
+ * @author $Id: 4e6a178846eef72f2ca385de547d3c13787c0986 $
  */
 @ConsumerType
 public interface Failure {
@@ -48,13 +48,13 @@ public interface Failure {
 	 * callback was registered as the chained Promise.
 	 * 
 	 * <p>
-	 * If this methods completes normally, the chained Promise will be failed
+	 * If this methods completes normally, the chained Promise must be failed
 	 * with the same exception which failed the resolved Promise. If this method
-	 * throws an exception, the chained Promise will be failed with the thrown
+	 * throws an exception, the chained Promise must be failed with the thrown
 	 * exception.
 	 * 
 	 * @param resolved The failed resolved {@link Promise}.
-	 * @throws Exception The chained Promise will be failed with the thrown
+	 * @throws Exception The chained Promise must be failed with the thrown
 	 *         exception.
 	 */
 	void fail(Promise<?> resolved) throws Exception;
