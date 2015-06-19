@@ -1,14 +1,39 @@
-Bundle-Version: 		1.4.0.${tstamp}
+copyright.year = ${tstamp;yyyy}
+copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
+
+base.version:           1.4.0
+build.version:          ${base.version}.${tstamp}
+-outputmask:            ${@bsn}-${version;===;${@version}}.jar
+groupid:                org.osgi
+
+# Documentation
+Bundle-Copyright: ${copyright}
+Bundle-Vendor:    OSGi Alliance http://www.osgi.org/
+Bundle-Version:   ${build.version}
+Bundle-License: http://opensource.org/licenses/apache2.0.php; \
+                link="http://www.apache.org/licenses/LICENSE-2.0"; \
+                description="Apache License, Version 2.0"
+Bundle-DocURL:    http://enroute.osgi.org/
+Bundle-SCM:       url=https://github.com/osgi/osgi.enroute, \
+                  connection=scm:git:https://github.com/osgi/osgi.enroute.git, \
+                  developerConnection=scm:git:git@github.com:osgi/osgi.enroute.git
+Bundle-Developers: osgi; email=info@osgi.org; name="OSGi Alliance"; organization="OSGi Alliance"
+Git-Descriptor:   ${system-allow-fail;git describe --dirty --always}
+Git-SHA:          ${system-allow-fail;git rev-list -1 HEAD}
+
+-pom = \
+ groupid=${groupid}, \
+ version=${base.version}
 
 -includeresource: {README.md}, {LICENSE}
 
 -buildpath:  \
-	osgi.annotation;version=@6.0.1,\
-	osgi.core;version=@6.0.0,\
-	osgi.cmpn;version=@5.0.0,\
-	slf4j.api;version=@1.7.0,\
-	biz.aQute.bndlib;version=@2.4.0,\
-	javax.servlet,\
+	osgi.annotation;version=@6.0.1, \
+	osgi.core;version=@6.0.0, \
+	osgi.cmpn;version=@5.0.0, \
+	slf4j.api;version=@1.7.0, \
+	biz.aQute.bnd.annotation;version=@2.4.0, \
+	javax.servlet, \
 	slf4j.simple;version=@1.7, \
 	biz.aQute.junit
 
@@ -39,9 +64,9 @@ base.packages =  \
 	javax.servlet.http, \
 	javax.servlet.descriptor, \
 	javax.servlet.annotation, \
- 	org.osgi.dto, \
- 	org.osgi.annotation.versioning, \
-  	org.osgi.framework, \
+	org.osgi.dto, \
+	org.osgi.annotation.versioning, \
+	org.osgi.framework, \
 	org.osgi.framework.dto, \
 	org.osgi.framework.hooks.bundle, \
 	org.osgi.framework.hooks.resolver, \
@@ -51,11 +76,11 @@ base.packages =  \
 	org.osgi.framework.namespace, \
 	org.osgi.framework.startlevel, \
 	org.osgi.framework.startlevel.dto, \
-	org.osgi.framework.wiring,\
+	org.osgi.framework.wiring, \
 	org.osgi.framework.wiring.dto, \
 	org.osgi.namespace.contract, \
 	org.osgi.namespace.extender, \
-  	org.osgi.namespace.service, \
+	org.osgi.namespace.service, \
 	org.osgi.resource, \
 	org.osgi.resource.dto, \
 	org.osgi.service.cm, \
@@ -71,7 +96,7 @@ base.packages =  \
 	org.osgi.util.function, \
 	org.osgi.util.promise, \
 	org.osgi.util.tracker, \
-  	org.slf4j, \
+	org.slf4j, \
 	osgi.enroute.authentication.api, \
 	osgi.enroute.authorization.api, \
 	osgi.enroute.capabilities, \
@@ -85,12 +110,6 @@ base.packages =  \
 	osgi.enroute.namespace, \
 	osgi.enroute.rest.api,  \
 	osgi.enroute.scheduler.api
-	
+
 -sub: \
 	*.bnd
-	
-#
-# bndlib contains some OSGi packages that cause a split package message
-# This ignores them.
-#
--fixupmessages: "Split package"

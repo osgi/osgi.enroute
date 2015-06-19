@@ -1,4 +1,4 @@
-Bundle-Description: 	This bundle should contain all the capabilities of a distro but it cannot be resolved.  
+Bundle-Description: This bundle should contain all the capabilities of a distro but it cannot be resolved.
 
 Private-Package: \
 	osgi.enroute.base.provided

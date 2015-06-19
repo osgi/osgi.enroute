@@ -1,9 +1,9 @@
-Bundle-Description:		enRoute is an OSGi project that creates a runtime \
-environment for developing applications. This bundle provides the base API \
-for this environment. In any enRoute ${Bundle-Version} environment you will \
-find implementations for all the contained services. The purpose of this \
-bundle is to be use for compilation, it must not be used in a runtime; in \
-general, providers must carry their service packages.
+Bundle-Description: enRoute is an OSGi project that creates a runtime \
+ environment for developing applications. This bundle provides the base API \
+ for this environment. In any enRoute ${Bundle-Version} environment you will \
+ find implementations for all the contained services. The purpose of this \
+ bundle is to be use for compilation, it must not be used in a runtime; in \
+ general, providers must carry their service packages.
 
 
 
@@ -14,18 +14,18 @@ general, providers must carry their service packages.
 Import-Package: \
 	!javax.servlet.annotation, \
 	*
-	
-# 
+
+#
 # We export all the base packages
 #
 Export-Package: \
 	${base.packages}
 
 #
-# This package provides the capabilities that should be 
-# present in the runtime through an implementation but makes 
-# this bundle also unresolveable so that it cannot be picked 
-# by the resolver. 
+# This package provides the capabilities that should be
+# present in the runtime through an implementation but makes
+# this bundle also unresolveable so that it cannot be picked
+# by the resolver.
 #
 # We also add org.slf4j's default implementation so we use logging
 # in JUnit tests. 
@@ -47,9 +47,8 @@ Conditional-Package:	org.slf4j.*
 
 Require-Capability: \
 	osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-	
-	
-Bundle-Icon: enroute.png
--includeresource: icon/${Bundle-Icon} 
 
--fixupmessages: "slf4j"
+Bundle-Icon: enroute.png
+-includeresource.api: icon/${Bundle-Icon}
+
+-fixupmessages.api: slf4j

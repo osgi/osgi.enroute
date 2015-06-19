@@ -1,6 +1,5 @@
-Bundle-Description: 	This bundle contains the information about the needed \
-	OSGi enRoute base capabilities.   
-
+Bundle-Description: This bundle contains the information about the needed \
+ OSGi enRoute base capabilities.
 
 Import-Package: ${base.packages}, *
 	
