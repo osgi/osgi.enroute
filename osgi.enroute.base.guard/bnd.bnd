@@ -1,3 +1,9 @@
+-includeresource: {${build}/legal}
+
+-buildpath:  \
+	osgi.enroute.base.api;version=latest, \
+	biz.aQute.bnd.annotation;version=@2.4.0
+
 Bundle-Description: This bundle contains the information about the needed \
  OSGi enRoute base capabilities.
 
