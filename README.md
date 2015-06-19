@@ -1,6 +1,8 @@
-# osgi.enroute
+# OSGi enRoute Base Profile
 
-The repository that contains the API definitions for the [OSGi EnRoute][enroute] project.
+The [OSGi enRoute][enroute] project provides a programming model of OSGi applications. The OSGi specifications provide a powerful and solid platform for component oriented programming but by their nature lack ease of use, especially for newcomers to get started.
+
+This project contains bundles providing the API for the OSGi enRoute base profile. The base profile establishes a runtime that contains a minimal set of services that can be used as a base for applications.
 
 ## Contributing
 

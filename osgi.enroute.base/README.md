@@ -2,7 +2,7 @@
 
 The OSGi enRoute project provides a programming model of OSGi applications. The OSGi specifications provide a powerful and solid platform for component oriented programming but by their nature lack ease of use, especially for newcomers to get started.
 
-This bundles provides the API for the OSGi enRoute base profile. The base profile establishes a runtime that contains a minimal set of services that can be used as a base for applications. The base profile provides the following services
+This is a bundle providing the API for the OSGi enRoute base profile. The base profile establishes a runtime that contains a minimal set of services that can be used as a base for applications. The base profile provides the following services
 
 ${replace;${base.services};(.+);- $0\\n}
 

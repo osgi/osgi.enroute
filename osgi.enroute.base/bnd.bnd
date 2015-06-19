@@ -1,6 +1,6 @@
 Bundle-Version: 		1.4.0.${tstamp}
 
-Include-Resource: {readme.md}, {LICENSE}
+-includeresource: {README.md}, {LICENSE}
 
 -buildpath:  \
 	osgi.annotation;version=@6.0.1,\
