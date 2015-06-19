@@ -94,8 +94,6 @@ public class Base //
 
 	@Override
 	public Object getDescriptor() throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
