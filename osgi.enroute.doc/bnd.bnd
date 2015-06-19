@@ -1,3 +1,0 @@
-Bundle-Version:0.0.0.${tstamp}
-
--includeresource: {readme.md}
