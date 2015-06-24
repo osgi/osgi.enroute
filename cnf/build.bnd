@@ -54,8 +54,6 @@ base.packages =  \
 	aQute.bnd.annotation.metatype, \
 	javax.servlet, \
 	javax.servlet.http, \
-	javax.servlet.descriptor, \
-	javax.servlet.annotation, \
 	org.osgi.dto, \
 	org.osgi.annotation.versioning, \
 	org.osgi.framework, \
