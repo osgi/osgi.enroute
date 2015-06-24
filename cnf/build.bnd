@@ -101,5 +101,5 @@ base.packages =  \
 	osgi.enroute.logger.api, \
 	osgi.enroute.namespace, \
 	osgi.enroute.rest.api,  \
-	osgi.enroute.scheduler.api, \
-	osgi.enroute.scheduler.dto
+	osgi.enroute.scheduler.api
+	
