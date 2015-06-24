@@ -29,25 +29,6 @@ Git-SHA:          ${system-allow-fail;git rev-list -1 HEAD}
  groupid=${groupid}, \
  version=${base.version}
 
-base.services = \
-	org.osgi.service.cm.ConfigurationAdmin, \
-	org.osgi.service.coordinator.Coordinator, \
-	org.osgi.service.event.EventAdmin, \
-	org.osgi.service.log.LogService, \
-	org.osgi.service.metatype.MetaTypeService, \
-	org.osgi.service.useradmin.UserAdmin, \
-	org.osgi.service.http.HttpService, \
-	org.slf4j.Logger, \
-	osgi.enroute.authentication.api.Authenticator, \
-	osgi.enroute.authorization.api.Authority, \
-	osgi.enroute.configurer.api.ConfigurationDone, \
-	osgi.enroute.dto.api.DTOs, \
-	osgi.enroute.launch.api.Launched, \
-	osgi.enroute.logger.api.LoggerAdmin, \
-	osgi.enroute.scheduler.Scheduler,  \
-	java.util.Timer, \
-	java.util.concurrent.Executor
-
 base.packages =  \
  	aQute.bnd.annotation.headers, \
 	aQute.bnd.annotation.licenses, \

@@ -1,10 +1,8 @@
 package osgi.enroute.base.required;
 
-import javax.servlet.http.HttpServlet;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.HttpService;
 
 import osgi.enroute.capabilities.AngularUIWebResource;
 import osgi.enroute.capabilities.AngularWebResource;
@@ -15,9 +13,6 @@ import osgi.enroute.capabilities.EventAdminSSEEndpoint;
 import osgi.enroute.capabilities.PagedownWebResource;
 import osgi.enroute.capabilities.ServletWhiteboard;
 import osgi.enroute.capabilities.WebServerExtender;
-import osgi.enroute.jsonrpc.api.JSONRPC;
-import osgi.enroute.rest.api.REST;
-import osgi.enroute.scheduler.api.Scheduler;
 
 /**
  * The purpose of this class is to require all the parts that are part of
@@ -35,9 +30,9 @@ import osgi.enroute.scheduler.api.Scheduler;
 @WebServerExtender
 @Component(property = "enroute.profile=base")
 public class Base //
-		extends HttpServlet // drag in http server
-		implements REST, // REST server
-		JSONRPC // JSON RPC server
+		extends javax.servlet.http.HttpServlet // drag in http server
+		implements osgi.enroute.rest.api.REST, // REST server
+		osgi.enroute.jsonrpc.api.JSONRPC // JSON RPC server
 {
 	private static final long	serialVersionUID	= 1L;
 
@@ -63,6 +58,9 @@ public class Base //
 	void setLauncher(osgi.enroute.launch.api.Launcher v) {}
 
 	@Reference
+	void setLoggerAdmin(osgi.enroute.logger.api.LoggerAdmin v) {}
+
+	@Reference
 	void setLogger(org.slf4j.Logger v) {}
 
 	@Reference
@@ -78,7 +76,7 @@ public class Base //
 	void setDTO(osgi.enroute.dto.api.DTOs v) {}
 
 	@Reference
-	void setSchedule(Scheduler s) {}
+	void setScheduler(osgi.enroute.scheduler.api.Scheduler s) {}
 
 	@Reference
 	void setTimer(java.util.Timer v) {}
@@ -87,10 +85,7 @@ public class Base //
 	void setExecutor(java.util.concurrent.Executor v) {}
 
 	@Reference
-	void setHttp(HttpService v) {}
-
-	@Reference
-	void setScheduler(Scheduler scheduler) {}
+	void setHttp(org.osgi.service.http.HttpService v) {}
 
 	@Override
 	public Object getDescriptor() throws Exception {
