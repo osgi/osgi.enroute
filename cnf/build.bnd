@@ -101,3 +101,10 @@ base.packages =  \
 	osgi.enroute.rest.api,  \
 	osgi.enroute.scheduler.api
 	
+# Need to update osgi.cmpn to R6
+#   org.osgi.namespace.implementation, \
+#   org.osgi.service.metatype.annotation, \
+#   org.osgi.service.http.whiteboard, \
+#   org.osgi.service.http.context, \
+#   org.osgi.service.http.runtime, \
+#   org.osgi.service.http.runtime.dto, \
