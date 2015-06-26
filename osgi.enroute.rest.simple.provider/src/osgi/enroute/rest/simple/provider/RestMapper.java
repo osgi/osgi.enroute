@@ -111,16 +111,12 @@ public class RestMapper {
 		final int		cardinality;
 		final boolean	varargs;
 		final Type		post;
+		final boolean	extraParam;
 
 		public Function(Object target, Method m) {
 			this.target = target;
 			this.method = m;
-			this.cardinality = m.getParameterTypes().length;
-
-			if ((varargs = m.isVarArgs()))
-				this.name = m.getName().toLowerCase();
-			else
-				this.name = m.getName().toLowerCase() + "/" + cardinality;
+			int noParams = m.getParameterTypes().length;
 
 			Type post = null;
 			try {
@@ -130,7 +126,27 @@ public class RestMapper {
 			catch (Exception e) {
 				// Ignore
 			}
+			// if method starts with put/post, and no _body method defined, 
+			// then convert payload data to last method parameter
+			// in this case the last parameter does not count for the cardinality
+			if(post==null && 
+					(m.getName().startsWith("put") 
+					|| m.getName().startsWith("post"))){
+				post = m.getParameterTypes()[noParams-1];
+				noParams--;
+				extraParam = true;
+			} else {
+				extraParam = false;
+			}
+			
 			this.post = post;
+			
+			this.cardinality = noParams;
+			
+			if ((varargs = m.isVarArgs()))
+				this.name = m.getName().toLowerCase();
+			else
+				this.name = m.getName().toLowerCase() + "/" + cardinality;
 		}
 
 		public Type getPost() {
@@ -155,7 +171,7 @@ public class RestMapper {
 		 * @return the converted arguments or null if no possible match
 		 */
 		public Object[] match(Map<String,Object> args, ExtList<String> list) throws Exception {
-			Object[] parameters = new Object[cardinality];
+			Object[] parameters = new Object[cardinality + (extraParam ? 1 : 0)];
 			Type[] types = method.getGenericParameterTypes();
 			parameters[0] = converter.convert(types[0], args);
 
@@ -323,7 +339,12 @@ public class RestMapper {
 					if (type != null
 							&& (rq.getMethod().equalsIgnoreCase("POST") || rq.getMethod().equalsIgnoreCase("PUT"))) {
 						Object arguments = codec.dec().from(rq.getInputStream()).get(type);
-						args.put("_body", arguments);
+						// use it as an extra argument
+						if(f.extraParam){
+							parameters[parameters.length-1] = arguments;
+						} else {
+							args.put("_body", arguments);
+						}
 					}
 
 					//
