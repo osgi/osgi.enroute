@@ -127,12 +127,12 @@ public class RestMapper {
 				// Ignore
 			}
 			// if method starts with put/post, and no _body method defined, 
-			// then convert payload data to last method parameter
-			// in this case the last parameter does not count for the cardinality
+			// then convert payload data to first method parameter after RestRequest
+			// in this case this parameter does not count for the cardinality
 			if(post==null && 
 					(m.getName().startsWith("put") 
 					|| m.getName().startsWith("post"))){
-				post = m.getParameterTypes()[noParams-1];
+				post = m.getParameterTypes()[1];
 				noParams--;
 				extraParam = true;
 			} else {
@@ -175,8 +175,8 @@ public class RestMapper {
 			Type[] types = method.getGenericParameterTypes();
 			parameters[0] = converter.convert(types[0], args);
 
-			for (int i = 1; i < cardinality; i++) {
-				if (varargs && i == cardinality - 1) {
+			for (int i = 1 + (extraParam ? 1 : 0); i < parameters.length; i++) {
+				if (varargs && i == parameters.length-1) {
 					parameters[i] = converter.convert(types[i], list);
 				} else {
 					// varargs but not enough to fill the constants
@@ -341,7 +341,7 @@ public class RestMapper {
 						Object arguments = codec.dec().from(rq.getInputStream()).get(type);
 						// use it as an extra argument
 						if(f.extraParam){
-							parameters[parameters.length-1] = arguments;
+							parameters[1] = arguments;
 						} else {
 							args.put("_body", arguments);
 						}
