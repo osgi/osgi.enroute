@@ -233,17 +233,19 @@ public class RestMapper {
 	 */
 	public synchronized void addResource(REST resource) {
 		for (Method m : resource.getClass().getMethods()) {
-			// restrict to public methods
-			if(!Modifier.isPublic(m.getModifiers())){
-				continue;
-			}
-			// don't expose Object.class methods
-			if(m.getDeclaringClass().equals(Object.class)){
-				continue;
-			}
 
-			Function f = new Function(resource, m);
-			functions.add(f.getName(), f);
+			// restrict to methods starting with HTTP request prefix
+			String methodName = m.getName();
+			if(methodName.startsWith("get")
+				|| methodName.startsWith("post")
+				|| methodName.startsWith("put")
+				|| methodName.startsWith("delete")
+				|| methodName.startsWith("option")
+				|| methodName.startsWith("head")){
+			
+				Function f = new Function(resource, m);
+				functions.add(f.getName(), f);
+			}
 		}
 	}
 
