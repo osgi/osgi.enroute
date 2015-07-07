@@ -32,7 +32,7 @@ import aQute.lib.json.*;
 	configurationPolicy = ConfigurationPolicy.optional, //
 	properties="alias=/rest"
 )
-public class RestServlet extends HttpServlet implements REST {
+public class RestServlet extends HttpServlet {
 	private static final long	serialVersionUID	= 1L;
 	final static JSONCodec		codec				= new JSONCodec();
 	RestMapper					mapper				= new RestMapper(null);
@@ -41,10 +41,6 @@ public class RestServlet extends HttpServlet implements REST {
 		boolean angular();
 
 		String alias();
-	}
-
-	public RestServlet() {
-		addREST(this);
 	}
 
 	Config	config;
