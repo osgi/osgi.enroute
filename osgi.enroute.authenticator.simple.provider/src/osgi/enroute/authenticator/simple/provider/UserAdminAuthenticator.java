@@ -27,7 +27,7 @@ import aQute.lib.base64.Base64;
 import aQute.lib.hex.Hex;
 
 @Component(property = {
-		Debug.COMMAND_FUNCTION + "=hash", Debug.COMMAND_FUNCTION + "=passwd", Debug.COMMAND_FUNCTION + "=adduser",
+        Debug.COMMAND_SCOPE + "=admin", Debug.COMMAND_FUNCTION + "=hash", Debug.COMMAND_FUNCTION + "=passwd", Debug.COMMAND_FUNCTION + "=adduser",
 		Debug.COMMAND_FUNCTION + "=rmrole", Debug.COMMAND_FUNCTION + "=role"
 })
 public class UserAdminAuthenticator implements Authenticator {
