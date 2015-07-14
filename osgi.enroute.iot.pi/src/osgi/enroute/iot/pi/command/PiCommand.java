@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Formatter;
 
+import org.apache.felix.service.command.Parameter;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -53,10 +54,12 @@ public class PiCommand {
 				+ "high <name>                   – set a pin high\n" 
 				+ "low <name>                    – set a pin low\n" 
 				+ "info                          – show all the info of the board\n" 
-				+ "reset                         – reset the controller";
+				+ "reset                         – reset the controller\n"
+				+ "\n" //
+				+ "Pin numbers follow Pi4J GPIO numbers, see http://pi4j.com/pins/model-2b-rev1.html";
 	}
 
-	public void create(String name, int n) {
+	public void create(String name, @Parameter(absentValue = "false", presentValue="true", names = { "--in", "-i" }) boolean in, int n) {
 		Pin defpin = pins[n];
 		GpioPinDigitalOutput out = gpio.provisionDigitalOutputPin(defpin, name);
 		System.out.println(out + " " + out.getMode());
