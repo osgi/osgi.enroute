@@ -5,7 +5,7 @@
 vrs  = 3.3.1
 path = static/twitter/bootstrap/${vrs}
 
-Bundle-Version: 3.3.1.${tstamp}
+Bundle-Version: 3.3.2.${tstamp}
 Bundle-Description: 	\
 	Bootstrap: Sleek, intuitive, and powerful front-end framework for faster and \
 	easier web development.

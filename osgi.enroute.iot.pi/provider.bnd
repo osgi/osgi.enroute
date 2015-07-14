@@ -2,9 +2,6 @@
 # OSGI ENROUTE IOT PI	BUNDLE 
 #
 
-Bundle-Description: 				\
-	A provider for the Raspberry Pi
-
 	
 Export-Package: \
 	osgi.enroute.iot.pi.api,\

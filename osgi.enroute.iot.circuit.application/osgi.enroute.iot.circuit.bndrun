@@ -5,6 +5,7 @@
 
 Bundle-Version:				1.0.0.${tstamp}
 Bundle-SymbolicName:		osgi.enroute.iot.circuit.application.launch
+JPM-Command					circuit
 
 -runpath: biz.aQute.remote.launcher
 
