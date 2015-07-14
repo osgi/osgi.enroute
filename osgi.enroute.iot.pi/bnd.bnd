@@ -3,13 +3,24 @@
 #
 
 Bundle-Version:					1.0.0.${tstamp}
-
+Bundle-Description: \
+	This bundle wraps Pi4j (http://pi4j.com) that wraps the native code Wiring Pi (http://wiringpi.com). \
+	It wraps these libraries to make them OSGi friendly and allow them to work together with the \
+	OSGi enRoute IoT circuit library (osgi.enroute.iot.circuit). The bundle will first use \
+	Pi4J to detect on what hardware it runs. If it runs on an appropriate type, it will register a \
+	component that can be configured with Metatype. The Metatype defines a full blown configuration \
+	template for all the Pi's functions. The GPIO's are registered as components for the circuit. \
+	Regardless of the success of the configuration, this bundle \
+	will also register a GpioController service, which is the main Pi4J class.
+	
+	
 	
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\
 	osgi.enroute.iot.api;version=latest,\
 	biz.aQute.bndlib,\
+	org.apache.felix.gogo.runtime, \
 	jar/pi4j-core.jar;version=file
 
 -sub:  \
