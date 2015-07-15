@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -52,6 +53,7 @@ public abstract class ICAdapter<Input, Output> implements IC {
 	private ICDTO icdto = new ICDTO();
 	private CircuitBoard board;
 	private DTOs dtos;
+	private AtomicReference<Delayed> delayed = new AtomicReference<>();
 
 	private Object[] inputNames;
 
@@ -65,10 +67,16 @@ public abstract class ICAdapter<Input, Output> implements IC {
 		setDTOs(dtos);
 		setCircuitBoard(board);
 	}
+	
+	static class Delayed {
+		String name;
+		Object value;
+	}
+
 	/**
 	 * Constructor.
 	 */
-	public ICAdapter() {
+	protected ICAdapter() {
 		Class<?> rover = this.getClass();
 		while (rover.getSuperclass() != ICAdapter.class) {
 			rover = rover.getSuperclass();
@@ -134,13 +142,20 @@ public abstract class ICAdapter<Input, Output> implements IC {
 			out = (Output) Proxy.newProxyInstance(output.getClassLoader(),
 					new Class<?>[] { output }, new InvocationHandler() {
 
+
 						@Override
 						public Object invoke(Object proxy, Method method,
 								Object[] args) throws Throwable {
 							if (board != null && args.length == 1) {
 								board.fire(ICAdapter.this, method.getName(),
 										args[0]);
+							} else {
+								Delayed d = new Delayed();
+								d.name = method.getName();
+								d.value = args[0];
+								delayed.set(d);
 							}
+								
 							return null;
 						}
 					});
@@ -216,6 +231,13 @@ public abstract class ICAdapter<Input, Output> implements IC {
 
 	protected void setCircuitBoard(CircuitBoard board) {
 		this.board = board;
+		if ( board != null) {
+			
+			Delayed d = delayed.getAndSet(null);
+			if ( d != null) {
+				this.board.fire(this, d.name, d.value);
+			}
+		}
 	}
 
 	protected void setDeviceId(String id) {
