@@ -136,6 +136,10 @@ public class ICTracker implements InvocationHandler {
 		this.outputNames = Stream.of(this.outputs).map(p -> p.pin.name)
 				.toArray(n -> new String[n]);
 	}
+	
+	String getName() {
+		return this.icdto.deviceId;
+	}
 
 	public void close() throws IOException {
 		if (closed.getAndSet(true)) {

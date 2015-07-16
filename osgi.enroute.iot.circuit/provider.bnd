@@ -17,7 +17,7 @@ Export-Package: \
 
 Private-Package: \
 	osgi.enroute.iot.circuit.provider,\
-	osgi.enroute.iot.circuit.toolkit
+	osgi.enroute.iot.toolkit
 
 -includeresource: {readme.md}
-Bundle-Version: 1.1.0.${tstamp}
+Bundle-Version: 2.0.0.${tstamp}

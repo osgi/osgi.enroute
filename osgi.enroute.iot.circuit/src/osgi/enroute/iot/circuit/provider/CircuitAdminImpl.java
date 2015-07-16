@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,6 +37,7 @@ import osgi.enroute.iot.admin.dto.WireDTO;
 import osgi.enroute.iot.circuit.provider.ICTracker.OutputPin;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
+import osgi.enroute.scheduler.api.Scheduler;
 import aQute.lib.collections.MultiMap;
 
 /**
@@ -55,6 +58,8 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	EventAdmin											ea;
 	private ConfigurationAdmin							cm;
 	private ServiceRegistration<ManagedServiceFactory>	msf;
+	private Set<String>									names			= new HashSet<>();
+	private Scheduler									sc;
 
 	/*
 	 * Activate the circuit board. We first read the board and then allow the
@@ -74,16 +79,16 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 							Dictionary<String, ?> properties)
 							throws ConfigurationException {
 						try {
-							Map<String, Object> map = new  HashMap<>();
+							Map<String, Object> map = new HashMap<>();
 							Enumeration<String> keys = properties.keys();
-							while ( keys.hasMoreElements()) {
+							while (keys.hasMoreElements()) {
 								String key = keys.nextElement();
 								Object value = properties.get(key);
 								map.put(key, value);
 							}
 
-							WireImpl wire = dtos.convert(map).to(
-									WireImpl.class);
+							WireImpl wire = dtos.convert(map)
+									.to(WireImpl.class);
 							wire.circuit = CircuitAdminImpl.this;
 							addWire(wire, pid);
 						} catch (Exception e) {
@@ -106,8 +111,16 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 						removeWire(wire, pid);
 					}
 				}, props);
-		tracker = getTracker(context);
-		tracker.open();
+		
+
+		//
+		// To break any circularity
+		//
+		
+		sc.after(()-> {
+			tracker = getTracker(context);
+			tracker.open();
+		}, 200);
 	}
 
 	@Deactivate
@@ -260,18 +273,12 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 			public ICTracker addingService(ServiceReference<IC> reference) {
 				try {
 					IC ic = context.getService(reference);
+					if (ic == null)
+						return null;
 
-					String pid = (String) reference.getProperty("name");
-					if (pid == null) {
-						pid = (String) reference
-								.getProperty(Constants.SERVICE_PID);
-						if (pid == null) {
-							pid = reference.getProperty(Constants.SERVICE_ID)
-									+ "";
-						}
-					}
+					String name = getName(reference, ic);
 
-					ICTracker tracker = new ICTracker(pid, ic,
+					ICTracker tracker = new ICTracker(name, ic,
 							CircuitAdminImpl.this);
 					addTracker(tracker);
 					return tracker;
@@ -282,10 +289,48 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 				}
 			}
 
+			/*
+			 * Get the name of the IC. We first try the 'name' service property
+			 * because that is set by config admin. Then we try the getname
+			 * method on the IC, then the PID, and last resort is service id.
+			 */
+			private String getName(ServiceReference<IC> reference, IC ic) {
+
+				String name = (String) reference.getProperty("name");
+
+				if (name == null || name.isEmpty()) {
+					name = ic.getName();
+					if (name == null) {
+
+						name = (String) reference
+								.getProperty(Constants.SERVICE_PID);
+						if (name == null) {
+
+							name = reference.getProperty(Constants.SERVICE_ID)
+									+ "";
+						}
+					}
+				}
+
+				synchronized (names) {
+					int n = 1;
+					String t = name;
+					while (names.contains(t))
+						t = name + "-" + n++;
+
+					name = t;
+					names.add(name);
+				}
+				return name;
+			}
+
 			@Override
 			public void removedService(ServiceReference<IC> reference,
 					ICTracker service) {
 				try {
+					synchronized (names) {
+						names.remove(service.getName());
+					}
 					super.removedService(reference, service);
 					removeTracker(service);
 				} catch (Exception e) {
@@ -336,5 +381,10 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	@Reference
 	void setEventAdmin(EventAdmin ea) {
 		this.ea = ea;
+	}
+
+	@Reference
+	void setScheduler(Scheduler sc) {
+		this.sc = sc;
 	}
 }
