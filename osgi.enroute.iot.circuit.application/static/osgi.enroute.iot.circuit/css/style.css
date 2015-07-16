@@ -82,3 +82,9 @@ body {
     border-bottom: 0;
   }
 }
+
+div {
+	word-wrap: break-word; // legacy name
+	word-break: break-word;
+	overflow-wrap: break-word; // new name as per the CSS3 spec
+}
