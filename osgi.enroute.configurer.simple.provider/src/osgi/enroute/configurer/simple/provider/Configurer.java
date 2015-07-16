@@ -109,13 +109,16 @@ public class Configurer implements ConfigurationDone {
 				@Override
 				public Object addingBundle(Bundle bundle, BundleEvent event) {
 					try {
+						boolean defined = true;
 						String h = bundle.getHeaders().get(ConfigurationDone.BUNDLE_CONFIGURATION);
-						if (h == null)
+						if (h == null) {
 							//
 							// We use a default configuration if the header is
 							// not set for convenience
 							//
 							h = CONFIGURATION_LOC;
+							defined = false;
+						}
 
 						h = h.trim();
 						if (h.isEmpty())
@@ -132,7 +135,8 @@ public class Configurer implements ConfigurationDone {
 
 						String s = IO.collect(url);
 						if (s == null) {
-							log.log(LogService.LOG_INFO, "Cannot find configuration for bundle "+bundle+" in " + h + " " + url);
+							if ( defined )
+								log.log(LogService.LOG_INFO, "Cannot find configuration for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + h + " " + url);
 							return null;
 						}
 
@@ -144,8 +148,7 @@ public class Configurer implements ConfigurationDone {
 
 					//
 					// We do not have to track this, we leave the configuration
-					// in
-					// cm. TODO purge command
+					// in cm. TODO purge command
 					//
 					return null;
 				}
