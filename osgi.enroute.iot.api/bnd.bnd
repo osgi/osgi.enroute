@@ -2,7 +2,7 @@
 # OSGI ENROUTE IOT API
 #
 
-Bundle-Version: 1.1.0.${tstamp}
+Bundle-Version: 2.0.0.${tstamp}
 Bundle-Description: 				\
 	This project is for here now to help develop a Raspberry Pi provider and \
 	maybe an emulator for this API. Once this stablizes we can move it to \

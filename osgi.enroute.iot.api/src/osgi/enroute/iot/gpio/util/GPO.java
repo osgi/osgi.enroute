@@ -13,5 +13,5 @@ public abstract class GPO extends ICAdapter<Digital, Void> implements Digital {
 	public GPO(String name, CircuitBoard board, DTOs dtos) {
 		super(name,dtos,board);
 	}
-
+	
 }

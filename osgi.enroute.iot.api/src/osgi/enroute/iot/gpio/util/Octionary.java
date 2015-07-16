@@ -1,4 +1,4 @@
-package osgi.enroute.iot.circuit.toolkit;
+package osgi.enroute.iot.gpio.util;
 
 public interface Octionary {
 	void d0(boolean value);

@@ -61,13 +61,13 @@ public abstract class ICAdapter<Input, Output> implements IC {
 		Method method;
 	}
 
-	public ICAdapter( String deviceId, DTOs dtos, CircuitBoard board) {
+	public ICAdapter(String deviceId, DTOs dtos, CircuitBoard board) {
 		this();
 		setDeviceId(deviceId);
 		setDTOs(dtos);
 		setCircuitBoard(board);
 	}
-	
+
 	static class Delayed {
 		String name;
 		Object value;
@@ -99,9 +99,11 @@ public abstract class ICAdapter<Input, Output> implements IC {
 			//
 			// Create the input pins
 			//
-			icdto.inputs = Stream.of(this.input.getMethods())
+			icdto.inputs = Stream
+					.of(this.input.getMethods())
 					.sorted((a, b) -> a.getName().compareTo(b.getName()))
-					.filter((m)-> !(Modifier.isStatic(m.getModifiers()) || m.getParameterTypes().length!=1))
+					.filter((m) -> !(Modifier.isStatic(m.getModifiers()) || m
+							.getParameterTypes().length != 1))
 					.map((method) -> {
 						InputPin in = new InputPin();
 						in.name = method.getName();
@@ -119,9 +121,11 @@ public abstract class ICAdapter<Input, Output> implements IC {
 			//
 			// Create the output pins
 			//
-			icdto.outputs = Stream.of(this.output.getMethods())
+			icdto.outputs = Stream
+					.of(this.output.getMethods())
 					.sorted((a, b) -> a.getName().compareTo(b.getName()))
-					.filter((m)-> !(Modifier.isStatic(m.getModifiers()) || m.getParameterTypes().length!=1))
+					.filter((m) -> !(Modifier.isStatic(m.getModifiers()) || m
+							.getParameterTypes().length != 1))
 					.map((method) -> {
 						PinDTO out = new PinDTO();
 						out.name = method.getName();
@@ -142,7 +146,6 @@ public abstract class ICAdapter<Input, Output> implements IC {
 			out = (Output) Proxy.newProxyInstance(output.getClassLoader(),
 					new Class<?>[] { output }, new InvocationHandler() {
 
-
 						@Override
 						public Object invoke(Object proxy, Method method,
 								Object[] args) throws Throwable {
@@ -155,7 +158,7 @@ public abstract class ICAdapter<Input, Output> implements IC {
 								d.value = args[0];
 								delayed.set(d);
 							}
-								
+
 							return null;
 						}
 					});
@@ -220,21 +223,54 @@ public abstract class ICAdapter<Input, Output> implements IC {
 		return icdto;
 	}
 
-	private String getName() {
+	public String getName() {
+		if (icdto != null && icdto.deviceId != null)
+			return icdto.deviceId;
+
 		String name = getClass().getName();
 		Matcher m = LAST_SEGMENT_P.matcher(name);
-		if (m.matches())
-			return m.group(1);
-		else
+		if (m.matches()) {
+			name = m.group(1);
+			if (name.length() <= 8)
+				return name;
+
+			//
+			// Abbreviate by removing vowels
+			// from the end
+			//
+			
+			StringBuilder consonants = new StringBuilder(name);
+			for (int i = consonants.length() - 1; i > 0 && consonants.length()>8; i--) {
+				char c = name.charAt(i);
+				if ("aeuio".indexOf(c) >= 0)
+					consonants.delete(i, i + 1);
+			}
+			if (consonants.length() < 8)
+				return consonants.toString();
+
+			//
+			// Abbreviate by just using the upper
+			// case characters
+			//
+			
+			StringBuilder sb = new StringBuilder(name.substring(0,1));
+			for (int i = 1; i < name.length(); i++) {
+				char c = name.charAt(i);
+				if (Character.isUpperCase(c)) {
+					sb.append(c);
+				}
+			}
+			return sb.toString();
+		} else
 			return name;
 	}
 
 	protected void setCircuitBoard(CircuitBoard board) {
 		this.board = board;
-		if ( board != null) {
-			
+		if (board != null) {
+
 			Delayed d = delayed.getAndSet(null);
-			if ( d != null) {
+			if (d != null) {
 				this.board.fire(this, d.name, d.value);
 			}
 		}
@@ -243,18 +279,17 @@ public abstract class ICAdapter<Input, Output> implements IC {
 	protected void setDeviceId(String id) {
 		icdto.deviceId = id;
 	}
-	
+
 	protected void setDTOs(DTOs dtos) {
 		this.dtos = dtos;
 	}
-
 
 	@Override
 	public void fire(String pin, Object value) throws Exception {
 		InputPin input = getInputPin(pin);
 		if (input != null) {
 			Type t = input.method.getGenericParameterTypes()[0];
-			if ( dtos != null)
+			if (dtos != null)
 				value = dtos.convert(value).to(t);
 			else
 				System.out.println("No DTOs set for " + this);
