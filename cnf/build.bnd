@@ -74,6 +74,10 @@ base.packages =  \
 	osgi.enroute.configurer.api, \
 	osgi.enroute.debug.api, \
 	osgi.enroute.dto.api, \
+	osgi.enroute.iot.admin.api, \
+	osgi.enroute.iot.admin.dto, \
+	osgi.enroute.iot.gpio.api, \
+	osgi.enroute.iot.gpio.util, \
 	osgi.enroute.jsonrpc.api, \
 	osgi.enroute.jsonrpc.dto, \
 	osgi.enroute.launch.api, \
