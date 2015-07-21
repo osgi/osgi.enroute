@@ -78,8 +78,8 @@ import aQute.libg.glob.*;
  * </pre>
  * <p>
  * <a href=
- * 'https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?raw
- * = t r u e ' > RFP 171 Web Resources (PDF)</a>
+ * 'https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?r
+ * a w = t r u e ' > RFP 171 Web Resources (PDF)</a>
  */
 public class WebResources {
 	private static final String			OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
@@ -213,30 +213,48 @@ public class WebResources {
 				if (url != null)
 					webresources.add(new WR(url, 0, order++));
 			} else {
+
 				//
 				// We allow single entry or multiple entries for resources
 				// so we use the converter
 				//
 
-				List<String> resources = Converter.cnv(listOfStrings, attrs.get("resource"));
-				if ( resources == null)
-					continue;
-				
 				int priority = Converter.cnv(Integer.class, attrs.get("priority"));
+				List<String> resources = Converter.cnv(listOfStrings, attrs.get("resource"));
+				if (resources != null) {
 
-				//
-				// Add all the resources to the list
-				//
+					//
+					// Add all the resources to the list
+					//
 
-				for (String resource : resources) {
-					if (glob.matcher(resource).matches()) {
-						URL url = provider.getBundle().getEntry(root + resource);
-						if (url != null) {
+					for (String resource : resources) {
+						if (glob.matcher(resource).matches()) {
+							URL url = provider.getBundle().getEntry(root + resource);
+							if (url != null) {
+								webresources.add(new WR(url, priority, order++));
+							} else {
+								logger.error("A web resource " + resource + " from " + requirement + " in bundle "
+										+ bsn + "-" + version);
+								return null;
+							}
+						}
+					}
+				} else {
+					//
+					// If no resources are specified we fill it with
+					// the existing resources
+					//
+
+					List<URL> entries = Collections.list(provider.getBundle().findEntries(root, "*", true));
+
+					for (URL url : entries) {
+						String p = url.getPath();
+						int n = p.lastIndexOf('/');
+						if (n >= 0)
+							p = p.substring(n + 1);
+
+						if (glob.matcher(p).matches()) {
 							webresources.add(new WR(url, priority, order++));
-						} else {
-							logger.error("A web resource " + resource + " from " + requirement + " in bundle " + bsn
-									+ "-" + version);
-							return null;
 						}
 					}
 				}
@@ -290,24 +308,24 @@ public class WebResources {
 
 		return ws.new Cache(file, b, file.getAbsolutePath());
 	}
-	
+
 	/**
 	 * make sure the name does not contain any offending characters
 	 */
 
-	static Pattern BADCHAR_P = Pattern.compile("[^a-zA-Z-_.$@%+]");
-	
+	static Pattern	BADCHAR_P	= Pattern.compile("[^a-zA-Z-_.$@%+]");
+
 	static String toValidFileName(String string) throws UnsupportedEncodingException {
 		StringBuffer sb = new StringBuffer();
 		Matcher m = BADCHAR_P.matcher(string);
 		while (m.find()) {
 			char x = m.group(0).charAt(0);
-			if ( x >= 128 || x <= 0)
-				m.appendReplacement(sb,"");
-			else if ( x <= 15 )
-				m.appendReplacement(sb,"%0" +  Integer.toHexString(x));
-			else 
-				m.appendReplacement(sb,"%" +  Integer.toHexString(x));
+			if (x >= 128 || x <= 0)
+				m.appendReplacement(sb, "");
+			else if (x <= 15)
+				m.appendReplacement(sb, "%0" + Integer.toHexString(x));
+			else
+				m.appendReplacement(sb, "%" + Integer.toHexString(x));
 		}
 		m.appendTail(sb);
 		return sb.toString();
