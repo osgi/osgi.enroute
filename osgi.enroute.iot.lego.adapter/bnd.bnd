@@ -1,0 +1,34 @@
+#
+# OSGI ENROUTE IOT LIRC ADAPTER BUNDLE 
+#
+
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: 				\
+	A bundle with a provider. Notice that this provider exports the API package. \
+	It also provides a JUnit test and it can be run standalone. \
+	\
+	${warning;Please update this Bundle-Description in osgi.enroute.iot.lirc.adapter/bnd.bnd}
+
+Private-Package:  \
+	osgi.enroute.iot.lego.adapter
+	
+	
+Conditional-Package: aQute.lib*
+
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.junit, \
+	biz.aQute.bndlib;packages=*,\
+	osgi.enroute.iot.api;version=latest
+
+-includeresource: {readme.md}
+
+
+-runrequires:  \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.lirc.adapter)'
+	
+-runbundles: \
+	${error;Resolve first}
+
+-dsannotations: *
