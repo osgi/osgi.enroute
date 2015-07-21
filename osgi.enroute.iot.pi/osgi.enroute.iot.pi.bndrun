@@ -8,20 +8,21 @@ Bundle-Version:				1.0.0.${tstamp}
 Bundle-SymbolicName:		osgi.enroute.iot.pi.launch
 JPMCommand:					pi
 
--runpath: /Ws/bnd/biz.aQute.remote/generated/biz.aQute.remote.launcher.jar;version=file, osgi.enroute.equinox.log.adapter
+-runpath: biz.aQute.remote.launcher, osgi.enroute.equinox.log.adapter
 
 -runremote: \
 	pi; \
-		jdb     =   1045; \
+		jdb     =   1044; \
 		host    =   192.168.2.4; \
-		shell	=	1
+		shell	=	-1
 
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.pi.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.pi.command)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.command)',\
-	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.application)'
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.application)',\
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.lego.adapter)'
 
 -runbundles: \
 	biz.aQute.bnd.annotation;version='[2.4.0,2.4.1)',\

@@ -14,6 +14,8 @@ JPM-Command					circuit
 		jdb     =   1044; \
 		host    =   192.168.2.4; \
 		shell	=	1
+-runpath: \
+	biz.aQute.remote.launcher
 
 -runfw:						org.eclipse.osgi
 	
@@ -23,7 +25,8 @@ JPM-Command					circuit
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.pi.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.command)',\
-	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.pi.command)'
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.pi.command)',\
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.lirc.adapter)'
 
 -runbundles: \
 	biz.aQute.bnd.annotation;version='[2.4.0,2.4.1)',\
