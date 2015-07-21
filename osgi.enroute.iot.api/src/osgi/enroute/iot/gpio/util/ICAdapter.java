@@ -238,9 +238,10 @@ public abstract class ICAdapter<Input, Output> implements IC {
 			// Abbreviate by removing vowels
 			// from the end
 			//
-			
+
 			StringBuilder consonants = new StringBuilder(name);
-			for (int i = consonants.length() - 1; i > 0 && consonants.length()>8; i--) {
+			for (int i = consonants.length() - 1; i > 0
+					&& consonants.length() > 8; i--) {
 				char c = name.charAt(i);
 				if ("aeuio".indexOf(c) >= 0)
 					consonants.delete(i, i + 1);
@@ -252,8 +253,8 @@ public abstract class ICAdapter<Input, Output> implements IC {
 			// Abbreviate by just using the upper
 			// case characters
 			//
-			
-			StringBuilder sb = new StringBuilder(name.substring(0,1));
+
+			StringBuilder sb = new StringBuilder(name.substring(0, 1));
 			for (int i = 1; i < name.length(); i++) {
 				char c = name.charAt(i);
 				if (Character.isUpperCase(c)) {
@@ -289,10 +290,32 @@ public abstract class ICAdapter<Input, Output> implements IC {
 		InputPin input = getInputPin(pin);
 		if (input != null) {
 			Type t = input.method.getGenericParameterTypes()[0];
-			if (dtos != null)
-				value = dtos.convert(value).to(t);
-			else
-				System.out.println("No DTOs set for " + this);
+			if (t instanceof Class && ((Class<?>) t).isPrimitive()) {
+				if (t == boolean.class)
+					t = Boolean.class;
+				else if (t == byte.class)
+					t = Byte.class;
+				else if (t == char.class)
+					t = Character.class;
+				else if (t == short.class)
+					t = Short.class;
+				else if (t == int.class)
+					t = Integer.class;
+				else if (t == long.class)
+					t = Long.class;
+				else if (t == float.class)
+					t = Float.class;
+				else if (t == double.class)
+					t = Double.class;
+
+			}
+			if (t != value.getClass()) {
+				if (dtos != null)
+					value = dtos.convert(value).to(t);
+				else {
+					System.out.println("No DTOs set for " + this);
+				}
+			}
 			input.method.invoke(this, value);
 		}
 	}
