@@ -5,10 +5,9 @@
 
 Bundle-Version:					1.0.0.${tstamp}
 Bundle-Description: 				\
-	A bundle with a provider. Notice that this provider exports the API package. \
-	It also provides a JUnit test and it can be run standalone. \
-	\
-	${warning;Please update this Bundle-Description in osgi.enroute.iot.lirc.adapter/bnd.bnd}
+	This bundle implements an IC that takes as input the A & B motor controls from the \
+	Lego IR adapter. It translates these controls to an IR Wave that is compatbile with \
+	the lirc adapter on the Raspberry PI.
 
 Private-Package:  \
 	osgi.enroute.iot.lego.adapter
@@ -16,11 +15,10 @@ Private-Package:  \
 	
 Conditional-Package: aQute.lib*
 
--buildpath:  \
+-buildpath: \
 	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit, \
-	biz.aQute.bndlib;packages=*,\
-	osgi.enroute.iot.api;version=latest
+	biz.aQute.junit,\
+	biz.aQute.bndlib;packages=*
 
 -includeresource: {readme.md}
 

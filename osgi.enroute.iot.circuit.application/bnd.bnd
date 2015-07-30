@@ -7,6 +7,8 @@ Bundle-Description: \
 	A GUI for the Circuit Admin. This application shows the registered ICs + wires \
 	and can wire ICs together.
 
+EnRoute-Application: osgi.enroute.iot.circuit
+
 Private-Package:  \
 	osgi.enroute.iot.circuit.application
 	
@@ -19,6 +21,5 @@ Private-Package:  \
 -buildpath: \
 	osgi.enroute.base.api,\
 	osgi.enroute.logger.simple.provider,\
-	osgi.enroute.web.simple.provider;version=1.2,\
-	osgi.enroute.iot.api;version=latest
+	osgi.enroute.web.simple.provider;version=1.2
 	

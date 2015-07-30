@@ -19,9 +19,8 @@ Conditional-Package: aQute.lib*
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\
-	osgi.enroute.iot.api;version=latest,\
 	biz.aQute.bndlib;packages=*,\
-	org.apache.felix.gogo.runtime, \
+	org.apache.felix.gogo.runtime,\
 	jar/pi4j-core.jar;version=file
 
 -sub:  \
