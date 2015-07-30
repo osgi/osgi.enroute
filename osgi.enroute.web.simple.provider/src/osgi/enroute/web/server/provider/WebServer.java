@@ -20,28 +20,36 @@ import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
 import osgi.enroute.capabilities.*;
+import osgi.enroute.dto.api.*;
+import osgi.enroute.web.server.provider.IndexDTO.ApplicationDTO;
 import aQute.bnd.annotation.component.*;
 import aQute.bnd.annotation.headers.*;
 import aQute.lib.base64.Base64;
 import aQute.lib.converter.*;
 import aQute.lib.hex.*;
 import aQute.lib.io.*;
+import aQute.lib.json.*;
 import aQute.libg.cryptography.*;
+import aQute.libg.sed.*;
 
-@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.webserver", version="1.1.0", effective="active")
+@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = "osgi.enroute.webserver", version = "1.1.0", effective = "active")
 @ServletWhiteboard
-@Component(provide = { Servlet.class }, configurationPolicy = ConfigurationPolicy.optional, immediate = true, properties = {
-		"alias=/", "name=" + WebServer.NAME }, name = WebServer.NAME)
+@Component(provide = {
+	Servlet.class
+}, configurationPolicy = ConfigurationPolicy.optional, immediate = true, properties = {
+		"alias=/", "name=" + WebServer.NAME, "no.index=true"
+}, name = WebServer.NAME)
 public class WebServer extends HttpServlet {
 
 	public WebServer() {
 		System.out.println("Web server");
 	}
-	static final String NAME = "osgi.enroute.simple.server";
+
+	static final String	NAME	= "osgi.enroute.simple.server";
 
 	public class RedirectException extends RuntimeException {
-		private static final long serialVersionUID = 1L;
-		private String path;
+		private static final long	serialVersionUID	= 1L;
+		private String				path;
 
 		public RedirectException(String path) {
 			this.path = path;
@@ -52,27 +60,28 @@ public class WebServer extends HttpServlet {
 		}
 	}
 
-	static final long DEFAULT_NOT_FOUND_EXPIRATION = TimeUnit.MINUTES
-			.toMillis(20);
-	static String BYTE_RANGE_SET_S = "(\\d+)?\\s*-\\s*(\\d+)?";
-	static Pattern BYTE_RANGE_SET = Pattern.compile(BYTE_RANGE_SET_S);
-	static Pattern BYTE_RANGE = Pattern
-			.compile("bytes\\s*=\\s*(\\d+)?\\s*-\\s*(\\d+)?(?:\\s*,\\s*(\\d+)\\s*-\\s*(\\d+)?)*\\s*");
-	private static final long serialVersionUID = 1L;
-	static SimpleDateFormat format = new SimpleDateFormat(
-			"EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
-	Map<String, Cache> cached = new HashMap<String, Cache>();
-	File cache;
-	LogService log;
-	Properties mimes = new Properties();
-	boolean proxy;
-	PluginContributions pluginContributions;
-	WebResources webResources;
+	static final long			DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
+	static String				BYTE_RANGE_SET_S				= "(\\d+)?\\s*-\\s*(\\d+)?";
+	static Pattern				BYTE_RANGE_SET					= Pattern.compile(BYTE_RANGE_SET_S);
+	static Pattern				BYTE_RANGE						= Pattern
+																		.compile("bytes\\s*=\\s*(\\d+)?\\s*-\\s*(\\d+)?(?:\\s*,\\s*(\\d+)\\s*-\\s*(\\d+)?)*\\s*");
+	private static final long	serialVersionUID				= 1L;
+	static SimpleDateFormat		format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
+																		Locale.ENGLISH);
+	Map<String,Cache>			cached							= new HashMap<String,Cache>();
+	File						cache;
+	LogService					log;
+	Properties					mimes							= new Properties();
+	boolean						proxy;
+	PluginContributions			pluginContributions;
+	WebResources				webResources;
+	IndexDTO					index							= new IndexDTO();
+	DTOs						dtos;
 
 	static class Range {
-		Range next;
-		long start;
-		long end;
+		Range	next;
+		long	start;
+		long	end;
 
 		public long length() {
 			if (next == null)
@@ -84,9 +93,7 @@ public class WebServer extends HttpServlet {
 		Range(String range, long length) {
 			if (range != null) {
 				if (!BYTE_RANGE.matcher(range).matches())
-					throw new IllegalArgumentException(
-							"Bytes ranges does not match specification "
-									+ range);
+					throw new IllegalArgumentException("Bytes ranges does not match specification " + range);
 
 				Matcher m = BYTE_RANGE_SET.matcher(range);
 				m.find();
@@ -97,16 +104,13 @@ public class WebServer extends HttpServlet {
 			}
 		}
 
-		private Range() {
-		}
+		private Range() {}
 
 		void init(Matcher m, long length) {
 			String s = m.group(1);
 			String e = m.group(2);
 			if (s == null && e == null)
-				throw new IllegalArgumentException(
-						"Invalid range, both begin and end not specified: "
-								+ m.group(0));
+				throw new IllegalArgumentException("Invalid range, both begin and end not specified: " + m.group(0));
 
 			if (s == null) { // -n == l-n -> l
 				start = length - Long.parseLong(e);
@@ -127,8 +131,7 @@ public class WebServer extends HttpServlet {
 				start = 0;
 
 			if (start >= end)
-				throw new IllegalArgumentException(
-						"Invalid range, start higher than end " + m.group(0));
+				throw new IllegalArgumentException("Invalid range, start higher than end " + m.group(0));
 
 			if (m.find()) {
 				next = new Range();
@@ -144,16 +147,16 @@ public class WebServer extends HttpServlet {
 	}
 
 	class Cache {
-		long time;
-		String etag;
-		String md5;
-		File file;
-		Bundle bundle;
-		String mime;
-		long expiration;
-		boolean publc;
-		private Future<File> future;
-		public boolean is404;
+		long					time;
+		String					etag;
+		String					md5;
+		File					file;
+		Bundle					bundle;
+		String					mime;
+		long					expiration;
+		boolean					publc;
+		private Future<File>	future;
+		public boolean			is404;
 
 		Cache(File f, Bundle b, String path) throws Exception {
 			this(f, b, getEtag(f), path);
@@ -202,9 +205,9 @@ public class WebServer extends HttpServlet {
 					this.mime = mimes.getProperty(ext);
 				}
 				return true;
-			} catch (Exception e) {
-				expiration = System.currentTimeMillis()
-						+ DEFAULT_NOT_FOUND_EXPIRATION;
+			}
+			catch (Exception e) {
+				expiration = System.currentTimeMillis() + DEFAULT_NOT_FOUND_EXPIRATION;
 				return false;
 			}
 		}
@@ -270,21 +273,23 @@ public class WebServer extends HttpServlet {
 		String maxTimeMessage();
 
 		String redirect();
+
+		boolean noindex();
 	}
 
-	Config config;
-	BundleTracker<?> tracker;
-	private Executor executor;
-	private ServiceRegistration<Filter> webfilter;
-	private String alias;
-	private String redirect = "/index.html";
-	private Coordinator coordinator;
-	private ServiceRegistration<Filter> exceptionFilter;
+	Config								config;
+	BundleTracker< ? >					tracker;
+	private Executor					executor;
+	private ServiceRegistration<Filter>	webfilter;
+	private String						alias;
+	private String						redirect	= "/index.html";
+	private Coordinator					coordinator;
+	private ServiceRegistration<Filter>	exceptionFilter;
+	private BundleTracker<Bundle> 	apps;
 
-	
 	@Activate
-	void activate(Map<String, Object> props, BundleContext context)
-			throws Exception {
+	void activate(Map<String,Object> props, BundleContext context) throws Exception {
+		index.configuration = props;
 		this.config = Converter.cnv(Config.class, props);
 		proxy = !config.noproxy();
 		if (config.redirect() != null)
@@ -294,14 +299,15 @@ public class WebServer extends HttpServlet {
 		if (alias == null || alias.isEmpty())
 			alias = "/";
 
-		pluginContributions = new PluginContributions(this,context);
-		webResources = new WebResources(this,context);
-		
+		pluginContributions = new PluginContributions(this, context);
+		webResources = new WebResources(this, context);
+
 		InputStream in = WebServer.class.getResourceAsStream("mimetypes");
 		if (in != null)
 			try {
 				mimes.load(in);
-			} finally {
+			}
+			finally {
 				in.close();
 			}
 
@@ -318,8 +324,7 @@ public class WebServer extends HttpServlet {
 		this.cache = context.getDataFile("cache");
 		cache.mkdir();
 
-		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE
-				| Bundle.STARTING, null) {
+		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
 				if (bundle.getEntryPaths("static/") != null)
 					return bundle;
@@ -328,27 +333,64 @@ public class WebServer extends HttpServlet {
 		};
 		tracker.open();
 
-		Hashtable<String, Object> p = new Hashtable<String, Object>();
+		Hashtable<String,Object> p = new Hashtable<String,Object>();
 		p.put("pattern", ".*");
-		webfilter = context.registerService(
-				Filter.class,
-				new WebFilter(config.maxConnections(), config
-						.maxConnectionMessage(), coordinator), p);
+		webfilter = context.registerService(Filter.class,
+				new WebFilter(config.maxConnections(), config.maxConnectionMessage(), coordinator), p);
 
 		if (config.exceptions()) {
 			p.putAll(props);
-			exceptionFilter = context.registerService(Filter.class,
-					new ExceptionFilter(), p);
+			exceptionFilter = context.registerService(Filter.class, new ExceptionFilter(), p);
 		}
+		
+		apps = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null){
+			@Override
+			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
+				String app = bundle.getHeaders().get("EnRoute-Application");
+				if ( app == null)
+					return null;
+				
+				String[] links = app.split("\\s*,\\s*");
+				for ( String link : links) {
+					ApplicationDTO appdto = new ApplicationDTO();
+					appdto.bsn = bundle.getSymbolicName();
+					appdto.version = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
+					appdto.bundle = bundle.getBundleId();
+					appdto.description = bundle.getHeaders().get(Constants.BUNDLE_DESCRIPTION);
+					appdto.link = link;
+					appdto.name = bundle.getHeaders().get(Constants.BUNDLE_NAME);
+					if (appdto.name == null)
+						appdto.name= appdto.bsn;
+					
+					synchronized(index) {
+						index.applications.add(appdto);
+					}
+				}
+				
+				
+				return super.addingBundle(bundle, event);
+			}
+			
+			@Override
+			public void removedBundle(Bundle bundle, BundleEvent event, Bundle object) {
+				synchronized(index) {
+					for ( Iterator<ApplicationDTO> i = index.applications.iterator(); i.hasNext();) {
+						ApplicationDTO dto = i.next();
+						if ( dto.bundle == bundle.getBundleId())
+							i.remove();
+					}
+				}
+				super.removedBundle(bundle, event, object);
+			}
+		};
+		apps.open();
 	}
 
-	public boolean handleSecurity(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		return true;
 	}
 
-	public void doGet(HttpServletRequest rq, HttpServletResponse rsp)
-			throws IOException, ServletException {
+	public void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
 		try {
 			String path = rq.getPathInfo();
 			if (path == null || path.isEmpty() || path.equals("/")) {
@@ -360,12 +402,14 @@ public class WebServer extends HttpServlet {
 				throw new RedirectException("/" + path + "index.html");
 			}
 
-
 			Cache c = getCache(path);
 
 			if (c == null || !c.sync()) {
-				rsp.sendError(HttpServletResponse.SC_NOT_FOUND, "File " + path
-						+ " could not be found");
+				if ("index.html".equals(path)) {
+					index(rsp);
+				} else {
+					rsp.sendError(HttpServletResponse.SC_NOT_FOUND, "File " + path + " could not be found");
+				}
 				return;
 			}
 
@@ -394,14 +438,12 @@ public class WebServer extends HttpServlet {
 			Range range = new Range(rq.getHeader("Range"), c.file.length());
 			long length = range.length();
 			if (length >= Integer.MAX_VALUE)
-				throw new IllegalArgumentException(
-						"Range to read is too high: " + length);
+				throw new IllegalArgumentException("Range to read is too high: " + length);
 
 			rsp.setContentLength((int) range.length());
 
 			if (config.expires() != 0) {
-				Date expires = new Date(System.currentTimeMillis() + 60000
-						* config.expires());
+				Date expires = new Date(System.currentTimeMillis() + 60000 * config.expires());
 				rsp.setHeader("Expires", format.format(expires));
 			}
 
@@ -416,7 +458,8 @@ public class WebServer extends HttpServlet {
 						rsp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 						return;
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					// e.printStackTrace();
 				}
 			}
@@ -464,7 +507,8 @@ public class WebServer extends HttpServlet {
 					range.copy(from, to);
 					from.close();
 					to.close();
-				} finally {
+				}
+				finally {
 					file.close();
 				}
 				out.flush();
@@ -472,9 +516,11 @@ public class WebServer extends HttpServlet {
 				rsp.getOutputStream().close();
 				out.close();
 			}
-		} catch (RedirectException e) {
+		}
+		catch (RedirectException e) {
 			rsp.sendRedirect(e.getPath());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			log.log(LogService.LOG_ERROR, "Internal webserver error", e);
 			if (config.exceptions())
 				throw new RuntimeException(e);
@@ -483,11 +529,29 @@ public class WebServer extends HttpServlet {
 				PrintWriter pw = rsp.getWriter();
 				pw.println("Internal server error\n");
 				rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			} catch (Exception ee) {
-				log.log(LogService.LOG_ERROR,
-						"Second level internal webserver error", ee);
+			}
+			catch (Exception ee) {
+				log.log(LogService.LOG_ERROR, "Second level internal webserver error", ee);
 			}
 		}
+	}
+
+	private void index(HttpServletResponse rsp) throws Exception {
+		Cache c = getCache("osgi/enroute/web/index.html");
+		if (c == null || c.is404 || c.isNotFound()) {
+			c = getCache("osgi/enroute/web/local/index.html");
+		}
+
+		String content = IO.collect(c.file);
+		Map<String,String> map = new HashMap<>();
+
+		synchronized (index) {
+			map.put("index", new JSONCodec().enc().put(index).indent(" ").toString());
+		}
+
+		ReplacerAdapter ra = new ReplacerAdapter(map);
+		content = ra.process(content);
+		IO.store(content, rsp.getOutputStream());
 	}
 
 	Cache getCache(String path) throws Exception {
@@ -504,15 +568,15 @@ public class WebServer extends HttpServlet {
 		}
 		return c;
 	}
-	
+
 	File getFile(String path) throws Exception {
 		Cache c = getCache(path);
-		if ( c == null)
+		if (c == null)
 			return null;
 
-		if ( !c.sync() )
+		if (!c.sync())
 			return null;
-		
+
 		return c.file;
 	}
 
@@ -522,13 +586,12 @@ public class WebServer extends HttpServlet {
 		if (c == null)
 			c = findBundle("default/404.html");
 		if (c != null)
-			c.is404=true;
-		
+			c.is404 = true;
+
 		return c;
 	}
 
-	public void doHead(HttpServletRequest rq, HttpServletResponse rsp)
-			throws IOException, ServletException {
+	public void doHead(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
 		doGet(rq, rsp);
 	}
 
@@ -536,13 +599,14 @@ public class WebServer extends HttpServlet {
 		if (proxy && path.startsWith("$"))
 			return findCachedUrl(path);
 
-		if (path.startsWith(PluginContributions.CONTRIBUTIONS+"/"))
-			return pluginContributions.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length()+1));
+		if (path.startsWith(PluginContributions.CONTRIBUTIONS + "/"))
+			return pluginContributions
+					.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length() + 1));
 
 		Cache c = webResources.find(path);
-		if ( c != null)
+		if (c != null)
 			return c;
-		
+
 		c = findFile(path);
 		if (c != null)
 			return c;
@@ -593,7 +657,8 @@ public class WebServer extends HttpServlet {
 					IO.rename(tmp, cached);
 					cached.setLastModified(con.getLastModified() + 1000);
 					return cached;
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					log.log(LogService.LOG_ERROR, "Cannot read url " + path);
 					throw new RuntimeException(e);
 				}
@@ -623,8 +688,7 @@ public class WebServer extends HttpServlet {
 		Bundle[] bundles = tracker.getBundles();
 		if (bundles != null) {
 			for (Bundle b : bundles) {
-				Enumeration<URL> urls = b.findEntries("static/" + path, "*",
-						false);
+				Enumeration<URL> urls = b.findEntries("static/" + path, "*", false);
 				if (urls != null && urls.hasMoreElements()) {
 					throw new RedirectException("/" + path + "/index.html");
 				}
@@ -639,8 +703,7 @@ public class WebServer extends HttpServlet {
 					url = b.getResource("static/" + path + "/index.html");
 				if (url != null) {
 					File cached = getCached(path);
-					if (!cached.exists()
-							|| cached.lastModified() <= b.getLastModified()) {
+					if (!cached.exists() || cached.lastModified() <= b.getLastModified()) {
 						cached.delete();
 						cached.getAbsoluteFile().getParentFile().mkdirs();
 						FileOutputStream out = new FileOutputStream(cached);
@@ -648,8 +711,7 @@ public class WebServer extends HttpServlet {
 						IO.copy(url.openStream(), digester);
 						digester.close();
 						cached.setLastModified(b.getLastModified() + 1000);
-						return new Cache(cached, b, digester.digest().digest(),
-								path);
+						return new Cache(cached, b, digester.digest().digest(), path);
 					}
 					return new Cache(cached, b, path);
 				}
@@ -676,6 +738,8 @@ public class WebServer extends HttpServlet {
 			webfilter.unregister();
 		if (exceptionFilter != null)
 			exceptionFilter.unregister();
+		
+		apps.close();
 	}
 
 	@Reference
@@ -691,5 +755,10 @@ public class WebServer extends HttpServlet {
 	@Reference
 	public void setCoordinator(Coordinator coordinator) {
 		this.coordinator = coordinator;
+	}
+
+	@Reference
+	void setDTOs(DTOs dtos) {
+		this.dtos=dtos;
 	}
 }
