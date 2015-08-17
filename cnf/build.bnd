@@ -5,7 +5,7 @@
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-base.version:           1.4.0
+base.version:           1.6.0
 build.version:          ${base.version}.${tstamp}
 -outputmask:            ${@bsn}-${version;===;${@version}}.jar
 groupid:                org.osgi
@@ -54,6 +54,8 @@ base.packages =  \
 	org.osgi.namespace.service, \
 	org.osgi.resource, \
 	org.osgi.resource.dto, \
+	org.osgi.service.async, \
+	org.osgi.service.async.delegate, \
 	org.osgi.service.cm, \
 	org.osgi.service.component, \
 	org.osgi.service.component.annotations, \
@@ -62,6 +64,7 @@ base.packages =  \
 	org.osgi.service.http, \
 	org.osgi.service.log, \
 	org.osgi.service.metatype, \
+	org.osgi.service.remoteserviceadmin, \
 	org.osgi.service.url, \
 	org.osgi.service.useradmin, \
 	org.osgi.util.function, \
