@@ -79,13 +79,13 @@ public class Base //
 	void setScheduler(osgi.enroute.scheduler.api.Scheduler s) {}
 
 	@Reference
-	void setTimer(java.util.Timer v) {}
-
-	@Reference
 	void setExecutor(java.util.concurrent.Executor v) {}
 
 	@Reference
 	void setHttp(org.osgi.service.http.HttpService v) {}
+
+	@Reference
+	void setRSA(org.osgi.service.remoteserviceadmin.RemoteServiceAdmin v) {}
 
 	@Override
 	public Object getDescriptor() throws Exception {

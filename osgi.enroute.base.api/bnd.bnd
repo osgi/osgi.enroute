@@ -1,10 +1,10 @@
 -buildpath:  \
 	osgi.annotation;version=@6.0.1, \
 	osgi.core;version=@6.0.0, \
-	osgi.cmpn;version=@5.0.0, \
+	osgi.cmpn;version=@6.0.0, \
 	slf4j.api;version=@1.7.0, \
-	biz.aQute.bnd.annotation;version=@2.4.0, \
-	javax.servlet, \
+	biz.aQute.bnd.annotation;version=@3.0.0, \
+	org.apache.felix.http.servlet-api, \
 	slf4j.simple;version=@1.7, \
 	biz.aQute.junit
 
@@ -50,4 +50,4 @@ Conditional-Package:	org.slf4j.*
 Bundle-Icon: enroute.png
 -includeresource: {${build}/legal}, icon/${Bundle-Icon}
 
--fixupmessages: slf4j
+-fixupmessages: "Export org.slf4j,  has 1,  private references *org.slf4j.spi*"

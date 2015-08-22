@@ -29,7 +29,7 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * otherwise a new record is created.
  */
 @RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
-		+ "=osgi.enroute.configurer)${frange;1.2.0})", effective = "active")
+		+ "=osgi.enroute.configurer)${frange;1.2.0})")
 @Retention(RetentionPolicy.CLASS)
 public @interface ConfigurerExtender {
 	String configuration_loc() default "configuration/configuration.json";

@@ -10,7 +10,8 @@ import aQute.bnd.annotation.headers.RequireCapability;
 /**
  * Require a JSON RPC to be available.
  */
-@RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE + "=osgi.enroute.jsonrpc)${frange;1.1.1})", effective = "active")
+@RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
+		+ "=osgi.enroute.jsonrpc)${frange;1.1.1})")
 @Retention(RetentionPolicy.CLASS)
 public @interface JsonrpcExtender {
 }

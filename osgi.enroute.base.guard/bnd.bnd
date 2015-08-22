@@ -1,13 +1,14 @@
 -includeresource: {${build}/legal}
 
 -buildpath:  \
-	osgi.enroute.base.api;version=latest, \
-	biz.aQute.bnd.annotation;version=@2.4.0
+	osgi.enroute.base.api;version=latest
 
-Bundle-Description: This bundle contains the information about the needed \
- OSGi enRoute base capabilities.
+Bundle-Description: 
+	This bundle requires ALL capabilities provided by the OSGi enRoute Base API. It is \
+	intended to verify that a distro contains a resolution for anything that people can \
+	start depending on via the OSGi enRoute Base API Compile JAR.
 
-Import-Package: ${base.packages}, *
+Import-Package: ${filter;.*annotations.*;${base.packages}}, *
 	
 Private-Package: \
 	osgi.enroute.base.required

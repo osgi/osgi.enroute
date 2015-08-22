@@ -3,7 +3,8 @@ package osgi.enroute.capabilities;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import osgi.enroute.namespace.WhiteboardNamespace;
+import org.osgi.namespace.implementation.ImplementationNamespace;
+
 import aQute.bnd.annotation.headers.RequireCapability;
 
 /**
@@ -11,7 +12,8 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * Register under {@code javax.servlet.Servlet} class with service property
  * {@code alias=/<uri-prefix>}.
  */
-@RequireCapability(ns = WhiteboardNamespace.NS, filter = "(&(" + WhiteboardNamespace.NS
-		+ "=osgi.enroute.servlet)${frange;1.1.0})", effective = "active")
+@RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
+		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE
+		+ "=osgi.http)${frange;1.0.0})")
 @Retention(RetentionPolicy.CLASS)
 public @interface ServletWhiteboard {}

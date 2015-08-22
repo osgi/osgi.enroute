@@ -12,6 +12,6 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * {@code /static} to the local webserver.
  */
 @RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
-		+ "=osgi.enroute.webserver)${frange;1.1.0})", effective = "active")
+		+ "=osgi.enroute.webserver)${frange;1.1.0})")
 @Retention(RetentionPolicy.CLASS)
 public @interface WebServerExtender {}
