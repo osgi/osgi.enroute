@@ -1,0 +1,79 @@
+#
+# OSGi enRoute Default Distro 
+#
+# This file defines the properties to be used in an enRoute workspace.
+#
+
+-runfw: org.eclipse.osgi
+
+-plugin.enroute.distro = \
+	aQute.bnd.deployer.repository.FixedIndexedRepo; \
+	        name		=       Distro; \
+	        comment		=		${warning;Replace URL in ext/enroute-distro.bnd before release}; \
+	        locations	=       file://${workspace}/../osgi.enroute/cnf/distro/index.xml
+	        
+
+-runblacklist.enroute:	\
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.api)', \
+	osgi.identity;filter:='(osgi.identity=osgi.cmpn)', \
+	osgi.identity;filter:='(osgi.identity=osgi.core)'
+
+
+# TODO check if still needed
+
+-runproperties.eqnx: 				\
+	org.apache.felix.http.jettyEnabled=true, \
+	org.apache.felix.http.whiteboardEnabled=true,\
+	osgi.console.enable.builtin=false, \
+	osgi.console=, \
+	org.osgi.service.http.port=8080
+
+-runsystempackages.eqnx:		javax.script
+-runsystemcapabilities.dflt: 	${native_capability}
+
+debug-bundles: \
+	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.metatype)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.eventadmin)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.log)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)', \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.debug.provider)'
+
+-augment.kn_ua: \
+	org.knopflerfish.bundle.useradmin; \
+		capability:="osgi.service;objectClass:List<String>=org.osgi.service.useradmin.UserAdmin;effective:=active, \
+					 osgi.implementation;osgi.implementation=osgi.useradmin"
+
+-augment.eq_ev: \
+	org.eclipse.equinox.event; \
+		capability:="  osgi.service;objectClass=org.osgi.service.event.EventAdmin;effective:=active, \
+					   osgi.implementation;osgi.implementation=osgi.event", \
+		requirement:= "osgi.extender;filter:='(osgi.extender=osgi.component)'"
+
+#
+-augment.fe_ht: \
+	org.apache.felix.http.api; \
+		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.http)', \
+		              osgi.contract;filter:='(osgi.contract=JavaServlet)'"		
+
+-augment.os_rs: \
+	org.osgi.service.remoteserviceadmin; \
+		requirement:="osgi.remoteserviceadmin.distribution;filter:='(configs=*)', \
+		              osgi.remoteserviceadmin.topology;filter:='(policy=*)', \
+		              osgi.remoteserviceadmin.discovery;filter:='(protocols=*)'"
+
+-augment.os_me: \
+	org.osgi.service.metatype; \
+		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.metatype)'"
+		
+-augment.os_ev: \
+	org.osgi.service.event; \
+		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.event)'"
+
+
+-augment.eq_co: \
+	org.eclipse.equinox.coordinator; \
+		capability:= "osgi.service;objectClass=org.osgi.service.coordinator.Coordinator;effective:=active"
+
+

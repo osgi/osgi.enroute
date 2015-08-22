@@ -1,0 +1,19 @@
+#
+# Must resolve all the given requirements that the guard & debug bundles
+# require if the distro is ok.
+#
+
+-include: ${workspace}/cnf/enroute-distro.bnd
+
+-runrepos: \
+	Workspace,\
+	Distro
+
+-runrequires: \
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
+	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.runtime)(version>=0.12.1))',\
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.guard)',\
+	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)'
+
+-runbundles: ${error;You must resolve this bndrun file before you can run/debug it}
+
