@@ -29,6 +29,24 @@ Git-SHA:          ${system-allow-fail;git rev-list -1 HEAD}
  groupid=${groupid}, \
  version=${base.version}
 
+-releaserepo: 			Distro
+-baselinerepo:			Central
+
+-plugin.3.Source:  \
+\
+        aQute.bnd.deployer.repository.LocalIndexedRepo; \
+            name                =       Source ; \
+            pretty              =       true ; \
+            local               =       ${build}/source
+
+-plugin.4.Distro:  \
+\
+        aQute.bnd.deployer.repository.LocalIndexedRepo; \
+            name                =       Distro ; \
+            pretty              =       true ; \
+            local               =       ${build}/distro
+
+
 base.packages =  \
  	aQute.bnd.annotation.headers, \
 	aQute.bnd.annotation.licenses, \
@@ -51,7 +69,13 @@ base.packages =  \
 	org.osgi.framework.wiring.dto, \
 	org.osgi.namespace.contract, \
 	org.osgi.namespace.extender, \
+    org.osgi.namespace.implementation, \
 	org.osgi.namespace.service, \
+    org.osgi.service.metatype.annotation, \
+    org.osgi.service.http.whiteboard, \
+    org.osgi.service.http.context, \
+    org.osgi.service.http.runtime, \
+    org.osgi.service.http.runtime.dto, \
 	org.osgi.resource, \
 	org.osgi.resource.dto, \
 	org.osgi.service.async, \
@@ -89,10 +113,3 @@ base.packages =  \
 	osgi.enroute.rest.api,  \
 	osgi.enroute.scheduler.api
 	
-# Need to update osgi.cmpn to R6
-#   org.osgi.namespace.implementation, \
-#   org.osgi.service.metatype.annotation, \
-#   org.osgi.service.http.whiteboard, \
-#   org.osgi.service.http.context, \
-#   org.osgi.service.http.runtime, \
-#   org.osgi.service.http.runtime.dto, \

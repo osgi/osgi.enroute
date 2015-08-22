@@ -8,3 +8,7 @@ buildfiles
 /reports/
 /generated/
 osgi.enroute.doc/
+cnf/source/index.xml
+cnf/source/index.xml.sha
+cnf/local/index.xml
+cnf/local/index.xml.sha
