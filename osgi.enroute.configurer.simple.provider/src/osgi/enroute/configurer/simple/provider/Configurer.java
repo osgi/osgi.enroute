@@ -63,7 +63,7 @@ import aQute.libg.sed.ReplacerAdapter;
  * The configurer reads
  */
 
-@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.configurer", version="1.2.0", effective="active")
+@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.configurer", version="1.2.0")
 @Component(service = {
 		ConfigurationDone.class, Object.class
 }, immediate = true)

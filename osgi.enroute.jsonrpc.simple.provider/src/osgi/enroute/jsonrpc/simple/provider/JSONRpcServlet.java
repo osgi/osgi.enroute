@@ -33,6 +33,7 @@ import osgi.enroute.jsonrpc.dto.JSON.Request;
 import osgi.enroute.jsonrpc.dto.JSON.Response;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.converter.Converter;
@@ -45,11 +46,12 @@ import aQute.lib.json.JSONCodec;
  * <p/>
  */
 @ServletWhiteboard
-@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.jsonrpc", version="1.1.1", effective="active")
+@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.jsonrpc", version="1.1.1")
 @Component(//
 name = "osgi.web.jsonrpc", //
 provide = Servlet.class, //
-designateFactory = JSONRpcServlet.Config.class, //
+designate = JSONRpcServlet.Config.class, //
+configurationPolicy=ConfigurationPolicy.optional,
 properties = {
 		"alias=/jsonrpc/2.0"
 })

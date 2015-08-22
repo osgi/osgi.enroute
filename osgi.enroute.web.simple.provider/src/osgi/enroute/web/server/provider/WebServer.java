@@ -32,7 +32,7 @@ import aQute.lib.json.*;
 import aQute.libg.cryptography.*;
 import aQute.libg.sed.*;
 
-@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = "osgi.enroute.webserver", version = "1.1.0", effective = "active")
+@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = "osgi.enroute.webserver", version = "1.1.0")
 @ServletWhiteboard
 @Component(provide = {
 	Servlet.class

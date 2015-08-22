@@ -219,7 +219,7 @@ public class WebResources {
 				// so we use the converter
 				//
 
-				int priority = Converter.cnv(Integer.class, attrs.get("priority"));
+				int priority = (Integer) Converter.cnv(Integer.class, attrs.get("priority"));
 				List<String> resources = Converter.cnv(listOfStrings, attrs.get("resource"));
 				if (resources != null) {
 
