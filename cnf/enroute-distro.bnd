@@ -9,8 +9,7 @@
 -plugin.enroute.distro = \
 	aQute.bnd.deployer.repository.FixedIndexedRepo; \
 	        name		=       Distro; \
-	        comment		=		${warning;Replace URL in ext/enroute-distro.bnd before release}; \
-	        locations	=       file://${workspace}/../osgi.enroute/cnf/distro/index.xml
+	        locations	=       https://raw.githubusercontent.com/osgi/osgi.enroute/master/cnf/distro/index.xml
 	        
 
 -runblacklist.enroute:	\
@@ -33,9 +32,9 @@
 
 debug-bundles: \
 	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.metatype)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.eventadmin)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.log)',\
+	osgi.implementation;filter:='(osgi.implementation=osgi.metatype)',\
+	osgi.implementation;filter:='(osgi.implementation=osgi.log)',\
+	osgi.implementation;filter:='(osgi.implementation=osgi.event)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)', \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.debug.provider)'
@@ -76,4 +75,7 @@ debug-bundles: \
 	org.eclipse.equinox.coordinator; \
 		capability:= "osgi.service;objectClass=org.osgi.service.coordinator.Coordinator;effective:=active"
 
-
+-augment.fe_lo: \
+	org.apache.felix.log; \
+		capability:= "osgi.implementation;osgi.implementation=osgi.log"
+		
