@@ -1,6 +1,7 @@
 package osgi.enroute.base.required;
 
 
+import org.osgi.dto.DTO;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -35,6 +36,7 @@ public class Base //
 		osgi.enroute.jsonrpc.api.JSONRPC // JSON RPC server
 {
 	private static final long	serialVersionUID	= 1L;
+	DTO							dto;
 
 	@Reference
 	void setConfigurationAdmin(org.osgi.service.cm.ConfigurationAdmin v) {}

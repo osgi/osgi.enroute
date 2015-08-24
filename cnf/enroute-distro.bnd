@@ -53,11 +53,7 @@ debug-bundles: \
 #
 -augment.fe_ht: \
 	org.apache.felix.http.api; \
-		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.http)', \
-		              osgi.contract;filter:='(osgi.contract=JavaServlet)'"		
--augment.fe_wh: \
-	org.apache.felix.http.whiteboard; \
-		capability:="osgi.implementation;osgi.implementation=osgi.http.whiteboard;version:Version=1;effective:=active"
+		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.http)'
 		
 -augment.os_rs: \
 	org.osgi.service.remoteserviceadmin; \
