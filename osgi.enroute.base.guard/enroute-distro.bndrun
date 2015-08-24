@@ -13,7 +13,8 @@
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.runtime)(version>=0.12.1))',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.guard)',\
-	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)'
+	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)', \
+	${debug-bundles}
 
 -runbundles: ${error;You must resolve this bndrun file before you can run/debug it}
 

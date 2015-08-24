@@ -14,6 +14,6 @@ import aQute.bnd.annotation.headers.RequireCapability;
  */
 @RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
 		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE
- + "=osgi.http.whiteboard)${frange;1.0.0})")
+		+ "=osgi.http.whiteboard)${frange;1.0.0})", effective = "active")
 @Retention(RetentionPolicy.CLASS)
 public @interface ServletWhiteboard {}

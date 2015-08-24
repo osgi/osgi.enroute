@@ -33,8 +33,8 @@
 debug-bundles: \
 	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)',\
 	osgi.implementation;filter:='(osgi.implementation=osgi.metatype)',\
-	osgi.implementation;filter:='(osgi.implementation=osgi.log)',\
-	osgi.implementation;filter:='(osgi.implementation=osgi.event)',\
+	osgi.implementation;filter:='(osgi.implementation=osgi.log)';effective:=active,\
+	osgi.implementation;filter:='(osgi.implementation=osgi.event)';effective:=active,\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)', \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.debug.provider)'
@@ -42,12 +42,12 @@ debug-bundles: \
 -augment.kn_ua: \
 	org.knopflerfish.bundle.useradmin; \
 		capability:="osgi.service;objectClass:List<String>=org.osgi.service.useradmin.UserAdmin;effective:=active, \
-					 osgi.implementation;osgi.implementation=osgi.useradmin"
+					 osgi.implementation;osgi.implementation=osgi.useradmin;effective:=active"
 
 -augment.eq_ev: \
 	org.eclipse.equinox.event; \
 		capability:="  osgi.service;objectClass=org.osgi.service.event.EventAdmin;effective:=active, \
-					   osgi.implementation;osgi.implementation=osgi.event", \
+					   osgi.implementation;osgi.implementation=osgi.event;effective:=active", \
 		requirement:= "osgi.extender;filter:='(osgi.extender=osgi.component)'"
 
 #
@@ -55,10 +55,9 @@ debug-bundles: \
 	org.apache.felix.http.api; \
 		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.http)', \
 		              osgi.contract;filter:='(osgi.contract=JavaServlet)'"		
-
 -augment.fe_wh: \
 	org.apache.felix.http.whiteboard; \
-		capability:="osgi.implementation;osgi.implementation=osgi.http.whiteboard;version:Version=1"
+		capability:="osgi.implementation;osgi.implementation=osgi.http.whiteboard;version:Version=1;effective:=active"
 		
 -augment.os_rs: \
 	org.osgi.service.remoteserviceadmin; \
@@ -72,7 +71,7 @@ debug-bundles: \
 		
 -augment.os_ev: \
 	org.osgi.service.event; \
-		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.event)'"
+		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.event)';effective:=active"
 
 
 -augment.eq_co: \
@@ -81,5 +80,5 @@ debug-bundles: \
 
 -augment.fe_lo: \
 	org.apache.felix.log; \
-		capability:= "osgi.implementation;osgi.implementation=osgi.log"
+		capability:= "osgi.implementation;osgi.implementation=osgi.log;effective:=active"
 		
