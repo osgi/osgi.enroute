@@ -9,7 +9,11 @@
 	Workspace,\
 	Distro
 
--runrequires: \
+-runrequires: osgi.identity;filter:='(osgi.identity=osgi.enroute.base.guard)'
+
+
+
+\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.runtime)(version>=0.12.1))',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.guard)',\
@@ -18,3 +22,5 @@
 
 -runbundles: ${error;You must resolve this bndrun file before you can run/debug it}
 
+-runfw: org.eclipse.osgi;version='[3.10.100.v20150529-1857,3.10.100.v20150529-1857]'
+-runee: JavaSE-1.8
