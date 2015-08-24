@@ -10,7 +10,7 @@ Bundle-Description: 				\
 
 Export-Package:  \
 	osgi.enroute.logger.api;provide:=true,\
-	org.slf4j;provide:=true;-split-package:=merge-last;version=1.7.1
+	org.slf4j;provide:=true;-split-package:=merge-last;version=1.7.0
 
 Private-Package:  \
 	osgi.enroute.logger.simple.provider,\
@@ -31,5 +31,8 @@ Conditional-Package: aQute.lib*
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.logger.simple.provider)'
 
--fixupmessages: "Export org.slf4j,  has 1,  private references \\[org.slf4j.spi\\]"
+-fixupmessages: \
+	"Export org.slf4j,  has 1,  private references \\[org.slf4j.spi\\]", \
+	"Version for package org.slf4j is set to different values in the source \\(1.7.0\\) and in the manifest \\(1.7.12\\)."
+	
 	
