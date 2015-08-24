@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<repository increment="1440422902310" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
+<repository increment="1440424804928" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="aQute.xray.plugin"/>
@@ -5129,21 +5129,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.equinox.log.adapter"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.0.1.201508171256"/>
+      <attribute name="version" type="Version" value="1.0.1.201508241339"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="a741411fbfdf6afc7a00251ccebf963d383609cf9b90f9d9695350350d3a87b6"/>
+      <attribute name="osgi.content" value="c8d5bc91c092c617ffb9bd2f89b3c06586b23ec12a1ee2456c88299a4802e648"/>
       <attribute name="url" value="osgi.enroute.equinox.log.adapter/osgi.enroute.equinox.log.adapter-1.0.1.jar"/>
-      <attribute name="size" type="Long" value="8067"/>
+      <attribute name="size" type="Long" value="8069"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.equinox.log.adapter"/>
-      <attribute name="bundle-version" type="Version" value="1.0.1.201508171256"/>
+      <attribute name="bundle-version" type="Version" value="1.0.1.201508241339"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.equinox.log.adapter"/>
-      <attribute name="bundle-version" type="Version" value="1.0.1.201508171256"/>
+      <attribute name="bundle-version" type="Version" value="1.0.1.201508241339"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.framework)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))"/>
