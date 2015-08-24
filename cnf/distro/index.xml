@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<repository increment="1440400085786" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
+<repository increment="1440410471130" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="aQute.xray.plugin"/>
@@ -2039,6 +2039,82 @@
   </resource>
   <resource>
     <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="org.apache.felix.http.base"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="3.0.0"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="ac69ce77e7d53e2ccf7035c083a3a65c720a5a6119bf5adac430e68398309f54"/>
+      <attribute name="url" value="org.apache.felix.http.base/org.apache.felix.http.base-3.0.0.jar"/>
+      <attribute name="size" type="Long" value="227957"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="org.apache.felix.http.base"/>
+      <attribute name="bundle-version" type="Version" value="3.0.0"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="org.apache.felix.http.base"/>
+      <attribute name="bundle-version" type="Version" value="3.0.0"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.http)(version&gt;=1.2.0)(!(version&gt;=1.3.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.http.context)(version&gt;=1.0.0)(!(version&gt;=1.1.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.http.runtime)(version&gt;=1.0.0)(!(version&gt;=1.1.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.http.runtime.dto)(version&gt;=1.0.0)(!(version&gt;=1.1.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.useradmin)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.annotation)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.servlet)(version&gt;=3.1.0)(!(version&gt;=4.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.servlet.descriptor)(version&gt;=3.1.0)(!(version&gt;=4.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.servlet.http)(version&gt;=3.1.0)(!(version&gt;=4.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.felix.http.api)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.dto)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.framework)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.framework.dto)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.framework.wiring)(version&gt;=1.2.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.log)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.util.tracker)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.6))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.6))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="org.apache.felix.http.bundle"/>
       <attribute name="type" value="osgi.bundle"/>
       <attribute name="version" type="Version" value="3.0.0"/>
@@ -3416,39 +3492,39 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="org.apache.felix.http.whiteboard"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="3.0.0.SNAPSHOT"/>
+      <attribute name="version" type="Version" value="3.0.0"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="6db12fc3c7f735b810ed2d3700e3405092c33f2d75b1e0cc0779c32c88991ab9"/>
+      <attribute name="osgi.content" value="d3aab35028d60f2f65a4bca6ce8646e77ece976d936fc2f302ca142e35cf661d"/>
       <attribute name="url" value="org.apache.felix.http.whiteboard/org.apache.felix.http.whiteboard-3.0.0.jar"/>
-      <attribute name="size" type="Long" value="41512"/>
+      <attribute name="size" type="Long" value="42504"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="org.apache.felix.http.whiteboard"/>
-      <attribute name="bundle-version" type="Version" value="3.0.0.SNAPSHOT"/>
+      <attribute name="bundle-version" type="Version" value="3.0.0"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="org.apache.felix.http.whiteboard"/>
-      <attribute name="bundle-version" type="Version" value="3.0.0.SNAPSHOT"/>
+      <attribute name="bundle-version" type="Version" value="3.0.0"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="org.apache.felix.http.whiteboard"/>
       <attribute name="version" type="Version" value="1.0.0"/>
       <attribute name="bundle-symbolic-name" value="org.apache.felix.http.whiteboard"/>
-      <attribute name="bundle-version" type="Version" value="3.0.0.SNAPSHOT"/>
+      <attribute name="bundle-version" type="Version" value="3.0.0"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.servlet)(version&gt;=3.0.0)(!(version&gt;=4.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.servlet)(version&gt;=3.1.0)(!(version&gt;=4.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.servlet.http)(version&gt;=3.0.0)(!(version&gt;=4.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.servlet.http)(version&gt;=3.1.0)(!(version&gt;=4.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.felix.http.api)(version&gt;=3.0.0)(!(version&gt;=4.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.felix.http.api)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.framework)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.framework)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.http)(version&gt;=1.2.0)(!(version&gt;=2.0.0)))"/>
@@ -3457,7 +3533,13 @@
       <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.log)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.util.tracker)(version&gt;=1.4.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.util.tracker)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.6))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.6))"/>
     </requirement>
   </resource>
   <resource>
