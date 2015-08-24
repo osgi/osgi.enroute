@@ -7,6 +7,7 @@ import java.text.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
+import java.util.stream.*;
 import java.util.zip.*;
 
 import javax.servlet.*;
@@ -15,37 +16,31 @@ import javax.servlet.http.*;
 
 import org.osgi.framework.*;
 import org.osgi.namespace.extender.*;
+import org.osgi.service.component.annotations.*;
 import org.osgi.service.coordinator.*;
+import org.osgi.service.http.whiteboard.*;
 import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
-import osgi.enroute.capabilities.*;
-import osgi.enroute.dto.api.*;
-import osgi.enroute.web.server.provider.IndexDTO.ApplicationDTO;
-import aQute.bnd.annotation.component.*;
 import aQute.bnd.annotation.headers.*;
 import aQute.lib.base64.Base64;
-import aQute.lib.converter.*;
 import aQute.lib.hex.*;
 import aQute.lib.io.*;
 import aQute.lib.json.*;
 import aQute.libg.cryptography.*;
 import aQute.libg.sed.*;
+import osgi.enroute.capabilities.*;
+import osgi.enroute.dto.api.*;
+import osgi.enroute.web.server.provider.IndexDTO.*;
 
 @ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = "osgi.enroute.webserver", version = "1.1.0")
 @ServletWhiteboard
-@Component(provide = {
-	Servlet.class
-}, configurationPolicy = ConfigurationPolicy.optional, immediate = true, properties = {
-		"alias=/", "name=" + WebServer.NAME, "no.index=true"
-}, name = WebServer.NAME)
+@Component(service = Servlet.class, immediate = true, property = {
+		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/", "name=" + WebServer.NAME, "no.index=true"
+}, name = WebServer.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class WebServer extends HttpServlet {
 
-	public WebServer() {
-		System.out.println("Web server");
-	}
-
-	static final String	NAME	= "osgi.enroute.simple.server";
+	static final String NAME = "osgi.enroute.simple.server";
 
 	public class RedirectException extends RuntimeException {
 		private static final long	serialVersionUID	= 1L;
@@ -64,10 +59,10 @@ public class WebServer extends HttpServlet {
 	static String				BYTE_RANGE_SET_S				= "(\\d+)?\\s*-\\s*(\\d+)?";
 	static Pattern				BYTE_RANGE_SET					= Pattern.compile(BYTE_RANGE_SET_S);
 	static Pattern				BYTE_RANGE						= Pattern
-																		.compile("bytes\\s*=\\s*(\\d+)?\\s*-\\s*(\\d+)?(?:\\s*,\\s*(\\d+)\\s*-\\s*(\\d+)?)*\\s*");
+			.compile("bytes\\s*=\\s*(\\d+)?\\s*-\\s*(\\d+)?(?:\\s*,\\s*(\\d+)\\s*-\\s*(\\d+)?)*\\s*");
 	private static final long	serialVersionUID				= 1L;
 	static SimpleDateFormat		format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
-																		Locale.ENGLISH);
+			Locale.ENGLISH);
 	Map<String,Cache>			cached							= new HashMap<String,Cache>();
 	File						cache;
 	LogService					log;
@@ -245,12 +240,12 @@ public class WebServer extends HttpServlet {
 		return digester.digest().digest();
 	}
 
-	interface Config {
+	@interface Config {
 		String alias();
 
 		boolean noBundles();
 
-		File[] directories();
+		String[]directories() default {};
 
 		int expires();
 
@@ -260,7 +255,7 @@ public class WebServer extends HttpServlet {
 
 		boolean noproxy();
 
-		List<String> mimes();
+		String[]mimes();
 
 		long expiration();
 
@@ -285,12 +280,13 @@ public class WebServer extends HttpServlet {
 	private String						redirect	= "/index.html";
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
-	private BundleTracker<Bundle> 	apps;
+	private BundleTracker<Bundle>		apps;
+	private List<File>					directories = Collections.EMPTY_LIST;
 
 	@Activate
-	void activate(Map<String,Object> props, BundleContext context) throws Exception {
+	void activate(Config config, Map<String,Object> props, BundleContext context) throws Exception {
 		index.configuration = props;
-		this.config = Converter.cnv(Config.class, props);
+		this.config = config;
 		proxy = !config.noproxy();
 		if (config.redirect() != null)
 			redirect = config.redirect();
@@ -299,6 +295,10 @@ public class WebServer extends HttpServlet {
 		if (alias == null || alias.isEmpty())
 			alias = "/";
 
+		String[] directories = config.directories();
+		if ( directories != null)
+			this.directories = Stream.of(directories).map((b) -> IO.getFile(b)).collect(Collectors.toList());
+		
 		pluginContributions = new PluginContributions(this, context);
 		webResources = new WebResources(this, context);
 
@@ -342,16 +342,16 @@ public class WebServer extends HttpServlet {
 			p.putAll(props);
 			exceptionFilter = context.registerService(Filter.class, new ExceptionFilter(), p);
 		}
-		
-		apps = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null){
+
+		apps = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null) {
 			@Override
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
 				String app = bundle.getHeaders().get("EnRoute-Application");
-				if ( app == null)
+				if (app == null)
 					return null;
-				
+
 				String[] links = app.split("\\s*,\\s*");
-				for ( String link : links) {
+				for (String link : links) {
 					ApplicationDTO appdto = new ApplicationDTO();
 					appdto.bsn = bundle.getSymbolicName();
 					appdto.version = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
@@ -360,23 +360,22 @@ public class WebServer extends HttpServlet {
 					appdto.link = link;
 					appdto.name = bundle.getHeaders().get(Constants.BUNDLE_NAME);
 					if (appdto.name == null)
-						appdto.name= appdto.bsn;
-					
-					synchronized(index) {
+						appdto.name = appdto.bsn;
+
+					synchronized (index) {
 						index.applications.add(appdto);
 					}
 				}
-				
-				
+
 				return super.addingBundle(bundle, event);
 			}
-			
+
 			@Override
 			public void removedBundle(Bundle bundle, BundleEvent event, Bundle object) {
-				synchronized(index) {
-					for ( Iterator<ApplicationDTO> i = index.applications.iterator(); i.hasNext();) {
+				synchronized (index) {
+					for (Iterator<ApplicationDTO> i = index.applications.iterator(); i.hasNext();) {
 						ApplicationDTO dto = i.next();
-						if ( dto.bundle == bundle.getBundleId())
+						if (dto.bundle == bundle.getBundleId())
 							i.remove();
 					}
 				}
@@ -392,7 +391,9 @@ public class WebServer extends HttpServlet {
 
 	public void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
 		try {
-			String path = rq.getPathInfo();
+			String path = rq.getRequestURI();
+			System.out.println( "start " + path);
+			
 			if (path == null || path.isEmpty() || path.equals("/")) {
 				throw new RedirectException(redirect);
 			} else if (path.startsWith("/"))
@@ -472,50 +473,31 @@ public class WebServer extends HttpServlet {
 				}
 			}
 
-			if (c.is404)
-				rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			else
-				rsp.setStatus(HttpServletResponse.SC_OK);
-
 			if (rq.getMethod().equalsIgnoreCase("GET")) {
+				
+				rsp.setContentLengthLong(range.length());
 				OutputStream out = rsp.getOutputStream();
-				//
-				// TODO make sure we do not
-				// compress binaries.
-				//
-				String acceptEncoding = rq.getHeader("Accept-Encoding");
-				// weird, when the file is < 30 bytes, the deflate
-				// seems to loose 2 bytes :-( With a threshold
-				// it seems to work.
-				if (acceptEncoding != null && length > 100) {
-					acceptEncoding = acceptEncoding.toUpperCase();
-					boolean deflate = acceptEncoding.indexOf("deflate") >= 0;
-					boolean gzip = acceptEncoding.toLowerCase().indexOf("gzip") >= 0;
-
-					if (gzip) {
-						out = new GZIPOutputStream(out);
-						rsp.setHeader("Content-Encoding", "gzip");
-					} else if (deflate) {
-						out = new DeflaterOutputStream(out);
-						rsp.setHeader("Content-Encoding", "deflate");
-					}
-				}
-				FileInputStream file = new FileInputStream(c.file);
-				try {
+				
+				try (FileInputStream file = new FileInputStream(c.file);)  {
 					FileChannel from = file.getChannel();
 					WritableByteChannel to = Channels.newChannel(out);
 					range.copy(from, to);
 					from.close();
 					to.close();
 				}
-				finally {
-					file.close();
-				}
+
 				out.flush();
+				out.close();
 				rsp.getOutputStream().flush();
 				rsp.getOutputStream().close();
-				out.close();
 			}
+			
+			System.out.println( "done " + path + " "+ c.file);
+			if (c.is404)
+				rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			else
+				rsp.setStatus(HttpServletResponse.SC_OK);
+
 		}
 		catch (RedirectException e) {
 			rsp.sendRedirect(e.getPath());
@@ -671,7 +653,7 @@ public class WebServer extends HttpServlet {
 
 	Cache findFile(String path) throws Exception {
 		if (config.directories() != null)
-			for (File base : config.directories()) {
+			for (File base : directories) {
 				File f = IO.getFile(base, path);
 
 				if (f.isDirectory())
@@ -738,7 +720,7 @@ public class WebServer extends HttpServlet {
 			webfilter.unregister();
 		if (exceptionFilter != null)
 			exceptionFilter.unregister();
-		
+
 		apps.close();
 	}
 
@@ -759,6 +741,6 @@ public class WebServer extends HttpServlet {
 
 	@Reference
 	void setDTOs(DTOs dtos) {
-		this.dtos=dtos;
+		this.dtos = dtos;
 	}
 }

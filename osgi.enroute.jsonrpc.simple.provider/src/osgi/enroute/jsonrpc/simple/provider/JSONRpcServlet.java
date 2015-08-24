@@ -23,22 +23,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.dto.DTO;
 import org.osgi.namespace.extender.ExtenderNamespace;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
+import aQute.bnd.annotation.headers.ProvideCapability;
+import aQute.lib.converter.Converter;
+import aQute.lib.hex.Hex;
+import aQute.lib.json.JSONCodec;
 import osgi.enroute.capabilities.ServletWhiteboard;
 import osgi.enroute.jsonrpc.api.JSONRPC;
 import osgi.enroute.jsonrpc.dto.JSON.Endpoint;
 import osgi.enroute.jsonrpc.dto.JSON.JSONRPCError;
 import osgi.enroute.jsonrpc.dto.JSON.Request;
 import osgi.enroute.jsonrpc.dto.JSON.Response;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.ConfigurationPolicy;
-import aQute.bnd.annotation.component.Reference;
-import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.lib.converter.Converter;
-import aQute.lib.hex.Hex;
-import aQute.lib.json.JSONCodec;
 
 /**
  * The jsonrpc servlet is responsible for mapping incoming requests to methods
@@ -46,32 +49,24 @@ import aQute.lib.json.JSONCodec;
  * <p/>
  */
 @ServletWhiteboard
-@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.jsonrpc", version="1.1.1")
+@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = "osgi.enroute.jsonrpc", version = "1.1.1")
+@Designate(ocd = JSONRpcServlet.Config.class)
 @Component(//
 name = "osgi.web.jsonrpc", //
-provide = Servlet.class, //
-designate = JSONRpcServlet.Config.class, //
-configurationPolicy=ConfigurationPolicy.optional,
-properties = {
-		"alias=/jsonrpc/2.0"
-})
+service = Servlet.class, //
+configurationPolicy = ConfigurationPolicy.OPTIONAL, property = {
+		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/jsonrpc/2.0" })
 public class JSONRpcServlet extends HttpServlet {
-	private static final long					serialVersionUID	= 1L;
-	final static Converter						converter			= new Converter();
-	final static JSONCodec						codec				= new JSONCodec();
+	private static final long serialVersionUID = 1L;
+	final static Converter converter = new Converter();
+	final static JSONCodec codec = new JSONCodec();
+
 	static {
 		codec.setIgnorenull(true);
 	}
-	final ConcurrentHashMap<String, JSONRPC>	endpoints			= new ConcurrentHashMap<String, JSONRPC>();
-	final AtomicInteger							ping				= new AtomicInteger(10000);
 
-	interface Config {
-		boolean angular();
-
-		String alias();
-
-		boolean trace();
-	}
+	final ConcurrentHashMap<String, JSONRPC> endpoints = new ConcurrentHashMap<String, JSONRPC>();
+	final AtomicInteger ping = new AtomicInteger(10000);
 
 	static {
 		converter.hook(byte[].class, new Converter.Hook() {
@@ -87,23 +82,31 @@ public class JSONRpcServlet extends HttpServlet {
 			}
 		});
 	}
+	
+	@ObjectClassDefinition
+	@interface Config {
+		boolean angular();
 
-	Config		config;
-	boolean		angular;
-	boolean		trace	= false;
-	LogService	log;
+		boolean trace();
+		
+		String osgi_http_whiteboard_servlet_pattern();
+	}
+
+
+	Config config;
+	boolean angular;
+	boolean trace = false;
+	@Reference
+	LogService log;
 
 	@Activate
-	void actvate(Map<String, Object> map) throws Exception {
-		config = Converter.cnv(Config.class, map);
-		String alias = config.alias();
-		if (alias == null)
-			alias = "/jsonrpc/2.0";
+	void actvate(Config config) throws Exception {
+		this.config = config;
 		angular = config.angular();
 		trace = config.trace();
 	}
 
-	static Random	random	= new Random();
+	static Random random = new Random();
 
 	public void service(HttpServletRequest rq, HttpServletResponse rsp) throws IOException {
 
@@ -129,9 +132,7 @@ public class JSONRpcServlet extends HttpServlet {
 
 		String pathInfo = rq.getPathInfo();
 		if (pathInfo == null) {
-			rsp.getWriter()
-					.println(
-							"Missing endpoint name in " + rq.getRequestURI());
+			rsp.getWriter().println("Missing endpoint name in " + rq.getRequestURI());
 			rsp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -170,21 +171,6 @@ public class JSONRpcServlet extends HttpServlet {
 				OutputStream out = rsp.getOutputStream();
 
 				if (result != null) {
-					String acceptEncoding = rq.getHeader("Accept-Encoding");
-					if (acceptEncoding != null) {
-						acceptEncoding = acceptEncoding.toLowerCase();
-						boolean deflate = acceptEncoding.indexOf("deflate") >= 0;
-						boolean gzip = acceptEncoding.indexOf("gzip") >= 0;
-
-						if (gzip) {
-							out = new GZIPOutputStream(out);
-							rsp.setHeader("Content-Encoding", "gzip");
-
-						} else if (deflate) {
-							out = new DeflaterOutputStream(out);
-							rsp.setHeader("Content-Encoding", "deflate");
-						}
-					}
 					rsp.setContentType("application/json;charset=UTF-8");
 					codec.enc().writeDefaults().to(out).put(result);
 				}
@@ -273,7 +259,6 @@ public class JSONRpcServlet extends HttpServlet {
 	 * @param map
 	 */
 
-
 	/**
 	 * This method is called by the JS code to get a list of endpoints.
 	 * 
@@ -304,9 +289,9 @@ public class JSONRpcServlet extends HttpServlet {
 	}
 
 	static public class PingResponse extends DTO {
-		public String	nonce;
-		public long		time;
-		public int		sequence;
+		public String nonce;
+		public long time;
+		public int sequence;
 	}
 
 	public PingResponse __ping(String endpointName, Request request, HttpServletRequest rq, HttpServletResponse rsp,
@@ -318,7 +303,7 @@ public class JSONRpcServlet extends HttpServlet {
 		return pr;
 	}
 
-	@Reference(type = '*')
+	@Reference()
 	public synchronized void addEndpoint(osgi.enroute.jsonrpc.api.JSONRPC resourceManager, Map<String, Object> map) {
 		String name = (String) map.get(JSONRPC.ENDPOINT);
 		endpoints.put(name, resourceManager);
@@ -329,8 +314,4 @@ public class JSONRpcServlet extends HttpServlet {
 		endpoints.remove(name);
 	}
 
-	@Reference
-	void setLog(LogService log) {
-		this.log = log;
-	}
 }

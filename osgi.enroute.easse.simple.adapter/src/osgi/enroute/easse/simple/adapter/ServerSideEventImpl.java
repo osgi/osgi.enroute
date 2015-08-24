@@ -22,20 +22,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 
-import osgi.enroute.capabilities.ServletWhiteboard;
-import osgi.enroute.namespace.EndpointNamespace;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.ConfigurationPolicy;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.json.JSONCodec;
+import osgi.enroute.capabilities.ServletWhiteboard;
+import osgi.enroute.namespace.EndpointNamespace;
 
 /**
  * This component provides a servlet that allows javascript clients to see the
@@ -55,7 +56,7 @@ import aQute.lib.json.JSONCodec;
  */
 @ProvideCapability(ns = EndpointNamespace.NS, name = "/sse/1", version = "1.1.0", effective = "active")
 @ServletWhiteboard
-@Component(name = "osgi.eventadmin.sse", properties = "alias=/sse/1", provide = Servlet.class, configurationPolicy = ConfigurationPolicy.optional)
+@Component(name = "osgi.eventadmin.sse", property = HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/sse/1", service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class ServerSideEventImpl extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static JSONCodec codec = new JSONCodec();
@@ -63,6 +64,8 @@ public class ServerSideEventImpl extends HttpServlet {
 	private static Random random = new SecureRandom();
 	final Map<String, Thread> threads = new ConcurrentHashMap<String, Thread>();
 	BundleContext context;
+	
+	@Reference
 	LogService log;
 
 	@Activate
