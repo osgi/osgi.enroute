@@ -2,3 +2,6 @@
 /generated/
 enroute.zip
 .metadata
+cnf/local/index.*
+cnf/release/index.*
+

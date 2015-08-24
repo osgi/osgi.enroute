@@ -1,5 +1,9 @@
 {
  "revisionRefs":[{
+  "artifactId":"junit","baseline":"4.12.0","bsn":"junit__junit","created":1415548411000,"description":"JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck.","errors":1,"groupId":"junit","md5":"A800F428D34A0B5FDEF012472CF1220A","name":"JUnit","phase":"MASTER","qualifier":"beta-3","revision":"C3B3E612612FCBB9FAA46D10D2D69E3B21A062FE","size":314944,"tag":"r4.12-beta-3","urls":["http://repo1.maven.org/maven2/junit/junit/4.12-beta-3/junit-4.12-beta-3.jar"],"version":"4.12-beta-3"
+ },{
+  "artifactId":"hamcrest-all","baseline":"1.3.0","bsn":"org.hamcrest__hamcrest-all","created":1341868304000,"description":"A self-contained hamcrest jar containing all of the sub-modules in a single artifact.","groupId":"org.hamcrest","md5":"AE5102286B5720DD286D6B606CB891E2","name":"Hamcrest All","phase":"MASTER","revision":"63A21EBC981131004AD02E0434E799FD7F3A8D5A","size":306578,"urls":["http://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar"],"version":"1.3"
+ },{
   "artifactId":"pi4j-core","baseline":"0.0.5","bsn":"pi4j-core","created":1363583905002,"description":"Pi4J Java Library for the Raspberry Pi","groupId":"com.pi4j","md5":"FFD183E92859197B93727B359328A716","name":"Pi4J :: Java Library (Core)","phase":"MASTER","revision":"614A071E0EC9E3FC9A5A69938745CC4C8F776222","size":170200,"urls":["http://repo1.maven.org/maven2/com/pi4j/pi4j-core/0.0.5/pi4j-core-0.0.5.jar"],"version":"0.0.5"
  }]
 }
