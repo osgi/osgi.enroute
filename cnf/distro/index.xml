@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<repository increment="1440251645471" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
+<repository increment="1440400085786" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="aQute.xray.plugin"/>
@@ -5592,6 +5592,52 @@
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.util.tracker)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))"/>
     </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="osgi.enroute.base.provider"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="1.0.0.201508240705"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="8f3ed300ee24e5bd24d9e147faec519f9251a49b0bdc4ce76ae91ec20d01aa35"/>
+      <attribute name="url" value="osgi.enroute.base.provider/osgi.enroute.base.provider-1.0.0.jar"/>
+      <attribute name="size" type="Long" value="24076"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="osgi.enroute.base.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508240705"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="osgi.enroute.base.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508240705"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="osgi.wiring.package" value="osgi.enroute.launch.api"/>
+      <attribute name="version" type="Version" value="1.0.0"/>
+      <attribute name="bundle-symbolic-name" value="osgi.enroute.base.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508240705"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="osgi.wiring.package" value="osgi.enroute.capabilities"/>
+      <attribute name="version" type="Version" value="1.0.0"/>
+      <attribute name="bundle-symbolic-name" value="osgi.enroute.base.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508240705"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="osgi.wiring.package" value="osgi.enroute.namespace"/>
+      <attribute name="version" type="Version" value="1.0.0"/>
+      <attribute name="bundle-symbolic-name" value="osgi.enroute.base.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508240705"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <attribute name="objectClass" value="osgi.enroute.launch.api.Launcher"/>
+      <directive name="effective" value="active"/>
+    </capability>
     <requirement namespace="osgi.ee">
       <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
     </requirement>
