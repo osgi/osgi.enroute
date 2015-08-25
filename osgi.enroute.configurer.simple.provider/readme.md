@@ -29,17 +29,17 @@ This requires a file /configuration/keystore.ks in the bundle. This file is then
 ## Macros
 The configuration JSON file is pre-processed before it is used. You can therefore use the System properties and the local settings in ~/bnd/settings.json. Local settings can override System properties. Local settings can be maintained with the bnd settings command.
 
-$ bnd settings mail.user='Alice'
-$ bnd settings .mail.secret='Cheshire'
+\$ bnd settings mail.user='Alice'
+\$ bnd settings .mail.secret='Cheshire'
 
 configuration/configuration.json:
   ...
-  "user": "${mail.user}",
-  "password":"${.mail.secret}"
+  "user": "\${mail.user}",
+  "password":"\${.mail.secret}"
   ...
 Properties that start with a dot ('.') are intended to be kept form prying eyes.
 
-It is possible to use @{...} instead of ${...} to prevent the macros being expanded too early, for example in bnd build time processing.
+It is possible to use @{...} instead of \${...} to prevent the macros being expanded too early, for example in bnd build time processing.
 
 ## Profiles
 

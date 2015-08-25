@@ -241,7 +241,7 @@ public class WebServer extends HttpServlet {
 	}
 
 	@interface Config {
-		String alias();
+		String osgi_http_whiteboard_servlet_pattern();
 
 		boolean noBundles();
 
@@ -276,7 +276,6 @@ public class WebServer extends HttpServlet {
 	BundleTracker< ? >					tracker;
 	private Executor					executor;
 	private ServiceRegistration<Filter>	webfilter;
-	private String						alias;
 	private String						redirect	= "/index.html";
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
@@ -290,10 +289,6 @@ public class WebServer extends HttpServlet {
 		proxy = !config.noproxy();
 		if (config.redirect() != null)
 			redirect = config.redirect();
-
-		alias = config.alias();
-		if (alias == null || alias.isEmpty())
-			alias = "/";
 
 		String[] directories = config.directories();
 		if ( directories != null)

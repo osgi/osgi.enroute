@@ -20,4 +20,4 @@ Private-Package: \
 	osgi.enroute.iot.toolkit
 
 -includeresource: {readme.md}
-Bundle-Version: 2.0.0.${tstamp}
+Bundle-Version: 2.0.1.${tstamp}

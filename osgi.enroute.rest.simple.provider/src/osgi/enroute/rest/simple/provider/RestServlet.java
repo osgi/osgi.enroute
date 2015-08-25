@@ -1,15 +1,27 @@
 package osgi.enroute.rest.simple.provider;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Random;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.Servlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
+import aQute.lib.converter.Converter;
+import aQute.lib.json.JSONCodec;
 import osgi.enroute.rest.api.REST;
-import aQute.bnd.annotation.component.*;
-import aQute.lib.converter.*;
-import aQute.lib.json.*;
 
 /**
  * The rest servlet is responsible for mapping incoming requests to methods on
@@ -23,24 +35,27 @@ import aQute.lib.json.*;
  * <p/>
  * 
  */
-
+@Designate(ocd = RestServlet.Config.class)
 @Component(
 	//
-	provide = Servlet.class, //
+	service = Servlet.class, //
 	name = "osgi.enroute.rest.simple", //
-	designate = RestServlet.Config.class, //
-	configurationPolicy = ConfigurationPolicy.optional, //
-	properties="alias=/rest"
+	configurationPolicy = ConfigurationPolicy.OPTIONAL, //
+	property=HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/rest/*"
 )
 public class RestServlet extends HttpServlet {
 	private static final long	serialVersionUID	= 1L;
 	final static JSONCodec		codec				= new JSONCodec();
 	RestMapper					mapper				= new RestMapper(null);
 
-	interface Config {
+	public RestServlet() {
+		addREST(this);
+	}
+	@ObjectClassDefinition
+	@interface Config {
 		boolean angular();
 
-		String alias();
+		String osgi_http_whiteboard_servlet_pattern();
 	}
 
 	Config	config;
@@ -49,9 +64,6 @@ public class RestServlet extends HttpServlet {
 	@Activate
 	void actvate(Map<String, Object> map) throws Exception {
 		config = Converter.cnv(Config.class, map);
-		String alias = config.alias();
-		if (alias == null)
-			alias = "/rest";
 
 		// TODO log if ends with /
 		angular = config.angular();
@@ -71,8 +83,7 @@ public class RestServlet extends HttpServlet {
 		mapper.execute(rq, rsp);
 	}
 
-	@Reference(
-		type = '*')
+	@Reference( cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	synchronized void addREST(REST resourceManager) {
 		mapper.addResource(resourceManager);
 	}

@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.Servlet;
 import javax.servlet.http.Cookie;
@@ -27,6 +25,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 import org.osgi.service.metatype.annotations.Designate;
@@ -303,7 +303,7 @@ public class JSONRpcServlet extends HttpServlet {
 		return pr;
 	}
 
-	@Reference()
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	public synchronized void addEndpoint(osgi.enroute.jsonrpc.api.JSONRPC resourceManager, Map<String, Object> map) {
 		String name = (String) map.get(JSONRPC.ENDPOINT);
 		endpoints.put(name, resourceManager);

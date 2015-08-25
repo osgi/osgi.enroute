@@ -5,3 +5,5 @@ enroute.zip
 cnf/local/index.*
 cnf/release/index.*
 
+cnf/source/index.xml
+cnf/source/index.xml.sha

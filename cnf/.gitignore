@@ -1,4 +1,5 @@
 /generated/
 /bin/
 /cache/
-/loca/index.*
+/local/index.*
+/release/
