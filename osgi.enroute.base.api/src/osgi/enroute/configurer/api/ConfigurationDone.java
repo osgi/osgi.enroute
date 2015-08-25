@@ -14,6 +14,12 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface ConfigurationDone {
+	/**
+	 * Property registered when the configuration is done
+	 */
 	String	CONFIGURATION_DONE		= "configuration.done";
+	/**
+	 * TODO
+	 */
 	String	BUNDLE_CONFIGURATION	= "Bundle-Configuration";
 }

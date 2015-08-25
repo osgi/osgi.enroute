@@ -5,7 +5,7 @@ package osgi.enroute.launch.api;
  * installed bundles.
  * <p>
  * This service will be registered when the launcher has started all the
- * bundles. It will contain a property {@link #LAUNCHED_MAIN} that contains the
+ * bundles. It will contain a property {@link #LAUNCHER_MAIN} that contains the
  * command line arguments as a String[].
  */
 public interface Launcher {

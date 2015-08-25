@@ -13,7 +13,7 @@ package osgi.enroute.scheduler.api;
  * <p>
  * The Unix Cron defines a syntax that is used by the Cron service. A user
  * should register a Cron service with the {@link CronJob#CRON} property. The
- * value is according to the {@see http://en.wikipedia.org/wiki/Cron}.
+ * value is according to the {link http://en.wikipedia.org/wiki/Cron}.
  * <p>
  * 
  * <pre>
@@ -60,17 +60,20 @@ package osgi.enroute.scheduler.api;
  * Additionally, you can use some fixed formats:
  * 
  * <pre>
- * @yearly (or @annually)	Run once a year at midnight on the morning of January 1	0 0 1 1 *
- * @monthly	Run once a month at midnight on the morning of the first day of the month	0 0 1 * *
- * @weekly	Run once a week at midnight on Sunday morning	0 0 * * 0
- * @daily	Run once a day at midnight	0 0 * * *
- * @hourly	Run once an hour at the beginning of the hour	0 * * * *
- * @reboot	Run at startup	@reboot (at service registration time)
+ * &#64;yearly (or @annually)	Run once a year at midnight on the morning of January 1	0 0 1 1 *
+ * &#64;monthly	Run once a month at midnight on the morning of the first day of the month	0 0 1 * *
+ * &#64;weekly	Run once a week at midnight on Sunday morning	0 0 * * 0
+ * &#64;daily	Run once a day at midnight	0 0 * * *
+ * &#64;hourly	Run once an hour at the beginning of the hour	0 * * * *
+ * &#64;reboot	Run at startup	@reboot (at service registration time)
  * </pre>
  * <p>
  * Please not that for the constants we follow the Java 8 Date & Time constants.
  * Major difference is the day number. In Quartz this is 0-6 for SAT-SUN while
  * here it is 1-7 for MON-SUN.
+ * 
+ * @param <T>
+ *            The parameter for the cron job
  */
 public interface CronJob<T> {
 	/**
@@ -79,5 +82,12 @@ public interface CronJob<T> {
 	 */
 	String	CRON	= "cron";
 
+	/**
+	 * Run a cron job.
+	 * 
+	 * @param data
+	 *            The data for the job
+	 * @throws Exception
+	 */
 	public void run(T data) throws Exception;
 }

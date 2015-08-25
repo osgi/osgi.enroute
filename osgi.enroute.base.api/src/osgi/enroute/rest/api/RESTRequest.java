@@ -23,25 +23,28 @@ import org.osgi.annotation.versioning.ProviderType;
  * extended interface. If the parameter is not present, null is returned or 0 if
  * it is a Number.
  * 
- * @param <T>
- *            The type of the body of the request. This is Void if there is no
- *            body.
  */
 
 @ProviderType
 public interface RESTRequest {
 	/**
 	 * Provide access to the Http Servlet Request
+	 * 
+	 * @return The servlet request
 	 */
 	HttpServletRequest _request();
 
 	/**
 	 * Provide access to the Http Servlet Response
+	 * 
+	 * @return The servlet response
 	 */
 	HttpServletResponse _response();
 
 	/**
 	 * Provide access to the host name (of this computer)
+	 * 
+	 * @return The hostname
 	 */
 	String _host();
 

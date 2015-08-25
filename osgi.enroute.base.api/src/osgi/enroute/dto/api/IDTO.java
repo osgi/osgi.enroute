@@ -106,14 +106,29 @@ public class IDTO extends DTO {
 		}
 	}
 
+	/**
+	 * A helper method to initialize a IDTO field with a list
+	 * 
+	 * @return a list
+	 */
 	public static <T> List<T> list() {
 		return new ArrayList<>();
 	}
 
+	/**
+	 * A helper method to initialize a IDTO field with a set
+	 * 
+	 * @return a list
+	 */
 	public static <T> Set<T> set() {
 		return new LinkedHashSet<>();
 	}
 
+	/**
+	 * A helper method to initialize a IDTO field with a map
+	 * 
+	 * @return a list
+	 */
 	public static <K, V> Map<K,V> map() {
 		return new LinkedHashMap<>();
 	}

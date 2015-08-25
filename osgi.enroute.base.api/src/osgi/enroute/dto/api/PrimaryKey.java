@@ -1,2 +1,6 @@
 package osgi.enroute.dto.api;
-@interface PrimaryKey {}
+
+/**
+ * A primary key annotation
+ */
+public @interface PrimaryKey {}

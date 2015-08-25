@@ -34,7 +34,8 @@ public interface Authority {
 	/**
 	 * Get the current user id.
 	 * 
-	 * @return the current user id. This is always non-null.
+	 * @return the current user id. This is never <code>null</code>
+	 * @throws Exception
 	 */
 	String getUserId() throws Exception;
 
@@ -43,8 +44,9 @@ public interface Authority {
 	 * 
 	 * @return the set of permissions. If there are no permissions, an empty
 	 *         list is returned. This list is read only.
+	 * @throws Exception
 	 */
-	List<String> getPermissions(/*String context?*/) throws Exception;
+	List<String> getPermissions() throws Exception;
 
 	/**
 	 * Verify if the current user has the given permission. First, a check is
@@ -61,6 +63,7 @@ public interface Authority {
 	 *            The arguments specified in the permission
 	 * @return true if the current user is granted the permission, otherwise
 	 *         false
+	 * @throws Exception
 	 */
 	boolean hasPermission(String permission, String... arguments) throws Exception;
 
@@ -69,9 +72,13 @@ public interface Authority {
 	 * this method returns silently. Otherwise it will throw a
 	 * SecurityException.
 	 * 
-	 * @param permission The permission to check
-	 * @param arguments The arguments to the check
-	 * @throws SecurityException if the permission is not granted to the current caller
+	 * @param permission
+	 *            The permission to check
+	 * @param arguments
+	 *            The arguments to the check
+	 * @throws Exception
+	 * @throws SecurityException
+	 *             if the permission is not granted to the current caller
 	 */
 	void checkPermission(String permission, String... arguments) throws Exception;
 }

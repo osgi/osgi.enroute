@@ -36,12 +36,13 @@ import osgi.enroute.iot.gpio.api.IC;
  * IC when the signal changes (or when it feels like it).
  * <p>
  * If the IC has a change in signal (or just feels like it) it can call a proxy
- * with the {@link #out()} method. This proxy implements the Output interface
- * and thus has all the methods to set the output.
- * <p>
- * The circuit can connect to the output pins by calling
- * {@link #connect(Output)} and should call disconnect before it goes away. The
- * IC class will call any output on all registered Output objects.
+ * with the out() method. This proxy implements the Output interface and thus
+ * has all the methods to set the output.
+ * 
+ * @param <Input>
+ *            A type that describes the input pins
+ * @param <Output>
+ *            A type that describes the output pins
  */
 public abstract class ICAdapter<Input, Output> implements IC {
 	static Pattern LAST_SEGMENT_P = Pattern.compile(".*[$.]([^.$]+)(?:$\\d+)?");
@@ -61,6 +62,13 @@ public abstract class ICAdapter<Input, Output> implements IC {
 		Method method;
 	}
 
+	/**
+	 * Create an IC Adapter
+	 * 
+	 * @param deviceId
+	 * @param dtos
+	 * @param board
+	 */
 	public ICAdapter(String deviceId, DTOs dtos, CircuitBoard board) {
 		this();
 		setDeviceId(deviceId);
@@ -320,6 +328,13 @@ public abstract class ICAdapter<Input, Output> implements IC {
 		}
 	}
 
+	/**
+	 * Get the Input Pin
+	 * 
+	 * @param name
+	 *            name of the pin
+	 * @return an Input Pin
+	 */
 	public InputPin getInputPin(String name) {
 		int index = Arrays.binarySearch(inputNames, name);
 		if (index < 0)

@@ -16,6 +16,9 @@ import org.osgi.dto.DTO;
 @ProviderType
 public interface LoggerAdmin {
 
+	/**
+	 * DTO that provides info about an internal logger
+	 */
 	class Info extends DTO {
 		public String	name;
 		public long		bundleId;
@@ -38,6 +41,9 @@ public interface LoggerAdmin {
 		public boolean	where;
 	}
 
+	/**
+	 * DTO that is used to control the logging of loggers
+	 */
 	class Control extends DTO {
 		/**
 		 * The pattern is a required regex that is matched against:
@@ -50,7 +56,7 @@ public interface LoggerAdmin {
 		 * control is the first match of course).
 		 */
 
-		public String	pattern;
+		public String pattern;
 
 		/**
 		 * The minimum level for this logger
@@ -95,16 +101,24 @@ public interface LoggerAdmin {
 	 * @param filter
 	 *            filter expression to find loggers
 	 * @return a list of LogerInfo's
+	 * @throws Exception
 	 */
 	List<Info> list(String filter) throws Exception;
 
 	/**
 	 * Get the current log settings. Returned objects are a copy.
+	 * 
+	 * @return A copy of the current settings
+	 * @throws Exception
 	 */
 	Settings getSettings() throws Exception;
 
 	/**
 	 * Update the current log settings
+	 * 
+	 * @param settings
+	 *            The settings to update
+	 * @throws Exception
 	 */
 	void setSettings(Settings settings) throws Exception;
 

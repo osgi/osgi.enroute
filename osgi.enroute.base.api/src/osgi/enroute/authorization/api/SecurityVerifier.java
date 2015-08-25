@@ -15,9 +15,9 @@ import java.util.Formatter;
 public class SecurityVerifier {
 	static final String[]	EMPTY_STRING	= new String[0];
 
-	public static class CheckHandler extends SecurityVerifier.HasHandler {
+	static class CheckHandler extends SecurityVerifier.HasHandler {
 
-		public CheckHandler(Authority authority) {
+		CheckHandler(Authority authority) {
 			super(authority);
 		}
 
@@ -95,7 +95,8 @@ public class SecurityVerifier {
 	 *            the interface with the method names as the permission names.
 	 * @param authority
 	 *            The Authority service
-	 * @return
+	 * @return A security exception throwing security checker based on the given
+	 *         interface
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T createChecker(Class<T> type, Authority authority) {
@@ -112,7 +113,8 @@ public class SecurityVerifier {
 	 *            the interface with the method names as the permission names.
 	 * @param authority
 	 *            The Authority service
-	 * @return
+	 * @return A security verifier that returns booleans instead of throwing an
+	 *         exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T createVerifier(Class<T> type, Authority authority) {

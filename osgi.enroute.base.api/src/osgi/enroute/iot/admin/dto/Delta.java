@@ -7,6 +7,13 @@ import java.util.Map;
  * of this type will be added to the event properties.
  */
 public class Delta {
+	/**
+	 * The system time this delta was created
+	 */
 	public long time;
+
+	/**
+	 * The connector values
+	 */
 	public Map<Integer, Object> connectorValues;
 }
