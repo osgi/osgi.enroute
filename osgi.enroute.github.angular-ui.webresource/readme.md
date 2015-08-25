@@ -14,3 +14,26 @@ Original Bootstrap's CSS depends on empty href attributes to style cursors for s
 
 	.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
+## How to Use
+
+This bundle provides the `osgi.enroute.webresource` capability with the name `/github/angular-ui` and version=${vrs}. If you require this capability then you will automatically get this resource included in your html page when you add:
+	
+	<link rel="stylesheet" type="text/css"
+		href="/osgi.enroute.webresource/\${bsn}/\${Bundle-Version}/*.css">
+	<script src="/osgi.enroute.webresource/\${bsn}/\${Bundle-Version}/*.js"></script>
+
+The resources are also mapped to a web path as:
+
+	${subst;${path};static;→}
+	
+
+## The Capability
+
+	${Provide-Capability} 
+
+## License(s)
+
+	${Bundle-License}
+
+
+_${Bundle-Version}_

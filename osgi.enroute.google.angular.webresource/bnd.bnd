@@ -2,10 +2,11 @@
 # ANGULAR JS
 #
 
-vrs = 1.3.8
+vrs = ${version;===;${Bundle-Version}}
+
 path = static/google/angular/${vrs}
 
-Bundle-Version: 1.3.9.${tstamp}
+Bundle-Version: 1.4.4.${tstamp}
 Bundle-License: 		http://opensource.org/licenses/MIT
 Bundle-Description: 	\
 	HTML is great for declaring static documents, but it falters when we try to use \
@@ -25,7 +26,7 @@ Provide-Capability: \
 		root=${path}
 
 
--includeresource: ${path}=web, angular.png, {readme.md}
+-includeresource: ${path}=web/${vrs}, angular.png, {readme.md}
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.google.angular.webresource)'

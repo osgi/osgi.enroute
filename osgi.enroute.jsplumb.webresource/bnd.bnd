@@ -2,10 +2,7 @@
 # JSPLUMB – Diagram Editor
 #
 
-vrs = 1.7.5
-path = static/jsplumb/jsplumb/${version;===;${vrs}}
-
-Bundle-Version: ${vrs}.${tstamp}
+Bundle-Version: 1.7.6.${tstamp}
 Bundle-Description: \
 	jsPlumb provides a means for a developer to visually connect elements \
 	on their web pages. It uses SVG or Canvas in modern browsers.
@@ -16,7 +13,12 @@ Provide-Capability: 	\
 		root=${path}; \
 		version:Version=${vrs}
 
-Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
+Bundle-License:			http://opensource.org/licenses/MIT
 Bundle-DocURL:			http://jsplumb.org/doc/home.html
+Bundle-Icon:			https://jsplumbtoolkit.com/img/logo-jsplumb-green.png
 
--includeresource: static
+vrs = ${version;===;${Bundle-Version}}
+path = static/jsplumb/jsplumb/${version;===;${vrs}}
+
+-includeresource: ${path}=web/${vrs}, {readme.md}
+

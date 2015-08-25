@@ -2,10 +2,10 @@
 # TWITTER BOOTSTRAP
 #
 
-vrs  = 3.3.1
+vrs  = ${version;===;${Bundle-Version}}
 path = static/twitter/bootstrap/${vrs}
 
-Bundle-Version: 3.3.2.${tstamp}
+Bundle-Version: 3.3.5.${tstamp}
 Bundle-Description: 	\
 	Bootstrap: Sleek, intuitive, and powerful front-end framework for faster and \
 	easier web development.
@@ -21,7 +21,7 @@ Provide-Capability: 	\
 		root=${path}; \
 		version:Version=${vrs}
 
--includeresource: ${path}=web, {readme.md}
+-includeresource: ${path}=web/${vrs}, {readme.md}
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.twitter.bootstrap.webresource)'
 -runbundles:  \

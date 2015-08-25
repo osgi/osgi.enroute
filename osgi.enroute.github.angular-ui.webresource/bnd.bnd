@@ -2,10 +2,10 @@
 # OSGI ENROUTE GITHUB ANGULAR-UI DEFAULTS
 #
 
-vrs  = 0.12.0
 path = static/github/angular-ui/${vrs}
+vrs  = ${version;===;${Bundle-Version}}
 
-Bundle-Version: 0.12.1.${tstamp}
+Bundle-Version: 0.13.3.${tstamp}
 Bundle-Description: 				\
 	Bootstrap components written in pure AngularJS by the AngularUI Team. Native AngularJS \
 	(Angular) directives for Bootstrap. Small footprint (5kB gzipped!), no 3rd party JS \

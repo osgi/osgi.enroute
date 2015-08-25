@@ -15,3 +15,27 @@ AngularJS is a toolset for building the framework most suited to your applicatio
 ## Why a Bundle?
 
 This bundle can now be used with the OSGi version management and automatic application composition.
+
+## How to Use
+
+This bundle provides the `osgi.enroute.webresource` capability with the name `/google/angular` and version=${vrs}. If you require this capability then you will automatically get this resource included in your html page when you add:
+	
+	<link rel="stylesheet" type="text/css"
+		href="/osgi.enroute.webresource/\${bsn}/\${Bundle-Version}/*.css">
+	<script src="/osgi.enroute.webresource/\${bsn}/\${Bundle-Version}/*.js"></script>
+
+The resources are also mapped to a web path as:
+
+	${subst;${path};static;→}
+	
+
+## The Capability
+
+	${Provide-Capability} 
+
+## License(s)
+
+	${Bundle-License}
+
+
+_${Bundle-Version}_
