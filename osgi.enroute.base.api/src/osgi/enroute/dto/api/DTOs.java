@@ -42,8 +42,6 @@ public interface DTOs {
 		 * 
 		 * @param dest
 		 *            The destination type.
-		 * @param source
-		 *            The source object to be converted. Must not be null.
 		 * @return a converted object implementing/extending T
 		 * @throws Exception
 		 */
@@ -54,8 +52,6 @@ public interface DTOs {
 		 * 
 		 * @param dest
 		 *            the destination type specification
-		 * @param source
-		 *            the source object, must not be null
 		 * @return the converted object or {@code null} if no conversion could
 		 *         be found.
 		 */
@@ -69,8 +65,6 @@ public interface DTOs {
 		 * 
 		 * @param dest
 		 *            the destination type
-		 * @param source
-		 *            the source object, must not be null
 		 * @return the converted object or null if no conversion could be found.
 		 * @throws Exception
 		 */
@@ -400,9 +394,7 @@ public interface DTOs {
 	 * the \ and . are escaped.
 	 * 
 	 * @param segments
-	 *            The segments of the path
-	 * @param path
-	 *            The unescaped segments
+	 *            The unescaped segments of the path
 	 * @return a string path where the . and \ are escaped.
 	 */
 	String fromSegmentsToPath(String[] segments);
