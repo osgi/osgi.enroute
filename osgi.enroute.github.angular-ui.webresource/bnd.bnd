@@ -2,10 +2,16 @@
 # OSGI ENROUTE GITHUB ANGULAR-UI DEFAULTS
 #
 
-path = static/github/angular-ui/${vrs}
-vrs  = ${version;===;${Bundle-Version}}
+#
+# Ensure that these constants are aligned with 
+# AngularUIConstants!
+#
+name = /github/angular-ui
+vrs  = 0.13.3
 
-Bundle-Version: 0.13.3.${tstamp}
+path = static${name}/${vrs}
+
+Bundle-Version: ${vrs}.${tstamp}
 Bundle-Description: 				\
 	Bootstrap components written in pure AngularJS by the AngularUI Team. Native AngularJS \
 	(Angular) directives for Bootstrap. Small footprint (5kB gzipped!), no 3rd party JS \
@@ -15,16 +21,15 @@ Bundle-DocURL:			http://angular-ui.github.io/bootstrap/
 Bundle-SCM:				git@github.com:angular-ui/bootstrap.git
 Bundle-License:			http://opensource.org/licenses/MIT;link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
 Bundle-Icon: 			https://2.gravatar.com/avatar/46d07086561c66caae16ce4d96bfd345?d=https%3A%2F%2Fidenticons.github.com%2F3902b30e7e55d0ffde5994d69bf8d4e6.png&s=64
-
+Export-Package: 		osgi.enroute.github.angular_ui.capabilities
 
 Provide-Capability: \
 	osgi.enroute.webresource; \
-		osgi.enroute.webresource=/github/angular-ui; \
+		osgi.enroute.webresource=${name}; \
 		root=${path}; \
-		version:Version=${Bundle-Version}
+		version:Version=${vrs}
 
--includeresource: ${path}=web, {readme.md}
+-includeresource: ${path}=${vrs}, {readme.md}
 -buildpath: \
 	osgi.enroute.base.api
 
-Export-Package: osgi.enroute.github.angular_ui.capabilities

@@ -15,16 +15,19 @@ import java.util.regex.Pattern;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.log.LogService;
 import osgi.enroute.debug.api.Debug;
 import osgi.enroute.logger.api.Level;
 import osgi.enroute.logger.api.LoggerAdmin;
+import osgi.enroute.logger.capabilities.LoggerConstants;
 import osgi.enroute.logger.simple.provider.LoggerDispatcher.Eval;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Deactivate;
 import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.bnd.annotation.metatype.Configurable;
 import aQute.libg.glob.Glob;
 
@@ -32,6 +35,7 @@ import aQute.libg.glob.Glob;
  * This is the Logger Admin component. It registers a {@link LoggerAdmin}
  * service.
  */
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=LoggerConstants.LOGGER_SPECIFICATION_NAME, version=LoggerConstants.LOGGER_SPECIFICATION_VERSION)
 @Component(
 		immediate = true,
 		servicefactory = false,

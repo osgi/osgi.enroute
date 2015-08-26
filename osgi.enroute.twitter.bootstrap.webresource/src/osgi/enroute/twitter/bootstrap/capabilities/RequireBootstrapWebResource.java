@@ -10,7 +10,7 @@ import osgi.enroute.namespace.WebResourceNamespace;
  * A Web Resource that provides Twitter's Bootstrap files.
  */
 @RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
-		+ "="+BootstrapConstants.BOOTSTRAP_WEB_RESOURCE_PATH+")${frange;${version;==;${Bundle-Version}}})")
+		+ "="+BootstrapConstants.BOOTSTRAP_WEB_RESOURCE_NAME+")${frange;"+BootstrapConstants.BOOTSTRAP_WEB_RESOURCE_VERSION+"})")
 @Retention(RetentionPolicy.CLASS)
 public @interface RequireBootstrapWebResource {
 

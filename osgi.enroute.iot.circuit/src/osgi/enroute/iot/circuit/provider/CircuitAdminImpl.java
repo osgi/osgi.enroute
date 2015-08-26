@@ -32,6 +32,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.iot.admin.api.CircuitAdmin;
+import osgi.enroute.iot.admin.capabilities.IotAdminConstants;
 import osgi.enroute.iot.admin.dto.Delta;
 import osgi.enroute.iot.admin.dto.ICDTO;
 import osgi.enroute.iot.admin.dto.WireDTO;
@@ -46,23 +47,23 @@ import aQute.lib.collections.MultiMap;
  * Implementation of {@link CircuitAdmin}
  */
 
-@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.enroute.circuit", version="1.0.0")
+@ProvideCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = IotAdminConstants.IOT_ADMIN_SPECIFICATION_NAME, version = IotAdminConstants.IOT_ADMIN_SPECIFICATION_VERSION)
 @Component(immediate = true, name = "osgi.enroute.iot.circuit")
 public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
-	private static final String							WIREFACTORYPID	= "osgi.enroute.iot.circuit.wires";
-	final Map<IC, ICTracker>							ics				= new IdentityHashMap<>();
-	final MultiMap<String, ICTracker>					index			= new MultiMap<>();
-	final Map<String, WireImpl>							wires			= new ConcurrentHashMap<>();
-	final AtomicInteger									id				= new AtomicInteger(
-																				1000);
-	final Object										lock			= new Object();						;
+	private static final String			WIREFACTORYPID	= "osgi.enroute.iot.circuit.wires";
+	final Map<IC, ICTracker>			ics				= new IdentityHashMap<>();
+	final MultiMap<String, ICTracker>	index			= new MultiMap<>();
+	final Map<String, WireImpl>			wires			= new ConcurrentHashMap<>();
+	final AtomicInteger					id				= new AtomicInteger(
+			1000);
+	final Object						lock			= new Object();;
 
 	DTOs												dtos;
 	ServiceTracker<IC, ICTracker>						tracker;
 	EventAdmin											ea;
 	private ConfigurationAdmin							cm;
 	private ServiceRegistration<ManagedServiceFactory>	msf;
-	private Set<String>									names			= new HashSet<>();
+	private Set<String>									names	= new HashSet<>();
 	private Scheduler									sc;
 
 	/*
@@ -80,7 +81,7 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 					@Override
 					public void updated(String pid,
 							Dictionary<String, ?> properties)
-							throws ConfigurationException {
+									throws ConfigurationException {
 						try {
 							Map<String, Object> map = new HashMap<>();
 							Enumeration<String> keys = properties.keys();
@@ -114,16 +115,15 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 						removeWire(wire, pid);
 					}
 				}, props);
-		
 
 		//
 		// To break any circularity
 		//
-		
-		sc.after(()-> {
+
+		sc.after(() -> {
 			tracker = getTracker(context);
 			tracker.open();
-		}, 200);
+		} , 200);
 	}
 
 	@Deactivate

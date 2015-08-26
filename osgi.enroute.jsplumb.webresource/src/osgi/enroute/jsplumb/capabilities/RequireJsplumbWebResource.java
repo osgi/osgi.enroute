@@ -10,7 +10,7 @@ import osgi.enroute.namespace.WebResourceNamespace;
  * A Web Resource that provides Jsonrpc javascript files.
  */
 @RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
-		+ "="+JsplumbConstants.JSPLUMB_WEB_RESOURCE_PATH+")${frange;${version;==;${Bundle-Version}}})")
+		+ "="+JsplumbConstants.JSPLUMB_WEB_RESOURCE_NAME+")${frange;"+JsplumbConstants.JSPLUMB_WEB_RESOURCE_VERSION+"})")
 @Retention(RetentionPolicy.CLASS)
 public @interface RequireJsplumbWebResource {
 

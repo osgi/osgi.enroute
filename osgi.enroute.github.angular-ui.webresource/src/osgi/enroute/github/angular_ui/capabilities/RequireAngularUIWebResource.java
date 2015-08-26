@@ -11,7 +11,7 @@ import osgi.enroute.namespace.WebResourceNamespace;
  */
 @RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
  + "="
-		+ AngularUIConstants.ANGULAR_UI_WEBRESOURCE_PATH + ")${frange;${version;===;${Bundle-Version}}})")
+		+ AngularUIConstants.ANGULAR_UI_WEBRESOURCE_NAME + ")${frange;"+AngularUIConstants.ANGULAR_UI_WEBRESOURCE_VERSION+"})")
 @Retention(RetentionPolicy.CLASS)
 public @interface RequireAngularUIWebResource {
 

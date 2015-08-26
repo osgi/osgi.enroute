@@ -10,7 +10,7 @@ import osgi.enroute.namespace.WebResourceNamespace;
  * A Web Resource that provides Showdown markdown converter's javascript files.
  */
 @RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
-		+ "="+PagedownConstants.PAGEDOWN_WEB_RESOURCE_PATH+")${frange;${version;===;${Bundle-Version}}})")
+		+ "="+PagedownConstants.PAGEDOWN_WEB_RESOURCE_NAME+")${frange;"+PagedownConstants.PAGEDOWN_WEB_RESOURCE_VERSION+"})")
 @Retention(RetentionPolicy.CLASS)
 public @interface RequirePagedownWebResource {
 

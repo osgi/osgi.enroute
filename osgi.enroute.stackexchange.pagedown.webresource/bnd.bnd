@@ -11,11 +11,13 @@
 # https://github.com/ujifgc/pagedown
 #
 
-# The showdown js version
+# Dont forget to match to PagedownConstants
 vrs=1.1.1
-path = static/stackexchange/pagedown/${version;===;${vrs}}
+name=/stackexchange/pagedown
 
-Bundle-Version: 1.1.1.${tstamp}
+path = static${name}/${vrs}
+
+Bundle-Version: ${vrs}.${tstamp}
 Bundle-Description: \
 	PageDown is the JavaScript Markdown previewer used on Stack Overflow and the rest of \
 	the Stack Exchange network. It includes a Markdown-to-HTML converter and an \
@@ -26,10 +28,10 @@ Bundle-Description: \
 
 Bundle-DocURL: 			https://code.google.com/p/pagedown/wiki/PageDown
 Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
-
+Export-Package: 		osgi.enroute.stackexchange.pagedown.webresource
 Provide-Capability: \
 	osgi.enroute.webresource; \
-		osgi.enroute.webresource=/stackexchange/pagedown; \
+		osgi.enroute.webresource=${name}; \
 		root=${path}; \
 		version:Version=${vrs}
 
@@ -37,10 +39,9 @@ Provide-Capability: \
 	osgi.enroute.base.api
 
 -includeresource: \
-	{${path}=pagedown}, \
+	{${path}=${vrs}}, \
 	${path}/enmarkdown.js; \
-		requires='${project}/src/enmarkdown.js,${project}/pagedown/Markdown.Converter.js'; \
-		cmd='cat ${project}/src/enmarkdown.js ${project}/pagedown/Markdown.Converter.js', \
-	pagedown/LICENSE.txt, \
+		requires='${project}/${vrs}/enmarkdown.js,${project}/${vrs}/Markdown.Converter.js'; \
+		cmd='cat ${project}/${vrs}/enmarkdown.js ${project}/${vrs}/Markdown.Converter.js', \
+	${vrs}/LICENSE.txt, \
 	{readme.md}
-Export-Package: osgi.enroute.stackexchange.pagedown.webresource

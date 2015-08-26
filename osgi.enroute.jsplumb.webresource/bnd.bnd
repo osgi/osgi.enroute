@@ -2,7 +2,13 @@
 # JSPLUMB – Diagram Editor
 #
 
-Bundle-Version: 1.7.6.${tstamp}
+# ENSURE TO MATCH THIS TO JsplumbConstants
+name = /jsplumb/jsplumb
+vrs = 1.7.6
+
+path = static${name}/${version;===;${vrs}}
+
+Bundle-Version: ${vrs}.${tstamp}
 Bundle-Description: \
 	jsPlumb provides a means for a developer to visually connect elements \
 	on their web pages. It uses SVG or Canvas in modern browsers.
@@ -10,16 +16,12 @@ Export-Package: osgi.enroute.jsplumb.capabilities
 Bundle-License:			http://opensource.org/licenses/MIT
 Bundle-DocURL:			http://jsplumb.org/doc/home.html
 Bundle-Icon:			https://jsplumbtoolkit.com/img/logo-jsplumb-green.png
+
 Provide-Capability: 	\
 	osgi.enroute.webresource; \
-		osgi.enroute.webresource=/jsplumb/jsplumb; \
+		osgi.enroute.webresource=${name}; \
 		root=${path}; \
 		version:Version=${vrs}
-
-#TODO move P-C to annotation (Bundle-Version macro failed)
-
-vrs = ${version;===;${Bundle-Version}}
-path = static/jsplumb/jsplumb/${version;===;${vrs}}
 
 -includeresource: ${path}=${vrs}, {readme.md}
 

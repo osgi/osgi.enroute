@@ -2,36 +2,37 @@
 # ANGULAR JS
 #
 
-vrs = ${version;===;${Bundle-Version}}
+# ENSURE TO MATCH THIS TO AngularConstants
+name = /google/angular
+vrs = 1.4.4
 
-path = static/google/angular/${vrs}
+path = static${name}/${vrs}
 
-Bundle-Version: 1.4.4.${tstamp}
-Bundle-License: 		http://opensource.org/licenses/MIT
+Bundle-Version: 		${vrs}.${tstamp}
 Bundle-Description: 	\
 	HTML is great for declaring static documents, but it falters when we try to use \
 	it for declaring dynamic views in web-applications. AngularJS lets you extend HTML vocabulary for \
 	your application. The resulting environment is extraordinarily expressive, readable, and quick to \
 	develop.
 	
+Bundle-License: 		http://opensource.org/licenses/MIT
 Bundle-DocURL: 			http://angularjs.org/
 Bundle-Vendor: 			Google Inc. (bundled by OSGi enRoute)
 Bundle-Icon: 			angular.png
 Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
-
+Export-Package: 		osgi.enroute.github.angular.capabilities
 Provide-Capability: \
 	osgi.enroute.webresource; \
-		osgi.enroute.webresource=/google/angular; \
+		osgi.enroute.webresource=${name}; \
 		version:Version=${vrs}; \
 		root=${path}
 
 -buildpath: \
 	osgi.enroute.base.api
 
--includeresource: ${path}=web/${vrs}, angular.png, {readme.md}
+-includeresource: ${path}=${vrs}, angular.png, {readme.md}
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.google.angular.webresource)'
 -runbundles:  \
 	osgi.enroute.google.angular.webresource;version=latest
-Export-Package: osgi.enroute.github.angular.capabilities
