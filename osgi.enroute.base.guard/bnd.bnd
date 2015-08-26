@@ -4,7 +4,7 @@
 	osgi.enroute.base.api;version=latest
 
 Bundle-Description: 
-	This bundle requires ALL capabilities provided by the OSGi enRoute Base API. It is \
+	This bundle requires ALL osgi.enroute.authentication.capabilities provided by the OSGi enRoute Base API. It is \
 	intended to verify that a distro contains a resolution for anything that people can \
 	start depending on via the OSGi enRoute Base API Compile JAR.
 

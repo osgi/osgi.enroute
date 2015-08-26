@@ -27,6 +27,11 @@
 	osgi.console=, \
 	org.osgi.service.http.port=8080
 
+-runpath.eqnx: 					osgi.enroute.equinox.log.adapter
+-runrequires.eqnx: \
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.log)'
+	
+
 -runsystempackages.eqnx:		javax.script
 -runsystemcapabilities.dflt: 	${native_capability}
 
@@ -61,6 +66,7 @@ debug-bundles: \
 		              osgi.remoteserviceadmin.topology;filter:='(policy=*)', \
 		              osgi.remoteserviceadmin.discovery;filter:='(protocols=*)'"
 
+
 -augment.os_me: \
 	org.osgi.service.metatype; \
 		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.metatype)'"
@@ -78,3 +84,8 @@ debug-bundles: \
 	org.apache.felix.log; \
 		capability:= "osgi.implementation;osgi.implementation=osgi.log;effective:=active"
 		
+
+-augment.fe_sc: \
+	org.apache.felix.scr; \
+		requirement:="osgi.implementation;filter:='(osgi.implementation=osgi.metatype)'"
+	

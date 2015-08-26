@@ -1,4 +1,4 @@
-package osgi.enroute.capabilities;
+package osgi.enroute.eventadminserversentevents.capabilities;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,19 +7,19 @@ import aQute.bnd.annotation.headers.RequireCapability;
 import osgi.enroute.namespace.WebResourceNamespace;
 
 /**
- * A Web Resource that provides Jsonrpc javascript files.
+ * A Web Resource that provides Easse javascript files.
  */
 @RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
-		+ "=/osgi/enroute/jsonrpc)${frange;1.1.1})")
+		+ "=/osgi/enroute/easse)${frange;${version;==;${Bundle-Version}}})")
 @Retention(RetentionPolicy.CLASS)
-public @interface JsonrpcWebResource {
+public @interface RequireEventAdminServerSentEventsWebResource {
 
 	/**
 	 * Define the default resource to return
 	 * 
 	 * @return the list of resources to include
 	 */
-	String[] resource() default {"jsonrpc.js"};
+	String[] resource() default {"easse.js","polyfill/eventsource.js"};
 
 	/**
 	 * Define the priority of this web resources. The higher the priority, the

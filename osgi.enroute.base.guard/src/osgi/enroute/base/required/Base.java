@@ -5,30 +5,32 @@ import org.osgi.dto.DTO;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import osgi.enroute.capabilities.AngularUIWebResource;
-import osgi.enroute.capabilities.AngularWebResource;
-import osgi.enroute.capabilities.BootstrapWebResource;
-import osgi.enroute.capabilities.ComponentExtender;
-import osgi.enroute.capabilities.ConfigurerExtender;
-import osgi.enroute.capabilities.EventAdminSSEEndpoint;
-import osgi.enroute.capabilities.PagedownWebResource;
-import osgi.enroute.capabilities.ServletWhiteboard;
-import osgi.enroute.capabilities.WebServerExtender;
+import osgi.enroute.authentication.capabilities.RequireAuthenticationImplementation;
+import osgi.enroute.authorization.capabilities.RequireAuthorizationImplementation;
+import osgi.enroute.configurer.capabilities.RequireConfigurerExtender;
+import osgi.enroute.eventadminserversentevents.capabilities.RequireEventAdminServerSentEventsWebResource;
+import osgi.enroute.executor.capabilities.RequireExecutorImplementation;
+import osgi.enroute.http.capabilities.RequireHttpImplementation;
+import osgi.enroute.iot.admin.capabilities.RequireIotAdminImplementation;
+import osgi.enroute.jsonrpc.capabilities.RequireJsonrpcWebResource;
+import osgi.enroute.scheduler.capabilities.RequireSchedulerImplementation;
+import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
 
 /**
  * The purpose of this class is to require all the parts that are part of
  * enRoute base in their right version. This bundle can be deployed in an
  * enRoute distribution to verify that the profile is completely present.
  */
-@AngularUIWebResource
-@AngularWebResource
-@BootstrapWebResource
-@ComponentExtender
-@ConfigurerExtender
-@EventAdminSSEEndpoint
-@PagedownWebResource
-@ServletWhiteboard
-@WebServerExtender
+@RequireJsonrpcWebResource
+@RequireEventAdminServerSentEventsWebResource
+@RequireIotAdminImplementation
+@RequireHttpImplementation
+@RequireSchedulerImplementation
+@RequireAuthenticationImplementation
+@RequireAuthorizationImplementation
+@RequireExecutorImplementation
+@RequireConfigurerExtender
+@RequireWebServerExtender
 @Component(property = "enroute.profile=base")
 public class Base //
 		extends javax.servlet.http.HttpServlet // drag in http server

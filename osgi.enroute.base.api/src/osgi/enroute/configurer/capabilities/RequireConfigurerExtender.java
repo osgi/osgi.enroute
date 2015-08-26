@@ -1,4 +1,4 @@
-package osgi.enroute.capabilities;
+package osgi.enroute.configurer.capabilities;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,9 +29,9 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * otherwise a new record is created.
  */
 @RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
-		+ "=osgi.enroute.configurer)${frange;1.2.0})")
+		+ "="+ConfigurerConstants.CONFIGURER_IMPLEMENTATION_NAME+")${frange;${version;==;${Bundle-Version}}})")
 @Retention(RetentionPolicy.CLASS)
-public @interface ConfigurerExtender {
+public @interface RequireConfigurerExtender {
 	/**
 	 * The place where to look for resources
 	 * 
