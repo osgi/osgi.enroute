@@ -7,7 +7,7 @@ public interface DTOConstants {
 	/**
 	 * Name
 	 */
-	String	DTO_SPECIFICATION_NAME		= "osgi.enroute.dto";
+	String	DTO_SPECIFICATION_NAME		= "osgi.enroute.dtos";
 	/**
 	 * Version
 	 */

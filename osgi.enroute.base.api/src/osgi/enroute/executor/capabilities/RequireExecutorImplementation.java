@@ -3,7 +3,7 @@ package osgi.enroute.executor.capabilities;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import org.osgi.namespace.extender.ExtenderNamespace;
+import org.osgi.namespace.implementation.ImplementationNamespace;
 
 import aQute.bnd.annotation.headers.RequireCapability;
 
@@ -28,7 +28,8 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * factory instance already exists with that name then the data is updated,
  * otherwise a new record is created.
  */
-@RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
+@RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
+		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE
 		+ "=" + ExecutorConstants.EXECUTOR_SPECIFICATION_NAME + ")${frange;${version;==;"
 		+ ExecutorConstants.EXECUTOR_SPECIFICATION_VERSION + "}})")
 @Retention(RetentionPolicy.CLASS)
