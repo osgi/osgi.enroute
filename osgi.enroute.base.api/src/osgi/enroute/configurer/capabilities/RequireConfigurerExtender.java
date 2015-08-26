@@ -29,7 +29,8 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * otherwise a new record is created.
  */
 @RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
-		+ "="+ConfigurerConstants.CONFIGURER_IMPLEMENTATION_NAME+")${frange;${version;==;${Bundle-Version}}})")
+		+ "=" + ConfigurerConstants.CONFIGURER_EXTENDER_NAME + ")${frange;"
+		+ ConfigurerConstants.CONFIGURER_EXTENDER_VERSION + "})")
 @Retention(RetentionPolicy.CLASS)
 public @interface RequireConfigurerExtender {
 	/**

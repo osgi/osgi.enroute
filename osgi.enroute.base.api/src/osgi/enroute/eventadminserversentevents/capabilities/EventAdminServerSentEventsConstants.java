@@ -7,9 +7,10 @@ public interface EventAdminServerSentEventsConstants {
 	/**
 	 * Name
 	 */
-	String	CONFIGURER_IMPLEMENTATION_NAME		= "osgi.enroute.eventadminserversentevents";
+	String EVENT_ADMIN_SERVER_SENT_EVENTS_WEB_RESOURCE_VERSION = "1.0.0";
+
 	/**
-	 * Name
+	 * 
 	 */
-	String	CONFIGURER_IMPLEMENTATION_VERSION	= "1.0.0";
+	String EVENT_ADMIN_SERVER_SENT_EVENTS_WEB_RESOURCE_PATH = "/osgi/enroute/easse";
 }

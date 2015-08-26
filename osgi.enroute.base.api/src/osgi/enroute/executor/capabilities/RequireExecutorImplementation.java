@@ -29,8 +29,8 @@ import aQute.bnd.annotation.headers.RequireCapability;
  * otherwise a new record is created.
  */
 @RequireCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, filter = "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE
-		+ "=" + ExecutorConstants.EXECUTOR_IMPLEMENTATION_NAME + ")${frange;${version;==;"
-		+ ExecutorConstants.EXECUTOR_IMPLEMENTATION_VERSION + "}})")
+		+ "=" + ExecutorConstants.EXECUTOR_SPECIFICATION_NAME + ")${frange;${version;==;"
+		+ ExecutorConstants.EXECUTOR_SPECIFICATION_VERSION + "}})")
 @Retention(RetentionPolicy.CLASS)
 public @interface RequireExecutorImplementation {
 	/**

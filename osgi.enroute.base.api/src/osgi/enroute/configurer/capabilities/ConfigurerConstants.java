@@ -7,9 +7,9 @@ public interface ConfigurerConstants {
 	/**
 	 * Name
 	 */
-	String CONFIGURER_IMPLEMENTATION_NAME = "osgi.enroute.configurer";
+	String CONFIGURER_EXTENDER_NAME = "osgi.enroute.configurer";
 	/**
 	 * Name
 	 */
-	String	CONFIGURER_IMPLEMENTATION_VERSION	= "1.0.0";
+	String	CONFIGURER_EXTENDER_VERSION	= "1.0.0";
 }

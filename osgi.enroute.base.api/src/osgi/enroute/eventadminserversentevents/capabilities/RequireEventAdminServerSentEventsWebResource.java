@@ -10,7 +10,10 @@ import osgi.enroute.namespace.WebResourceNamespace;
  * A Web Resource that provides Easse javascript files.
  */
 @RequireCapability(ns = WebResourceNamespace.NS, filter = "(&(" + WebResourceNamespace.NS
-		+ "=/osgi/enroute/easse)${frange;${version;==;${Bundle-Version}}})")
+ + "="
+		+ EventAdminServerSentEventsConstants.EVENT_ADMIN_SERVER_SENT_EVENTS_WEB_RESOURCE_PATH
+ + ")${frange;"
+		+ EventAdminServerSentEventsConstants.EVENT_ADMIN_SERVER_SENT_EVENTS_WEB_RESOURCE_VERSION + "})")
 @Retention(RetentionPolicy.CLASS)
 public @interface RequireEventAdminServerSentEventsWebResource {
 
