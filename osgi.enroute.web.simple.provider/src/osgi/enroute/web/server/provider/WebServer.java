@@ -29,12 +29,13 @@ import aQute.lib.io.*;
 import aQute.lib.json.*;
 import aQute.libg.cryptography.*;
 import aQute.libg.sed.*;
-import osgi.enroute.capabilities.*;
 import osgi.enroute.dto.api.*;
+import osgi.enroute.http.capabilities.*;
 import osgi.enroute.web.server.provider.IndexDTO.*;
+import osgi.enroute.webserver.capabilities.*;
 
-@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = "osgi.enroute.webserver", version = "1.1.0")
-@ServletWhiteboard
+@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
+@RequireHttpImplementation
 @Component(service = Servlet.class, immediate = true, property = {
 		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/", "name=" + WebServer.NAME, "no.index=true"
 }, name = WebServer.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
@@ -280,7 +281,7 @@ public class WebServer extends HttpServlet {
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
 	private BundleTracker<Bundle>		apps;
-	private List<File>					directories = Collections.EMPTY_LIST;
+	private List<File>					directories	= Collections.EMPTY_LIST;
 
 	@Activate
 	void activate(Config config, Map<String,Object> props, BundleContext context) throws Exception {
@@ -291,9 +292,9 @@ public class WebServer extends HttpServlet {
 			redirect = config.redirect();
 
 		String[] directories = config.directories();
-		if ( directories != null)
+		if (directories != null)
 			this.directories = Stream.of(directories).map((b) -> IO.getFile(b)).collect(Collectors.toList());
-		
+
 		pluginContributions = new PluginContributions(this, context);
 		webResources = new WebResources(this, context);
 
@@ -387,8 +388,7 @@ public class WebServer extends HttpServlet {
 	public void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
 		try {
 			String path = rq.getRequestURI();
-			System.out.println( "start " + path);
-			
+
 			if (path == null || path.isEmpty() || path.equals("/")) {
 				throw new RedirectException(redirect);
 			} else if (path.startsWith("/"))
@@ -469,11 +469,11 @@ public class WebServer extends HttpServlet {
 			}
 
 			if (rq.getMethod().equalsIgnoreCase("GET")) {
-				
+
 				rsp.setContentLengthLong(range.length());
 				OutputStream out = rsp.getOutputStream();
-				
-				try (FileInputStream file = new FileInputStream(c.file);)  {
+
+				try (FileInputStream file = new FileInputStream(c.file);) {
 					FileChannel from = file.getChannel();
 					WritableByteChannel to = Channels.newChannel(out);
 					range.copy(from, to);
@@ -486,8 +486,7 @@ public class WebServer extends HttpServlet {
 				rsp.getOutputStream().flush();
 				rsp.getOutputStream().close();
 			}
-			
-			System.out.println( "done " + path + " "+ c.file);
+
 			if (c.is404)
 				rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			else

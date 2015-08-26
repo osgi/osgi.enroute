@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +17,15 @@ import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.bnd.annotation.metatype.Configurable;
+import osgi.enroute.executor.capabilities.ExecutorConstants;
 
 /**
  * This bundle provides a java.util.concurrent.Executor service that can be
  * configured and is shared between all bundles. 
  */
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=ExecutorConstants.EXECUTOR_SPECIFICATION_NAME, version=ExecutorConstants.EXECUTOR_SPECIFICATION_VERSION)
 @Component(
 		designate = Configuration.class,
 		name = "osgi.executor.provider",

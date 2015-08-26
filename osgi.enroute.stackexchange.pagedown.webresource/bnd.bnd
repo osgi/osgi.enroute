@@ -33,6 +33,9 @@ Provide-Capability: \
 		root=${path}; \
 		version:Version=${vrs}
 
+-buildpath: \
+	osgi.enroute.base.api
+
 -includeresource: \
 	{${path}=pagedown}, \
 	${path}/enmarkdown.js; \
@@ -40,3 +43,4 @@ Provide-Capability: \
 		cmd='cat ${project}/src/enmarkdown.js ${project}/pagedown/Markdown.Converter.js', \
 	pagedown/LICENSE.txt, \
 	{readme.md}
+Export-Package: osgi.enroute.stackexchange.pagedown.webresource

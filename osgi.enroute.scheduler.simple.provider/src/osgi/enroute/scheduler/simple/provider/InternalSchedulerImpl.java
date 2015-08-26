@@ -19,6 +19,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -35,11 +36,13 @@ import osgi.enroute.scheduler.api.CancelException;
 import osgi.enroute.scheduler.api.CronJob;
 import osgi.enroute.scheduler.api.Scheduler;
 import osgi.enroute.scheduler.api.TimeoutException;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.converter.Converter;
 
 /**
  * 
  */
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.enroute.scheduler", version="1.0.0")
 @Component(name = "osgi.enroute.scheduler.simple", service = InternalSchedulerImpl.class)
 public class InternalSchedulerImpl implements Scheduler {
 	final List<Cron<?>> crons = new ArrayList<>();

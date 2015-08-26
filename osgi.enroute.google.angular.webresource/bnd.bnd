@@ -25,6 +25,8 @@ Provide-Capability: \
 		version:Version=${vrs}; \
 		root=${path}
 
+-buildpath: \
+	osgi.enroute.base.api
 
 -includeresource: ${path}=web/${vrs}, angular.png, {readme.md}
 
@@ -32,3 +34,4 @@ Provide-Capability: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.google.angular.webresource)'
 -runbundles:  \
 	osgi.enroute.google.angular.webresource;version=latest
+Export-Package: osgi.enroute.github.angular.capabilities

@@ -16,6 +16,7 @@ Bundle-SCM:				git@github.com:angular-ui/bootstrap.git
 Bundle-License:			http://opensource.org/licenses/MIT;link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
 Bundle-Icon: 			https://2.gravatar.com/avatar/46d07086561c66caae16ce4d96bfd345?d=https%3A%2F%2Fidenticons.github.com%2F3902b30e7e55d0ffde5994d69bf8d4e6.png&s=64
 
+
 Provide-Capability: \
 	osgi.enroute.webresource; \
 		osgi.enroute.webresource=/github/angular-ui; \
@@ -23,3 +24,7 @@ Provide-Capability: \
 		version:Version=${Bundle-Version}
 
 -includeresource: ${path}=web, {readme.md}
+-buildpath: \
+	osgi.enroute.base.api
+
+Export-Package: osgi.enroute.github.angular_ui.capabilities

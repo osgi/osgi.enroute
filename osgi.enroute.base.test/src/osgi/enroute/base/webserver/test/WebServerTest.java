@@ -2,29 +2,28 @@ package osgi.enroute.base.webserver.test;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpService;
 
-import osgi.enroute.base.configurer.test.ConfigurerTest;
-import osgi.enroute.capabilities.WebServerExtender;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.osgi.Builder;
 import aQute.bnd.osgi.EmbeddedResource;
 import aQute.bnd.osgi.Jar;
 import aQute.bnd.osgi.JarResource;
 import aQute.bnd.testing.DSTestWiring;
+import junit.framework.TestCase;
+import osgi.enroute.base.configurer.test.ConfigurerTest;
+import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
-@WebServerExtender
+@RequireWebServerExtender
 public class WebServerTest extends TestCase {
 	private static final String HTML_BODY_TEST_BODY_HTML = "<html><body>test</body></html>";
 	BundleContext context = FrameworkUtil.getBundle(ConfigurerTest.class)

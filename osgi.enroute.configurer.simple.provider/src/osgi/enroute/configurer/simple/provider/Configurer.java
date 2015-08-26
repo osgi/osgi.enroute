@@ -31,7 +31,6 @@ import org.osgi.service.coordinator.Coordinator;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.BundleTracker;
 
-import osgi.enroute.configurer.api.ConfigurationDone;
 import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.collections.ExtList;
 import aQute.lib.converter.Converter;
@@ -40,6 +39,8 @@ import aQute.lib.io.IO;
 import aQute.lib.json.JSONCodec;
 import aQute.lib.settings.Settings;
 import aQute.libg.sed.ReplacerAdapter;
+import osgi.enroute.configurer.api.ConfigurationDone;
+import osgi.enroute.configurer.capabilities.ConfigurerConstants;
 
 /**
  * This component is an extender that reads {@link #CONFIGURATION_LOC} file.
@@ -63,7 +64,7 @@ import aQute.libg.sed.ReplacerAdapter;
  * The configurer reads
  */
 
-@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name="osgi.enroute.configurer", version="1.2.0")
+@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name=ConfigurerConstants.CONFIGURER_EXTENDER_NAME, version=ConfigurerConstants.CONFIGURER_EXTENDER_VERSION)
 @Component(service = {
 		ConfigurationDone.class, Object.class
 }, immediate = true)

@@ -34,5 +34,6 @@ Conditional-Package: aQute.lib*
 	org.eclipse.equinox.coordinator;version='[1.2.0,1.2.1)',\
 	osgi.configurer.provider;version='[1.0.0,1.0.1)',\
 	osgi.enroute.configurer.simple.provider;version=latest
-Export-Package:  \
-	osgi.enroute.configurer.api;provide:=true
+Export-Package: \
+	osgi.enroute.configurer.api;provide:=true,\
+	osgi.enroute.configurer.capabilities

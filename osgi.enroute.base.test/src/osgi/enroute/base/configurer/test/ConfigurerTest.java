@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -16,15 +14,16 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationListener;
 
-import osgi.enroute.capabilities.ConfigurerExtender;
-import osgi.enroute.configurer.api.ConfigurationDone;
 import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.osgi.Builder;
 import aQute.bnd.osgi.JarResource;
 import aQute.bnd.osgi.URLResource;
 import aQute.bnd.testing.DSTestWiring;
+import junit.framework.TestCase;
+import osgi.enroute.configurer.api.ConfigurationDone;
+import osgi.enroute.configurer.capabilities.RequireConfigurerExtender;
 
-@ConfigurerExtender
+@RequireConfigurerExtender
 public class ConfigurerTest extends TestCase {
 	BundleContext				context	= FrameworkUtil.getBundle(ConfigurerTest.class).getBundleContext();
 	DSTestWiring				ds		= new DSTestWiring();

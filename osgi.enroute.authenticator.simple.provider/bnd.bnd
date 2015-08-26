@@ -14,6 +14,11 @@ Private-Package:  \
 	osgi.enroute.authenticator.simple.provider
 
 Conditional-Package: aQute.lib*
+
+Provide-Capability: \
+	osgi.implementation; \
+		osgi.implementation=osgi.enroute.authenticator; \
+		version:Version=1.0.0
 	
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\

@@ -18,6 +18,12 @@ Private-Package:  \
 
 Conditional-Package: aQute.lib*
 
+Provide-Capability: \
+	osgi.implementation; \
+		osgi.implementation=osgi.enroute.authority; \
+		version:Version=1.0.0
+	
+
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\

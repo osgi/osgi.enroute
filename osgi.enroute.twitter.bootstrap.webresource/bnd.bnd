@@ -21,8 +21,12 @@ Provide-Capability: 	\
 		root=${path}; \
 		version:Version=${vrs}
 
+-buildpath: \
+	osgi.enroute.base.api
+
 -includeresource: ${path}=web/${vrs}, {readme.md}
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.twitter.bootstrap.webresource)'
 -runbundles:  \
 	osgi.enroute.twitter.bootstrap.webresource;version=latest
+Export-Package: osgi.enroute.twitter.bootstrap.capabilities

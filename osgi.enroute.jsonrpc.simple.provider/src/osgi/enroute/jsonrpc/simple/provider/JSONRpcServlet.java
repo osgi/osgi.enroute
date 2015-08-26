@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.dto.DTO;
-import org.osgi.namespace.extender.ExtenderNamespace;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -32,11 +31,10 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.converter.Converter;
 import aQute.lib.hex.Hex;
 import aQute.lib.json.JSONCodec;
-import osgi.enroute.capabilities.ServletWhiteboard;
+import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.jsonrpc.api.JSONRPC;
 import osgi.enroute.jsonrpc.dto.JSON.Endpoint;
 import osgi.enroute.jsonrpc.dto.JSON.JSONRPCError;
@@ -48,8 +46,7 @@ import osgi.enroute.jsonrpc.dto.JSON.Response;
  * on JSONRPC services.
  * <p/>
  */
-@ServletWhiteboard
-@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = "osgi.enroute.jsonrpc", version = "1.1.1")
+@RequireHttpImplementation
 @Designate(ocd = JSONRpcServlet.Config.class)
 @Component(//
 name = "osgi.web.jsonrpc", //

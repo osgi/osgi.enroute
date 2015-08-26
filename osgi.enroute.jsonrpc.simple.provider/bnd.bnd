@@ -10,20 +10,21 @@ Bundle-Description: 				\
 	class are fair game and maps to them to a JSON RPC endpoint. These methods
 	are then available in Javascript.
 
-Export-Package:  \
+Export-Package: \
 	osgi.enroute.jsonrpc.api,\
-	osgi.enroute.jsonrpc.dto
+	osgi.enroute.jsonrpc.dto,\
+	osgi.enroute.jsonrpc.capabilities
 
 Private-Package:  \
 	osgi.enroute.jsonrpc.simple.provider
 	
-Conditional-Package: aQute.lib*
-
 Provide-Capability: 	\
 	osgi.enroute.webresource; \
 		osgi.enroute.webresource=/osgi/enroute/jsonrpc; \
 		root=/static/osgi/enroute/jsonrpc; \
 		version:Version=${Bundle-Version}
+
+Conditional-Package: aQute.lib*
 
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\

@@ -22,9 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.enroute.authentication.api.Authenticator;
-import osgi.enroute.authorization.api.AuthorityAdmin;
-import osgi.enroute.capabilities.ServletWhiteboard;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Reference;
@@ -32,8 +29,11 @@ import aQute.bnd.annotation.metatype.Configurable;
 import aQute.bnd.annotation.metatype.Meta;
 import aQute.lib.base64.Base64;
 import aQute.lib.collections.ExtList;
+import osgi.enroute.authentication.api.Authenticator;
+import osgi.enroute.authorization.api.AuthorityAdmin;
+import osgi.enroute.http.capabilities.RequireHttpImplementation;
 
-@ServletWhiteboard
+@RequireHttpImplementation
 @Component(properties = {
 	"pattern=.*"
 }, designateFactory = SecurityFilter.Config.class)

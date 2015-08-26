@@ -11,6 +11,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -19,13 +20,16 @@ import org.osgi.service.useradmin.User;
 import org.osgi.service.useradmin.UserAdmin;
 import org.slf4j.Logger;
 
-import osgi.enroute.authentication.api.Authenticator;
-import osgi.enroute.authenticator.simple.provider.Config.Algorithm;
-import osgi.enroute.debug.api.Debug;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.bnd.annotation.metatype.Configurable;
 import aQute.lib.base64.Base64;
 import aQute.lib.hex.Hex;
+import osgi.enroute.authentication.api.Authenticator;
+import osgi.enroute.authentication.capabilities.AuthenticationConstants;
+import osgi.enroute.authenticator.simple.provider.Config.Algorithm;
+import osgi.enroute.debug.api.Debug;
 
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=AuthenticationConstants.AUTHENTICATION_SPECIFICATION_NAME, version=AuthenticationConstants.AUTHENTICATION_SPECIFICATION_VERSION)
 @Component(property = {
         Debug.COMMAND_SCOPE + "=admin", Debug.COMMAND_FUNCTION + "=hash", Debug.COMMAND_FUNCTION + "=passwd", Debug.COMMAND_FUNCTION + "=adduser",
 		Debug.COMMAND_FUNCTION + "=rmrole", Debug.COMMAND_FUNCTION + "=role"

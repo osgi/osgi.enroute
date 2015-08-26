@@ -67,3 +67,4 @@ Provide-Capability: 	\
 
 -runtrace=true
 
+Export-Package: osgi.enroute.easse.capabilities

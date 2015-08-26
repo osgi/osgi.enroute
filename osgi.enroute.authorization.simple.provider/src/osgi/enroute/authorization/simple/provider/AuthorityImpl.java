@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 import org.osgi.dto.DTO;
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -20,8 +21,10 @@ import org.slf4j.Logger;
 
 import osgi.enroute.authorization.api.Authority;
 import osgi.enroute.authorization.api.AuthorityAdmin;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.libg.glob.Glob;
 
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.enroute.authorization", version="1.0.0")
 @Component
 public class AuthorityImpl implements Authority, AuthorityAdmin {
 	private static final Glob[]				EMPTY_GLOBS	= new Glob[0];

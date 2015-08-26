@@ -35,7 +35,7 @@ import org.osgi.service.log.LogService;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.json.JSONCodec;
-import osgi.enroute.capabilities.ServletWhiteboard;
+import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.namespace.EndpointNamespace;
 
 /**
@@ -55,7 +55,7 @@ import osgi.enroute.namespace.EndpointNamespace;
  * 
  */
 @ProvideCapability(ns = EndpointNamespace.NS, name = "/sse/1", version = "1.1.0", effective = "active")
-@ServletWhiteboard
+@RequireHttpImplementation
 @Component(name = "osgi.eventadmin.sse", property = HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/sse/1", service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class ServerSideEventImpl extends HttpServlet {
 	private static final long serialVersionUID = 1L;

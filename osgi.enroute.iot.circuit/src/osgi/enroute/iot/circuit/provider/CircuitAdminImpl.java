@@ -17,6 +17,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
@@ -38,11 +39,14 @@ import osgi.enroute.iot.circuit.provider.ICTracker.OutputPin;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.scheduler.api.Scheduler;
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.collections.MultiMap;
 
 /**
  * Implementation of {@link CircuitAdmin}
  */
+
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.enroute.circuit", version="1.0.0")
 @Component(immediate = true, name = "osgi.enroute.iot.circuit")
 public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	private static final String							WIREFACTORYPID	= "osgi.enroute.iot.circuit.wires";
@@ -68,7 +72,6 @@ public class CircuitAdminImpl implements CircuitAdmin, CircuitBoard {
 	@Activate
 	void activate(Map<String, Object> map, BundleContext context)
 			throws Exception {
-		System.out.println("Where is my data " + context.getDataFile("foo"));
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.SERVICE_PID, WIREFACTORYPID);
 		msf = context.registerService(ManagedServiceFactory.class,
