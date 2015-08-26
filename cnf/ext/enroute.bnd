@@ -43,4 +43,4 @@ test-cases: 			${classes;NAMED;*Test}
         aQute.bnd.deployer.repository.LocalIndexedRepo; \
             name                =       Release ; \
             pretty              =       true ; \
-            local               =       ${build}/source
+            local               =       ${build}/release
