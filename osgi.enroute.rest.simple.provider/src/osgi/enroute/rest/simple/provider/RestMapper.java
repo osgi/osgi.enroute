@@ -111,26 +111,52 @@ public class RestMapper {
 		final int		cardinality;
 		final boolean	varargs;
 		final Type		post;
+		final boolean	requestParam;
+		final boolean	putParam;
 
 		public Function(Object target, Method m) {
 			this.target = target;
 			this.method = m;
-			this.cardinality = m.getParameterTypes().length;
-
-			if ((varargs = m.isVarArgs()))
-				this.name = m.getName().toLowerCase();
-			else
-				this.name = m.getName().toLowerCase() + "/" + cardinality;
-
+			int noParams = m.getParameterTypes().length;
+		
+			// check if the first parameter is of type RestRequest
+			// and whether it has a _body() method defining the post Type
 			Type post = null;
+			boolean rp = false;
 			try {
 				Class<?> rc = m.getParameterTypes()[0];
+				if(RESTRequest.class.isAssignableFrom(rc)){
+					rp = true;
+					noParams--;  // don't count as cardinality
+				} 
 				post = rc.getMethod("_body").getGenericReturnType();
 			}
 			catch (Exception e) {
 				// Ignore
 			}
+			requestParam = rp;
+			
+			// if method starts with put/post, and no _body method defined, 
+			// then convert payload data to first method parameter after RestRequest
+			// in this case this parameter does not count for the cardinality
+			if(post==null && 
+					(m.getName().startsWith("put") 
+					|| m.getName().startsWith("post"))){
+				post = m.getParameterTypes()[requestParam ? 1 : 0];
+				noParams--; // don't count as cardinality
+				putParam = true;
+			} else {
+				putParam = false;
+			}
+			
 			this.post = post;
+			
+			this.cardinality = noParams;
+			
+			if ((varargs = m.isVarArgs()))
+				this.name = m.getName().toLowerCase();
+			else
+				this.name = m.getName().toLowerCase() + "/" + cardinality;
 		}
 
 		public Type getPost() {
@@ -155,12 +181,14 @@ public class RestMapper {
 		 * @return the converted arguments or null if no possible match
 		 */
 		public Object[] match(Map<String,Object> args, ExtList<String> list) throws Exception {
-			Object[] parameters = new Object[cardinality];
+			Object[] parameters = new Object[cardinality + (requestParam ? 1 : 0) + (putParam ? 1 : 0)];
 			Type[] types = method.getGenericParameterTypes();
-			parameters[0] = converter.convert(types[0], args);
-
-			for (int i = 1; i < cardinality; i++) {
-				if (varargs && i == cardinality - 1) {
+			if(requestParam){
+				parameters[0] = converter.convert(types[0], args);
+			}
+			
+			for (int i = (requestParam ? 1 : 0) + (putParam ? 1 : 0); i < parameters.length; i++) {
+				if (varargs && i == parameters.length-1) {
 					parameters[i] = converter.convert(types[i], list);
 				} else {
 					// varargs but not enough to fill the constants
@@ -205,15 +233,19 @@ public class RestMapper {
 	 */
 	public synchronized void addResource(REST resource) {
 		for (Method m : resource.getClass().getMethods()) {
-			if (m.getParameterTypes().length == 0)
-				continue;
 
-			Class< ? > argumentType = m.getParameterTypes()[0];
-			if (!RESTRequest.class.isAssignableFrom(argumentType))
-				continue;
-
-			Function f = new Function(resource, m);
-			functions.add(f.getName(), f);
+			// restrict to methods starting with HTTP request prefix
+			String methodName = m.getName();
+			if(methodName.startsWith("get")
+				|| methodName.startsWith("post")
+				|| methodName.startsWith("put")
+				|| methodName.startsWith("delete")
+				|| methodName.startsWith("option")
+				|| methodName.startsWith("head")){
+			
+				Function f = new Function(resource, m);
+				functions.add(f.getName(), f);
+			}
 		}
 	}
 
@@ -266,7 +298,7 @@ public class RestMapper {
 		String[] segments = path.split("/");
 		ExtList<String> list = new ExtList<String>(segments);
 		String name = (rq.getMethod() + list.remove(0)).toLowerCase();
-		int cardinality = list.size() + 1;
+		int cardinality = list.size();
 
 		//
 		// We register methods with their cardinality to not have
@@ -323,7 +355,12 @@ public class RestMapper {
 					if (type != null
 							&& (rq.getMethod().equalsIgnoreCase("POST") || rq.getMethod().equalsIgnoreCase("PUT"))) {
 						Object arguments = codec.dec().from(rq.getInputStream()).get(type);
-						args.put("_body", arguments);
+						// use it as an extra argument
+						if(f.putParam){
+							parameters[f.requestParam ? 1 : 0] = arguments;
+						} else {
+							args.put("_body", arguments);
+						}
 					}
 
 					//
