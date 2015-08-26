@@ -8,12 +8,19 @@ import org.osgi.service.component.annotations.Reference;
 import osgi.enroute.authentication.capabilities.RequireAuthenticationImplementation;
 import osgi.enroute.authorization.capabilities.RequireAuthorizationImplementation;
 import osgi.enroute.configurer.capabilities.RequireConfigurerExtender;
+import osgi.enroute.dto.capabilities.RequireDTOImplementation;
 import osgi.enroute.eventadminserversentevents.capabilities.RequireEventAdminServerSentEventsWebResource;
 import osgi.enroute.executor.capabilities.RequireExecutorImplementation;
+import osgi.enroute.github.angular.capabilities.RequireAngularWebResource;
+import osgi.enroute.github.angular_ui.capabilities.RequireAngularUIWebResource;
 import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.iot.admin.capabilities.RequireIotAdminImplementation;
 import osgi.enroute.jsonrpc.capabilities.RequireJsonrpcWebResource;
+import osgi.enroute.logger.capabilities.RequireLoggerImplementation;
+import osgi.enroute.rest.capabilities.RequireRestImplementation;
 import osgi.enroute.scheduler.capabilities.RequireSchedulerImplementation;
+import osgi.enroute.stackexchange.pagedown.webresource.RequirePagedownWebResource;
+import osgi.enroute.twitter.bootstrap.capabilities.RequireBootstrapWebResource;
 import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
 
 /**
@@ -21,16 +28,24 @@ import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
  * enRoute base in their right version. This bundle can be deployed in an
  * enRoute distribution to verify that the profile is completely present.
  */
-@RequireJsonrpcWebResource
-@RequireEventAdminServerSentEventsWebResource
-@RequireIotAdminImplementation
-@RequireHttpImplementation
-@RequireSchedulerImplementation
+@RequireAngularUIWebResource
+@RequireAngularWebResource
 @RequireAuthenticationImplementation
 @RequireAuthorizationImplementation
-@RequireExecutorImplementation
+@RequireBootstrapWebResource
 @RequireConfigurerExtender
+@RequireDTOImplementation
+@RequireEventAdminServerSentEventsWebResource
+@RequireExecutorImplementation
+@RequireHttpImplementation
+@RequireIotAdminImplementation
+@RequireJsonrpcWebResource
+@RequireLoggerImplementation
+@RequirePagedownWebResource
+@RequireRestImplementation
+@RequireSchedulerImplementation
 @RequireWebServerExtender
+
 @Component(property = "enroute.profile=base")
 public class Base //
 		extends javax.servlet.http.HttpServlet // drag in http server
