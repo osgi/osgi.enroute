@@ -73,7 +73,6 @@ base.packages =  \
 	org.osgi.namespace.extender, \
     org.osgi.namespace.implementation, \
 	org.osgi.namespace.service, \
-    org.osgi.service.metatype.annotation, \
     org.osgi.service.http.whiteboard, \
     org.osgi.service.http.context, \
     org.osgi.service.http.runtime, \
@@ -90,6 +89,7 @@ base.packages =  \
 	org.osgi.service.http, \
 	org.osgi.service.log, \
 	org.osgi.service.metatype, \
+    org.osgi.service.metatype.annotations, \
 	org.osgi.service.remoteserviceadmin, \
 	org.osgi.service.url, \
 	org.osgi.service.useradmin, \

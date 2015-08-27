@@ -4,11 +4,13 @@ package osgi.enroute.base.required;
 import org.osgi.dto.DTO;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import osgi.enroute.authentication.api.RequireAuthenticationImplementation;
 import osgi.enroute.authorization.api.RequireAuthorizationImplementation;
 import osgi.enroute.configurer.api.RequireConfigurerExtender;
-import osgi.enroute.dto.api.RequireDTOImplementation;
+import osgi.enroute.dto.api.RequireDTOsImplementation;
 import osgi.enroute.eventadminserversentevents.capabilities.RequireEventAdminServerSentEventsWebResource;
 import osgi.enroute.executor.capabilities.RequireExecutorImplementation;
 import osgi.enroute.github.angular_ui.capabilities.RequireAngularUIWebResource;
@@ -34,7 +36,7 @@ import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
 @RequireAuthorizationImplementation
 @RequireBootstrapWebResource
 @RequireConfigurerExtender
-@RequireDTOImplementation
+@RequireDTOsImplementation
 @RequireEventAdminServerSentEventsWebResource
 @RequireExecutorImplementation
 @RequireHttpImplementation
@@ -45,13 +47,17 @@ import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
 @RequireRestImplementation
 @RequireSchedulerImplementation
 @RequireWebServerExtender
-
+@Designate(ocd = Base.Config.class)
 @Component(property = "enroute.profile=base")
 public class Base //
 		extends javax.servlet.http.HttpServlet // drag in http server
 		implements osgi.enroute.rest.api.REST, // REST server
 		osgi.enroute.jsonrpc.api.JSONRPC // JSON RPC server
 {
+
+	@ObjectClassDefinition
+	@interface Config {}
+
 	private static final long	serialVersionUID	= 1L;
 	DTO							dto;
 

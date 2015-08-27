@@ -12,7 +12,7 @@ import aQute.bnd.annotation.headers.RequireCapability;
  */
 @RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
 		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE + "="
-		+ DTOConstants.DTO_SPECIFICATION_NAME + ")${frange;${version;==;"
-		+ DTOConstants.DTO_SPECIFICATION_VERSION + "}})")
+		+ DTOsConstants.DTOS_SPECIFICATION_NAME + ")${frange;${version;==;"
+		+ DTOsConstants.DTOS_SPECIFICATION_VERSION + "}})")
 @Retention(RetentionPolicy.CLASS)
-public @interface RequireDTOImplementation {}
+public @interface RequireDTOsImplementation {}
