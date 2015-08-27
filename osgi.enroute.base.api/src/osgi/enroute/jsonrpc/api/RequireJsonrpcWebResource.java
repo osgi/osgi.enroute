@@ -1,4 +1,4 @@
-package osgi.enroute.jsonrpc.capabilities;
+package osgi.enroute.jsonrpc.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

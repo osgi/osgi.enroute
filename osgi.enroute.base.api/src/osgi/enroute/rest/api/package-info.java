@@ -1,2 +1,2 @@
-@aQute.bnd.annotation.Version("2.0.0")
+@aQute.bnd.annotation.Version(osgi.enroute.rest.api.RestConstants.REST_SPECIFICATION_VERSION)
 package osgi.enroute.rest.api;

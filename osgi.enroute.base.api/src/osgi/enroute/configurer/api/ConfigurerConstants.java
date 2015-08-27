@@ -1,4 +1,4 @@
-package osgi.enroute.configurer.capabilities;
+package osgi.enroute.configurer.api;
 
 /**
  * Configurer Specification constants

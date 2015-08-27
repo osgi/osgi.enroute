@@ -1,2 +1,2 @@
-@org.osgi.annotation.versioning.Version("1.0.0")
+@org.osgi.annotation.versioning.Version(osgi.enroute.http.capabilities.HttpConstants.HTTP_SPECIFICATION_VERSION)
 package osgi.enroute.http.capabilities;

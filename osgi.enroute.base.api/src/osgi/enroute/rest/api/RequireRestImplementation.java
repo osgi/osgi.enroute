@@ -1,4 +1,4 @@
-package osgi.enroute.scheduler.capabilities;
+package osgi.enroute.rest.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +12,7 @@ import aQute.bnd.annotation.headers.RequireCapability;
  */
 @RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
 		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE + "="
-		+ SchedulerConstants.SCHEDULER_SPECIFICATION_NAME + ")${frange;${version;==;"
-		+ SchedulerConstants.SCHEDULER_SPECIFICATION_VERSION + "}})")
+ + RestConstants.REST_SPECIFICATION_NAME
+		+ ")${frange;${version;==;" + RestConstants.REST_SPECIFICATION_VERSION + "}})")
 @Retention(RetentionPolicy.CLASS)
-public @interface RequireSchedulerImplementation {}
+public @interface RequireRestImplementation {}

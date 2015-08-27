@@ -1,4 +1,4 @@
-package osgi.enroute.authorization.capabilities;
+package osgi.enroute.authorization.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

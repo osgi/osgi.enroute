@@ -1,4 +1,4 @@
-package osgi.enroute.rest.capabilities;
+package osgi.enroute.iot.admin.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +12,7 @@ import aQute.bnd.annotation.headers.RequireCapability;
  */
 @RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
 		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE + "="
-		+ RestConstants.LOGGER_SPECIFICATION_NAME + ")${frange;${version;==;"
-		+ RestConstants.LOGGER_SPECIFICATION_VERSION + "}})")
+		+ IotAdminConstants.IOT_ADMIN_SPECIFICATION_NAME + ")${frange;${version;==;"
+		+ IotAdminConstants.IOT_ADMIN_SPECIFICATION_VERSION + "}})")
 @Retention(RetentionPolicy.CLASS)
-public @interface RequireRestImplementation {}
+public @interface RequireIotAdminImplementation {}

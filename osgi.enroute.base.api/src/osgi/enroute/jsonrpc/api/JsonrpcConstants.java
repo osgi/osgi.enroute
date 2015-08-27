@@ -1,4 +1,4 @@
-package osgi.enroute.jsonrpc.capabilities;
+package osgi.enroute.jsonrpc.api;
 
 /**
  * Specification of the JSONRPC API

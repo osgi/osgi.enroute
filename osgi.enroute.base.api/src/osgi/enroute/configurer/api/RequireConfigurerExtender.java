@@ -1,4 +1,4 @@
-package osgi.enroute.configurer.capabilities;
+package osgi.enroute.configurer.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

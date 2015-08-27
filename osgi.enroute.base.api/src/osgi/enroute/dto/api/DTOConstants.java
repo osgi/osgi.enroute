@@ -1,4 +1,4 @@
-package osgi.enroute.dto.capabilities;
+package osgi.enroute.dto.api;
 
 /**
  * Specification of the Authentication API

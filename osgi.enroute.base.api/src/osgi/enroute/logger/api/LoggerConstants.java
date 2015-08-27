@@ -1,9 +1,9 @@
-package osgi.enroute.rest.capabilities;
+package osgi.enroute.logger.api;
 
 /**
  * Specification of the JSONRPC API
  */
-public interface RestConstants {
+public interface LoggerConstants {
 	/**
 	 * Name
 	 */

@@ -1,4 +1,4 @@
-@Version("1.0.0")
+@Version(osgi.enroute.authentication.api.AuthenticationConstants.AUTHENTICATION_SPECIFICATION_VERSION)
 package osgi.enroute.authentication.api;
 
 import org.osgi.annotation.versioning.Version;

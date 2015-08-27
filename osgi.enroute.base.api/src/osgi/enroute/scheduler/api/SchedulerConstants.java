@@ -1,4 +1,4 @@
-package osgi.enroute.scheduler.capabilities;
+package osgi.enroute.scheduler.api;
 
 /**
  * Specification of the JSONRPC API
@@ -7,7 +7,7 @@ public interface SchedulerConstants {
 	/**
 	 * Name
 	 */
-	String	SCHEDULER_SPECIFICATION_NAME		= "osgi.enroute.logger";
+	String	SCHEDULER_SPECIFICATION_NAME	= "osgi.enroute.scheduler";
 	/**
 	 * Version
 	 */

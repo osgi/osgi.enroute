@@ -1,4 +1,4 @@
-package osgi.enroute.authentication.capabilities;
+package osgi.enroute.authentication.api;
 
 /**
  * Specification of the Authentication API

@@ -1,2 +1,2 @@
-@org.osgi.annotation.versioning.Version("1.0.0")
+@org.osgi.annotation.versioning.Version(osgi.enroute.executor.capabilities.ExecutorConstants.EXECUTOR_SPECIFICATION_VERSION)
 package osgi.enroute.executor.capabilities;

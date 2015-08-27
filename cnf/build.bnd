@@ -53,7 +53,9 @@ base.packages =  \
 	aQute.bnd.annotation.metatype, \
 	javax.servlet, \
 	javax.servlet.http, \
-	org.osgi.dto, \
+  	javax.servlet.annotation, \
+  	javax.servlet.descriptor, \
+  	org.osgi.dto, \
 	org.osgi.annotation.versioning, \
 	org.osgi.framework, \
 	org.osgi.framework.dto, \
@@ -96,37 +98,29 @@ base.packages =  \
 	org.osgi.util.tracker, \
 	org.slf4j, \
 	osgi.enroute.authentication.api, \
-	osgi.enroute.authentication.capabilities, \
 	osgi.enroute.authorization.api, \
-	osgi.enroute.authorization.capabilities, \
 	osgi.enroute.capabilities, \
 	osgi.enroute.configurer.api, \
-	osgi.enroute.configurer.capabilities, \
 	osgi.enroute.debug.api, \
 	osgi.enroute.dto.api, \
-	osgi.enroute.dto.capabilities, \
 	osgi.enroute.eventadminserversentevents.capabilities, \
 	osgi.enroute.executor.capabilities, \
 	osgi.enroute.github.angular_ui.capabilities, \
-	osgi.enroute.github.angular.capabilities, \
+	osgi.enroute.google.angular.capabilities, \
 	osgi.enroute.http.capabilities, \
 	osgi.enroute.jsplumb.capabilities, \
 	osgi.enroute.iot.admin.api, \
-	osgi.enroute.iot.admin.capabilities, \
 	osgi.enroute.iot.admin.dto, \
 	osgi.enroute.iot.gpio.api, \
-	osgi.enroute.iot.gpio.capabilities, \
 	osgi.enroute.iot.gpio.util, \
 	osgi.enroute.jsonrpc.api, \
-	osgi.enroute.jsonrpc.capabilities, \
 	osgi.enroute.jsonrpc.dto, \
 	osgi.enroute.launch.api, \
 	osgi.enroute.logger.api, \
-	osgi.enroute.logger.capabilities, \
 	osgi.enroute.namespace, \
 	osgi.enroute.rest.api,  \
-	osgi.enroute.rest.capabilities,  \
 	osgi.enroute.scheduler.api, \
-	osgi.enroute.scheduler.capabilities, \
+	osgi.enroute.stackexchange.pagedown.capabilities, \
+	osgi.enroute.twitter.bootstrap.capabilities, \
 	osgi.enroute.webserver.capabilities	
 	

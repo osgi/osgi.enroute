@@ -1,4 +1,4 @@
-package osgi.enroute.iot.admin.capabilities;
+package osgi.enroute.iot.admin.api;
 
 /**
  * Specification of the Authentication API

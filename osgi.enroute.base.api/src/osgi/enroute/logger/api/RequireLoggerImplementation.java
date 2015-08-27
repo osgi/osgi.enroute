@@ -1,4 +1,4 @@
-package osgi.enroute.authentication.capabilities;
+package osgi.enroute.logger.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +12,7 @@ import aQute.bnd.annotation.headers.RequireCapability;
  */
 @RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
 		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE + "="
-		+ AuthenticationConstants.AUTHENTICATION_SPECIFICATION_NAME + ")${frange;${version;==;"
-		+ AuthenticationConstants.AUTHENTICATION_SPECIFICATION_VERSION + "}})")
+		+ LoggerConstants.LOGGER_SPECIFICATION_NAME + ")${frange;${version;==;"
+		+ LoggerConstants.LOGGER_SPECIFICATION_VERSION + "}})")
 @Retention(RetentionPolicy.CLASS)
-public @interface RequireAuthenticationImplementation {}
+public @interface RequireLoggerImplementation {}

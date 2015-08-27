@@ -1,4 +1,4 @@
-package osgi.enroute.dto.capabilities;
+package osgi.enroute.scheduler.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +12,7 @@ import aQute.bnd.annotation.headers.RequireCapability;
  */
 @RequireCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, filter = "(&("
 		+ ImplementationNamespace.IMPLEMENTATION_NAMESPACE + "="
-		+ DTOConstants.DTO_SPECIFICATION_NAME + ")${frange;${version;==;"
-		+ DTOConstants.DTO_SPECIFICATION_VERSION + "}})")
+		+ SchedulerConstants.SCHEDULER_SPECIFICATION_NAME + ")${frange;${version;==;"
+		+ SchedulerConstants.SCHEDULER_SPECIFICATION_VERSION + "}})")
 @Retention(RetentionPolicy.CLASS)
-public @interface RequireDTOImplementation {}
+public @interface RequireSchedulerImplementation {}

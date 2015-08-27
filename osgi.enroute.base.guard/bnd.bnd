@@ -1,11 +1,6 @@
 -includeresource: {${build}/legal}
 
--buildpath: \
-	osgi.enroute.base.api;version=latest,\
-	osgi.enroute.github.angular-ui.webresource,\
-	osgi.enroute.google.angular.webresource,\
-	osgi.enroute.stackexchange.pagedown.webresource,\
-	osgi.enroute.twitter.bootstrap.webresource
+-buildpath: osgi.enroute.base.api;version=latest
 
 Bundle-Description: 
 	This bundle requires ALL osgi.enroute.authentication.capabilities provided by the OSGi enRoute Base API. It is \

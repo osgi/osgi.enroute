@@ -1,2 +1,2 @@
-@aQute.bnd.annotation.Version("1.0.0")
+@aQute.bnd.annotation.Version(osgi.enroute.logger.api.LoggerConstants.LOGGER_SPECIFICATION_VERSION)
 package osgi.enroute.logger.api;
