@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<repository increment="1440670265971" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
+<repository increment="1440681359047" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="aQute.xray.plugin"/>
@@ -4945,22 +4945,28 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.base.test"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.0.2.201508270928"/>
+      <attribute name="version" type="Version" value="1.0.2.201508271012"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="da84cd7ef97e1a6d7170c30311dde44f24694c0f4c22f380f8579419c923e4a5"/>
+      <attribute name="osgi.content" value="d140faeb92a9ea1d1bd0d99d650c57a48babbb642244fce52b6f0a6e51c9d9ed"/>
       <attribute name="url" value="osgi.enroute.base.test/osgi.enroute.base.test-1.0.2.jar"/>
-      <attribute name="size" type="Long" value="50964"/>
+      <attribute name="size" type="Long" value="50953"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.base.test"/>
-      <attribute name="bundle-version" type="Version" value="1.0.2.201508270928"/>
+      <attribute name="bundle-version" type="Version" value="1.0.2.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.base.test"/>
-      <attribute name="bundle-version" type="Version" value="1.0.2.201508270928"/>
+      <attribute name="bundle-version" type="Version" value="1.0.2.201508271012"/>
     </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.gargoylesoftware.htmlunit)(version&gt;=0.0.0))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.gargoylesoftware.htmlunit.html)(version&gt;=0.0.0))"/>
+    </requirement>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=aQute.bnd.osgi)(version&gt;=2.4.0)(!(version&gt;=3.0.0)))"/>
     </requirement>
@@ -4968,16 +4974,10 @@
       <directive name="filter" value="(&amp;(osgi.wiring.package=aQute.bnd.testing)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.gargoylesoftware.htmlunit)(version&gt;=2.15.0)(!(version&gt;=3.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=junit.framework)(version&gt;=4.12.0)(!(version&gt;=5.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.gargoylesoftware.htmlunit.html)(version&gt;=2.15.0)(!(version&gt;=3.0.0)))"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=junit.framework)(version&gt;=3.8.0)(!(version&gt;=4.0.0)))"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.junit)(version&gt;=4.11.0)(!(version&gt;=5.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.junit)(version&gt;=4.12.0)(!(version&gt;=5.0.0)))"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.dto)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
@@ -5206,27 +5206,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.dtos.bndlib.provider"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.0.0.201508271005"/>
+      <attribute name="version" type="Version" value="1.0.0.201508271012"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="2c7cf9cec83aad09e31b04194efe23e36a4e253ebc31a14e888f908554ea058e"/>
+      <attribute name="osgi.content" value="4a322e73009ca6554ee233912446d2ffda36fd9b996acc81fd08a4f6e2301718"/>
       <attribute name="url" value="osgi.enroute.dtos.bndlib.provider/osgi.enroute.dtos.bndlib.provider-1.0.0.jar"/>
-      <attribute name="size" type="Long" value="132386"/>
+      <attribute name="size" type="Long" value="132383"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.dtos.bndlib.provider"/>
-      <attribute name="bundle-version" type="Version" value="1.0.0.201508271005"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.dtos.bndlib.provider"/>
-      <attribute name="bundle-version" type="Version" value="1.0.0.201508271005"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="osgi.enroute.dto.api"/>
       <attribute name="version" type="Version" value="1.0.0"/>
       <attribute name="bundle-symbolic-name" value="osgi.enroute.dtos.bndlib.provider"/>
-      <attribute name="bundle-version" type="Version" value="1.0.0.201508271005"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201508271012"/>
       <directive name="uses" value="org.osgi.dto"/>
     </capability>
     <capability namespace="osgi.service">
@@ -5416,27 +5416,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.github.angular-ui.webresource"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="0.13.3.201508270945"/>
+      <attribute name="version" type="Version" value="0.13.3.201508271012"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="3b13a9e7a969c4bda4c63732eea3cfa88dc66793ab9f06957e28f4e129f0c41a"/>
+      <attribute name="osgi.content" value="53dca06310f871c4318c5cbdf7071b91e2da44b36f35b89eb00cc1249c529bc9"/>
       <attribute name="url" value="osgi.enroute.github.angular-ui.webresource/osgi.enroute.github.angular-ui.webresource-0.13.3.jar"/>
       <attribute name="size" type="Long" value="71814"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.github.angular-ui.webresource"/>
-      <attribute name="bundle-version" type="Version" value="0.13.3.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="0.13.3.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.github.angular-ui.webresource"/>
-      <attribute name="bundle-version" type="Version" value="0.13.3.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="0.13.3.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="osgi.enroute.github.angular_ui.capabilities"/>
       <attribute name="version" type="Version" value="0.13.3"/>
       <attribute name="bundle-symbolic-name" value="osgi.enroute.github.angular-ui.webresource"/>
-      <attribute name="bundle-version" type="Version" value="0.13.3.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="0.13.3.201508271012"/>
     </capability>
     <capability namespace="osgi.enroute.webresource">
       <attribute name="osgi.enroute.webresource" value="/github/angular-ui"/>
@@ -5451,27 +5451,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.google.angular.webresource"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.4.4.201508270945"/>
+      <attribute name="version" type="Version" value="1.4.4.201508271012"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="2aeb3abc82663e2f5e3cd73d4f53e910e6bab6590cab9a622de7442b07c2d0b0"/>
+      <attribute name="osgi.content" value="71beca65c9a9338f740bef20b5829142c52945db0bcecd3e166521ae1fb75121"/>
       <attribute name="url" value="osgi.enroute.google.angular.webresource/osgi.enroute.google.angular.webresource-1.4.4.jar"/>
-      <attribute name="size" type="Long" value="1640072"/>
+      <attribute name="size" type="Long" value="1640070"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.google.angular.webresource"/>
-      <attribute name="bundle-version" type="Version" value="1.4.4.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.4.4.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.google.angular.webresource"/>
-      <attribute name="bundle-version" type="Version" value="1.4.4.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.4.4.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="osgi.enroute.google.angular.capabilities"/>
       <attribute name="version" type="Version" value="1.4.4"/>
       <attribute name="bundle-symbolic-name" value="osgi.enroute.google.angular.webresource"/>
-      <attribute name="bundle-version" type="Version" value="1.4.4.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.4.4.201508271012"/>
     </capability>
     <capability namespace="osgi.enroute.webresource">
       <attribute name="osgi.enroute.webresource" value="/google/angular"/>
@@ -5786,21 +5786,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.iot.circuit.application"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.0.2.201508270945"/>
+      <attribute name="version" type="Version" value="1.0.2.201508271012"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="a52628aadd9bbba42cc5dfdb208557fe5d07efac3048844176aaf3a937acbc58"/>
+      <attribute name="osgi.content" value="8a9bcece97a2c3728d2755acb0ce542bf63b6ecfa52af36fd4633a63cd04fade"/>
       <attribute name="url" value="osgi.enroute.iot.circuit.application/osgi.enroute.iot.circuit.application-1.0.2.jar"/>
-      <attribute name="size" type="Long" value="68539"/>
+      <attribute name="size" type="Long" value="68536"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.iot.circuit.application"/>
-      <attribute name="bundle-version" type="Version" value="1.0.2.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.0.2.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.iot.circuit.application"/>
-      <attribute name="bundle-version" type="Version" value="1.0.2.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.0.2.201508271012"/>
     </capability>
     <capability namespace="osgi.service">
       <attribute name="objectClass" type="List&lt;String&gt;" value="osgi.enroute.jsonrpc.api.JSONRPC"/>
@@ -6493,27 +6493,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.jsplumb.webresource"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.7.6.201508270945"/>
+      <attribute name="version" type="Version" value="1.7.6.201508271012"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="848c6ef60271c62b1b749b5a45d7f1745ab4944a275254d21b7ec6b1276693ba"/>
+      <attribute name="osgi.content" value="f36062fa0277f6db129f7565fa6abd6151c4359e6d14b0251644f3e2f1764f73"/>
       <attribute name="url" value="osgi.enroute.jsplumb.webresource/osgi.enroute.jsplumb.webresource-1.7.6.jar"/>
-      <attribute name="size" type="Long" value="240113"/>
+      <attribute name="size" type="Long" value="240111"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.jsplumb.webresource"/>
-      <attribute name="bundle-version" type="Version" value="1.7.6.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.7.6.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.jsplumb.webresource"/>
-      <attribute name="bundle-version" type="Version" value="1.7.6.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.7.6.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="osgi.enroute.jsplumb.capabilities"/>
       <attribute name="version" type="Version" value="1.7.6"/>
       <attribute name="bundle-symbolic-name" value="osgi.enroute.jsplumb.webresource"/>
-      <attribute name="bundle-version" type="Version" value="1.7.6.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="1.7.6.201508271012"/>
     </capability>
     <capability namespace="osgi.enroute.webresource">
       <attribute name="osgi.enroute.webresource" value="/jsplumb/jsplumb"/>
@@ -7116,27 +7116,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="osgi.enroute.twitter.bootstrap.webresource"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="3.3.5.201508270945"/>
+      <attribute name="version" type="Version" value="3.3.5.201508271012"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="eb35086f16952fcf28b96dcbaa6d97091579c0313b0df78f24872054f874bb8c"/>
+      <attribute name="osgi.content" value="0f3f1e673a62423c0e9f9f6e8c7d89dd3cc902e9dc92dc7def817c3fddf1359b"/>
       <attribute name="url" value="osgi.enroute.twitter.bootstrap.webresource/osgi.enroute.twitter.bootstrap.webresource-3.3.5.jar"/>
-      <attribute name="size" type="Long" value="274371"/>
+      <attribute name="size" type="Long" value="274369"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="osgi.enroute.twitter.bootstrap.webresource"/>
-      <attribute name="bundle-version" type="Version" value="3.3.5.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="3.3.5.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="osgi.enroute.twitter.bootstrap.webresource"/>
-      <attribute name="bundle-version" type="Version" value="3.3.5.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="3.3.5.201508271012"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="osgi.enroute.twitter.bootstrap.capabilities"/>
       <attribute name="version" type="Version" value="3.3.5"/>
       <attribute name="bundle-symbolic-name" value="osgi.enroute.twitter.bootstrap.webresource"/>
-      <attribute name="bundle-version" type="Version" value="3.3.5.201508270945"/>
+      <attribute name="bundle-version" type="Version" value="3.3.5.201508271012"/>
     </capability>
     <capability namespace="osgi.enroute.webresource">
       <attribute name="osgi.enroute.webresource" value="/twitter/bootstrap"/>
