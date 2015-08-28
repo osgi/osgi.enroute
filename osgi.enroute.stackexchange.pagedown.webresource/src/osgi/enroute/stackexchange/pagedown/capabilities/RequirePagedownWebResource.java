@@ -1,4 +1,4 @@
-package osgi.enroute.stackexchange.pagedown.webresource;
+package osgi.enroute.stackexchange.pagedown.capabilities;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package osgi.enroute.stackexchange.pagedown.webresource;
+package osgi.enroute.stackexchange.pagedown.capabilities;
 
 public interface PagedownConstants {
 	String PAGEDOWN_WEB_RESOURCE_NAME = "/stackexchange/pagedown";
