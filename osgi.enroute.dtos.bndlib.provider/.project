@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>osgi.enroute.dto.bndlib.provider</name>
+	<name>osgi.enroute.dtos.bndlib.provider</name>
 	<comment></comment>
 	<projects>
 	</projects>

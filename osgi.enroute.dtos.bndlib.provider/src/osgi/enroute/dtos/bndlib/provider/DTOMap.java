@@ -1,4 +1,4 @@
-package osgi.enroute.dto.bndlib.provider;
+package osgi.enroute.dtos.bndlib.provider;
 
 import java.lang.reflect.Field;
 import java.util.AbstractMap;

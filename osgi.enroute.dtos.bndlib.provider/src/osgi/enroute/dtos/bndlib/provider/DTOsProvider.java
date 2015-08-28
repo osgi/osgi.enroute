@@ -1,4 +1,4 @@
-package osgi.enroute.dto.bndlib.provider;
+package osgi.enroute.dtos.bndlib.provider;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,13 +28,14 @@ import aQute.lib.json.Decoder;
 import aQute.lib.json.Encoder;
 import aQute.lib.json.JSONCodec;
 import osgi.enroute.dto.api.DTOs;
+import osgi.enroute.dto.api.DTOsConstants;
 import osgi.enroute.dto.api.IDTO;
 import osgi.enroute.dto.api.TypeReference;
 
 /**
  * This class provides utility functions for DTOs
  */
-@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=osgi.enroute.dto.capabilities.DTOConstants.DTO_SPECIFICATION_NAME, version=osgi.enroute.dto.capabilities.DTOConstants.DTO_SPECIFICATION_VERSION)
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=DTOsConstants.DTOS_SPECIFICATION_NAME, version=DTOsConstants.DTOS_SPECIFICATION_VERSION)
 @Component
 public class DTOsProvider implements DTOs {
 	private final static Field[]					EMPTY_FIELDS	= new Field[0];

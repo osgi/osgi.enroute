@@ -5,29 +5,24 @@
 
 Bundle-Version: 1.0.0.${tstamp}
 Bundle-Description: 				\
-	A provider of the DTO service 
-
-
+	A provider of the DTOs service 
 Export-Package:  \
 	osgi.enroute.dto.api;provide:=true
-	
-
-
-Export-Service: \
-	osgi.enroute.launch.api.Launcher
 	
 Conditional-Package: aQute.lib*
 
 -buildpath:  \
 	osgi.enroute.base.api;version=1.6,\
-	biz.aQute.junit,\
-	biz.aQute.bndlib;version=2;packages=*
+	biz.aQute.bndlib;packages=*
 
--includeresource: {readme.md}
+-testpath: \
+	osgi.enroute.junit.wrapper
+
+-includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.provider)'
 -runbundles:  \
 	osgi.enroute.base.provider;version=latest
-Private-Package: osgi.enroute.dto.bndlib.provider
+Private-Package: osgi.enroute.dtos.bndlib.provider
