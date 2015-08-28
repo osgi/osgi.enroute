@@ -1,0 +1,108 @@
+Apache Software License 2.0 
+
+	aQute.xray.plugin
+	biz.aQute.bndlib									
+	biz.aQute.junit
+	biz.aQute.launcher
+	biz.aQute.remote.agent
+	biz.aQute.remote.launcher
+	biz.aQute.remote.main
+	biz.aQute.tester
+
+	net.sourceforge.htmlunit
+
+	org.amdatu.remote.admin.http
+	org.amdatu.remote.discovery.bonjour
+	org.amdatu.remote.topology.promiscuous
+
+	org.apache.commons.fileupload
+	org.apache.commons.io
+	org.apache.felix.configadmin
+	org.apache.felix.dependencymanager
+	org.apache.felix.gogo.command
+	org.apache.felix.gogo.runtime
+	org.apache.felix.gogo.shell
+	org.apache.felix.http.api
+	org.apache.felix.http.jetty
+	org.apache.felix.http.servlet-api
+	org.apache.felix.log
+	org.apache.felix.scr
+	org.apache.felix.webconsole
+
+	org.eclipse.equinox.coordinator
+	org.eclipse.equinox.coordinator.source
+	org.eclipse.osgi
+
+	org.osgi.namespace.contract
+	org.osgi.namespace.extender
+	org.osgi.namespace.implementation
+	org.osgi.namespace.service
+	org.osgi.service.async
+	org.osgi.service.event
+	org.osgi.service.metatype
+	org.osgi.service.remoteserviceadmin
+
+	osgi.enroute.authenticator.simple.provider
+	osgi.enroute.authorization.simple.provider
+	osgi.enroute.base.api
+	osgi.enroute.base.debug.provider
+	osgi.enroute.base.test
+	osgi.enroute.configurer.simple.provider
+	osgi.enroute.dto.bndlib.provider
+	osgi.enroute.dtos.bndlib.provider
+	osgi.enroute.easse.simple.adapter
+	osgi.enroute.equinox.log.adapter
+	osgi.enroute.executor.simple.provider
+	osgi.enroute.iot.circuit.application
+	osgi.enroute.iot.circuit.command
+	osgi.enroute.iot.circuit.provider
+	osgi.enroute.iot.lego.adapter
+	osgi.enroute.iot.pi.command
+	osgi.enroute.iot.rf522.adapter
+	osgi.enroute.jsonrpc.simple.provider
+	osgi.enroute.rest.simple.provider
+	osgi.enroute.scheduler.simple.provider
+	osgi.enroute.web.simple.provider
+	osgi.enroute.websecurity.adapter
+	osgi.promise
+
+Eclipse Public License Version 1.0 http://www.eclipse.org/legal/epl-v10.html
+
+	org.eclipse.equinox.event
+	org.eclipse.equinox.event.source
+	org.eclipse.equinox.metatype
+	org.eclipse.equinox.metatype.source
+
+	osgi.enroute.junit.wrapper
+
+The JSON License http://www.json.org/license.html
+
+	com.springsource.org.json
+
+BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
+
+	org.knopflerfish.bundle.useradmin
+
+BSD 2-Clause http://opensource.org/licenses/BSD-2-Clause
+
+	osgi.enroute.hamcrest.wrapper
+
+	osgi.enroute.logger.simple.provider (SLF4J)
+
+MIT http://opensource.org/licenses/MIT  
+
+	osgi.enroute.github.angular-ui.webresource
+
+	osgi.enroute.google.angular.webresource
+
+	osgi.enroute.stackexchange.pagedown.webresource
+
+	osgi.enroute.twitter.bootstrap.webresource
+
+MIT http://opensource.org/licenses/MIT  and (dual  licensed) GPLv2 http://opensource.org/licenses/GPL-2.0
+
+	osgi.enroute.jsplumb.webresource
+	
+The GNU Lesser General Public License, version 3.0 (LGPL-3.0) http://opensource.org/licenses/lgpl-3.0.html
+
+	osgi.enroute.iot.pi.provider

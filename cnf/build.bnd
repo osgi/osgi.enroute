@@ -11,23 +11,27 @@ build.version:          ${base.version}.${tstamp}
 groupid:                org.osgi
 
 # Documentation
-Bundle-Copyright: ${copyright}
-Bundle-Vendor:    OSGi Alliance http://www.osgi.org/
-Bundle-Version:   ${build.version}
-Bundle-License: http://opensource.org/licenses/apache2.0.php; \
-                link="http://www.apache.org/licenses/LICENSE-2.0"; \
-                description="Apache License, Version 2.0"
-Bundle-DocURL:    http://enroute.osgi.org/
-Bundle-SCM:       url=https://github.com/osgi/osgi.enroute, \
-                  connection=scm:git:https://github.com/osgi/osgi.enroute.git, \
-                  developerConnection=scm:git:git@github.com:osgi/osgi.enroute.git
-Bundle-Developers: osgi; email=info@osgi.org; name="OSGi Alliance"; organization="OSGi Alliance"
-Git-Descriptor:   ${system-allow-fail;git describe --dirty --always}
-Git-SHA:          ${system-allow-fail;git rev-list -1 HEAD}
+Bundle-Copyright: 		${copyright}
+Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
+Bundle-Version:   		${build.version}
+Bundle-License: 		http://opensource.org/licenses/apache2.0.php; \
+                			link="http://www.apache.org/licenses/LICENSE-2.0"; \
+                			description="Apache License, Version 2.0"
+Bundle-DocURL:    		http://enroute.osgi.org/
+Bundle-SCM:       		url=https://github.com/osgi/osgi.enroute, \
+                  			connection=scm:git:https://github.com/osgi/osgi.enroute.git, \
+                  			developerConnection=scm:git:git@github.com:osgi/osgi.enroute.git
+Bundle-Developers: 		osgi; \
+							email=info@osgi.org; \
+							name="OSGi Alliance"; \
+							organization="OSGi Alliance"
+
+Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
+Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
 -pom = \
- groupid=${groupid}, \
- version=${base.version}
+ 	groupid=${groupid}, \
+ 	version=${base.version}
 
 -releaserepo: 			Distro
 -baselinerepo:			Central
