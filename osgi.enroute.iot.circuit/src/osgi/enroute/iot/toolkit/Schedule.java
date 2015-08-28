@@ -6,6 +6,12 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Modified;
+import aQute.bnd.annotation.component.Reference;
+import aQute.lib.converter.Converter;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.Digital;
@@ -14,12 +20,6 @@ import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.toolkit.Schedule.ScheduleConfig;
 import osgi.enroute.scheduler.api.CancellablePromise;
 import osgi.enroute.scheduler.api.Scheduler;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Modified;
-import aQute.bnd.annotation.component.Reference;
-import aQute.lib.converter.Converter;
 
 @Component(designateFactory = ScheduleConfig.class, provide = IC.class,	 name="osgi.enroute.iot.toolkit.schedule")
 public class Schedule extends ICAdapter<Enable, Digital> implements Enable {

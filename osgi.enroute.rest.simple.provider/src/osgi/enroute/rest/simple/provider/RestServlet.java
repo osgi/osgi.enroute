@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -19,9 +20,12 @@ import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
+import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.converter.Converter;
 import aQute.lib.json.JSONCodec;
+import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.rest.api.REST;
+import osgi.enroute.rest.api.RestConstants;
 
 /**
  * The rest servlet is responsible for mapping incoming requests to methods on
@@ -35,6 +39,8 @@ import osgi.enroute.rest.api.REST;
  * <p/>
  * 
  */
+@RequireHttpImplementation
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=RestConstants.REST_SPECIFICATION_NAME, version=RestConstants.REST_SPECIFICATION_VERSION)
 @Designate(ocd = RestServlet.Config.class)
 @Component(
 	//
@@ -43,7 +49,7 @@ import osgi.enroute.rest.api.REST;
 	configurationPolicy = ConfigurationPolicy.OPTIONAL, //
 	property=HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/rest/*"
 )
-public class RestServlet extends HttpServlet {
+public class RestServlet extends HttpServlet implements REST {
 	private static final long	serialVersionUID	= 1L;
 	final static JSONCodec		codec				= new JSONCodec();
 	RestMapper					mapper				= new RestMapper(null);

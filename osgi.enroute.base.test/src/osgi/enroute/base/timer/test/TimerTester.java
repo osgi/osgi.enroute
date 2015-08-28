@@ -5,14 +5,13 @@ import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
-import osgi.enroute.base.configurer.test.ConfigurerTest;
 import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.testing.DSTestWiring;
+import junit.framework.TestCase;
+import osgi.enroute.base.configurer.test.ConfigurerTest;
 
 public class TimerTester extends TestCase {
 

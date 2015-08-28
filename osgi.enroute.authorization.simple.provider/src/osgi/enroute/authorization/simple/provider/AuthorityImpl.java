@@ -21,10 +21,11 @@ import org.slf4j.Logger;
 
 import osgi.enroute.authorization.api.Authority;
 import osgi.enroute.authorization.api.AuthorityAdmin;
+import osgi.enroute.authorization.api.AuthorizationConstants;
 import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.libg.glob.Glob;
 
-@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.enroute.authorization", version="1.0.0")
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=AuthorizationConstants.AUTHORIZATION_SPECIFICATION_NAME, version=AuthorizationConstants.AUTHORIZATION_SPECIFICATION_VERSION)
 @Component
 public class AuthorityImpl implements Authority, AuthorityAdmin {
 	private static final Glob[]				EMPTY_GLOBS	= new Glob[0];

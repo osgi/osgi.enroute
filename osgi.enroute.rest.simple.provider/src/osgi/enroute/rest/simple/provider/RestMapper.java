@@ -1,19 +1,36 @@
 package osgi.enroute.rest.simple.provider;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.zip.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import aQute.lib.collections.ExtList;
+import aQute.lib.collections.MultiMap;
+import aQute.lib.converter.Converter;
+import aQute.lib.getopt.Options;
+import aQute.lib.hex.Hex;
+import aQute.lib.io.IO;
+import aQute.lib.json.JSONCodec;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
-import aQute.lib.collections.*;
-import aQute.lib.converter.*;
-import aQute.lib.hex.*;
-import aQute.lib.io.*;
-import aQute.lib.json.*;
 
 /**
  * Utility code to map a web request to a object and method request efficiently.
@@ -53,7 +70,8 @@ import aQute.lib.json.*;
  * example:
  * 
  * <pre>
- * interface MyOptions extends Options {}
+ * interface MyOptions extends Options {
+ * }
  * 
  * Attr getFoo(MyOptions options, byte[] id, int attr) {
  * 	return getObject(id).getAttr(attr);
@@ -81,11 +99,17 @@ import aQute.lib.json.*;
  * </pre>
  */
 public class RestMapper {
-	final static JSONCodec		codec		= new JSONCodec();
-	MultiMap<String,Function>	functions	= new MultiMap<String,Function>();
-	private final String		prefix;
-	boolean						diagnostics;
-	Converter					converter	= new Converter();
+	
+	enum Verb {
+		get,post,put,delete,option,head;
+	}
+	EnumSet<Verb> PAYLOAD = EnumSet.of(Verb.post,Verb.put);
+	
+	final static JSONCodec codec = new JSONCodec();
+	MultiMap<String, Function> functions = new MultiMap<String, Function>();
+	private final String prefix;
+	boolean diagnostics;
+	Converter converter = new Converter();
 
 	{
 		converter.hook(byte[].class, new Converter.Hook() {
@@ -105,61 +129,65 @@ public class RestMapper {
 	 * mapping process.
 	 */
 	class Function {
-		final Method	method;
-		final Object	target;
-		final String	name;
-		final int		cardinality;
-		final boolean	varargs;
-		final Type		post;
-		final boolean	requestParam;
-		final boolean	putParam;
+		final Method method;
+		final Object target;
+		final String name;
+		final int cardinality;
+		final boolean varargs;
+		final Type post;
+		final boolean hasRequestParameter;
+		final boolean hasPayloadAsParameter;
 
-		public Function(Object target, Method m) {
+		public Function(Object target, Method method, Verb verb) {
 			this.target = target;
-			this.method = m;
-			int noParams = m.getParameterTypes().length;
-		
+			this.method = method;
+			int cardinality = method.getParameterTypes().length;
+
 			// check if the first parameter is of type RestRequest
 			// and whether it has a _body() method defining the post Type
-			Type post = null;
-			boolean rp = false;
-			try {
-				Class<?> rc = m.getParameterTypes()[0];
-				if(RESTRequest.class.isAssignableFrom(rc)){
-					rp = true;
-					noParams--;  // don't count as cardinality
-				} 
-				post = rc.getMethod("_body").getGenericReturnType();
-			}
-			catch (Exception e) {
-				// Ignore
-			}
-			requestParam = rp;
-			
-			// if method starts with put/post, and no _body method defined, 
-			// then convert payload data to first method parameter after RestRequest
-			// in this case this parameter does not count for the cardinality
-			if(post==null && 
-					(m.getName().startsWith("put") 
-					|| m.getName().startsWith("post"))){
-				post = m.getParameterTypes()[requestParam ? 1 : 0];
-				noParams--; // don't count as cardinality
-				putParam = true;
+
+			Type requestBody = null;
+			boolean hasRequesParam = false;
+			if (cardinality > 0)
+				try {
+					Class<?> rc = method.getParameterTypes()[0];
+					if (RESTRequest.class.isAssignableFrom(rc)) {
+						hasRequesParam = true;
+						cardinality--; // don't count as cardinality
+					}
+
+					requestBody = rc.getMethod("_body").getGenericReturnType();
+				} catch (Exception e) {
+					// Ignore
+				}
+			this.hasRequestParameter = hasRequesParam;
+
+			// if method starts with put/post, and no _body method defined,
+			// then convert payload data to first method parameter after
+			// RestRequest in this case this parameter does not count for 
+			// the cardinality
+
+			if (requestBody == null && (PAYLOAD.contains(verb))) {
+				if ( cardinality == 0)
+					throw new IllegalArgumentException("Invalid " + verb +" method " + method.getName() +". A payload method " + PAYLOAD + " must have a RESTRequest subclass with a _body method defined or a parameter that acts as the body type.");
+				requestBody = method.getParameterTypes()[hasRequestParameter ? 1 : 0];
+				cardinality--; // don't count as cardinality
+				hasPayloadAsParameter = true;
 			} else {
-				putParam = false;
+				hasPayloadAsParameter = false;
 			}
-			
-			this.post = post;
-			
-			this.cardinality = noParams;
-			
-			if ((varargs = m.isVarArgs()))
-				this.name = m.getName().toLowerCase();
+
+			this.post = requestBody;
+
+			this.cardinality = cardinality;
+
+			if ((varargs = method.isVarArgs()))
+				this.name = method.getName().toLowerCase();
 			else
-				this.name = m.getName().toLowerCase() + "/" + cardinality;
+				this.name = method.getName().toLowerCase() + "/" + this.cardinality;
 		}
 
-		public Type getPost() {
+		public Type getPayloadType() {
 			return post;
 		}
 
@@ -180,22 +208,23 @@ public class RestMapper {
 		 *            the parameters of the call (segments in the url)
 		 * @return the converted arguments or null if no possible match
 		 */
-		public Object[] match(Map<String,Object> args, ExtList<String> list) throws Exception {
-			Object[] parameters = new Object[cardinality + (requestParam ? 1 : 0) + (putParam ? 1 : 0)];
+		public Object[] match(Map<String, Object> args, List<String> list) throws Exception {
+			Object[] parameters = new Object[cardinality + (hasRequestParameter ? 1 : 0) + (hasPayloadAsParameter ? 1 : 0)];
 			Type[] types = method.getGenericParameterTypes();
-			if(requestParam){
+			if (hasRequestParameter) {
 				parameters[0] = converter.convert(types[0], args);
 			}
-			
-			for (int i = (requestParam ? 1 : 0) + (putParam ? 1 : 0); i < parameters.length; i++) {
-				if (varargs && i == parameters.length-1) {
+
+			for (int i = (hasRequestParameter ? 1 : 0) + (hasPayloadAsParameter ? 1 : 0); i < parameters.length; i++) {
+				if (varargs && i == parameters.length - 1) {
 					parameters[i] = converter.convert(types[i], list);
 				} else {
 					// varargs but not enough to fill the constants
 					if (list.isEmpty())
 						return null;
 
-					parameters[i] = converter.convert(types[i], list.remove(0));
+					String removed = list.remove(0);
+					parameters[i] = converter.convert(types[i], removed);
 				}
 			}
 			return parameters;
@@ -208,8 +237,8 @@ public class RestMapper {
 		 *            the Options interface and optional segments
 		 * @return the result of the invocation
 		 */
-		public Object invoke(Object[] parameters) throws IllegalArgumentException, IllegalAccessException,
-				InvocationTargetException {
+		public Object invoke(Object[] parameters)
+				throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 			return method.invoke(target, parameters);
 		}
 	}
@@ -231,21 +260,23 @@ public class RestMapper {
 	 * Add a new resource manager. Add all public methods that have the first
 	 * argument be an interface that extends {@link Options}.
 	 */
+	final static Pattern ACCEPTED_METHOD_NAMES_P = Pattern.compile("(?<verb>get|post|put|delete|option|head)[A-Z0-9]");
+
 	public synchronized void addResource(REST resource) {
 		for (Method m : resource.getClass().getMethods()) {
+			if (m.getDeclaringClass() == Object.class)
+				continue;
 
 			// restrict to methods starting with HTTP request prefix
 			String methodName = m.getName();
-			if(methodName.startsWith("get")
-				|| methodName.startsWith("post")
-				|| methodName.startsWith("put")
-				|| methodName.startsWith("delete")
-				|| methodName.startsWith("option")
-				|| methodName.startsWith("head")){
+			Matcher matcher = ACCEPTED_METHOD_NAMES_P.matcher(methodName);
+			if (!matcher.lookingAt())
+				continue;
+
+			Verb verb = Verb.valueOf(Verb.class,matcher.group("verb"));
 			
-				Function f = new Function(resource, m);
-				functions.add(f.getName(), f);
-			}
+			Function function = new Function(resource, m, verb);
+			functions.add(function.getName(), function);
 		}
 	}
 
@@ -319,8 +350,8 @@ public class RestMapper {
 		// All values are arrays, turn them into singletons when
 		// they have one element
 		//
-		Map<String,Object> args = new HashMap<String,Object>(rq.getParameterMap());
-		for (Map.Entry<String,Object> e : args.entrySet()) {
+		Map<String, Object> args = new HashMap<String, Object>(rq.getParameterMap());
+		for (Map.Entry<String, Object> e : args.entrySet()) {
 			Object o = e.getValue();
 			if (o.getClass().isArray()) {
 				if (Array.getLength(o) == 1)
@@ -344,34 +375,23 @@ public class RestMapper {
 				Object[] parameters = f.match(args, list);
 				if (parameters != null) {
 
-					//
-					// Handle the POST or PUT
-					// request. If so, convert the
-					// requests input stream via JSON
-					// to the object with the type of the
-					// Options _ method.
-					//
-					Type type = f.getPost();
-					if (type != null
-							&& (rq.getMethod().equalsIgnoreCase("POST") || rq.getMethod().equalsIgnoreCase("PUT"))) {
-						Object arguments = codec.dec().from(rq.getInputStream()).get(type);
-						// use it as an extra argument
-						if(f.putParam){
-							parameters[f.requestParam ? 1 : 0] = arguments;
-						} else {
-							args.put("_body", arguments);
+					Type type = f.getPayloadType();
+					if (type != null) {
+						
+						Object payload = codec.dec().from(rq.getInputStream()).get(type);
+
+						if (f.hasPayloadAsParameter) {
+							parameters[f.hasRequestParameter ? 1 : 0] = payload;
 						}
+						
+						args.put("_body", payload);
 					}
 
-					//
-					// Invoke the method, throw the underlying exception if any
-					//
 
 					Object result;
 					try {
 						result = f.invoke(parameters);
-					}
-					catch (InvocationTargetException e1) {
+					} catch (InvocationTargetException e1) {
 						throw e1.getTargetException();
 					}
 
@@ -384,7 +404,8 @@ public class RestMapper {
 						//
 						// < 14 bytes screws up
 						//
-						if (!(result instanceof Number) && !(result instanceof String && ((String) result).length() < 100)) {
+						if (!(result instanceof Number)
+								&& !(result instanceof String && ((String) result).length() < 100)) {
 							String acceptEncoding = rq.getHeader("Accept-Encoding");
 							if (acceptEncoding != null) {
 								boolean gzip = acceptEncoding.indexOf("gzip") >= 0;
@@ -428,20 +449,15 @@ public class RestMapper {
 				}
 			}
 			return false;
-		}
-		catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		}
-		catch (SecurityException e) {
+		} catch (SecurityException e) {
 			rsp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		}
-		catch (UnsupportedOperationException e) {
+		} catch (UnsupportedOperationException e) {
 			rsp.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
-		}
-		catch (IllegalStateException e) {
+		} catch (IllegalStateException e) {
 			rsp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}

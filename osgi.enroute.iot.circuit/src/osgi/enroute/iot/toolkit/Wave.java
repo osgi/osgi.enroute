@@ -4,6 +4,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
 
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Reference;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
@@ -11,10 +15,6 @@ import osgi.enroute.iot.gpio.util.Analog;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.toolkit.Wave.WaveConfig;
 import osgi.enroute.scheduler.api.Scheduler;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
 
 @Component(designateFactory = WaveConfig.class, provide = IC.class, name="osgi.enroute.iot.toolkit.wave")
 public class Wave extends ICAdapter<Void, Analog> {

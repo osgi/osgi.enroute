@@ -5,8 +5,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.log.LogEntry;
@@ -15,14 +13,15 @@ import org.osgi.service.log.LogReaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.testing.DSTestWiring;
+import junit.framework.TestCase;
 import osgi.enroute.base.configurer.test.ConfigurerTest;
 import osgi.enroute.logger.api.Level;
 import osgi.enroute.logger.api.LoggerAdmin;
 import osgi.enroute.logger.api.LoggerAdmin.Control;
 import osgi.enroute.logger.api.LoggerAdmin.Info;
 import osgi.enroute.logger.api.LoggerAdmin.Settings;
-import aQute.bnd.annotation.component.Reference;
-import aQute.bnd.testing.DSTestWiring;
 
 public class LoggerTest extends TestCase {
 	BundleContext	context	= FrameworkUtil.getBundle(ConfigurerTest.class).getBundleContext();

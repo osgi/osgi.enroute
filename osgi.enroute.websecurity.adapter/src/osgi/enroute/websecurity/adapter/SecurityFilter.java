@@ -19,6 +19,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ import osgi.enroute.http.capabilities.RequireHttpImplementation;
 
 @RequireHttpImplementation
 @Component(properties = {
-	"pattern=.*"
+	HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_REGEX+"=.*"
 }, designateFactory = SecurityFilter.Config.class)
 public class SecurityFilter implements Filter {
 	final static String							DEFAULT_REALM		= "OSGi enRoute Default";
@@ -56,6 +57,8 @@ public class SecurityFilter implements Filter {
 		String filter();
 
 		String pattern();
+		
+		String osgi_http_whiteboard_filter_regex();
 	}
 
 	/*

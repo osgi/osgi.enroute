@@ -33,10 +33,8 @@ import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.json.JSONCodec;
 import osgi.enroute.http.capabilities.RequireHttpImplementation;
-import osgi.enroute.namespace.EndpointNamespace;
 
 /**
  * This component provides a servlet that allows javascript clients to see the
@@ -54,7 +52,6 @@ import osgi.enroute.namespace.EndpointNamespace;
  * >Comet Streaming in Explorer with XMLHttpRequest and XDomainRequest</a>
  * 
  */
-@ProvideCapability(ns = EndpointNamespace.NS, name = "/sse/1", version = "1.1.0", effective = "active")
 @RequireHttpImplementation
 @Component(name = "osgi.eventadmin.sse", property = HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/sse/1", service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class ServerSideEventImpl extends HttpServlet {

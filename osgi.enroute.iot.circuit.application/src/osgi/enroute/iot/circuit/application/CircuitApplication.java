@@ -5,9 +5,9 @@ import java.util.Collection;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import osgi.enroute.configurer.capabilities.RequireConfigurerExtender;
+import osgi.enroute.configurer.api.RequireConfigurerExtender;
 import osgi.enroute.eventadminserversentevents.capabilities.RequireEventAdminServerSentEventsWebResource;
-import osgi.enroute.github.angular.capabilities.RequireAngularWebResource;
+import osgi.enroute.google.angular.capabilities.RequireAngularWebResource;
 import osgi.enroute.iot.admin.api.CircuitAdmin;
 import osgi.enroute.iot.admin.dto.ICDTO;
 import osgi.enroute.iot.admin.dto.WireDTO;

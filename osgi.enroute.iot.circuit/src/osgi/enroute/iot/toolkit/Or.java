@@ -1,13 +1,13 @@
 package osgi.enroute.iot.toolkit;
 
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.Binary;
 import osgi.enroute.iot.gpio.util.Digital;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.toolkit.Or.AndConfig;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
 
 @Component(designateFactory=AndConfig.class, provide=IC.class)
 public class Or extends ICAdapter<Binary, Digital> implements Binary {

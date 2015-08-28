@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import junit.framework.TestCase;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.useradmin.Authorization;
@@ -14,12 +12,13 @@ import org.osgi.service.useradmin.Role;
 import org.osgi.service.useradmin.User;
 import org.osgi.service.useradmin.UserAdmin;
 
+import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.testing.DSTestWiring;
+import junit.framework.TestCase;
 import osgi.enroute.authorization.api.Authority;
 import osgi.enroute.authorization.api.AuthorityAdmin;
 import osgi.enroute.authorization.api.SecurityVerifier;
 import osgi.enroute.base.configurer.test.ConfigurerTest;
-import aQute.bnd.annotation.component.Reference;
-import aQute.bnd.testing.DSTestWiring;
 
 public class AuthorizationTest extends TestCase {
 

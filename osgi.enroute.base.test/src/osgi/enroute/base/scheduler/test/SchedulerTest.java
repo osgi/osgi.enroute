@@ -5,8 +5,6 @@ import java.util.Hashtable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -15,14 +13,15 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.promise.Promise;
 import org.osgi.util.promise.Success;
 
-import osgi.enroute.base.configurer.test.ConfigurerTest;
-import osgi.enroute.scheduler.api.CronJob;
-import osgi.enroute.scheduler.api.Scheduler;
 import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.osgi.Builder;
 import aQute.bnd.osgi.Jar;
 import aQute.bnd.osgi.JarResource;
 import aQute.bnd.testing.DSTestWiring;
+import junit.framework.TestCase;
+import osgi.enroute.base.configurer.test.ConfigurerTest;
+import osgi.enroute.scheduler.api.CronJob;
+import osgi.enroute.scheduler.api.Scheduler;
 
 @SuppressWarnings("rawtypes")
 public class SchedulerTest extends TestCase {

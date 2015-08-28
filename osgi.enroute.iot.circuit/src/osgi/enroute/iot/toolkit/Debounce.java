@@ -3,16 +3,16 @@ package osgi.enroute.iot.toolkit;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
+import aQute.lib.converter.Converter;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.Digital;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.toolkit.Debounce.DebounceConfig;
 import osgi.enroute.scheduler.api.Scheduler;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
-import aQute.lib.converter.Converter;
 
 @Component(designateFactory = DebounceConfig.class, provide = IC.class, name = "osgi.enroute.iot.toolkit.debounce")
 public class Debounce extends ICAdapter<Digital, Digital> implements Digital {

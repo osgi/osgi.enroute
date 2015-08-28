@@ -40,7 +40,7 @@ import aQute.lib.json.JSONCodec;
 import aQute.lib.settings.Settings;
 import aQute.libg.sed.ReplacerAdapter;
 import osgi.enroute.configurer.api.ConfigurationDone;
-import osgi.enroute.configurer.capabilities.ConfigurerConstants;
+import osgi.enroute.configurer.api.ConfigurerConstants;
 
 /**
  * This component is an extender that reads {@link #CONFIGURATION_LOC} file.

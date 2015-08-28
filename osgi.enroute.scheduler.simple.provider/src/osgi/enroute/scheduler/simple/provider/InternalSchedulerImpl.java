@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import osgi.enroute.scheduler.api.CancelException;
 import osgi.enroute.scheduler.api.CronJob;
 import osgi.enroute.scheduler.api.Scheduler;
+import osgi.enroute.scheduler.api.SchedulerConstants;
 import osgi.enroute.scheduler.api.TimeoutException;
 import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.lib.converter.Converter;
@@ -42,7 +43,7 @@ import aQute.lib.converter.Converter;
 /**
  * 
  */
-@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.enroute.scheduler", version="1.0.0")
+@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=SchedulerConstants.SCHEDULER_SPECIFICATION_NAME, version=SchedulerConstants.SCHEDULER_SPECIFICATION_VERSION)
 @Component(name = "osgi.enroute.scheduler.simple", service = InternalSchedulerImpl.class)
 public class InternalSchedulerImpl implements Scheduler {
 	final List<Cron<?>> crons = new ArrayList<>();

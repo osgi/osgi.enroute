@@ -21,7 +21,7 @@ import aQute.bnd.osgi.URLResource;
 import aQute.bnd.testing.DSTestWiring;
 import junit.framework.TestCase;
 import osgi.enroute.configurer.api.ConfigurationDone;
-import osgi.enroute.configurer.capabilities.RequireConfigurerExtender;
+import osgi.enroute.configurer.api.RequireConfigurerExtender;
 
 @RequireConfigurerExtender
 public class ConfigurerTest extends TestCase {

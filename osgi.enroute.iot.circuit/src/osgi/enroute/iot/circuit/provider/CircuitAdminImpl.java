@@ -30,9 +30,11 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
+import aQute.bnd.annotation.headers.ProvideCapability;
+import aQute.lib.collections.MultiMap;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.iot.admin.api.CircuitAdmin;
-import osgi.enroute.iot.admin.capabilities.IotAdminConstants;
+import osgi.enroute.iot.admin.api.IotAdminConstants;
 import osgi.enroute.iot.admin.dto.Delta;
 import osgi.enroute.iot.admin.dto.ICDTO;
 import osgi.enroute.iot.admin.dto.WireDTO;
@@ -40,8 +42,6 @@ import osgi.enroute.iot.circuit.provider.ICTracker.OutputPin;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.scheduler.api.Scheduler;
-import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.lib.collections.MultiMap;
 
 /**
  * Implementation of {@link CircuitAdmin}

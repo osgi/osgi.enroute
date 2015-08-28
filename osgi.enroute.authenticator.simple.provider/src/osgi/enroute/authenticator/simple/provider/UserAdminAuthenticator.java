@@ -24,8 +24,8 @@ import aQute.bnd.annotation.headers.ProvideCapability;
 import aQute.bnd.annotation.metatype.Configurable;
 import aQute.lib.base64.Base64;
 import aQute.lib.hex.Hex;
+import osgi.enroute.authentication.api.AuthenticationConstants;
 import osgi.enroute.authentication.api.Authenticator;
-import osgi.enroute.authentication.capabilities.AuthenticationConstants;
 import osgi.enroute.authenticator.simple.provider.Config.Algorithm;
 import osgi.enroute.debug.api.Debug;
 

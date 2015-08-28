@@ -8,18 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.osgi.dto.DTO;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
+import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.testing.DSTestWiring;
+import junit.framework.TestCase;
 import osgi.enroute.base.configurer.test.ConfigurerTest;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.dto.api.DTOs.Difference;
 import osgi.enroute.dto.api.TypeReference;
-import aQute.bnd.annotation.component.Reference;
-import aQute.bnd.testing.DSTestWiring;
 
 public class DTOsTest extends TestCase {
 	BundleContext context = FrameworkUtil.getBundle(ConfigurerTest.class)
