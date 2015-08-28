@@ -5,11 +5,9 @@
 
 Bundle-Version: 1.1.1.${tstamp}
 Bundle-Description: 				\
-  This bundle implements a scheduler and some Promise support methods related to time.
-  
+  This bundle implements a scheduler and some Promise support methods related to time.  
 Private-Package:  \
 	osgi.enroute.scheduler.simple.provider
-	
 Export-Package: \
 	osgi.enroute.scheduler.api;provide:=true
 
@@ -17,10 +15,12 @@ Conditional-Package: aQute.lib*
 
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit,\
 	biz.aQute.bndlib;packages=*
 
--includeresource: {readme.md}
+-testpath: \
+	osgi.enroute.junit.wrapper
+
+-includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
 
 -runrequires:  \

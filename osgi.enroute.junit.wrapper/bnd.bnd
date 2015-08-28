@@ -1,15 +1,14 @@
-Bundle-Version: 4.12.0.${tstamp}
+Bundle-Version: 	4.12.0.${tstamp}
 Bundle-Description: \
 	JUnit is a simple framework to write repeatable tests. It is an instance of the xUnit architecture for unit testing frameworks. \
 	This bundle wraps JUnit as is and exports all packages with the bundle version since JUnit has not understood package versioning, \
 	nor semantic versioning. We also make imports optional since it has 
-
- 
+Bundle-License: 	http://opensource.org/licenses/EPL-1.0
 Export-Package: \
 	*junit*;version=4.12
 	
-	, \
-	org.hamcrest.*;version=1.3.0
+Import-Package:\
+	org.hamcrest.*;version=1.3.0, *
 
 #Import-Package: \
 	org.apache.tools.ant.*;resolution:=optional, \
@@ -20,6 +19,4 @@ Export-Package: \
 -buildpath: \
 	junit__junit
 	
-	
-	, \
-	org.hamcrest__hamcrest-all
+-includeresource: LICENSE.txt

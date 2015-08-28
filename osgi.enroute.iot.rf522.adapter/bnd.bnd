@@ -14,8 +14,10 @@ Private-Package:  \
 	osgi.enroute.iot.rf522.adapter
 	
 -buildpath:  \
-	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit
+	osgi.enroute.base.api;version=1.0
+	
+-testpath: \
+	osgi.enroute.junit.wrapper
 
 -includeresource: {readme.md}
 

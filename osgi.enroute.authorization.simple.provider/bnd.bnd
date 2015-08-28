@@ -9,27 +9,22 @@ Bundle-Description: 				\
 	User Admin roles. For a user, the Authorization object is maintained and \
 	then all its roles are treated as permission names. The names may contain the \
 	';' separator for parameters.
-
 Export-Package:  \
 	osgi.enroute.authorization.api;provide:=true
-
 Private-Package:  \
 	osgi.enroute.authorization.simple.provider
 
 Conditional-Package: aQute.lib*
 
-Provide-Capability: \
-	osgi.implementation; \
-		osgi.implementation=osgi.enroute.authority; \
-		version:Version=1.0.0
-	
-
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit,\
-	biz.aQute.bndlib;version=3;packages=*
+	biz.aQute.bndlib;packages=*
 
--includeresource: {readme.md}
+-testpath: \
+	osgi.enroute.junit.wrapper
+
+
+-includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
 
 -runrequires:  \

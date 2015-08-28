@@ -12,10 +12,10 @@ Bundle-Version: ${vrs}.${tstamp}
 Bundle-Description: \
 	jsPlumb provides a means for a developer to visually connect elements \
 	on their web pages. It uses SVG or Canvas in modern browsers.
-Export-Package: osgi.enroute.jsplumb.capabilities
-Bundle-License:			http://opensource.org/licenses/MIT
+Bundle-License:			http://opensource.org/licenses/MIT, link="https://github.com/sporritt/jsPlumb/blob/master/jsPlumb-MIT-LICENSE.txt"
 Bundle-DocURL:			http://jsplumb.org/doc/home.html
 Bundle-Icon:			https://jsplumbtoolkit.com/img/logo-jsplumb-green.png
+Export-Package: 		osgi.enroute.jsplumb.capabilities;-split-package:=first
 
 Provide-Capability: 	\
 	osgi.enroute.webresource; \
@@ -23,7 +23,10 @@ Provide-Capability: 	\
 		root=${path}; \
 		version:Version=${vrs}
 
--includeresource: ${path}=${vrs}, {readme.md}
+-includeresource: ${path}=${vrs}, {readme.md}, LICENSE.txt
 
 -buildpath: \
 	osgi.enroute.base.api
+
+# TODO figure out why we need this?
+-fixupmessages: "Version for package osgi.enroute.jsplumb.capabilities is set to different values in the source"

@@ -1,10 +1,14 @@
-#
-# This file is left open for you to define your macros
-#
+# OSGi enRoute API
 
+copyright.year = ${tstamp;yyyy}
+copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
+
+-outputmask:            ${@bsn}-${version;===;${@version}}.jar
+groupid:                org.osgi
+
+Bundle-Copyright: 		${copyright}
+Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
 Bundle-License: 		http://opensource.org/licenses/Apache-2.0
-
- 
 
 -releaserepo: Release
 -baselinerepo: Distro

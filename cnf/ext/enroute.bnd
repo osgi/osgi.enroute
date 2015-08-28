@@ -44,3 +44,6 @@ test-cases: 			${classes;NAMED;*Test}
             name                =       Release ; \
             pretty              =       true ; \
             local               =       ${build}/release
+
+-pedantic: true
+-fixupmessages.enroute="Duplicate","Imports that lack version ranges: *javax"

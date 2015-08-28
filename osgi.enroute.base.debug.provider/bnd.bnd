@@ -15,10 +15,13 @@ Export-Package: osgi.enroute.debug.api
 
 	
 -buildpath:  \
-	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit
+	osgi.enroute.base.api;version=1.0
 
--includeresource: {readme.md}
+-testpath: \
+	osgi.enroute.junit.wrapper
+
+
+-includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
 
 -runrequires:  \

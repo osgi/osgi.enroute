@@ -1,4 +1,4 @@
-#
+1#
 # OSGI ENROUTE CONFIGURER SIMPLE PROVIDER BUNDLE 
 #
 
@@ -8,20 +8,23 @@ Bundle-Description: 		This component is an extender that reads the /configuratio
 and installs the list of maps in there as configuration. The configurer supports a number of features \
 like profiles, macro expansion, binary resource handling, and configuration through system properties. \
 See the readme.md file for more details.
-
-
 Private-Package:  \
 	osgi.enroute.configurer.simple.provider
+
+Export-Package: \
+	osgi.enroute.configurer.api;provide:=true
 
 Conditional-Package: aQute.lib*
 
 	
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit,\
 	biz.aQute.bndlib;packages=*
 
--includeresource: {readme.md}
+-testpath: \
+	osgi.enroute.junit.wrapper
+
+-includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
 
 -runrequires:  \
@@ -34,6 +37,3 @@ Conditional-Package: aQute.lib*
 	org.eclipse.equinox.coordinator;version='[1.2.0,1.2.1)',\
 	osgi.configurer.provider;version='[1.0.0,1.0.1)',\
 	osgi.enroute.configurer.simple.provider;version=latest
-Export-Package: \
-	osgi.enroute.configurer.api;provide:=true,\
-	osgi.enroute.configurer.capabilities

@@ -27,8 +27,15 @@ Bundle-Description: \
 	Stack Exchange blog (http://blog.stackoverflow.com/2008/12/reverse-engineering-the-wmd-editor/) for some historical information.
 
 Bundle-DocURL: 			https://code.google.com/p/pagedown/wiki/PageDown
-Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
-Export-Package: 		osgi.enroute.stackexchange.pagedown.webresource
+Bundle-License:			http://opensource.org/licenses/MIT";link=https://github.com/ujifgc/pagedown/blob/master/LICENSE.txt
+Bundle-Copyright:		\
+	Original Markdown Copyright (c) 2004-2005 John Gruber \
+  	<http://daringfireball.net/projects/markdown/>. \
+  	Original Showdown code copyright (c) 2007 John Fraser. \
+	Modifications and bugfixes (c) 2009 Dana Robinson and \
+	(c) 2009-2014 Stack Exchange Inc.
+
+Export-Package: 		osgi.enroute.stackexchange.pagedown.capabilities;-split-package:=first
 Provide-Capability: \
 	osgi.enroute.webresource; \
 		osgi.enroute.webresource=${name}; \

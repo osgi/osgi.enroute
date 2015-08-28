@@ -3,11 +3,18 @@
 #
 
 Bundle-Version:					1.0.0.${tstamp}
-	
+
+Conditional-Package: aQute.lib*
+
+
 -buildpath: \
-	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit,\
-	biz.aQute.bndlib;version=3;packages=*
+	osgi.enroute.base.api;version=1.0, \
+	biz.aQute.bndlib;packages=*
+	
+-testpath: \
+	osgi.enroute.junit.wrapper
 
 -sub:  \
 	*.bnd
+
+-includeresource.license: LICENSE.txt=${build}/licenses/ASL-2.0.txt

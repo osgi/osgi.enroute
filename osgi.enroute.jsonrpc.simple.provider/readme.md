@@ -2,14 +2,7 @@
 
 ${Bundle-Description}
 
-## Example
+## Disclaimer
 
-## Configuration
-
-	Pid: osgi.enroute.jsonrpc.simple
-	
-	Field					Type				Description
-		
-	
-## References
+This bundle does not support JSONRPC 2.0 combined requests
 

@@ -9,19 +9,18 @@ Bundle-Description: \
 Conditional-Package: aQute.lib*
 
 Private-Package: osgi.enroute.*.test
-
+Import-Package: com.gargoylesoftware.*;version=0,*
 Test-Cases: ${test-cases}
 
 
--includeresource: {readme.md}
+-includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
--buildpath: \
-	osgi.enroute.base.api;version=1.4,\
-	biz.aQute.junit,\
-	biz.aQute.bndlib;version=2.3;packages=*,\
-	net.sourceforge.htmlunit;version=2.15,\
-	org.apache.felix.scr
-	
+-buildpath:  \
+	osgi.enroute.base.api;version=1.0,\
+	biz.aQute.bndlib;packages=*, \
+	osgi.enroute.junit.wrapper,\
+	net.sourceforge.htmlunit;version=2.15
+
 
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.test)',\

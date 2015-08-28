@@ -19,8 +19,9 @@ Bundle-License: 		http://opensource.org/licenses/MIT
 Bundle-DocURL: 			http://angularjs.org/
 Bundle-Vendor: 			Google Inc. (bundled by OSGi enRoute)
 Bundle-Icon: 			angular.png
-Bundle-License:			http://opensource.org/licenses/MIT";link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
-Export-Package: 		osgi.enroute.github.angular.capabilities
+Bundle-License:			http://opensource.org/licenses/MIT"
+Export-Package: 		osgi.enroute.google.angular.capabilities;-split-package:=first
+Bundle-Copyright:		Copyright (c) 2010-${tstamp;YYYY} Google, Inc. http://angularjs.org
 Provide-Capability: \
 	osgi.enroute.webresource; \
 		osgi.enroute.webresource=${name}; \
@@ -30,7 +31,7 @@ Provide-Capability: \
 -buildpath: \
 	osgi.enroute.base.api
 
--includeresource: ${path}=${vrs}, angular.png, {readme.md}
+-includeresource: ${path}=${vrs}, angular.png, {readme.md}, LICENSE.txt
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.google.angular.webresource)'

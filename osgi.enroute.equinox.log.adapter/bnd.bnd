@@ -15,10 +15,12 @@ Private-Package:  \
 Embedded-Activator: osgi.enroute.equinox.log.adapter.HideEquinoxLog
 
 -buildpath:  \
-	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.junit
+	osgi.enroute.base.api;version=1.0
+	
+-testpath: \
+	osgi.enroute.junit.wrapper
 
--includeresource: {readme.md}
+-includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
 
 -runrequires:  \
