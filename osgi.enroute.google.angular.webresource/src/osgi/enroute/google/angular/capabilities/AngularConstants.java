@@ -1,4 +1,4 @@
-package osgi.enroute.github.angular.capabilities;
+package osgi.enroute.google.angular.capabilities;
 
 /**
  */

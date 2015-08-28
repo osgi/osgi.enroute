@@ -1,4 +1,4 @@
-package osgi.enroute.github.angular.capabilities;
+package osgi.enroute.google.angular.capabilities;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
