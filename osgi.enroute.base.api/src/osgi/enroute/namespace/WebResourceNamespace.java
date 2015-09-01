@@ -49,7 +49,7 @@ package osgi.enroute.namespace;
  * In runtime, the web server creates a virtual URI:
  * 
  * <pre>
- * 		/osgi.enroute.webresource/<bsn>/<version>/<glob>
+ * 		{@code /osgi.enroute.webresource/<bsn>/<version>/<glob>}
  * </pre>
  * 
  * The {@code <bsn>}is the bundle symbolic name and the version is the
@@ -69,14 +69,13 @@ package osgi.enroute.namespace;
  * with the html file(s). For example:
  * 
  * <pre>
- * 		<link 
- * 			rel="stylesheet" 
- * 			type="text/css"
- * 			href="/osgi.enroute.webresource/${bsn}/${Bundle-Version}/*.css">
- * 
- * 		<script 
- * 			src="/osgi.enroute.webresource/${bsn}/${Bundle-Version}/*.js">
- * 		</script>
+ * 	{@code <link} 
+ * 	  rel="stylesheet" 
+ * 	  type="text/css"
+ * 	  href="/osgi.enroute.webresource/${bsn}/${Bundle-Version}/*.css">
+ *  {@code <script} 
+ * 	  src="/osgi.enroute.webresource/${bsn}/${Bundle-Version}/*.js">
+ * 	</script>
  * </pre>
  * <p>
  * Adding these requirements of course is rather unpleasant and incredibly error
