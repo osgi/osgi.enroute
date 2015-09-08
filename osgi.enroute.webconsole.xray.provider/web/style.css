@@ -1,0 +1,116 @@
+.xray {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 10px;
+}
+
+.ACTIVE {
+	stroke: grey;
+	stroke-width: 1px;
+	fill: #FFE070;
+}
+
+.ACTIVE_r {
+	stroke: red ;
+	stroke-dasharray: 5px;
+	stroke-width: 3px;
+	fill: #FFE070;
+}
+
+.STARTING {
+	stroke: grey;
+	stroke-width: 1px;
+	fill: #FFF080;
+}
+
+.RESOLVED {
+	stroke: black;
+	stroke-width: 1px;
+	fill: lightgrey;
+}
+
+.STOPPING {
+	stroke: black;
+	stroke-width: 1px;
+	fill: red;
+}
+
+.INSTALLED {
+	stroke: black;
+	stroke-width: 1px;
+	fill: white;
+}
+
+/*
+ * Display for services 
+ */
+.orphan {
+	fill: white;
+	stroke: black;
+	stroke-width: 1px;
+}
+
+.absent {
+    fill: white;
+    stroke: black;
+    stroke-dasharray: 2;
+    stroke-width: 1px;
+}
+.multiple {
+    stroke: red;
+    stroke-width: 2px;
+}
+.multiple.orphan {
+    fill: red;
+}
+.imported {
+    fill: orange;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+.exported {
+    fill: orange;
+    stroke: black;
+    stroke-dasharray: 2;
+    stroke-width: 1px;
+}
+
+.normal {
+	fill: yellow;
+	stroke: black;
+	stroke-width: 1px;
+}
+
+/**
+ * The wires
+ */
+.wire {
+	fill: none;
+	stroke-width: 1px;
+	stroke: lightgrey;
+}
+
+/**
+  * LEDs
+  */
+.ledred {
+	fill: red;
+	stroke: black;
+	strok-width: 1px;
+}
+
+.ledgreen {
+	fill: #00FF00;
+	stroke: black;
+	strok-width: 1px;
+}
+
+.ledorange {
+	fill: orange;
+	stroke: black;
+	strok-width: 1px;
+}
+
+.selected {
+    fill: red;
+}
