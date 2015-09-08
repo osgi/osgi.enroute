@@ -165,6 +165,14 @@
 			Rpc.prototype.ping = function() {
 				this.send("", "__ping", [ new Date().getTime() ]).then( function(d) {console.log(d);});
 			};
+			Rpc.prototype.getEndpoint = function(name) {
+				for ( var i in this.endpoints) {
+					var ep = this.endpoints[i];
+					if ( ep.name == name)
+						return ep;
+				}
+				return undefined;
+			};
 			Rpc.prototype.clear = function() {
 				this.history = [];
 			};
