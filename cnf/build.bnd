@@ -1,7 +1,3 @@
-# Include the gradle.properties to get the value of bnd_repourl which is used
-# in ext/pluginpaths.bnd to download the repository jar.
--include ${workspace}/gradle.properties
-
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
