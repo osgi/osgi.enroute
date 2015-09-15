@@ -21,3 +21,6 @@ Private-Package:  \
 	
 -runbundles: \
 	${error;Resolve first}
+Import-Package: \
+	aQute.bnd.annotation.metatype;resolution:=optional,\
+	*

@@ -37,3 +37,6 @@ Conditional-Package: 	aQute.lib*
 	"Version for package org.slf4j is set to different values in the source \\(1.7.0\\) and in the manifest \\(1.7.12\\)."
 	
 	
+Import-Package: \
+	aQute.bnd.annotation.metatype;resolution:=optional,\
+	*

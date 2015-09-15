@@ -8,11 +8,12 @@ Export-Package: \
 	com.pi4j.io.gpio,\
 	com.pi4j.system
 
-Private-Package: \
-	osgi.enroute.iot.pi.provider,\
-	aQute.bnd.annotation.metatype;-split-package:=first;resolution:=optional
+Private-Package: osgi.enroute.iot.pi.provider
 
 -includeresource: @jar/pi4j-core.jar, {readme.md}
 
 Provide-Capability: osgi.service;objectClass=com.pi4j.io.gpio.GpioController
 Bundle-Version: 1.0.2.${tstamp}
+Import-Package: \
+	aQute.bnd.annotation.metatype;resolution:=optional,\
+	*

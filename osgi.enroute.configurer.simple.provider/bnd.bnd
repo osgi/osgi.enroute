@@ -8,8 +8,9 @@ Bundle-Description: 		This component is an extender that reads the /configuratio
 and installs the list of maps in there as configuration. The configurer supports a number of features \
 like profiles, macro expansion, binary resource handling, and configuration through system properties. \
 See the readme.md file for more details.
-Private-Package:  \
-	osgi.enroute.configurer.simple.provider
+Private-Package: \
+	osgi.enroute.configurer.simple.provider,\
+	aQute.service.reporter
 
 Export-Package: \
 	osgi.enroute.configurer.api;provide:=true

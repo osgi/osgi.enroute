@@ -14,6 +14,7 @@ Bundle-Description: A plugin for the Apache Felix Webconsole. When installed, th
  service shows only the conenections to/from the component. The display updates every 5 seconds \
  to provide a continuous view on the operations of the framework it runs on.
 	
+Bundle-Icon: xray.png
 
 Private-Package:  \
 	osgi.enroute.webconsole.xray.provider
@@ -31,7 +32,7 @@ Conditional-Package: aQute.lib*
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
 
--includeresource: {readme.md}, {web=web}
+-includeresource: {readme.md}, {web=web}, xray.png
 
 
 -runrequires:  \

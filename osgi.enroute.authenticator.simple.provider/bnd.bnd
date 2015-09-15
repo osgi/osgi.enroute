@@ -37,3 +37,6 @@ Conditional-Package: aQute.lib*
 	osgi.enroute.authenticator.simple.provider;version=latest,\
 	osgi.enroute.base.simple.provider;version=latest,\
 	osgi.logger.provider;version='[1.0.0,1.0.1)'
+Import-Package: \
+	aQute.bnd.annotation.metatype;resolution:=optional,\
+	*
