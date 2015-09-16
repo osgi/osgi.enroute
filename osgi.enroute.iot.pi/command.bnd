@@ -11,4 +11,4 @@ Private-Package:  \
 	
 	
 -includeresource: {readme.md}
-Bundle-Version: 1.0.1.${tstamp}
+base.version: 1.0.1

@@ -4,11 +4,10 @@
 
 # ENSURE TO MATCH THIS TO JsplumbConstants
 name = /jsplumb/jsplumb
-vrs = 1.7.6
+base.version = 1.7.6
 
-path = static${name}/${version;===;${vrs}}
+path = static${name}/${version;===;${base.version}}
 
-Bundle-Version: ${vrs}.${tstamp}
 Bundle-Description: \
 	jsPlumb provides a means for a developer to visually connect elements \
 	on their web pages. It uses SVG or Canvas in modern browsers.
@@ -21,9 +20,9 @@ Provide-Capability: 	\
 	osgi.enroute.webresource; \
 		osgi.enroute.webresource=${name}; \
 		root=${path}; \
-		version:Version=${vrs}
+		version:Version=${base.version}
 
--includeresource: ${path}=${vrs}, {readme.md}, LICENSE.txt
+-includeresource: ${path}=${base.version}, {readme.md}, LICENSE.txt
 
 -buildpath: \
 	osgi.enroute.base.api

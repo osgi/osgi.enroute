@@ -1,4 +1,4 @@
-# Angular JS ${Bundle-Version}
+# Angular JS ${base.version}
 
 ## Why AngularJS?
 
@@ -18,7 +18,7 @@ This bundle can now be used with the OSGi version management and automatic appli
 
 ## How to Use
 
-This bundle provides the `osgi.enroute.webresource` capability with the name `/google/angular` and version=${vrs}. If you require this capability then you will automatically get this resource included in your html page when you add:
+This bundle provides the `osgi.enroute.webresource` capability with the name `/google/angular` and version=${base.version}. If you require this capability then you will automatically get this resource included in your html page when you add:
 	
 	<link rel="stylesheet" type="text/css"
 		href="/osgi.enroute.webresource/\${bsn}/\${Bundle-Version}/*.css">

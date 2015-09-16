@@ -2,10 +2,9 @@
 # OSGI ENROUTE BOSTOCK D3 WEBRESOURCE
 #
 
-vrs 	= ${version;===;${Bundle-Version}}
-path 	= /static/bostock/d3/${vrs}
+base.version 	= 3.5.6
+path 	= /static/bostock/d3/${base.version}
 
-Bundle-Version: 	3.5.6.${tstamp}
 Bundle-Description: \
 		D3.js is a JavaScript library for manipulating documents based on data. D3 helps you \
 		bring data to life using HTML, SVG, and CSS. D3’s emphasis on web standards gives you \
@@ -24,7 +23,7 @@ Export-Package: 	osgi.enroute.bostock.d3.webresource.capabilities
 Provide-Capability:	\
 	osgi.enroute.webresource; \
 		osgi.enroute.webresource=/bostock/d3; \
-		version:Version=${vrs}; \
+		version:Version=${base.version}; \
 		root=${path}
 		
 
@@ -34,6 +33,6 @@ Provide-Capability:	\
 
 -includeresource: \
 	{readme.md}, \
-	${path}=${vrs}, \
+	${path}=${base.version}, \
 	{LICENSE.txt}
 

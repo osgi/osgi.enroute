@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version:					1.0.1.${tstamp}
+base.version: 1.0.1
 Bundle-Description: 				\
 	This bundle implements an IC that takes as input the A & B motor controls from the \
 	Lego IR adapter. It translates these controls to an IR Wave that is compatbile with \

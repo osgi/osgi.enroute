@@ -12,12 +12,11 @@
 #
 
 # Dont forget to match to PagedownConstants
-vrs=1.1.1
+base.version=1.1.1
 name=/stackexchange/pagedown
 
-path = static${name}/${vrs}
+path = static${name}/${base.version}
 
-Bundle-Version: ${vrs}.${tstamp}
 Bundle-Description: \
 	PageDown is the JavaScript Markdown previewer used on Stack Overflow and the rest of \
 	the Stack Exchange network. It includes a Markdown-to-HTML converter and an \
@@ -40,15 +39,15 @@ Provide-Capability: \
 	osgi.enroute.webresource; \
 		osgi.enroute.webresource=${name}; \
 		root=${path}; \
-		version:Version=${vrs}
+		version:Version=${base.version}
 
 -buildpath: \
 	osgi.enroute.base.api
 
 -includeresource: \
-	{${path}=${vrs}}, \
+	{${path}=${base.version}}, \
 	${path}/enmarkdown.js; \
-		requires='${project}/${vrs}/enmarkdown.js,${project}/${vrs}/Markdown.Converter.js'; \
-		cmd='cat ${project}/${vrs}/enmarkdown.js ${project}/${vrs}/Markdown.Converter.js', \
-	${vrs}/LICENSE.txt, \
+		requires='${project}/${base.version}/enmarkdown.js,${project}/${base.version}/Markdown.Converter.js'; \
+		cmd='cat ${project}/${base.version}/enmarkdown.js ${project}/${base.version}/Markdown.Converter.js', \
+	${base.version}/LICENSE.txt, \
 	{readme.md}

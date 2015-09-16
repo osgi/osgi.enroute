@@ -3,12 +3,31 @@
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
+build.version:          ${base.version}.${tstamp}
 -outputmask:            ${@bsn}-${version;===;${@version}}.jar
-groupid:                org.osgi
+groupid:                osgi.enroute
 
 Bundle-Copyright: 		${copyright}
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
-Bundle-License: 		http://opensource.org/licenses/Apache-2.0
+Bundle-Version:   		${build.version}
+Bundle-License: 		http://opensource.org/licenses/apache2.0.php; \
+                			link="http://www.apache.org/licenses/LICENSE-2.0"; \
+                			description="Apache License, Version 2.0"
+Bundle-DocURL:    		http://enroute.osgi.org/
+Bundle-SCM:       		url=https://github.com/osgi/osgi.enroute.bundles, \
+                  			connection=scm:git:https://github.com/osgi/osgi.enroute.bundles.git, \
+                  			developerConnection=scm:git:git@github.com:osgi/osgi.enroute.bundles.git
+Bundle-Developers: 		osgi; \
+							email=info@osgi.org; \
+							name="OSGi Alliance"; \
+							organization="OSGi Alliance"
+
+Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
+Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
+
+-pom = \
+ 	groupid=${groupid}, \
+ 	version=${base.version}
 
 -releaserepo: Release
 -baselinerepo: Distro

@@ -2,7 +2,7 @@
 # OSGI ENROUTE IOT CIRCUIT
 #
 
-Bundle-Version:					1.0.0.${tstamp}
+base.version: 1.0.0
 
 Conditional-Package: aQute.lib*
 

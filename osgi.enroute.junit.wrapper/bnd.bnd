@@ -1,4 +1,4 @@
-Bundle-Version: 	4.12.0.${tstamp}
+base.version: 	4.12.0
 Bundle-Description: \
 	JUnit is a simple framework to write repeatable tests. It is an instance of the xUnit architecture for unit testing frameworks. \
 	This bundle wraps JUnit as is and exports all packages with the bundle version since JUnit has not understood package versioning, \

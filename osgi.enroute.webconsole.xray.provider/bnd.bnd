@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version:					2.0.0.${tstamp}
+base.version: 2.0.0
 Bundle-Description: A plugin for the Apache Felix Webconsole. When installed, this bundle \
  will add a tab on the Web Console that provides a graphic overview of the \
  OSGi framework, including services, bundles, and components. Colors are used to \

@@ -2,7 +2,7 @@
 # OSGI ENROUTE IOT CIRCUIT APPLICATION APPLICATION
 #
 
-Bundle-Version: 1.0.2.${tstamp}
+base.version: 1.0.2
 Bundle-Description: \
 	A GUI for the Circuit Admin. This application shows the registered ICs + wires \
 	and can wire ICs together.

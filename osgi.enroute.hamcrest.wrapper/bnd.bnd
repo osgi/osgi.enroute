@@ -1,4 +1,4 @@
-Bundle-Version: 1.3.0.${tstamp}
+base.version: 1.3.0
 
 Export-Package: 	*;version=1.3.0
 Import-Package: 	*;resolution:=optional

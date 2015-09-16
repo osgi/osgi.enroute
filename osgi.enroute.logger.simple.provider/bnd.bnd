@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version: 1.1.1.${tstamp}
+base.version: 1.1.1
 Bundle-Description: 				\
 	Provides a simple implementation of the OSGi SLF4J bridge, includes shell command
 Export-Package:  \

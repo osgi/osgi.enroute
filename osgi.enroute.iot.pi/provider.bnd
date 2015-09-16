@@ -13,7 +13,7 @@ Private-Package: osgi.enroute.iot.pi.provider
 -includeresource: @jar/pi4j-core.jar, {readme.md}
 
 Provide-Capability: osgi.service;objectClass=com.pi4j.io.gpio.GpioController
-Bundle-Version: 1.0.2.${tstamp}
+base.version: 1.0.2
 Import-Package: \
 	aQute.bnd.annotation.metatype;resolution:=optional,\
 	*

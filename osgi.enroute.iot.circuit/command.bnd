@@ -2,7 +2,7 @@
 # OSGI ENROUTE IOT CIRCUIT GOGO COMMAND BUNDLE (circuit) 
 #
 
-Bundle-Version: 1.0.1.${tstamp}
+base.version: 1.0.1
 Bundle-Description: \
 	Commands for the Circuit Admin. These command can connect, disconnect, and \
 	and show information abou the current circuit board.

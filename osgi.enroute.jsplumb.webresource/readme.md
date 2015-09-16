@@ -2,7 +2,7 @@
 
 ## Problem
 
-You want to use [Twitter Bootstrap][1] version ${version;===;${Bundle-Version}} in your OSGi application.
+You want to use [Twitter Bootstrap][1] version ${base.version} in your OSGi application.
 
 ## Description
 
@@ -12,7 +12,7 @@ that is the text on their web site. This bundle wraps all the components of a st
 
 ## How to Use
 
-This bundle provides the `osgi.enroute.webresource` capability with the name `/twitter/bootstrap` and version=${vrs}. If you require this capability then you will automatically get this resource included in your html page when you add:
+This bundle provides the `osgi.enroute.webresource` capability with the name `/twitter/bootstrap` and version=${base.version}. If you require this capability then you will automatically get this resource included in your html page when you add:
 	
 	<link rel="stylesheet" type="text/css"
 		href="/osgi.enroute.webresource/\${bsn}/\${Bundle-Version}/*.css">
