@@ -1,9 +1,4 @@
-.gradle/
+/.gradle/
 /generated/
-enroute.zip
-.metadata
-cnf/local/index.*
-cnf/release/index.*
-
-cnf/source/index.xml
-cnf/source/index.xml.sha
+/enroute.zip
+/.metadata/
