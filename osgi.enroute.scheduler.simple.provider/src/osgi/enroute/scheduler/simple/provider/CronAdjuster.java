@@ -432,7 +432,6 @@ class CronAdjuster implements TemporalAdjuster {
 		if (parts.length == 2)
 			r[1] = parseInt(parts[1], min, max, names);
 
-		assert r[0] >= r[1];
 		if (r[0] < min)
 			throw new IllegalArgumentException("Value too small: " + r[0]
 					+ " for " + cf.toString());

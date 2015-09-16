@@ -10,7 +10,7 @@ Conditional-Package: aQute.lib*
 
 Private-Package: osgi.enroute.*.test
 Import-Package: com.gargoylesoftware.*;version=0,*
-Test-Cases: ${test-cases}
+#Test-Cases: ${test-cases}
 
 
 -includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
