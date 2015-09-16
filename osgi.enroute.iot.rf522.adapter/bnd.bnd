@@ -2,6 +2,7 @@
 # OSGI ENROUTE IOT RF522 ADAPTER BUNDLE 
 #
 
+-nobundles: true
 
 Bundle-Version:					1.0.0.${tstamp}
 Bundle-Description: 				\

@@ -281,7 +281,7 @@ public class WebServer extends HttpServlet {
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
 	private BundleTracker<Bundle>		apps;
-	private List<File>					directories	= Collections.EMPTY_LIST;
+	private List<File>					directories	= Collections.emptyList();
 
 	@Activate
 	void activate(Config config, Map<String,Object> props, BundleContext context) throws Exception {
