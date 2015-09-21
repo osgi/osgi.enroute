@@ -1,7 +1,6 @@
 package osgi.enroute.executor.simple.provider;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -10,15 +9,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.osgi.namespace.implementation.ImplementationNamespace;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.ServiceScope;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.ConfigurationPolicy;
-import aQute.bnd.annotation.component.Deactivate;
 import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.bnd.annotation.metatype.Configurable;
 import osgi.enroute.executor.capabilities.ExecutorConstants;
 
 /**
@@ -26,11 +26,10 @@ import osgi.enroute.executor.capabilities.ExecutorConstants;
  * configured and is shared between all bundles. 
  */
 @ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=ExecutorConstants.EXECUTOR_SPECIFICATION_NAME, version=ExecutorConstants.EXECUTOR_SPECIFICATION_VERSION)
+@Designate(ocd=Configuration.class, factory=true)
 @Component(
-		designate = Configuration.class,
 		name = "osgi.executor.provider",
-		configurationPolicy = ConfigurationPolicy.optional,
-		servicefactory = true)
+		configurationPolicy = ConfigurationPolicy.OPTIONAL, scope=ServiceScope.BUNDLE)
 public class ExecutorImplementation implements Executor {
 	ExecutorService			es;
 	BlockingQueue<Runnable>	queue	= new LinkedBlockingQueue<Runnable>();
@@ -43,9 +42,7 @@ public class ExecutorImplementation implements Executor {
 	 * @param properties Configuration parameters, passed by the framework
 	 */
 	@Activate
-	void activate(Map<String,Object> properties) {
-
-		Configuration config = Configurable.createConfigurable(Configuration.class, properties);
+	void activate(Configuration config) {
 		int coreSize = config.coreSize();
 		int maxSize = config.maximumPoolSize();
 		long keepAlive = config.keepAliveTime();

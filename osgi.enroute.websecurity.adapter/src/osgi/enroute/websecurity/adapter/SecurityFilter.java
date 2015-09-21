@@ -19,14 +19,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
-import aQute.bnd.annotation.metatype.Configurable;
 import aQute.bnd.annotation.metatype.Meta;
 import aQute.lib.base64.Base64;
 import aQute.lib.collections.ExtList;
@@ -35,9 +38,10 @@ import osgi.enroute.authorization.api.AuthorityAdmin;
 import osgi.enroute.http.capabilities.RequireHttpImplementation;
 
 @RequireHttpImplementation
-@Component(properties = {
+@Designate(ocd=SecurityFilter.Config.class,factory=true)
+@Component(property = {
 	HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_REGEX+"=.*"
-}, designateFactory = SecurityFilter.Config.class)
+})
 public class SecurityFilter implements Filter {
 	final static String							DEFAULT_REALM		= "OSGi enRoute Default";
 	private static final String					AUTH_PREFIX_BASIC	= "Basic ";
@@ -48,7 +52,8 @@ public class SecurityFilter implements Filter {
 	private volatile boolean					reported;
 	private String								realm;
 
-	interface Config {
+	@ObjectClassDefinition
+	@interface Config {
 		@Meta.AD(deflt = DEFAULT_REALM)
 		String realm();
 
@@ -65,8 +70,7 @@ public class SecurityFilter implements Filter {
 	 * Configure this filter.
 	 */
 	@Activate
-	void activate(Map<String,Object> map) {
-		Config config = Configurable.createConfigurable(Config.class, map);
+	void activate(Config config) {
 		this.realm = config.realm();
 	}
 
@@ -231,7 +235,7 @@ public class SecurityFilter implements Filter {
 	@Override
 	public void destroy() {}
 
-	@Reference(optional = true, dynamic = true, multiple = true)
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	void addAuthenticator(Authenticator authenticator) {
 		authenticators.add(authenticator);
 		reported = false;
@@ -241,7 +245,7 @@ public class SecurityFilter implements Filter {
 		authenticators.remove(authenticator);
 	}
 
-	@Reference(optional = true, dynamic = true)
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	void setAuthorityAdmin(AuthorityAdmin authorityAdmin) {
 		authorityAdminRef.set(authorityAdmin);
 	}

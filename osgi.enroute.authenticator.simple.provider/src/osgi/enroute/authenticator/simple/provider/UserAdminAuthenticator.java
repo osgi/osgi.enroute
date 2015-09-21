@@ -21,7 +21,6 @@ import org.osgi.service.useradmin.UserAdmin;
 import org.slf4j.Logger;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.bnd.annotation.metatype.Configurable;
 import aQute.lib.base64.Base64;
 import aQute.lib.hex.Hex;
 import osgi.enroute.authentication.api.AuthenticationConstants;
@@ -31,8 +30,8 @@ import osgi.enroute.debug.api.Debug;
 
 @ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=AuthenticationConstants.AUTHENTICATION_SPECIFICATION_NAME, version=AuthenticationConstants.AUTHENTICATION_SPECIFICATION_VERSION)
 @Component(property = {
-        Debug.COMMAND_SCOPE + "=admin", Debug.COMMAND_FUNCTION + "=hash", Debug.COMMAND_FUNCTION + "=passwd", Debug.COMMAND_FUNCTION + "=adduser",
-		Debug.COMMAND_FUNCTION + "=rmrole", Debug.COMMAND_FUNCTION + "=role"
+        Debug.COMMAND_SCOPE + "=user", Debug.COMMAND_FUNCTION + "=hash", Debug.COMMAND_FUNCTION + "=passwd", Debug.COMMAND_FUNCTION + "=adduser",
+		Debug.COMMAND_FUNCTION + "=rmrole", Debug.COMMAND_FUNCTION + "=role", Debug.COMMAND_FUNCTION + "=user"
 })
 public class UserAdminAuthenticator implements Authenticator {
 	private static final Pattern	AUTHORIZATION_P	= Pattern.compile("Basic\\s+(?<base64>[A-Za-z0-9+/]{3,}={0,2})");
@@ -46,9 +45,7 @@ public class UserAdminAuthenticator implements Authenticator {
 	private String					root;
 
 	@Activate
-	void activate(Map<String,Object> args) {
-		Config config = Configurable.createConfigurable(Config.class, args);
-
+	void activate(Config config) throws Exception {
 		salt = config.salt();
 		if (salt == null || salt.length == 0) {
 			salt = new byte[] {
@@ -209,6 +206,16 @@ public class UserAdminAuthenticator implements Authenticator {
 		return n;
 	}
 
+	
+	public String user() {
+		return "User Admin commands\n"
+				+ "  hash <password>                        Create the hash of a password\n"
+				+ "  passwd <id> <password>                 Set password\n"
+				+ "  adduser <id>                           Create a user\n"
+				+ "  rmrole                                 Remove a role\n"
+				+ "  role                                   List the roles\n"
+				+ "\n";
+	}
 	@SuppressWarnings("unchecked")
 	public void passwd(String id, String pw) throws Exception {
 		Role role = userAdmin.getRole(id);
@@ -217,6 +224,7 @@ public class UserAdminAuthenticator implements Authenticator {
 			role = userAdmin.createRole(id, Role.USER);
 		} else if (!(role instanceof User)) {
 			System.err.println("Not a user role, but " + role);
+			return;
 		}
 
 		User user = (User) role;

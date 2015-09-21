@@ -1,10 +1,12 @@
 package osgi.enroute.executor.simple.provider;
 
-import aQute.bnd.annotation.metatype.Meta.AD;
-import aQute.bnd.annotation.metatype.Meta.OCD;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-@OCD(description = "Configuration for the enRoute::Executor")
-public interface Configuration {
+import aQute.bnd.annotation.metatype.Meta.AD;
+
+@ObjectClassDefinition(description = "Configuration for the enRoute::Executor")
+public @interface Configuration {
+	
 	@AD(description = "The minimum number of threads allocated to this pool", deflt = "20", required=false)
 	int coreSize();
 

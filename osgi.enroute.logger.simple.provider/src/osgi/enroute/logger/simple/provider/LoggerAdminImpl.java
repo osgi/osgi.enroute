@@ -16,15 +16,18 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.namespace.implementation.ImplementationNamespace;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ServiceScope;
 import org.osgi.service.log.LogService;
+import org.osgi.service.metatype.annotations.Designate;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.ConfigurationPolicy;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
 import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.bnd.annotation.metatype.Configurable;
 import aQute.libg.glob.Glob;
 import osgi.enroute.debug.api.Debug;
 import osgi.enroute.logger.api.Level;
@@ -37,14 +40,18 @@ import osgi.enroute.logger.simple.provider.LoggerDispatcher.Eval;
  * service.
  */
 @ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=LoggerConstants.LOGGER_SPECIFICATION_NAME, version=LoggerConstants.LOGGER_SPECIFICATION_VERSION)
+@Designate(ocd=Configuration.class)
 @Component(
 		immediate = true,
-		servicefactory = false,
-		designate = Configuration.class,
-		provide = LoggerAdmin.class,
-		configurationPolicy = ConfigurationPolicy.optional,
-		properties = {
-				Debug.COMMAND_SCOPE + "=logger", Debug.COMMAND_FUNCTION + "=add|remove|settings|list"
+		scope = ServiceScope.SINGLETON,
+		service = LoggerAdmin.class,
+		configurationPolicy = ConfigurationPolicy.OPTIONAL,
+		property = {
+				Debug.COMMAND_SCOPE + "=logger", 
+				Debug.COMMAND_FUNCTION + "=add",
+				Debug.COMMAND_FUNCTION + "=remove",
+				Debug.COMMAND_FUNCTION + "=settings",
+				Debug.COMMAND_FUNCTION + "=list"
 		})
 public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 
@@ -69,10 +76,8 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	 * Activate the component
 	 */
 	@Activate
-	public void activate(Map<String,Object> config) throws Exception {
-		assert config != null;
-
-		Configuration c = Configurable.createConfigurable(Configuration.class, config);
+	public void activate(Configuration c) throws Exception {
+		assert c != null;
 
 		//
 		// Check if we need java util logging
@@ -367,7 +372,7 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	/*
 	 * Get the log services
 	 */
-	@Reference(type = '*', service = LogService.class)
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC, service = LogService.class)
 	void addLog(ServiceReference<LogService> log) {
 		latch.countDown();
 		logReferences.add(log);
@@ -383,7 +388,7 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	/*
 	 * Get the log services
 	 */
-	@Reference(type = '*')
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	void addLogService(LogService log) {
 		latch.countDown();
 		logs.add(log);

@@ -1,5 +1,8 @@
 package osgi.enroute.authenticator.simple.provider;
 
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
+@ObjectClassDefinition
 public @interface Config {
 	public enum Algorithm {
 		PBKDF2WithHmacSHA1

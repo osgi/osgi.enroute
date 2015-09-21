@@ -39,7 +39,7 @@
 -runsystemcapabilities.dflt: 	${native_capability}
 
 debug-bundles: \
-	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)',\
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)',\
 	osgi.implementation;filter:='(osgi.implementation=osgi.metatype)',\
 	osgi.implementation;filter:='(osgi.implementation=osgi.log)',\
 	osgi.implementation;filter:='(osgi.implementation=osgi.event)',\
