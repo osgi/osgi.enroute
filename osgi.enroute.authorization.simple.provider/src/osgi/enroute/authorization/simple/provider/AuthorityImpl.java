@@ -30,9 +30,14 @@ import aQute.libg.glob.Glob;
 public class AuthorityImpl implements Authority, AuthorityAdmin {
 	private static final Glob[]				EMPTY_GLOBS	= new Glob[0];
 
+	@Reference
 	private Logger							log;
+	@Reference
 	private UserAdmin						userAdmin;
 
+	@Reference
+	volatile List<UserAdmin>						userAdmins = new ArrayList<UserAdmin>();
+	
 	private ThreadLocal<SecurityContext>	context		= new ThreadLocal<>();
 
 	static class SecurityContext extends DTO {
@@ -176,15 +181,4 @@ public class AuthorityImpl implements Authority, AuthorityAdmin {
 			this.context.set(null);
 		}
 	}
-
-	@Reference
-	void setUserAdmin(UserAdmin userAdmin) {
-		this.userAdmin = userAdmin;
-	}
-
-	@Reference
-	void setLog(Logger logger) {
-		this.log = logger;
-	}
-
 }
