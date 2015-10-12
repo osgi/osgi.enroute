@@ -251,11 +251,18 @@ public class Model2B_Rev1Impl {
 		@Meta.AD(description = "GPIO 22 Level")
 		Level _31_Level();
 
-		// 33 GPIO 26 or PWM0
+		// 32 GPIO 26 or PWM0
 		@Meta.AD(description = "GPIO 26 or PWM0")
-		PWM _33();
+		PWM _32();
 
 		@Meta.AD(description = "GPIO 26 Level")
+		Level _32_Level();
+
+		// 33 GPIO 23 or PWM1
+		@Meta.AD(description = "GPIO 23 or PWM1")
+		PWM _33();
+
+		@Meta.AD(description = "GPIO 23 Level")
 		Level _33_Level();
 
 		// 34 Ground
@@ -305,8 +312,7 @@ public class Model2B_Rev1Impl {
 	private CircuitBoard board;
 
 	@Activate
-	void activate(Map<String, Object> config, BundleContext context)
-			throws Exception {
+	void activate(Map<String, Object> config, BundleContext context) throws Exception {
 		this.context = context;
 		try {
 			Model2B_Rev1 c = dtos.convert(config).to(Model2B_Rev1.class);
@@ -324,8 +330,7 @@ public class Model2B_Rev1Impl {
 				gpio(RaspiPin.GPIO_07, c._07(), c._07_Level(), "GPIO07");
 
 			if (c._08() == UART.uart) {
-				serial(c._08_Baud(), c._08_DataBits(), c._08_Parity(),
-						c._08_StopBits());
+				serial(c._08_Baud(), c._08_DataBits(), c._08_Parity(), c._08_StopBits());
 			} else {
 				gpio(RaspiPin.GPIO_15, c._08(), c._08_Level(), "GPIO15");
 				gpio(RaspiPin.GPIO_16, c._10(), c._10_Level(), "GPIO16");
@@ -367,11 +372,16 @@ public class Model2B_Rev1Impl {
 			else
 				gpio(RaspiPin.GPIO_22, c._31(), c._31_Level(), "GPIO22");
 
-			if (c._33() == PWM.pwm)
+			if (c._32() == PWM.pwm)
 				pwm(RaspiPin.GPIO_26);
 			else
-				gpio(RaspiPin.GPIO_26, c._33(), c._33_Level(), "GPIO26");
+				gpio(RaspiPin.GPIO_26, c._32(), c._32_Level(), "GPIO26");
 
+			if (c._33() == PWM.pwm)
+				pwm(RaspiPin.GPIO_23);
+			else
+				gpio(RaspiPin.GPIO_23, c._33(), c._33_Level(), "GPIO23");
+			
 			if (c._35() == PWM.pwm)
 				pwm(RaspiPin.GPIO_24);
 			else
@@ -402,7 +412,7 @@ public class Model2B_Rev1Impl {
 		throw new IllegalArgumentException("PCM not yet implemented");
 	}
 
-	class PWMO extends ICAdapter<Analog,Void> implements Analog {
+	class PWMO extends ICAdapter<Analog, Void> implements Analog {
 
 		private GpioPinPwmOutput pwm;
 
@@ -413,26 +423,26 @@ public class Model2B_Rev1Impl {
 		@Override
 		public void set(double value) {
 			value = value * 1024;
-			if ( value < 0 ) value = 0;
-			else if ( value > 1024 )
-				value=1024;
-			
+			if (value < 0)
+				value = 0;
+			else if (value > 1024)
+				value = 1024;
+
 			pwm.setPwm((int) Math.round(value));
 		}
-		
+
 	}
+
 	private void pwm(Pin pin) {
-		GpioPinPwmOutput pwm = this.gpio
-				.provisionPwmOutputPin(pin);
-		
+		GpioPinPwmOutput pwm = this.gpio.provisionPwmOutputPin(pin);
+
 		unprovision(pin);
 		PWMO pwmo = new PWMO(pwm);
-		
+
 		register(pin, PWMO.class, pwmo, pwm, pin.getName());
 	}
 
-	private void serial(Baud baud, DataBits dataBits, Parity parity,
-			StopBits stopBits) {
+	private void serial(Baud baud, DataBits dataBits, Parity parity, StopBits stopBits) {
 		throw new IllegalArgumentException("Serial not yet implemented");
 	}
 
@@ -456,8 +466,7 @@ public class Model2B_Rev1Impl {
 
 		switch (gpio) {
 		case in:
-			GpioPinDigitalInput digitalIn = this.gpio
-					.provisionDigitalInputPin(pin);
+			GpioPinDigitalInput digitalIn = this.gpio.provisionDigitalInputPin(pin);
 			switch (level) {
 			case high:
 				digitalIn.setPullResistance(PinPullResistance.PULL_UP);
@@ -474,8 +483,7 @@ public class Model2B_Rev1Impl {
 			}
 
 			GPI gpi = new GPI(name, board, dtos);
-			digitalIn.addListener((GpioPinListenerDigital) (
-					GpioPinDigitalStateChangeEvent event) -> {
+			digitalIn.addListener((GpioPinListenerDigital) (GpioPinDigitalStateChangeEvent event) -> {
 				try {
 					boolean high = event.getState().isHigh();
 					board.fire(gpi, "set", high);
@@ -490,9 +498,8 @@ public class Model2B_Rev1Impl {
 
 		case out:
 			unprovision(pin);
-			GpioPinDigitalOutput digitalOut = this.gpio
-					.provisionDigitalOutputPin(pin);
-			
+			GpioPinDigitalOutput digitalOut = this.gpio.provisionDigitalOutputPin(pin);
+
 			boolean invert = false;
 			switch (level) {
 			case high:
@@ -524,16 +531,14 @@ public class Model2B_Rev1Impl {
 		}
 	}
 
-	private <T extends ICAdapter<?, ?>> void register(Pin pin, Class<T> type,
-			T gp, GpioPin gpioPin, String name) {
+	private <T extends ICAdapter<?, ?>> void register(Pin pin, Class<T> type, T gp, GpioPin gpioPin, String name) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.SERVICE_PID, name);
 		Registration<T> r = new Registration<T>();
 		r.type = type;
 		r.service = gp;
 		r.pin = pin;
-		r.reg = context.registerService(
-				new String[] { IC.class.getName(), type.getName() }, gp, props);
+		r.reg = context.registerService(new String[] { IC.class.getName(), type.getName() }, gp, props);
 		r.gpioPin = gpioPin;
 		Registration<?> prev = registrations.put(pin, r);
 		if (prev != null)
