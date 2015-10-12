@@ -3,16 +3,17 @@
 #
 
 
-base.version: 1.1.1
+base.version: 1.2.0
 Bundle-Description: 				\
 	Provides a simple implementation of the OSGi SLF4J bridge, includes shell command
 Export-Package:  \
 	osgi.enroute.logger.api;provide:=true,\
+	org.slf4j.helpers,\
 	org.slf4j;provide:=true;-split-package:=merge-last;version=1.7.0
+
 Private-Package:  \
 	osgi.enroute.logger.simple.provider,\
 	org.slf4j.impl;-split-package:=first,\
-	org.slf4j.helpers,\
 	org.slf4j.spi
 Bundle-License:			http://opensource.org/licenses/BSD-2-Clause
 Conditional-Package: 	aQute.lib*
@@ -33,7 +34,7 @@ Conditional-Package: 	aQute.lib*
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.logger.simple.provider)'
 
 -fixupmessages: \
-	"Export org.slf4j,  has 1,  private references \\[org.slf4j.spi\\]", \
+	"Export org.slf4j*,  has 1,  private references \\[org.slf4j.spi\\]", \
 	"Version for package org.slf4j is set to different values in the source \\(1.7.0\\) and in the manifest \\(1.7.12\\)."
 	
 	
