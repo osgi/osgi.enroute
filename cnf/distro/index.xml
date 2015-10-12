@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<repository increment="1444653911000" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
+<repository increment="1444654941000" name="Distro" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="biz.aQute.bndlib"/>
@@ -6840,6 +6840,118 @@
       <attribute name="version" type="Version" value="1.7.0"/>
       <attribute name="bundle-symbolic-name" value="osgi.enroute.logger.simple.provider"/>
       <attribute name="bundle-version" type="Version" value="1.2.0.201510121244"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <attribute name="objectClass" type="List&lt;String&gt;" value="org.slf4j.Logger"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <attribute name="objectClass" type="List&lt;String&gt;" value="osgi.enroute.logger.api.LoggerAdmin"/>
+    </capability>
+    <capability namespace="osgi.implementation">
+      <attribute name="version" type="Version" value="1.0.0"/>
+      <attribute name="osgi.implementation" value="osgi.enroute.logger"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <attribute name="objectClass" type="List&lt;String&gt;" value="osgi.enroute.logger.api.LoggerAdmin"/>
+      <attribute name="traces" value="false"/>
+      <attribute name="osgi.command.function" type="List&lt;String&gt;" value="add,remove,settings,list"/>
+      <attribute name="osgi.command.scope" value="logger"/>
+      <attribute name="where" value="false"/>
+      <attribute name="level" value="WARN"/>
+      <attribute name="javaUtilLogging" value="false"/>
+      <directive name="uses" value="osgi.enroute.logger.api"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <attribute name="objectClass" type="List&lt;String&gt;" value="org.slf4j.Logger"/>
+      <directive name="uses" value="org.slf4j"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.dto)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.framework)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.component)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.osgi.service.log)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=osgi.enroute.logger.api)(version&gt;=1.0.0)(!(version&gt;=1.1.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=aQute.bnd.annotation.metatype)(version&gt;=1.45.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+    </requirement>
+    <requirement namespace="osgi.extender">
+      <directive name="filter" value="(&amp;(osgi.extender=osgi.component)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.service">
+      <directive name="filter" value="(objectClass=org.osgi.service.log.LogService)"/>
+      <directive name="effective" value="active"/>
+      <directive name="resolution" value="optional"/>
+      <directive name="cardinality" value="multiple"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+    <requirement namespace="osgi.service">
+      <directive name="filter" value="(objectClass=org.osgi.service.log.LogService)"/>
+      <directive name="resolution" value="optional"/>
+      <directive name="cardinality" value="multiple"/>
+      <directive name="effective" value="active"/>
+    </requirement>
+    <requirement namespace="osgi.service">
+      <directive name="filter" value="(objectClass=org.osgi.service.log.LogService)"/>
+      <directive name="resolution" value="optional"/>
+      <directive name="cardinality" value="multiple"/>
+      <directive name="effective" value="active"/>
+    </requirement>
+    <requirement namespace="osgi.extender">
+      <directive name="filter" value="(&amp;(osgi.extender=osgi.component)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="effective" value="active"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="osgi.enroute.logger.simple.provider"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="1.2.1.201510121300"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="a8f2c372cce0758ca95be62818f0ab8164c2ee0198a25dbae2a4eddd03581581"/>
+      <attribute name="url" value="osgi.enroute.logger.simple.provider/osgi.enroute.logger.simple.provider-1.2.1.jar"/>
+      <attribute name="size" type="Long" value="91801"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="osgi.enroute.logger.simple.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.2.1.201510121300"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="osgi.enroute.logger.simple.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.2.1.201510121300"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="osgi.wiring.package" value="osgi.enroute.logger.api"/>
+      <attribute name="version" type="Version" value="1.0.0"/>
+      <attribute name="bundle-symbolic-name" value="osgi.enroute.logger.simple.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.2.1.201510121300"/>
+      <directive name="uses" value="org.osgi.dto"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="osgi.wiring.package" value="org.slf4j.helpers"/>
+      <attribute name="version" type="Version" value="1.7.0"/>
+      <attribute name="bundle-symbolic-name" value="osgi.enroute.logger.simple.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.2.1.201510121300"/>
+      <directive name="uses" value="org.slf4j"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="osgi.wiring.package" value="org.slf4j"/>
+      <attribute name="version" type="Version" value="1.7.0"/>
+      <attribute name="bundle-symbolic-name" value="osgi.enroute.logger.simple.provider"/>
+      <attribute name="bundle-version" type="Version" value="1.2.1.201510121300"/>
     </capability>
     <capability namespace="osgi.service">
       <attribute name="objectClass" type="List&lt;String&gt;" value="org.slf4j.Logger"/>
