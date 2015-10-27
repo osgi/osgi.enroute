@@ -1,7 +1,7 @@
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-base.version:           1.6.0
+base.version:           1.7.0
 build.version:          ${base.version}.${tstamp}
 -outputmask:            ${@bsn}-${version;===;${@version}}.jar
 groupid:                org.osgi
@@ -83,6 +83,8 @@ base.packages =  \
 	org.osgi.service.async.delegate, \
 	org.osgi.service.cm, \
 	org.osgi.service.component, \
+	org.osgi.service.component.runtime, \
+	org.osgi.service.component.runtime.dto, \
 	org.osgi.service.component.annotations, \
 	org.osgi.service.coordinator, \
 	org.osgi.service.event, \
