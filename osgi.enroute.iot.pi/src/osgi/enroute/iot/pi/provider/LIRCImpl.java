@@ -9,12 +9,14 @@ import java.util.Map;
 
 import javax.naming.ConfigurationException;
 
+import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.gpio.util.Wave;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Reference;
 import aQute.lib.converter.Converter;
 
 interface LircConfig {
@@ -88,4 +90,8 @@ public class LIRCImpl extends ICAdapter<Wave, Void> implements Wave {
 		}
 	}
 
+	@Reference
+	protected void setCircuitBoard(CircuitBoard board) {
+		super.setCircuitBoard(board);
+	}
 }
