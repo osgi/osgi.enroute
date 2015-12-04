@@ -6,7 +6,7 @@ You need to configure the bundles in a running framework without requiring the d
 
 ## Description
 
-This bundle is an extender to create Configuration Admin records from an embedded JSON file. The JSON file must be in the bundle at /configure/configure.json. This directory can also contain (binary) files with the @{resource:} macro.
+This bundle is an extender to create Configuration Admin records from an embedded JSON file. The JSON file must be in the bundle at `/configuration/configuration.json`. This directory can also contain (binary) files with the @{resource:} macro.
 
 Additionally, you can set a bnd.configuration run/System property. This property is read as if it was a file. This is simpler to use in test environments.
 
