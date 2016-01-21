@@ -27,7 +27,7 @@ Export-Package: \
 	${base.packages}
 	
 	
-, \
+x=, \
 	javax.servlet;version=3.1, \
 	javax.servlet.http;version=3.1, \
   	javax.servlet.annotation;version=3.1, \
