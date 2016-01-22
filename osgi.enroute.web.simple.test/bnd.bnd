@@ -1,0 +1,59 @@
+#
+# OSGI ENROUTE WEB SIMPLE TEST PROVIDER BUNDLE 
+#
+
+
+base.version: 1.3.3
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: Test case for osgi.enroute.web.simple.provider
+
+Private-Package:  \
+	osgi.enroute.web.simple.test
+	
+-buildpath: \
+	osgi.enroute.base.api;version=1.0,\
+	osgi.enroute.web.simple.provider;version=latest,\
+	biz.aQute.bndlib,\
+	osgi.enroute.junit.wrapper
+	
+-testpath: \
+	osgi.enroute.junit.wrapper;version=4.12
+
+-includeresource: {readme.md}
+
+
+-runrequires: osgi.identity;filter:='(osgi.identity=osgi.enroute.web.simple.test)'
+	
+-runbundles: \
+	biz.aQute.bndlib;version='[3.0.0,3.0.1)',\
+	net.sourceforge.htmlunit;version='[2.15.0,2.15.1)',\
+	org.apache.felix.configadmin;version='[1.8.6,1.8.7)',\
+	org.apache.felix.http.api;version='[3.0.0,3.0.1)',\
+	org.apache.felix.http.jetty;version='[3.1.0,3.1.1)',\
+	org.apache.felix.http.servlet-api;version='[1.1.2,1.1.3)',\
+	org.apache.felix.log;version='[1.0.1,1.0.2)',\
+	org.apache.felix.scr;version='[2.0.0,2.0.1)',\
+	org.eclipse.equinox.coordinator;version='[1.3.100,1.3.101)',\
+	org.eclipse.equinox.event;version='[1.3.100,1.3.101)',\
+	org.eclipse.equinox.metatype;version='[1.4.100,1.4.101)',\
+	org.knopflerfish.bundle.useradmin;version='[4.1.1,4.1.2)',\
+	org.osgi.service.event;version='[1.3.1,1.3.2)',\
+	org.osgi.service.metatype;version='[1.3.0,1.3.1)',\
+	osgi.enroute.authenticator.simple.provider;version=snapshot,\
+	osgi.enroute.authorization.simple.provider;version=snapshot,\
+	osgi.enroute.base.test;version=snapshot,\
+	osgi.enroute.configurer.simple.provider;version=snapshot,\
+	osgi.enroute.dtos.bndlib.provider;version=snapshot,\
+	osgi.enroute.executor.simple.provider;version=snapshot,\
+	osgi.enroute.github.angular-ui.webresource;version=snapshot,\
+	osgi.enroute.google.angular.webresource;version=snapshot,\
+	osgi.enroute.hamcrest.wrapper;version=snapshot,\
+	osgi.enroute.junit.wrapper;version=snapshot,\
+	osgi.enroute.logger.simple.provider;version=snapshot,\
+	osgi.enroute.scheduler.simple.provider;version=snapshot,\
+	osgi.enroute.stackexchange.pagedown.webresource;version=snapshot,\
+	osgi.enroute.twitter.bootstrap.webresource;version=snapshot,\
+	osgi.enroute.web.simple.provider;version='[1.3.3,1.3.4)',\
+	osgi.enroute.web.simple.provider;version=snapshot,\
+	osgi.enroute.web.simple.test;version=snapshot,\
+	osgi.promise;version='[6.0.0,6.0.1)'

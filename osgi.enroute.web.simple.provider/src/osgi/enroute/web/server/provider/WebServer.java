@@ -31,15 +31,23 @@ import aQute.libg.cryptography.*;
 import aQute.libg.sed.*;
 import osgi.enroute.dto.api.*;
 import osgi.enroute.http.capabilities.*;
+import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.provider.IndexDTO.*;
 import osgi.enroute.webserver.capabilities.*;
 
 @ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
 @RequireHttpImplementation
-@Component(service = Servlet.class, immediate = true, property = {
-		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/", "name=" + WebServer.NAME, "no.index=true"
-}, name = WebServer.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
-public class WebServer extends HttpServlet {
+@Component(
+		service 				= { Servlet.class, ConditionalServlet.class }, 
+		immediate 				= true, 
+		property 				= {
+									HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/", 
+									"name=" + WebServer.NAME, 
+									"no.index=true"
+								},
+		name 					= WebServer.NAME, 
+		configurationPolicy 	= ConfigurationPolicy.OPTIONAL)
+public class WebServer extends HttpServlet implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.server";
 
@@ -382,6 +390,12 @@ public class WebServer extends HttpServlet {
 	}
 
 	public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		return true;
+	}
+
+	@Override
+	public boolean doConditionalService(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
+		doGet(rq, rsp);
 		return true;
 	}
 
