@@ -1,10 +1,16 @@
+sudo: false
+
 language: java
+
 jdk:
   - oraclejdk8
 
-env:
-  - TERM=dumb
+install:
+  - ./gradlew --version
 
-install: ./gradlew --version
+script:
+  - ./gradlew --continue release
 
-script: ./gradlew --continue release
+cache:
+  directories:
+    - $HOME/.gradle
