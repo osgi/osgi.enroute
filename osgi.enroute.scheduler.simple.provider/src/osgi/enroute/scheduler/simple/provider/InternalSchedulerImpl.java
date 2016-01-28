@@ -44,7 +44,7 @@ import aQute.lib.converter.Converter;
  * 
  */
 @ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=SchedulerConstants.SCHEDULER_SPECIFICATION_NAME, version=SchedulerConstants.SCHEDULER_SPECIFICATION_VERSION)
-@Component(name = "osgi.enroute.scheduler.simple", service = InternalSchedulerImpl.class)
+@Component(name = "osgi.enroute.scheduler.simple", service = InternalSchedulerImpl.class, immediate=true)
 public class InternalSchedulerImpl implements Scheduler {
 	final List<Cron<?>> crons = new ArrayList<>();
 	final Logger logger = LoggerFactory.getLogger(InternalSchedulerImpl.class);
