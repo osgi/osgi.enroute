@@ -14,7 +14,7 @@
 
 
 \
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
+	osgi.identity;filter:='(osgi.identity=osgi.enrout.gogo.shell.provider)',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.runtime)(version>=0.12.1))',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.guard)',\
 	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)', \

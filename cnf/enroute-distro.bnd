@@ -44,7 +44,7 @@ debug-bundles: \
 	osgi.implementation;filter:='(osgi.implementation=osgi.log)',\
 	osgi.implementation;filter:='(osgi.implementation=osgi.event)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)', \
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.gogo.shell.provider)', \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.debug.provider)'
 
 -augment.kn_ua: \
