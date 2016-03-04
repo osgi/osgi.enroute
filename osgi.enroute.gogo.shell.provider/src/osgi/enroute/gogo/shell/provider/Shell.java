@@ -30,6 +30,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import jline.Terminal;
 import jline.TerminalFactory;
@@ -38,31 +40,47 @@ import jline.console.UserInterruptException;
 import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 
+@Designate(ocd = Shell.Config.class)
 @Component
 public class Shell {
-	
+
+	private static final String PROMPT = "prompt";
+
+	@ObjectClassDefinition
+	@interface Config {
+		String motd() default "";
+
+		String prompt() default "G! ";
+	}
+
 	private final Set<ServiceRegistration<?>> registrations = new HashSet<>();
 
-	private Thread thread;
-	private BundleContext context;
-	private FileHistory history;
-	
+	private Thread			thread;
+	private BundleContext	context;
+	private FileHistory		history;
+
 	@Reference
 	private CommandProcessor cmdProc;
-	
+
+
 	private static final class CommandName {
-		private final String scope;
-		private final String func;
+		private final String	scope;
+		private final String	func;
+
 		private CommandName(String scope, String func) {
-			this.scope = scope; this.func = func;
+			this.scope = scope;
+			this.func = func;
 		}
+
 		public String getFunc() {
 			return func;
 		}
+
 		@Override
 		public String toString() {
 			return scope + ":" + func;
 		}
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -71,6 +89,7 @@ public class Shell {
 			result = prime * result + ((scope == null) ? 0 : scope.hashCode());
 			return result;
 		}
+
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -94,32 +113,32 @@ public class Shell {
 		}
 	}
 
-
 	@Activate
-	void activate(BundleContext context) throws Exception {
+	void activate(BundleContext context, Config config) throws Exception {
 		this.context = context;
-		
-        Dictionary<String, Object> dict = new Hashtable<String, Object>();
-        dict.put(CommandProcessor.COMMAND_SCOPE, "gogo");
 
-        // register converters
-        registrations.add(context.registerService(Converter.class.getName(), new Converters(context.getBundle(0).getBundleContext()), null));
+		Dictionary<String, Object> dict = new Hashtable<String, Object>();
+		dict.put(CommandProcessor.COMMAND_SCOPE, "gogo");
 
-        // register commands
-        dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] { "format", "getopt", "new", "set", "tac", "type" });
-        registrations.add(context.registerService(Builtin.class.getName(), new Builtin(), dict));
+		// register converters
+		registrations.add(context.registerService(Converter.class.getName(),
+				new Converters(context.getBundle(0).getBundleContext()), null));
 
-        dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] { "each", "if", "not", "throw", "try", "until", "while" });
-        registrations.add(context.registerService(Procedural.class.getName(), new Procedural(), dict));
+		// register commands
+		dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] { "format", "getopt", "new", "set", "tac", "type" });
+		registrations.add(context.registerService(Builtin.class.getName(), new Builtin(), dict));
 
-        dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] { "cat", "echo", "grep" });
-        registrations.add(context.registerService(Posix.class.getName(), new Posix(), dict));
-        
-        
-        // Setup command history
+		dict.put(CommandProcessor.COMMAND_FUNCTION,
+				new String[] { "each", "if", "not", "throw", "try", "until", "while" });
+		registrations.add(context.registerService(Procedural.class.getName(), new Procedural(), dict));
+
+		dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] { "cat", "echo", "grep" });
+		registrations.add(context.registerService(Posix.class.getName(), new Posix(), dict));
+
+		// Setup command history
 		File historyFile = context.getDataFile("history");
 		history = new FileHistory(historyFile);
-		
+
 		// Start shell on a separate thread
 		Runnable runnable = new Runnable() {
 			@Override
@@ -138,7 +157,10 @@ public class Shell {
 					console = new ConsoleReader(System.in, System.out, terminal);
 					console.setHistory(history);
 
-					cmdSession = cmdProc.createSession(console.getInput(), new PrintStream(new WriterOutputStream(console.getOutput())), System.err);
+					cmdSession = cmdProc.createSession(console.getInput(),
+							new PrintStream(new WriterOutputStream(console.getOutput())), System.err);
+
+					cmdSession.put(PROMPT, config.prompt());
 					setupSession(cmdSession);
 
 					console.addCompleter(new Completer() {
@@ -146,7 +168,7 @@ public class Shell {
 						public int complete(String buffer, int cursor, List<CharSequence> candidates) {
 							String prefix = buffer.substring(0, cursor);
 							boolean prefixHasColon = prefix.indexOf(':') >= 0;
-							
+
 							Collection<CommandName> commands = listCommands();
 							for (CommandName command : commands) {
 								String scopedName = command.toString();
@@ -166,7 +188,15 @@ public class Shell {
 						// Read a line of input
 						String inputLine;
 						try {
-							inputLine = console.readLine("! ", null);
+							Object prompt = cmdSession.get(PROMPT);
+							if ( prompt == null)
+								prompt = config.prompt();
+							if ( prompt instanceof String && ((String) prompt).startsWith("("))
+								prompt = cmdSession.execute((String)prompt);
+							else
+								prompt = prompt.toString();
+							
+							inputLine = console.readLine((String)prompt, null);
 							if (inputLine == null) {
 								shutdown();
 								return;
@@ -177,7 +207,7 @@ public class Shell {
 							console.println("Use Ctrl-D to exit from enRoute OSGi Shell.");
 							continue;
 						}
-						
+
 						// Try to execute the command
 						try {
 							Object reply = cmdSession.execute(inputLine);
@@ -196,29 +226,37 @@ public class Shell {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					if (cmdSession != null) cmdSession.close();
-					if (console != null) console.shutdown();
+					if (cmdSession != null)
+						cmdSession.close();
+					if (console != null)
+						console.shutdown();
 				}
 			}
 
-			private void printMotd(ConsoleReader console) {
-				URL motdEntry = context.getBundle().getEntry("motd.txt");
-				if (motdEntry != null) {
-					try (InputStream in = motdEntry.openStream()) {
-						BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-						while (true) {
-							String line = reader.readLine();
-							if (line == null) break;
-							console.println(line);
+			private void printMotd(ConsoleReader console) throws IOException {
+				String motd = config.motd();
+				if (motd != null && !motd.isEmpty()) {
+					if (!motd.equals("!"))
+						console.println(motd);
+				} else {
+					URL motdEntry = context.getBundle().getEntry("motd.txt");
+					if (motdEntry != null) {
+						try (InputStream in = motdEntry.openStream()) {
+							BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+							while (true) {
+								String line = reader.readLine();
+								if (line == null)
+									break;
+								console.println(line);
+							}
+						} catch (IOException e) {
+							// No so important ...
 						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 				}
 			}
 		};
-		thread = new Thread(runnable, "enRoute OSGi Shell");
+		thread = new Thread(runnable, "OSGi enRoute Gogo Shell");
 		thread.start();
 	}
 
@@ -231,7 +269,7 @@ public class Shell {
 				e.printStackTrace();
 			}
 		}
-		
+
 		thread.interrupt();
 		try {
 			thread.join(1000);
@@ -245,14 +283,13 @@ public class Shell {
 	private void setupSession(CommandSession session) throws Exception {
 		// Make the 'system' and 'context' scopes map to java.lang.System and
 		// org.osgi.framework.BundleContext respsectively
-        session.execute("addcommand context ${.context}");
-        session.execute("addcommand system (((${.context} bundles) 0) loadclass java.lang.System)");
-        
-        // Alias 'e' to print stack trace of last exception
-        session.execute("e = {$exception printStackTrace}");
+		session.execute("addcommand context ${.context}");
+		session.execute("addcommand system (((${.context} bundles) 0) loadclass java.lang.System)");
+
+		// Alias 'e' to print stack trace of last exception
+		session.execute("e = {$exception printStackTrace}");
 	}
-	
-	
+
 	private Collection<CommandName> listCommands() {
 		Set<CommandName> commands = new HashSet<>();
 
@@ -273,7 +310,7 @@ public class Shell {
 				funcs = new String[] { (String) funcsObj };
 			else
 				funcs = new String[0];
-			
+
 			for (String func : funcs) {
 				CommandName command = new CommandName(scope, func);
 				commands.add(command);
@@ -281,7 +318,6 @@ public class Shell {
 		}
 		return commands;
 	}
-
 
 	private void shutdown() throws BundleException {
 		context.getBundle(0).stop();

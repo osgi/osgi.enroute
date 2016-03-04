@@ -1,4 +1,14 @@
+#
+# OSGi enRoute Gogo Shell
+#
+
 base.version: 1.0.0
+Bundle-Name: OSGi enRoute Gogo Shell
+Bundle-Description: \
+	An adaption of the famous Apache Felix Gogo shell that uses JLine to provide command \
+	history and line editing features. Since the Eclipse terminal does not support \
+	line editing, it works there as usual.\
+	It was adapted by Neil Bartlett.
 
 -buildpath: \
 	osgi.enroute.base.api,\
@@ -7,6 +17,7 @@ base.version: 1.0.0
 	org.apache.felix.gogo.runtime; version=0.16
 
 -privatepackage: osgi.enroute.gogo.shell.provider
+
 -conditionalpackage: \
 	jline.*, \
 	org.fusesource.*, \
@@ -15,4 +26,3 @@ base.version: 1.0.0
 
 -includeresource: resources
 
-Bundle-Name: Enroute OSGi Shell
