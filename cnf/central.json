@@ -1,6 +1,10 @@
 {
  "revisionRefs":[{
+  "artifactId":"jline","baseline":"2.13.0","bsn":"jline","created":1439224319120,"description":"Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/","groupId":"jline","md5":"F251BA666CCCB260FF7215B2CBEEE8D4","name":"JLine","phase":"MASTER","revision":"2D9530D0A25DAFFAFFDA7C35037B046B627BB171","size":248566,"urls":["http://repo1.maven.org/maven2/jline/jline/2.13/jline-2.13.jar"],"version":"2.13"
+ },{
   "artifactId":"junit","baseline":"4.12.0","bsn":"junit__junit","created":1415548411000,"description":"JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck.","errors":1,"groupId":"junit","md5":"A800F428D34A0B5FDEF012472CF1220A","name":"JUnit","phase":"MASTER","qualifier":"beta-3","revision":"C3B3E612612FCBB9FAA46D10D2D69E3B21A062FE","size":314944,"tag":"r4.12-beta-3","urls":["http://repo1.maven.org/maven2/junit/junit/4.12-beta-3/junit-4.12-beta-3.jar"],"version":"4.12-beta-3"
+ },{
+  "artifactId":"org.apache.felix.gogo.shell","baseline":"0.12.0","bsn":"org.apache.felix.gogo.shell","created":1443687785544,"description":"Apache Felix Gogo Subproject","groupId":"org.apache.felix","md5":"8865C1A2BEADB1EF2165F65C9CB44BAE","name":"Apache Felix Gogo Shell","phase":"MASTER","revision":"22C48992149AC6E41D2F8F646C0441E057BB4BCC","size":54420,"urls":["http://repo1.maven.org/maven2/org/apache/felix/org.apache.felix.gogo.shell/0.12.0/org.apache.felix.gogo.shell-0.12.0.jar"],"version":"0.12.0"
  },{
   "artifactId":"hamcrest-all","baseline":"1.3.0","bsn":"org.hamcrest__hamcrest-all","created":1341868304000,"description":"A self-contained hamcrest jar containing all of the sub-modules in a single artifact.","groupId":"org.hamcrest","md5":"AE5102286B5720DD286D6B606CB891E2","name":"Hamcrest All","phase":"MASTER","revision":"63A21EBC981131004AD02E0434E799FD7F3A8D5A","size":306578,"urls":["http://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar"],"version":"1.3"
  }]
