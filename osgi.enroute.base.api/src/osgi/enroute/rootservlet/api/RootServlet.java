@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
  * choice based on the registrations. This works well in most cases because
  * there is a prefix or pattern for the targeted URI. However, it does not work
  * well for situations where a Servlet needs to look up the URI before it can
- * decide it can handle the URI or not. This service API allows a servlet to be
- * called conditionally. A default servlet can then iterate over the Root
+ * decide if it can handle the URI or not. This service API allows a servlet to
+ * be called conditionally. A default servlet can then iterate over the Root
  * Servlet service in {@code service.ranking} order until one of them returns
  * true.
  */
