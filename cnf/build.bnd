@@ -121,7 +121,7 @@ base.packages =  \
 	osgi.enroute.logger.api, \
 	osgi.enroute.namespace, \
 	osgi.enroute.rest.api,  \
-	osgi.enroute.rootservlet.api, \
+	osgi.enroute.webserver.api, \
 	osgi.enroute.scheduler.api, \
 	osgi.enroute.servlet.api, \
 	osgi.enroute.stackexchange.pagedown.capabilities, \
