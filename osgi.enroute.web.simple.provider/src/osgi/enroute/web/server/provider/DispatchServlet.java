@@ -20,8 +20,7 @@ import osgi.enroute.servlet.api.*;
 			    HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/", 
 			    "name=DispatchServlet", 
 			    "no.index=true",
-				Constants.SERVICE_RANKING + ":Integer=100",
-				ServletConstants.BLACKLIST_TIMEOUT + ":Long=300000" 
+				Constants.SERVICE_RANKING + ":Integer=100"
 		},
 		service		= Servlet.class,
 		configurationPolicy 	= ConfigurationPolicy.OPTIONAL,
@@ -30,11 +29,7 @@ public class DispatchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	@interface Config {
-		long timeout();
-	}
-
-	Config											config;
+	ConditionalServletConfig						config;
 
 	// Blacklist badly behaving servlets for a certain period of time.
 	private final Map<ConditionalServlet, Long> 	blacklist = new ConcurrentHashMap<>();
@@ -46,7 +41,7 @@ public class DispatchServlet extends HttpServlet {
 	@Reference LogService							log;
 
 	@Activate
-	void activate(Config config, Map<String,Object> props, BundleContext context) throws Exception {
+	void activate(ConditionalServletConfig config) throws Exception {
 		this.config = config;
 	}
 
@@ -66,7 +61,8 @@ public class DispatchServlet extends HttpServlet {
 				}
 
 				log.log(LogService.LOG_ERROR, message, e);
-				throw new ServletException(message, e);
+
+				// Do not throw the Exception, but fall through to the next Servlet on the list
 			}
 		}
 

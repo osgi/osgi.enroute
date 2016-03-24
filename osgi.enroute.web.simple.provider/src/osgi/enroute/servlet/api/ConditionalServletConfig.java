@@ -1,7 +1,6 @@
 package osgi.enroute.servlet.api;
 
-public class ServletConstants {
-
+public @interface ConditionalServletConfig {
 	/**
 	 * Timeout of the blacklist, in milliseconds.
 	 * 
@@ -15,6 +14,5 @@ public class ServletConstants {
 	 * 
 	 * Default value is 300000 (5 minutes).
 	 */
-	public static final String BLACKLIST_TIMEOUT = "org.osgi.enroute.servlet.api.Timeout"; 
-
+	 long timeout() default 300000;
 }
