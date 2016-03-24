@@ -19,9 +19,6 @@ Private-Package:  \
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
 
--includeresource: {readme.md}
-
-
 -runrequires: osgi.identity;filter:='(osgi.identity=osgi.enroute.web.simple.test)'
 	
 -runbundles: \
