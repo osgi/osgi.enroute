@@ -1,7 +1,7 @@
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-base.version:           1.7.0
+base.version:           1.8.0
 build.version:          ${base.version}.${tstamp}
 -outputmask:            ${@bsn}-${version;===;${@version}}.jar
 groupid:                org.osgi
@@ -123,6 +123,7 @@ base.packages =  \
 	osgi.enroute.rest.api,  \
 	osgi.enroute.rootservlet.api, \
 	osgi.enroute.scheduler.api, \
+	osgi.enroute.servlet.api, \
 	osgi.enroute.stackexchange.pagedown.capabilities, \
 	osgi.enroute.twitter.bootstrap.capabilities, \
 	osgi.enroute.webserver.capabilities	
