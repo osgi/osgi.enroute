@@ -135,6 +135,9 @@ public class Shell {
 		dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] { "cat", "echo", "grep" });
 		registrations.add(context.registerService(Posix.class.getName(), new Posix(), dict));
 
+		dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] { "aslist" });
+		registrations.add(context.registerService(EnRouteCommands.class.getName(), new EnRouteCommands(), dict));
+		
 		// Setup command history
 		File historyFile = context.getDataFile("history");
 		history = new FileHistory(historyFile);
@@ -219,6 +222,8 @@ public class Shell {
 								}
 							}
 						} catch (Exception e) {
+							cmdSession.put("exception-cmd", inputLine);
+							cmdSession.put("exception", e);
 							String message = e.getMessage();
 							console.println(message != null ? message : "<null>");
 						}

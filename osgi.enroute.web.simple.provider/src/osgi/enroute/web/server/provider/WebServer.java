@@ -10,7 +10,6 @@ import java.util.regex.*;
 import java.util.stream.*;
 import java.util.zip.*;
 
-import javax.servlet.*;
 import javax.servlet.Filter;
 import javax.servlet.http.*;
 
@@ -18,7 +17,6 @@ import org.osgi.framework.*;
 import org.osgi.namespace.extender.*;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.coordinator.*;
-import org.osgi.service.http.whiteboard.*;
 import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
@@ -37,17 +35,12 @@ import osgi.enroute.webserver.capabilities.*;
 
 @ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
 @RequireHttpImplementation
-@Component(
-		service 				= { Servlet.class, ConditionalServlet.class }, 
-		immediate 				= true, 
-		property 				= {
-									HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/", 
-									"name=" + WebServer.NAME, 
-									"no.index=true"
-								},
-		name 					= WebServer.NAME, 
-		configurationPolicy 	= ConfigurationPolicy.OPTIONAL)
-public class WebServer extends HttpServlet implements ConditionalServlet {
+@Component(service = {
+		ConditionalServlet.class
+}, immediate = true, property = {
+		"service.ranking:Integer=1000", "name=" + WebServer.NAME, "no.index=true"
+}, name = WebServer.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+public class WebServer implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.server";
 
@@ -64,23 +57,22 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 		}
 	}
 
-	static final long			DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
-	static String				BYTE_RANGE_SET_S				= "(\\d+)?\\s*-\\s*(\\d+)?";
-	static Pattern				BYTE_RANGE_SET					= Pattern.compile(BYTE_RANGE_SET_S);
-	static Pattern				BYTE_RANGE						= Pattern
+	static final long		DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
+	static String			BYTE_RANGE_SET_S				= "(\\d+)?\\s*-\\s*(\\d+)?";
+	static Pattern			BYTE_RANGE_SET					= Pattern.compile(BYTE_RANGE_SET_S);
+	static Pattern			BYTE_RANGE						= Pattern
 			.compile("bytes\\s*=\\s*(\\d+)?\\s*-\\s*(\\d+)?(?:\\s*,\\s*(\\d+)\\s*-\\s*(\\d+)?)*\\s*");
-	private static final long	serialVersionUID				= 1L;
-	static SimpleDateFormat		format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
+	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
 			Locale.ENGLISH);
-	Map<String,Cache>			cached							= new HashMap<String,Cache>();
-	File						cache;
-	LogService					log;
-	Properties					mimes							= new Properties();
-	boolean						proxy;
-	PluginContributions			pluginContributions;
-	WebResources				webResources;
-	IndexDTO					index							= new IndexDTO();
-	DTOs						dtos;
+	Map<String,Cache>		cached							= new HashMap<String,Cache>();
+	File					cache;
+	LogService				log;
+	Properties				mimes							= new Properties();
+	boolean					proxy;
+	PluginContributions		pluginContributions;
+	WebResources			webResources;
+	IndexDTO				index							= new IndexDTO();
+	DTOs					dtos;
 
 	static class Range {
 		Range	next;
@@ -395,11 +387,6 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 
 	@Override
 	public boolean doConditionalService(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
-		doGet(rq, rsp);
-		return true;
-	}
-
-	public void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
 		try {
 			String path = rq.getRequestURI();
 
@@ -417,10 +404,10 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 			if (c == null || !c.sync()) {
 				if ("index.html".equals(path)) {
 					index(rsp);
+					return true;
 				} else {
-					rsp.sendError(HttpServletResponse.SC_NOT_FOUND, "File " + path + " could not be found");
+					return false;
 				}
-				return;
 			}
 
 			rsp.setDateHeader("Last-Modified", c.time);
@@ -466,7 +453,7 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 					}
 					if (time > c.time) {
 						rsp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-						return;
+						return true;
 					}
 				}
 				catch (Exception e) {
@@ -478,7 +465,7 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 			if (ifNoneMatch != null) {
 				if (ifNoneMatch.indexOf(c.etag) >= 0) {
 					rsp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-					return;
+					return true;
 				}
 			}
 
@@ -502,7 +489,7 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 			}
 
 			if (c.is404)
-				rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return false;
 			else
 				rsp.setStatus(HttpServletResponse.SC_OK);
 
@@ -524,6 +511,7 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 				log.log(LogService.LOG_ERROR, "Second level internal webserver error", ee);
 			}
 		}
+		return true;
 	}
 
 	private void index(HttpServletResponse rsp) throws Exception {
@@ -579,10 +567,6 @@ public class WebServer extends HttpServlet implements ConditionalServlet {
 			c.is404 = true;
 
 		return c;
-	}
-
-	public void doHead(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
-		doGet(rq, rsp);
 	}
 
 	Cache find(String path) throws Exception {
