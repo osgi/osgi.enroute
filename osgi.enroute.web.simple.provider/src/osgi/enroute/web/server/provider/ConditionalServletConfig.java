@@ -1,4 +1,6 @@
-package osgi.enroute.servlet.api;
+package osgi.enroute.web.server.provider;
+
+import osgi.enroute.servlet.api.*;
 
 public @interface ConditionalServletConfig {
 	/**
