@@ -1,0 +1,19 @@
+#
+# OSGI ENROUTE QUANTITY UTIL API
+#
+
+Bundle-Description: \
+	OSGI ENROUTE QUANTITY UTIL API \
+	\
+	${warning;Please update this Bundle-Description in osgi.enroute.quantity.util/api.bnd}
+	
+	
+Export-Package:  \
+	osgi.enroute.quantity.base.util
+
+Require-Capability: \
+	compile-only
+
+
+-includeresource: {readme.md}
+
