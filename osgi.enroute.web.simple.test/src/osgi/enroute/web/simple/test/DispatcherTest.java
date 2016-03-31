@@ -1,5 +1,6 @@
 package osgi.enroute.web.simple.test;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -70,10 +71,13 @@ public class DispatcherTest extends TestCase {
 				new TestServlet("50"), MAP.$(Constants.SERVICE_RANKING, 50).asHashtable());
 
 		try {
-			URL url = new URL("http://localhost:8080/foo");
-			String s = IO.collect(url.openStream());
-			assertEquals("50:/foo", s);
+			assertContents( "50:/foo", "http://localhost:8080/foo");
+			
+			// Check calling order
 			assertEquals("10.20.30.40.", buffer.toString());
+			
+			// Check if the normal resource read works
+			assertContents( "FOO", "http://localhost:8080/foo/bar/test.txt");
 		} finally {
 			r10.unregister();
 			r20.unregister();
@@ -81,6 +85,12 @@ public class DispatcherTest extends TestCase {
 			r40.unregister();
 			r50.unregister();
 		}
+	}
+
+	private void assertContents(String content, String uri) throws IOException {
+		URL url = new URL(uri);
+		String s = IO.collect(url.openStream());
+		assertEquals(content, s);
 	}
 
 	public class TestServlet implements ConditionalServlet {
@@ -93,8 +103,12 @@ public class DispatcherTest extends TestCase {
 		@Override
 
 		public boolean doConditionalService(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
-			rsp.getWriter().print(id + ":" + rq.getServletPath());
-			return true;
+			String path = rq.getServletPath();
+			if ( path != null && path.equals("/foo")) {
+				rsp.getWriter().print(id + ":" + path);
+				return true;
+			}
+			return false;
 		}
 
 	}
