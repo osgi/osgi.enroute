@@ -1,4 +1,4 @@
-package osgi.enroute.rootservlet.api;
+package osgi.enroute.webserver.api;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
  * choice based on the registrations. This works well in most cases because
  * there is a prefix or pattern for the targeted URI. However, it does not work
  * well for situations where a Servlet needs to look up the URI before it can
- * decide if it can handle the URI or not. This service API allows a servlet to
- * be called conditionally. A default servlet can then iterate over the Root
- * Servlet service in {@code service.ranking} order until one of them returns
+ * decide it can handle the URI or not. This service API allows a servlet to be
+ * called conditionally. The controller servlet can then iterate over the different
+ * Servlet services in {@code service.ranking} order until one of them returns
  * true.
  */
-public interface RootServlet {
+public interface ConditionalServlet {
 	/**
 	 * The called servlet can execute the given request if it recognizes the
 	 * requested URI or it can return false when it could not recognize the URI.
