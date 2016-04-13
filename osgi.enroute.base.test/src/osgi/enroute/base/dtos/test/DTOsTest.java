@@ -39,7 +39,7 @@ public class DTOsTest extends TestCase {
 	public void testSimple() throws Exception {
 		
 		assertEquals( 100D, dtos.convert("100").to(double.class));
-		assertEquals( 100D, dtos.convert(10f).to(double.class));
+		assertEquals( 10D, dtos.convert(10f).to(double.class));
 		assertEquals( 100D, dtos.convert(100L).to(double.class));
 		
 		assertEquals( Arrays.asList(100F), 

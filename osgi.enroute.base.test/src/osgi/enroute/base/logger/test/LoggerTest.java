@@ -70,7 +70,7 @@ public class LoggerTest extends TestCase {
 		assertFalse(logger.isDebugEnabled());
 		assertFalse(logger.isTraceEnabled());
 
-		assertEquals(0, entries.size());
+		assertEquals(1, entries.size());
 
 		logger.error("[silent]error");
 		assertNotNull( entries.poll(100000, TimeUnit.MILLISECONDS));

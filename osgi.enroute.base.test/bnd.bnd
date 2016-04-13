@@ -24,43 +24,47 @@ Import-Package: com.gargoylesoftware.*;version=0,*
 
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.test)',\
-	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)',\
-	osgi.identity;filter:='(&(osgi.identity=osgi.enroute.base.guard)(version>=1.3.0.201412301447))'
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)'
 	
 
 runsystempackages: org.junit;version=4.11, junit.framework;version=3.8
 -runbundles: \
-	aQute.xray.plugin;version='[1.7.0,1.7.1)',\
-	biz.aQute.bnd.annotation;version='[2.4.0,2.4.1)',\
-	biz.aQute.bndlib;version='[2.4.0,2.4.1)',\
+	biz.aQute.bndlib;version='[3.0.0,3.0.1)',\
+	com.springsource.org.json;version='[1.0.0,1.0.1)',\
 	net.sourceforge.htmlunit;version='[2.15.0,2.15.1)',\
-	org.apache.felix.configadmin;version='[1.8.0,1.8.1)',\
-	org.apache.felix.eventadmin;version='[1.3.2,1.3.3)',\
-	org.apache.felix.http.bundle;version='[2.3.0,2.3.1)',\
+	org.apache.commons.fileupload;version='[1.3.1,1.3.2)',\
+	org.apache.commons.io;version='[2.4.0,2.4.1)',\
+	org.apache.felix.configadmin;version='[1.8.6,1.8.7)',\
+	org.apache.felix.http.api;version='[3.0.0,3.0.1)',\
+	org.apache.felix.http.jetty;version='[3.1.0,3.1.1)',\
+	org.apache.felix.http.servlet-api;version='[1.1.2,1.1.3)',\
 	org.apache.felix.log;version='[1.0.1,1.0.2)',\
-	org.apache.felix.metatype;version='[1.0.10,1.0.11)',\
-	org.apache.felix.scr;version='[1.8.2,1.8.3)',\
-	org.apache.felix.webconsole;version='[3.1.8,3.1.9)',\
-	org.eclipse.equinox.coordinator;version='[1.3.0,1.3.1)',\
-	org.knopflerfish.bundle.useradmin;version='[4.1.0,4.1.1)',\
-	osgi.enroute.authenticator.simple.provider;version=latest,\
-	osgi.enroute.authorization.simple.provider;version=latest,\
-	osgi.enroute.base.debug.provider;version=latest,\
-	osgi.enroute.base.guard;version='[1.3.0,1.3.1)',\
-	osgi.enroute.base.simple.provider;version='[1.2.0,1.2.1)',\
-	osgi.enroute.base.simple.provider;version=latest,\
-	osgi.enroute.base.test;version=latest,\
-	osgi.enroute.configurer.simple.provider;version=latest,\
-	osgi.enroute.easse.simple.adapter;version=latest,\
-	osgi.enroute.github.angular-ui.webresource;version=latest,\
-	osgi.enroute.google.angular.webresource;version=latest,\
-	osgi.enroute.jsonrpc.simple.provider;version=latest,\
-	osgi.enroute.logger.simple.provider;version=latest,\
-	osgi.enroute.rest.simple.provider;version=latest,\
-	osgi.enroute.scheduler.simple.provider;version=latest,\
-	osgi.enroute.stackexchange.pagedown.webresource;version=latest,\
-	osgi.enroute.twitter.bootstrap.webresource;version=latest,\
-	osgi.enroute.web.simple.provider;version=latest
+	org.apache.felix.scr;version='[2.0.0,2.0.1)',\
+	org.apache.felix.webconsole;version='[4.2.8,4.2.9)',\
+	org.eclipse.equinox.coordinator;version='[1.3.100,1.3.101)',\
+	org.eclipse.equinox.event;version='[1.3.100,1.3.101)',\
+	org.eclipse.equinox.metatype;version='[1.4.100,1.4.101)',\
+	org.knopflerfish.bundle.useradmin;version='[4.1.1,4.1.2)',\
+	org.osgi.service.event;version='[1.3.1,1.3.2)',\
+	org.osgi.service.metatype;version='[1.3.0,1.3.1)',\
+	osgi.enroute.authenticator.simple.provider;version=snapshot,\
+	osgi.enroute.authorization.simple.provider;version=snapshot,\
+	osgi.enroute.base.test;version=snapshot,\
+	osgi.enroute.bostock.d3.webresource;version=snapshot,\
+	osgi.enroute.configurer.simple.provider;version=snapshot,\
+	osgi.enroute.dtos.bndlib.provider;version=snapshot,\
+	osgi.enroute.executor.simple.provider;version=snapshot,\
+	osgi.enroute.github.angular-ui.webresource;version=snapshot,\
+	osgi.enroute.google.angular.webresource;version=snapshot,\
+	osgi.enroute.hamcrest.wrapper;version=snapshot,\
+	osgi.enroute.junit.wrapper;version=snapshot,\
+	osgi.enroute.logger.simple.provider;version=snapshot,\
+	osgi.enroute.scheduler.simple.provider;version=snapshot,\
+	osgi.enroute.stackexchange.pagedown.webresource;version=snapshot,\
+	osgi.enroute.twitter.bootstrap.webresource;version=snapshot,\
+	osgi.enroute.web.simple.provider;version='[1.3.3,1.3.4)',\
+	osgi.enroute.webconsole.xray.provider;version=snapshot,\
+	osgi.promise;version='[6.0.0,6.0.1)'
 	
 -osgitest=true
 
