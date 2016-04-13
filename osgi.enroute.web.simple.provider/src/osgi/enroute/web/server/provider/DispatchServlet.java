@@ -14,23 +14,25 @@ import org.osgi.service.log.*;
 
 import osgi.enroute.servlet.api.*;
 
-@Component(property = {
-		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/", "name=DispatchServlet", "no.index=true",
-		Constants.SERVICE_RANKING + ":Integer=100"
-}, service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+@Component(name = "osgi.enroute.web.service.provider", //
+		property = {
+
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/", "name=DispatchServlet", "no.index=true",
+				Constants.SERVICE_RANKING + ":Integer=100"
+		}, service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 public class DispatchServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+	private static final long					serialVersionUID	= 1L;
 
-	ConditionalServletConfig config;
+	ConditionalServletConfig					config;
 
 	// Blacklist badly behaving servlets for a certain period of time.
-	private final Map<ConditionalServlet,Long> blacklist = new ConcurrentHashMap<>();
+	private final Map<ConditionalServlet,Long>	blacklist			= new ConcurrentHashMap<>();
 
 	@Reference(cardinality = ReferenceCardinality.AT_LEAST_ONE)
-	volatile List<ConditionalServlet>	targets;
+	volatile List<ConditionalServlet>			targets;
 	@Reference
-	LogService							log;
+	LogService									log;
 
 	@Activate
 	void activate(ConditionalServletConfig config) throws Exception {
@@ -38,7 +40,6 @@ public class DispatchServlet extends HttpServlet {
 	}
 
 	public void service(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
-
 
 		for (ConditionalServlet cs : targets) {
 
@@ -78,7 +79,7 @@ public class DispatchServlet extends HttpServlet {
 	 */
 	private boolean isBlacklisted(ConditionalServlet cs) {
 		// If the servlet is not in the blacklist, then we're good to go!
-		if (!blacklist.containsValue(cs))
+		if (!blacklist.containsKey(cs))
 			return false;
 
 		// If the value is -1, then the blacklist lasts forever
@@ -89,7 +90,7 @@ public class DispatchServlet extends HttpServlet {
 		// should be ignored.
 		long unlistingTime = blacklist.get(cs);
 		long now = System.currentTimeMillis();
-		boolean isExpired = unlistingTime > now;
+		boolean isExpired = unlistingTime < now;
 		if (!isExpired)
 			// The blacklist has not yet expired, so the servlet remains
 			// blacklisted for now.

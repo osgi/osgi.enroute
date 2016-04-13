@@ -11,18 +11,26 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import aQute.bnd.testing.DSTestWiring;
 import aQute.lib.io.IO;
 import aQute.libg.map.MAP;
 import junit.framework.TestCase;
+import osgi.enroute.configurer.api.ConfigurationDone;
+import osgi.enroute.configurer.api.RequireConfigurerExtender;
 import osgi.enroute.servlet.api.ConditionalServlet;
 
+
+@RequireConfigurerExtender
+@Component
 public class DispatcherTest extends TestCase {
 
 	BundleContext	context	= FrameworkUtil.getBundle(DispatcherTest.class).getBundleContext();
 	DSTestWiring	ds		= new DSTestWiring();
 
+	
 	public void setUp() throws Exception {
 		ds.setContext(context);
 		ds.add(this);
@@ -129,17 +137,16 @@ public class DispatcherTest extends TestCase {
 		}
 	}
 
+	boolean beBad = false;
 	public class BadServlet implements ConditionalServlet {
-		int n = 1;
 
 		@Override
 		public boolean doConditionalService(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
-			if (n-- > 0) {
+			if (!beBad) {
 				rsp.getWriter().print(rq.getServletPath());
 				return true;
 			}
 			else {
-				n++;
 				throw new IllegalArgumentException();
 			}
 		}
@@ -151,17 +158,28 @@ public class DispatcherTest extends TestCase {
 				new BadServlet(), MAP.$(Constants.SERVICE_RANKING, 100).asHashtable());
 
 		try {
+			beBad = false;
 			URL url = new URL("http://localhost:8080/foo");
 			String s = IO.collect(url.openStream());
 			assertEquals("/foo", s);
 
+			beBad = true;
 			HttpURLConnection openConnection = (HttpURLConnection) url.openConnection();
 			assertEquals(404, openConnection.getResponseCode());
 
+			Thread.sleep(1000);
+			
+			beBad = false;
+			openConnection = (HttpURLConnection) url.openConnection();
+			s = IO.collect(url.openStream());
 			assertEquals("/foo", s);
 		} finally {
 			blacklist.unregister();
 		}
 	}
 
+	@Reference
+	void setConfigurationDone( ConfigurationDone d) {
+		System.out.println("Configuration Done");
+	}
 }
