@@ -8,7 +8,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class RollingImplTest extends TestCase {
+public class RollingLogReaderImplTest extends TestCase {
 	
 	/*
 	 * 
