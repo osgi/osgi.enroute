@@ -20,14 +20,18 @@ import org.osgi.service.log.LogEntry;
 import org.osgi.service.log.LogListener;
 import org.osgi.service.log.LogReaderService;
 import org.osgi.service.log.LogService;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import osgi.enroute.debug.api.Debug;
+import osgi.enroute.logreader.rolling.provider.RollingImpl.Config;
 
 /**
  * 
  */
+@Designate(ocd=Config.class)
 @Component(name = "osgi.enroute.logreader.rolling", immediate=true, property = {
-        Debug.COMMAND_SCOPE + "=rolling", Debug.COMMAND_FUNCTION + "=error"
+        Debug.COMMAND_SCOPE + "=rolling", Debug.COMMAND_FUNCTION + "=error",  Debug.COMMAND_FUNCTION + "=logfiles"
 })
 public class RollingImpl extends Thread implements LogListener {
 	FileWriter	fw;
@@ -37,6 +41,17 @@ public class RollingImpl extends Thread implements LogListener {
 	@Reference
 	LogService log;
 	
+	enum LogLevel {
+		ERROR(LogService.LOG_ERROR), WARNING(LogService.LOG_WARNING), INFO(LogService.LOG_INFO),DEBUG(LogService.LOG_DEBUG);
+		
+		public final int level;
+		
+		LogLevel(int level) {
+			this.level = level;
+		}
+		
+	}
+	@ObjectClassDefinition
 	@interface Config {
 		String where() default "messages";
 
@@ -44,7 +59,7 @@ public class RollingImpl extends Thread implements LogListener {
 
 		int numberOfLogs() default 10;
 
-		int level() default LogService.LOG_DEBUG;
+		LogLevel level() default LogLevel.DEBUG;
 
 		String format() default "%s %8s %s%n";
 	}
@@ -77,7 +92,7 @@ public class RollingImpl extends Thread implements LogListener {
 	
 	@Override
 	public void logged(LogEntry entry) {
-		if (entry.getLevel() > config.level())
+		if (entry.getLevel() > config.level().level)
 			return;
 
 		queue.offer(entry);
@@ -163,5 +178,9 @@ public class RollingImpl extends Thread implements LogListener {
 
 	public void error(String ... args) {
 		log.log(LogService.LOG_ERROR, Stream.of(args).reduce("", (a,b)-> a + " "+b));
+	}
+
+	public File[] logfiles() {
+		return root.listFiles();
 	}
 }
