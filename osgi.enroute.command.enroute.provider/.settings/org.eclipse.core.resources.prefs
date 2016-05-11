@@ -5,6 +5,5 @@ encoding/.project=UTF-8
 encoding//.settings/org.eclipse.jdt.core.prefs=UTF-8
 encoding//src/osgi/enroute/command/enroute/provider/OSGiCommands.java=UTF-8
 encoding//test/.gitignore=UTF-8
-encoding//test/osgi/enroute/command/enroute/provider/EnrouteImplTest.java=UTF-8
 encoding/bnd.bnd=UTF-8
 encoding/readme.md=UTF-8
