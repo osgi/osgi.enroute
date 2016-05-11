@@ -245,11 +245,12 @@ public class RollingLogReaderImpl extends Thread implements LogListener {
 	 */
 	@Reference
 	void setLogReader(LogReaderService lsr) {
-		if (lsr != null) {
-			lsr.addLogListener(this);
-		}
+		lsr.addLogListener(this);
 	}
 
+	void unsetLogReader(LogReaderService lsr) {
+		lsr.removeLogListener(this);
+	}
 	/**
 	 * Emits an error message to the log file
 	 * 
