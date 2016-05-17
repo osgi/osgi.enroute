@@ -25,8 +25,8 @@ import osgi.enroute.rest.api.RESTRequest;
 @Component
 public class GithubLoginRequest implements REST {
 
-	static String	clientId		= "b77f64bca80da79a6920";
-	static String	clientSecret	= "70e88deb5865643f9379aa02587b6209e6b790a1";
+	static String	clientId		= "";
+	static String	clientSecret	= "";
 
 	@Reference
 	DTOs dtos;
