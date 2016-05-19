@@ -76,3 +76,4 @@ Conditional-Package:	org.slf4j.*
 -fixupmessages: \
 	"Export org.slf4j,  has 1,  private references *org.slf4j.spi*", \
 	"Version for package javax.servlet* is set to different values in the source"
+Bundle-Version: 1.8.1.${tstamp}
