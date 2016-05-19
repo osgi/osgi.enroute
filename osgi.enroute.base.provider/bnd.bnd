@@ -3,7 +3,6 @@
 #
 
 
-Bundle-Version: 1.0.0.${tstamp}
 Bundle-Description: 				\
 	A provider of the basic packages that are part of the OSGi enRoute base API but that are \
 	not provided by any particular bundle. 
@@ -14,22 +13,11 @@ Export-Package:  \
 	osgi.enroute.capabilities;provide:=true, \
 	osgi.enroute.namespace.*;provide:=true
 		
-Export-Service: \
-	osgi.enroute.launch.api.Launcher
+Provide-Capability: osgi.service;\
+ objectClass:List<String>="osgi.enroute.launch.api.Launcher";\
+ uses:="osgi.enroute.launch.api"
 	
-Conditional-Package: aQute.lib*
-
 -buildpath:  \
-	osgi.enroute.base.api;version=1.6, \
-	biz.aQute.bndlib;version=2;packages=*
+	osgi.enroute.base.api;version=${base.version}
 	
--testpath: \
-	biz.aQute.junit,\
-
 -includeresource: {readme.md}
-
-
--runrequires:  \
-	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.provider)'
--runbundles:  \
-	osgi.enroute.base.provider;version=latest

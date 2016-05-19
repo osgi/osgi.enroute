@@ -1,18 +1,24 @@
+Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
+Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
+
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-base.version:           1.8.0
-build.version:          ${base.version}.${tstamp}
--outputmask:            ${@bsn}-${version;===;${@version}}.jar
-groupid:                org.osgi
+base.version:           1.9.0
+# Uncomment the following line to build the non-snapshot version.
+#-snapshot:
+Bundle-Version:         ${base.version}.${tstamp}-SNAPSHOT
+
+# Maven info. The maven artifactId defaults to Bundle-SymbolicName
+-groupid:               org.osgi
+-pom:                   version=${versionmask;===s;${@version}}
 
 # Documentation
-Bundle-Copyright: 		${copyright}
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
-Bundle-Version:   		${build.version}
-Bundle-License: 		http://opensource.org/licenses/apache2.0.php; \
-                			link="http://www.apache.org/licenses/LICENSE-2.0"; \
-                			description="Apache License, Version 2.0"
+Bundle-Copyright: 		${copyright}
+Bundle-License:         Apache-2.0; \
+                        description="Apache License, Version 2.0"; \
+                        link="http://www.apache.org/licenses/LICENSE-2.0"
 Bundle-DocURL:    		http://enroute.osgi.org/
 Bundle-SCM:       		url=https://github.com/osgi/osgi.enroute, \
                   			connection=scm:git:https://github.com/osgi/osgi.enroute.git, \
@@ -21,13 +27,6 @@ Bundle-Developers: 		osgi; \
 							email=info@osgi.org; \
 							name="OSGi Alliance"; \
 							organization="OSGi Alliance"
-
-Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
-Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
-
--pom = \
- 	groupid=${groupid}, \
- 	version=${base.version}
 
 -releaserepo: 			Distro
 -baselinerepo:			Central
