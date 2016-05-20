@@ -1,3 +1,4 @@
+-dependson: osgi.enroute.base.provider
 -includeresource: {${build}/legal}
 
 -buildpath: osgi.enroute.base.api;version=${base.version}
