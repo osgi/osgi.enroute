@@ -44,19 +44,6 @@ public class WebServer implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.server";
 
-	public class RedirectException extends RuntimeException {
-		private static final long	serialVersionUID	= 1L;
-		private String				path;
-
-		public RedirectException(String path) {
-			this.path = path;
-		}
-
-		public String getPath() {
-			return path;
-		}
-	}
-
 	static final long		DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
 	static String			BYTE_RANGE_SET_S				= "(\\d+)?\\s*-\\s*(\\d+)?";
 	static Pattern			BYTE_RANGE_SET					= Pattern.compile(BYTE_RANGE_SET_S);
@@ -267,17 +254,12 @@ public class WebServer implements ConditionalServlet {
 		int maxTime();
 
 		String maxTimeMessage();
-
-		String redirect();
-
-		boolean noindex();
 	}
 
 	Config								config;
 	BundleTracker< ? >					tracker;
 	private Executor					executor;
 	private ServiceRegistration<Filter>	webfilter;
-	private String						redirect	= "/index.html";
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
 	private BundleTracker<Bundle>		apps;
@@ -288,8 +270,6 @@ public class WebServer implements ConditionalServlet {
 		index.configuration = props;
 		this.config = config;
 		proxy = !config.noproxy();
-		if (config.redirect() != null)
-			redirect = config.redirect();
 
 		String[] directories = config.directories();
 		if (directories != null)
@@ -389,15 +369,8 @@ public class WebServer implements ConditionalServlet {
 	public boolean doConditionalService(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
 		try {
 			String path = rq.getRequestURI();
-
-			if (path == null || path.isEmpty() || path.equals("/")) {
-				throw new RedirectException(redirect);
-			} else if (path.startsWith("/"))
+			if (path != null && path.startsWith("/"))
 				path = path.substring(1);
-
-			if (path.endsWith("/")) {
-				throw new RedirectException("/" + path + "index.html");
-			}
 
 			Cache c = getCache(path);
 
@@ -663,8 +636,13 @@ public class WebServer implements ConditionalServlet {
 		if (bundles != null) {
 			for (Bundle b : bundles) {
 				Enumeration<URL> urls = b.findEntries("static/" + path, "*", false);
+				// What happens here is that we have hit a folder, but the path does not
+				// end with a "/". I do not think that it is correct to do a redirect here.
+				// In any case, when redirects are turned off, this causes an infinite redirect loop.
+				// Instead, a 404 should be thrown.
+				// I would argue that a 404 should **always** be thrown here for this case.
 				if (urls != null && urls.hasMoreElements()) {
-					throw new RedirectException("/" + path + "/index.html");
+//					throw new RedirectException("/" + path);
 				}
 				URL url = null;
 				if (config.debug()) {
