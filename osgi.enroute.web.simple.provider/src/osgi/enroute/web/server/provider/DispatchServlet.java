@@ -70,7 +70,7 @@ public class DispatchServlet extends HttpServlet {
 
 		// No ConditionalServlets were found. Since we don't know what to do, we
 		// return a 404.
-		rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
 	}
 
 	/*
