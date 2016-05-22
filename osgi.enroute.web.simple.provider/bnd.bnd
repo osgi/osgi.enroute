@@ -11,8 +11,9 @@ Export-Package: \
 	osgi.enroute.webserver.capabilities,\
 	osgi.enroute.servlet.api
 	
-Private-Package:  \
-	osgi.enroute.web.server.provider
+Private-Package: \
+	osgi.enroute.web.server.provider,\
+	osgi.enroute.web.server.cache
 
 Conditional-Package: aQute.lib*
 	
