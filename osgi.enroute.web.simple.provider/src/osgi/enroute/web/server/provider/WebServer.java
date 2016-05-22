@@ -643,6 +643,7 @@ public class WebServer implements ConditionalServlet {
 				// I would argue that a 404 should **always** be thrown here for this case.
 				if (urls != null && urls.hasMoreElements()) {
 //					throw new RedirectException("/" + path);
+					return do404(path);
 				}
 				URL url = null;
 				if (config.debug()) {
