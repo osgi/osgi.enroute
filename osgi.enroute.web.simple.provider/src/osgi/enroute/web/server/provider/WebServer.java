@@ -53,7 +53,6 @@ public class WebServer implements ConditionalServlet {
 	Map<String,Cache>		cached							= new HashMap<String,Cache>();
 	File					cache;
 	LogService				log;
-	Properties				mimes							= new Properties();
 	boolean					proxy;
 	PluginContributions		pluginContributions;
 	WebResources			webResources;
@@ -144,8 +143,6 @@ public class WebServer implements ConditionalServlet {
 
 		boolean noproxy();
 
-		String[]mimes();
-
 		long expiration();
 
 		int maxConnections();
@@ -178,25 +175,6 @@ public class WebServer implements ConditionalServlet {
 
 		pluginContributions = new PluginContributions(this, cacheFactory, context);
 		webResources = new WebResources(this, cacheFactory, context);
-
-		InputStream in = WebServer.class.getResourceAsStream("mimetypes");
-		if (in != null)
-			try {
-				mimes.load(in);
-			}
-			finally {
-				in.close();
-			}
-
-		if (config.mimes() != null)
-			for (String mime : config.mimes()) {
-				String parts[] = mime.trim().split("\\s*=\\s*");
-				if (parts.length == 2) {
-					if (parts[0].startsWith("."))
-						parts[0] = parts[0].substring(1);
-					mimes.put(parts[0], parts[1]);
-				}
-			}
 
 		this.cache = context.getDataFile("cache");
 		cache.mkdir();
