@@ -9,11 +9,11 @@ import org.osgi.framework.*;
 import org.osgi.framework.wiring.*;
 import org.slf4j.*;
 
-import osgi.enroute.web.server.provider.WebServer.Cache;
 import aQute.bnd.osgi.*;
 import aQute.lib.converter.*;
 import aQute.lib.io.*;
 import aQute.libg.glob.*;
+import osgi.enroute.web.server.cache.*;
 
 /**
  * This class adds support for web resources. A Web Resource is a resource
@@ -95,6 +95,7 @@ public class WebResources {
 	static Logger						logger						= LoggerFactory.getLogger(WebResources.class);
 	final BundleContext					context;
 	final WebServer						ws;
+	final CacheFactory					cacheFactory;
 
 	/**
 	 * Constructor
@@ -104,8 +105,9 @@ public class WebResources {
 	 * @param context
 	 *            To see the bundles
 	 */
-	WebResources(WebServer ws, BundleContext context) {
+	WebResources(WebServer ws, CacheFactory cacheFactory, BundleContext context) {
 		this.context = context;
+		this.cacheFactory = cacheFactory;
 		this.ws = ws;
 	}
 
@@ -306,7 +308,7 @@ public class WebResources {
 
 		tmp.renameTo(file);
 
-		return ws.new Cache(file, b, file.getAbsolutePath());
+		return cacheFactory.newCache(file, b, file.getAbsolutePath());
 	}
 
 	/**

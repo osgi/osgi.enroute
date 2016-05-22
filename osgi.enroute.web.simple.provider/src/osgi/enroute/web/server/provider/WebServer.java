@@ -21,8 +21,6 @@ import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
 import aQute.bnd.annotation.headers.*;
-import aQute.lib.base64.Base64;
-import aQute.lib.hex.*;
 import aQute.lib.io.*;
 import aQute.lib.json.*;
 import aQute.libg.cryptography.*;
@@ -30,6 +28,7 @@ import aQute.libg.sed.*;
 import osgi.enroute.dto.api.*;
 import osgi.enroute.http.capabilities.*;
 import osgi.enroute.servlet.api.*;
+import osgi.enroute.web.server.cache.*;
 import osgi.enroute.web.server.provider.IndexDTO.*;
 import osgi.enroute.webserver.capabilities.*;
 
@@ -60,6 +59,7 @@ public class WebServer implements ConditionalServlet {
 	WebResources			webResources;
 	IndexDTO				index							= new IndexDTO();
 	DTOs					dtos;
+	CacheFactory			cacheFactory;
 
 	static class Range {
 		Range	next;
@@ -129,105 +129,6 @@ public class WebServer implements ConditionalServlet {
 		}
 	}
 
-	class Cache {
-		long					time;
-		String					etag;
-		String					md5;
-		File					file;
-		Bundle					bundle;
-		String					mime;
-		long					expiration;
-		boolean					publc;
-		private Future<File>	future;
-		public boolean			is404;
-
-		Cache(File f, Bundle b, String path) throws Exception {
-			this(f, b, getEtag(f), path);
-		}
-
-		Cache(File f, Bundle b, byte[] etag, String path) {
-			this.time = f.lastModified();
-			this.bundle = b;
-			this.file = f;
-			this.etag = Hex.toHexString(etag);
-			this.md5 = Base64.encodeBase64(etag);
-			if (b != null && b.getLastModified() > f.lastModified()) {
-				this.time = b.getLastModified();
-				this.file.setLastModified(this.time);
-			}
-			int n = path.lastIndexOf('.');
-			if (n > 0) {
-				String ext = path.substring(n + 1);
-				this.mime = mimes.getProperty(ext);
-			}
-		}
-
-		public Cache(File f) throws Exception {
-			this(f, null, f.getAbsolutePath());
-		}
-
-		public Cache(Future<File> future) {
-			this.future = future;
-		}
-
-		// Should be called on
-		// caches so that we can do any work outside the
-		// locks
-		public boolean sync() throws Exception {
-			if (this.future == null)
-				return file != null;
-
-			try {
-				this.file = this.future.get();
-				byte[] etag = getEtag(this.file);
-				this.etag = Hex.toHexString(etag);
-				this.md5 = Base64.encodeBase64(etag);
-				int n = file.getAbsolutePath().lastIndexOf('.');
-				if (n > 0) {
-					String ext = file.getAbsolutePath().substring(n + 1);
-					this.mime = mimes.getProperty(ext);
-				}
-				return true;
-			}
-			catch (Exception e) {
-				expiration = System.currentTimeMillis() + DEFAULT_NOT_FOUND_EXPIRATION;
-				return false;
-			}
-		}
-
-		boolean isExpired() {
-			if (expiration >= System.currentTimeMillis())
-				return true;
-
-			if (file == null && future != null)
-				return false;
-
-			if (!file.isFile())
-				return true;
-
-			if (time < file.lastModified())
-				return true;
-
-			if (bundle != null && bundle.getLastModified() > time)
-				return true;
-
-			return false;
-		}
-
-		public boolean isNotFound() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	}
-
-	static byte[] getEtag(File f) throws Exception {
-		if (!f.isFile())
-			throw new IllegalArgumentException("not a file (anymore?) " + f);
-		Digester<MD5> digester = MD5.getDigester();
-		IO.copy(f, digester);
-		return digester.digest().digest();
-	}
-
 	@interface Config {
 		String osgi_http_whiteboard_servlet_pattern();
 
@@ -275,8 +176,8 @@ public class WebServer implements ConditionalServlet {
 		if (directories != null)
 			this.directories = Stream.of(directories).map((b) -> IO.getFile(b)).collect(Collectors.toList());
 
-		pluginContributions = new PluginContributions(this, context);
-		webResources = new WebResources(this, context);
+		pluginContributions = new PluginContributions(this, cacheFactory, context);
+		webResources = new WebResources(this, cacheFactory, context);
 
 		InputStream in = WebServer.class.getResourceAsStream("mimetypes");
 		if (in != null)
@@ -374,7 +275,7 @@ public class WebServer implements ConditionalServlet {
 
 			Cache c = getCache(path);
 
-			if (c == null || !c.sync()) {
+			if (c == null || !c.isSynched()) {
 				if ("index.html".equals(path)) {
 					index(rsp);
 					return true;
@@ -520,12 +421,12 @@ public class WebServer implements ConditionalServlet {
 		return c;
 	}
 
-	File getFile(String path) throws Exception {
+	public File getFile(String path) throws Exception {
 		Cache c = getCache(path);
 		if (c == null)
 			return null;
 
-		if (!c.sync())
+		if (!c.isSynched())
 			return null;
 
 		return c.file;
@@ -576,7 +477,7 @@ public class WebServer implements ConditionalServlet {
 	private Cache findCachedUrl(final String path) throws Exception {
 		final File cached = getCached(path);
 		if (cached.isFile())
-			return new Cache(cached);
+			return cacheFactory.newCache(cached);
 
 		cached.getAbsoluteFile().getParentFile().mkdirs();
 
@@ -613,7 +514,7 @@ public class WebServer implements ConditionalServlet {
 
 		});
 		executor.execute(task);
-		return new Cache(task);
+		return cacheFactory.newCache(task);
 	}
 
 	Cache findFile(String path) throws Exception {
@@ -625,7 +526,7 @@ public class WebServer implements ConditionalServlet {
 					f = new File(f, "index.html");
 
 				if (f.isFile()) {
-					return new Cache(f);
+					return cacheFactory.newCache(f);
 				}
 			}
 		return null;
@@ -664,9 +565,9 @@ public class WebServer implements ConditionalServlet {
 						IO.copy(url.openStream(), digester);
 						digester.close();
 						cached.setLastModified(b.getLastModified() + 1000);
-						return new Cache(cached, b, digester.digest().digest(), path);
+						return cacheFactory.newCache(cached, b, digester.digest().digest(), path);
 					}
-					return new Cache(cached, b, path);
+					return cacheFactory.newCache(cached, b, path);
 				}
 			}
 		}
@@ -713,5 +614,10 @@ public class WebServer implements ConditionalServlet {
 	@Reference
 	void setDTOs(DTOs dtos) {
 		this.dtos = dtos;
+	}
+
+	@Reference
+	void setCacheFactory(CacheFactory cacheFactory) {
+		this.cacheFactory = cacheFactory;
 	}
 }

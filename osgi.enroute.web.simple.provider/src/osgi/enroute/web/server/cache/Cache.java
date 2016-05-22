@@ -11,7 +11,7 @@ import aQute.lib.hex.*;
 /**
  * Requires some setting up, so should only be instantiated by the CacheFactory.
  */
-class Cache {
+public class Cache {
 	public long				time;
 	public String			etag;
 	public String			md5;

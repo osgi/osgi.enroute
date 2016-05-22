@@ -1,9 +1,6 @@
 package osgi.enroute.web.server.provider;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,10 +16,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-import osgi.enroute.web.server.provider.WebServer.Cache;
 import aQute.lib.converter.Converter;
 import aQute.lib.converter.TypeReference;
-import aQute.lib.io.IO;
+import osgi.enroute.web.server.cache.*;
 
 /**
  * This class creates a cached file that contains contributions from a set of
@@ -42,68 +38,20 @@ import aQute.lib.io.IO;
  */
 public class PluginContributions extends HttpServlet implements Closeable {
 	static final String PLUGIN = "osgi.enroute.plugin.for";
-	static final String CONTRIBUTIONS = "osgi.enroute.contributions";
-	
+	public static final String CONTRIBUTIONS = "osgi.enroute.contributions";
+
 	private static Pattern EXTENSION = Pattern.compile("(.+)\\.js",Pattern.CASE_INSENSITIVE);
 	private static final long serialVersionUID = 1L;
 	private static final Set<String> EMPTY = new HashSet<String>();
 	ServiceTracker<Object, ServiceReference<?>> pluginTracker;
 	WebServer webserver;
+	CacheFactory cacheFactory;
 	Map<String, PluginCache> pluginCache = new ConcurrentHashMap<>();
 
-	class PluginCache extends Cache {
-
-		private int count = -1;
-		Set<ServiceReference<?>> dependencies = new HashSet<>();
-
-		public PluginCache(WebServer webServer, String application)
-				throws Exception {
-			webServer.super(File.createTempFile(application, ".js"));
-		}
-
-		public boolean sync() {
-			while (count != pluginTracker.getTrackingCount()) {
-				int tmp = pluginTracker.getTrackingCount();
-				try {
-					build();
-				} catch (Exception e) {
-					return false;
-				}
-				count = tmp;
-			}
-			return true;
-		}
-
-		void build() throws Exception {
-			synchronized (this) {
-				try (FileOutputStream fout = new FileOutputStream(file)) {
-					PrintStream p = new PrintStream(fout);
-
-					for (ServiceReference<?> ref : dependencies) {
-						Set<String> contributions = toSet(ref
-								.getProperty(CONTRIBUTIONS));
-						for (String contribution : contributions) {
-							if (!contribution.startsWith("/"
-									+ CONTRIBUTIONS)) {
-								File f = webserver.getFile(contribution);
-
-								if (f != null && f.isFile()) {
-									IO.copy(f, fout);
-								} else {
-									p.printf("// not found %s\n", contribution);
-								}
-							}
-						}
-					}
-				}
-			}
-
-		}
-	}
-
-	public PluginContributions(WebServer w, BundleContext context)
+	public PluginContributions(WebServer w, CacheFactory cacheFactory, BundleContext context)
 			throws InvalidSyntaxException {
 		this.webserver = w;
+		this.cacheFactory = cacheFactory;
 		pluginTracker = new ServiceTracker<Object, ServiceReference<?>>(context,
 				FrameworkUtil.createFilter("(" + PLUGIN + "=*)"),
 				null) {
@@ -118,7 +66,7 @@ public class PluginContributions extends HttpServlet implements Closeable {
 						synchronized (pluginCache) {
 							pc = pluginCache.get(app);
 							if (pc == null) {
-								pc = new PluginCache(webserver, app);
+								pc = cacheFactory.newPluginCache(webserver, pluginTracker, app);
 								pluginCache.put(app, pc);
 							}
 						}

@@ -1,11 +1,11 @@
 package osgi.enroute.web.server.cache;
 
 import java.io.*;
-import java.util.*;
 import java.util.concurrent.*;
 
 import org.osgi.framework.*;
 import org.osgi.service.component.annotations.*;
+import org.osgi.util.tracker.*;
 
 import aQute.lib.base64.Base64;
 import aQute.lib.hex.*;
@@ -32,19 +32,19 @@ public class CacheFactory {
 			}
 	}
 
-	Cache newCache(File f, Bundle b, String path) throws Exception {
+	public Cache newCache(File f, Bundle b, String path) throws Exception {
 		return newCache(f, b, Etag.get(f), path);
 	}
 
-	Cache newCache(File f, Properties mimes) throws Exception {
+	public Cache newCache(File f) throws Exception {
 		return newCache(f, null, f.getAbsolutePath());
 	}
 
-	Cache newCache(Future<File> future) {
+	public Cache newCache(Future<File> future) {
 		return new Cache(future);
 	}
 
-	Cache newCache(File f, Bundle b, byte[] etag, String path) {
+	public Cache newCache(File f, Bundle b, byte[] etag, String path) {
 		Cache cache = new Cache();
 		cache.time = f.lastModified();
 		cache.bundle = b;
@@ -63,5 +63,10 @@ public class CacheFactory {
 		cache.expiration = expiration;
 
 		return cache;
+	}
+
+	public PluginCache newPluginCache(WebServer webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application) throws Exception {
+		Cache cache = newCache(File.createTempFile(application, ".js"));
+		return new PluginCache(cache, webServer, pluginTracker);
 	}
 }
