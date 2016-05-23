@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
 import java.util.stream.*;
-import java.util.zip.*;
 
 import javax.servlet.Filter;
 import javax.servlet.http.*;
@@ -155,7 +154,6 @@ public class WebServer implements ConditionalServlet {
 
 	Config								config;
 	BundleTracker< ? >					tracker;
-	private Executor					executor;
 	private ServiceRegistration<Filter>	webfilter;
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
@@ -395,17 +393,6 @@ public class WebServer implements ConditionalServlet {
 		return c;
 	}
 
-	public File getFile(String path) throws Exception {
-		FileCache c = getCache(path);
-		if (c == null)
-			return null;
-
-		if (!c.isSynched())
-			return null;
-
-		return c.file;
-	}
-
 	private FileCache do404(String path) throws Exception {
 		log.log(LogService.LOG_INFO, "404 " + path);
 		FileCache c = find("404.html");
@@ -419,7 +406,7 @@ public class WebServer implements ConditionalServlet {
 
 	FileCache find(String path) throws Exception {
 		if (proxy && path.startsWith("$"))
-			return findCachedUrl(path);
+			return cache.findCachedUrl(path);
 
 		if (path.startsWith(PluginContributions.CONTRIBUTIONS + "/"))
 			return pluginContributions
@@ -437,60 +424,6 @@ public class WebServer implements ConditionalServlet {
 		return findBundle(path);
 	}
 
-	/**
-	 * HTTPS pages require that all content is actually HTTPS ... this means
-	 * that any content not from our site ruins our green bar :-( So the
-	 * webserver has a possibility to proxy other urls. For efficiency, it
-	 * reuses the caching mechanism. It proxies any path that starts with $, it
-	 * assumes the remainder is an encoded URL.
-	 * 
-	 * @param path
-	 * @return
-	 * @throws Exception
-	 */
-	private FileCache findCachedUrl(final String path) throws Exception {
-		final File cached = getCached(path);
-		if (cached.isFile())
-			return cache.newCache(cached);
-
-		cached.getAbsoluteFile().getParentFile().mkdirs();
-
-		FutureTask<File> task = new FutureTask<File>(new Callable<File>() {
-
-			@Override
-			public File call() {
-				try {
-					String uri = URLDecoder.decode(path.substring(1), "UTF-8");
-					URL url = new URL(uri);
-					URLConnection con = url.openConnection();
-					con.setConnectTimeout(10000);
-					con.setRequestProperty("Accept-Encoding", "deflate, gzip");
-					File tmp = IO.createTempFile(cache.cacheFile(), "path", ".tmp");
-
-					InputStream in = con.getInputStream();
-					String encoding = con.getContentEncoding();
-					if ("deflate".equalsIgnoreCase(encoding)) {
-						in = new DeflaterInputStream(in);
-					} else if ("gzip".equalsIgnoreCase(encoding)) {
-						in = new ZipInputStream(in);
-					}
-
-					IO.copy(in, tmp);
-					IO.rename(tmp, cached);
-					cached.setLastModified(con.getLastModified() + 1000);
-					return cached;
-				}
-				catch (Exception e) {
-					log.log(LogService.LOG_ERROR, "Cannot read url " + path);
-					throw new RuntimeException(e);
-				}
-			}
-
-		});
-		executor.execute(task);
-		return cache.newCache(task);
-	}
-
 	FileCache findFile(String path) throws Exception {
 		if (config.directories() != null)
 			for (File base : directories) {
@@ -500,7 +433,7 @@ public class WebServer implements ConditionalServlet {
 					f = new File(f, "index.html");
 
 				if (f.isFile()) {
-					return cache.newCache(f);
+					return cache.newFileCache(f);
 				}
 			}
 		return null;
@@ -530,7 +463,7 @@ public class WebServer implements ConditionalServlet {
 				if (url == null)
 					url = b.getResource("static/" + path + "/index.html");
 				if (url != null) {
-					File cached = getCached(path);
+					File cached = cache.getCachedRawFile(path);
 					if (!cached.exists() || cached.lastModified() <= b.getLastModified()) {
 						cached.delete();
 						cached.getAbsoluteFile().getParentFile().mkdirs();
@@ -539,24 +472,27 @@ public class WebServer implements ConditionalServlet {
 						IO.copy(url.openStream(), digester);
 						digester.close();
 						cached.setLastModified(b.getLastModified() + 1000);
-						return cache.newCache(cached, b, digester.digest().digest(), path);
+						return cache.newFileCache(cached, b, digester.digest().digest(), path);
 					}
-					return cache.newCache(cached, b, path);
+					return cache.newFileCache(cached, b, path);
 				}
 			}
 		}
 		return null;
 	}
 
-	private File getCached(String path) throws Exception {
-		String name = SHA1.digest(path.getBytes("UTF-8")).asHex();
-		return new File(cache.cacheFile(), name);
+	//-------------- PLUGIN-CACHE --------------
+	public File getFile(String path) throws Exception {
+		FileCache c = getCache(path);
+		if (c == null)
+			return null;
+
+		if (!c.isSynched())
+			return null;
+
+		return c.file;
 	}
 
-	public String getMimeType(String name) {
-		// TODO
-		return null;
-	}
 
 	@Deactivate
 	void deactivate() {
@@ -576,11 +512,6 @@ public class WebServer implements ConditionalServlet {
 	}
 
 	@Reference
-	void setExecutor(Executor exe) {
-		this.executor = exe;
-	}
-
-	@Reference
 	public void setCoordinator(Coordinator coordinator) {
 		this.coordinator = coordinator;
 	}
@@ -591,7 +522,7 @@ public class WebServer implements ConditionalServlet {
 	}
 
 	@Reference
-	void setCacheFactory(Cache cacheFactory) {
-		this.cache = cacheFactory;
+	void setCache(Cache cache) {
+		this.cache = cache;
 	}
 }

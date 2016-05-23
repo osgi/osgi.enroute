@@ -308,7 +308,7 @@ public class WebResources {
 
 		tmp.renameTo(file);
 
-		return cacheFactory.newCache(file, b, file.getAbsolutePath());
+		return cacheFactory.newFileCache(file, b, file.getAbsolutePath());
 	}
 
 	/**
