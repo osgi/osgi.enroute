@@ -8,20 +8,25 @@ import java.util.concurrent.*;
 import java.util.regex.*;
 import java.util.stream.*;
 
+import javax.servlet.Filter;
 import javax.servlet.http.*;
 
 import org.osgi.framework.*;
 import org.osgi.namespace.extender.*;
 import org.osgi.service.component.annotations.*;
+import org.osgi.service.coordinator.*;
 import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
 import aQute.bnd.annotation.headers.*;
 import aQute.lib.io.*;
+import aQute.lib.json.*;
+import aQute.libg.sed.*;
 import osgi.enroute.dto.api.*;
 import osgi.enroute.http.capabilities.*;
 import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
+import osgi.enroute.web.server.provider.IndexDTO.*;
 import osgi.enroute.webserver.capabilities.*;
 
 @ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
@@ -29,11 +34,11 @@ import osgi.enroute.webserver.capabilities.*;
 @Component(service = {
 		ConditionalServlet.class
 }, immediate = true, property = {
-		"service.ranking:Integer=1000", "name=" + WebServer.NAME, "no.index=true"
-}, name = WebServer.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
-public class WebServer implements ConditionalServlet {
+		"service.ranking:Integer=1001", "name=" + WebServer2.NAME, "no.index=true"
+}, name = WebServer2.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+public class WebServer2 implements ConditionalServlet {
 
-	static final String NAME = "osgi.enroute.simple.server";
+	static final String NAME = "osgi.enroute.simple.server2";
 
 	static final long		DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
 	static String			BYTE_RANGE_SET_S				= "(\\d+)?\\s*-\\s*(\\d+)?";
@@ -44,8 +49,13 @@ public class WebServer implements ConditionalServlet {
 			Locale.ENGLISH);
 	Map<String,FileCache>		cached							= new HashMap<String,FileCache>();
 	LogService				log;
+	boolean					proxy;
+	PluginContributions		pluginContributions;
+	WebResources			webResources;
+	IndexDTO				index							= new IndexDTO();
 	DTOs					dtos;
 	Cache					cache;
+	BundleContext			context;
 
 	static class Range {
 		Range	next;
@@ -116,7 +126,11 @@ public class WebServer implements ConditionalServlet {
 	}
 
 	@interface Config {
-		String[] directories() default {};
+		String osgi_http_whiteboard_servlet_pattern();
+
+		boolean noBundles();
+
+		String[]directories() default {};
 
 		int expires();
 
@@ -124,29 +138,90 @@ public class WebServer implements ConditionalServlet {
 
 		boolean debug();
 
+		boolean noproxy();
+
 		long expiration();
+
+		int maxConnections();
+
+		String maxConnectionMessage();
+
+		int maxTime();
+
+		String maxTimeMessage();
 	}
 
 	Config								config;
-	BundleTracker< ? >					tracker;
+	private ServiceRegistration<Filter>	webfilter;
+	private Coordinator					coordinator;
+	private ServiceRegistration<Filter>	exceptionFilter;
+	private BundleTracker<Bundle>		apps;
 	private List<File>					directories	= Collections.emptyList();
 
 	@Activate
 	void activate(Config config, Map<String,Object> props, BundleContext context) throws Exception {
+		this.context = context;
+		index.configuration = props;
 		this.config = config;
+		proxy = !config.noproxy();
 
 		String[] directories = config.directories();
 		if (directories != null)
 			this.directories = Stream.of(directories).map((b) -> IO.getFile(b)).collect(Collectors.toList());
 
-		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
+		pluginContributions = new PluginContributions(this, cache, context);
+		webResources = new WebResources(this, cache, context);
+
+		Hashtable<String,Object> p = new Hashtable<String,Object>();
+		p.put("pattern", ".*");
+		webfilter = context.registerService(Filter.class,
+				new WebFilter(config.maxConnections(), config.maxConnectionMessage(), coordinator), p);
+
+		if (config.exceptions()) {
+			p.putAll(props);
+			exceptionFilter = context.registerService(Filter.class, new ExceptionFilter(), p);
+		}
+
+		apps = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null) {
+			@Override
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
-				if (bundle.getEntryPaths("static/") != null)
-					return bundle;
-				return null;
+				String app = bundle.getHeaders().get("EnRoute-Application");
+				if (app == null)
+					return null;
+
+				String[] links = app.split("\\s*,\\s*");
+				for (String link : links) {
+					ApplicationDTO appdto = new ApplicationDTO();
+					appdto.bsn = bundle.getSymbolicName();
+					appdto.version = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
+					appdto.bundle = bundle.getBundleId();
+					appdto.description = bundle.getHeaders().get(Constants.BUNDLE_DESCRIPTION);
+					appdto.link = link;
+					appdto.name = bundle.getHeaders().get(Constants.BUNDLE_NAME);
+					if (appdto.name == null)
+						appdto.name = appdto.bsn;
+
+					synchronized (index) {
+						index.applications.add(appdto);
+					}
+				}
+
+				return super.addingBundle(bundle, event);
+			}
+
+			@Override
+			public void removedBundle(Bundle bundle, BundleEvent event, Bundle object) {
+				synchronized (index) {
+					for (Iterator<ApplicationDTO> i = index.applications.iterator(); i.hasNext();) {
+						ApplicationDTO dto = i.next();
+						if (dto.bundle == bundle.getBundleId())
+							i.remove();
+					}
+				}
+				super.removedBundle(bundle, event, object);
 			}
 		};
-		tracker.open();
+		apps.open();
 	}
 
 	public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -161,8 +236,15 @@ public class WebServer implements ConditionalServlet {
 				path = path.substring(1);
 
 			FileCache c = getCache(path);
-			if(c == null)
-				return false;
+
+			if (c == null || !c.isSynched()) {
+				if ("index.html".equals(path)) {
+					index(rsp);
+					return true;
+				} else {
+					return false;
+				}
+			}
 
 			rsp.setDateHeader("Last-Modified", c.time);
 			rsp.setHeader("Etag", c.etag);
@@ -268,6 +350,25 @@ public class WebServer implements ConditionalServlet {
 		return true;
 	}
 
+	private void index(HttpServletResponse rsp) throws Exception {
+		Bundle b = context.getBundle();
+		FileCache c = cache.getFromBundle(b, "osgi/enroute/web/index.html");
+		if (c == null || c.is404 || c.isNotFound()) {
+			c = cache.getFromBundle(b, "osgi/enroute/web/local/index.html");
+		}
+
+		String content = IO.collect(c.file);
+		Map<String,String> map = new HashMap<>();
+
+		synchronized (index) {
+			map.put("index", new JSONCodec().enc().put(index).indent(" ").toString());
+		}
+
+		ReplacerAdapter ra = new ReplacerAdapter(map);
+		content = ra.process(content);
+		IO.store(content, rsp.getOutputStream());
+	}
+
 	FileCache getCache(String path) throws Exception {
 		FileCache c;
 		synchronized (cached) {
@@ -286,8 +387,6 @@ public class WebServer implements ConditionalServlet {
 	private FileCache do404(String path) throws Exception {
 		log.log(LogService.LOG_INFO, "404 " + path);
 		FileCache c = find("404.html");
-		if (c == null)
-			c = findBundle("default/404.html");
 		if (c != null)
 			c.is404 = true;
 
@@ -295,10 +394,18 @@ public class WebServer implements ConditionalServlet {
 	}
 
 	FileCache find(String path) throws Exception {
-		FileCache c = findFile(path);
+		if (proxy && path.startsWith("$"))
+			return cache.findCachedUrl(path);
+
+		if (path.startsWith(PluginContributions.CONTRIBUTIONS + "/"))
+			return pluginContributions
+					.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length() + 1));
+
+		FileCache c = webResources.find(path);
 		if (c != null)
 			return c;
-		return findBundle(path);
+
+		return findFile(path);
 	}
 
 	FileCache findFile(String path) throws Exception {
@@ -313,18 +420,6 @@ public class WebServer implements ConditionalServlet {
 					return cache.newFileCache(f);
 				}
 			}
-		return null;
-	}
-
-	FileCache findBundle(String path) throws Exception {
-		Bundle[] bundles = tracker.getBundles();
-		if (bundles != null) {
-			for (Bundle b : bundles) {
-				FileCache c = cache.getFromBundle(b, path);
-				if(c != null)
-					return c;
-			}
-		}
 		return null;
 	}
 
@@ -343,12 +438,23 @@ public class WebServer implements ConditionalServlet {
 
 	@Deactivate
 	void deactivate() {
-		tracker.close();
+		pluginContributions.close();
+		if (webfilter != null)
+			webfilter.unregister();
+		if (exceptionFilter != null)
+			exceptionFilter.unregister();
+
+		apps.close();
 	}
 
 	@Reference
 	void setLog(LogService log) {
 		this.log = log;
+	}
+
+	@Reference
+	public void setCoordinator(Coordinator coordinator) {
+		this.coordinator = coordinator;
 	}
 
 	@Reference

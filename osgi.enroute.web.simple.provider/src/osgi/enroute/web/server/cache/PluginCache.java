@@ -14,11 +14,11 @@ public class PluginCache extends FileCache {
 	private static final Set<String> EMPTY = new HashSet<String>();
 
 	private int count = -1;
-	private WebServer webServer;
+	private WebServer2 webServer;
 	private ServiceTracker<Object, ServiceReference<?>> pluginTracker;
 	public Set<ServiceReference<?>> dependencies = new HashSet<>();
 
-	PluginCache(FileCache cache, WebServer webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
+	PluginCache(FileCache cache, WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
 		this(cache.time, cache.etag, cache.md5, cache.file, cache.bundle, cache.mime, cache.expiration, cache.publc, cache.is404, webServer, pluginTracker);
 	}
 
@@ -32,7 +32,7 @@ public class PluginCache extends FileCache {
 			long			expiration,
 			boolean			publc,
 			boolean			is404,
-			WebServer 		webServer,
+			WebServer2 		webServer,
 			ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
 		this.time = time;
 		this.etag = etag;

@@ -2,6 +2,7 @@ package osgi.enroute.web.server.cache;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.zip.*;
 
@@ -31,7 +32,7 @@ public class Cache {
 	void activate(BundleContext context)
 		throws Exception
 	{
-		InputStream in = WebServer.class.getResourceAsStream("mimetypes");
+		InputStream in = Cache.class.getResourceAsStream("mimetypes");
 		if (in != null)
 			try {
 				Mimes.mimes.load(in);
@@ -77,7 +78,7 @@ public class Cache {
 		return cache;
 	}
 
-	public PluginCache newPluginCache(WebServer webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application) throws Exception {
+	public PluginCache newPluginCache(WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application) throws Exception {
 		FileCache cache = newFileCache(File.createTempFile(application, ".js"));
 		return new PluginCache(cache, webServer, pluginTracker);
 	}
@@ -144,6 +145,44 @@ public class Cache {
 		});
 		executor.execute(task);
 		return newFileCache(task);
+	}
+
+	public FileCache getFromBundle(Bundle b, String path) throws Exception {
+		Enumeration<URL> urls = b.findEntries("static/" + path, "*", false);
+		// What happens here is that we have hit a folder, but the path does not
+		// end with a "/". I do not think that it is correct to do a redirect here.
+		// In any case, when redirects are turned off, this causes an infinite redirect loop.
+		// Instead, a 404 should be thrown.
+		// I would argue that a 404 should **always** be thrown here for this case.
+		if (urls != null && urls.hasMoreElements()) {
+			// TODO - this is a directory! What do we do?
+			return null;
+		}
+		URL url = null;
+//		if (config.debug()) {
+//			url = b.getResource("static/debug/" + path);
+//		}
+		if (url == null) {
+			url = b.getResource("static/" + path);
+		}
+		if (url == null)
+			url = b.getResource("static/" + path + "/index.html");
+		if (url != null) {
+			File cached = getCachedRawFile(path);
+			if (!cached.exists() || cached.lastModified() <= b.getLastModified()) {
+				cached.delete();
+				cached.getAbsoluteFile().getParentFile().mkdirs();
+				FileOutputStream out = new FileOutputStream(cached);
+				Digester<MD5> digester = MD5.getDigester(out);
+				IO.copy(url.openStream(), digester);
+				digester.close();
+				cached.setLastModified(b.getLastModified() + 1000);
+				return newFileCache(cached, b, digester.digest().digest(), path);
+			}
+			return newFileCache(cached, b, path);
+		}
+
+		return null;
 	}
 
 	@Reference

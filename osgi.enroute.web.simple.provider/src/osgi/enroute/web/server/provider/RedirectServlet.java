@@ -67,8 +67,7 @@ public class RedirectServlet implements ConditionalServlet {
 		}
 		catch (RedirectException e) {
 			rsp.sendRedirect(e.getPath());
+			return true;
 		}
-
-		return false;
 	}
 }
