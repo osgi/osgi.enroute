@@ -4,75 +4,79 @@ import java.io.*;
 import java.util.concurrent.*;
 
 import org.osgi.framework.*;
+import org.osgi.service.component.annotations.*;
+import org.osgi.util.tracker.*;
 
-import aQute.lib.base64.*;
+import aQute.lib.base64.Base64;
 import aQute.lib.hex.*;
+import osgi.enroute.web.server.provider.*;
 
-/**
- * Requires some setting up, so should only be instantiated by the CacheFactory.
- */
+@Component( service = Cache.class )
 public class Cache {
-	public long				time;
-	public String			etag;
-	public String			md5;
-	public File				file;
-	public Bundle			bundle;
-	public String			mime;
-	public long				expiration;
-	public boolean			publc;
-	private Future<File>	future;
-	public boolean			is404;
+	static final long		DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
 
-	Cache() {}
+	// Make this configurable
+	private long					expiration = DEFAULT_NOT_FOUND_EXPIRATION;
 
-	Cache(Future<File> future) {
-		this.future = future;
-	}
+	private File					cacheFile;
 
-	// Should be called on caches so that we can do any work outside the locks.
-	public boolean isSynched() throws Exception {
-		if (future == null)
-			return file != null;
-
-		try {
-			file = future.get();
-			byte[] etag = Etag.get(file);
-			this.etag = Hex.toHexString(etag);
-			md5 = Base64.encodeBase64(etag);
-			int n = file.getAbsolutePath().lastIndexOf('.');
-			if (n > 0) {
-				String ext = file.getAbsolutePath().substring(n + 1);
-				mime = Mimes.mimes().getProperty(ext);
+	@Activate
+	void activate(BundleContext context)
+		throws Exception
+	{
+		InputStream in = WebServer.class.getResourceAsStream("mimetypes");
+		if (in != null)
+			try {
+				Mimes.mimes.load(in);
 			}
-			return true;
-		}
-		catch (Exception e) {
-			expiration = System.currentTimeMillis() + expiration;
-			return false;
-		}
+			finally {
+				in.close();
+			}
+
+		cacheFile = context.getDataFile("cache");
+		cacheFile.mkdir();
 	}
 
-	public boolean isExpired() {
-		if (expiration >= System.currentTimeMillis())
-			return true;
-
-		if (file == null && future != null)
-			return false;
-
-		if (!file.isFile())
-			return true;
-
-		if (time < file.lastModified())
-			return true;
-
-		if (bundle != null && bundle.getLastModified() > time)
-			return true;
-
-		return false;
+	public FileCache newCache(File f, Bundle b, String path) throws Exception {
+		return newCache(f, b, Etag.get(f), path);
 	}
 
-	public boolean isNotFound() {
-		// TODO Auto-generated method stub
-		return false;
+	public FileCache newCache(File f) throws Exception {
+		return newCache(f, null, f.getAbsolutePath());
+	}
+
+	public FileCache newCache(Future<File> future) {
+		return new FileCache(future);
+	}
+
+	public FileCache newCache(File f, Bundle b, byte[] etag, String path) {
+		FileCache cache = new FileCache();
+		cache.time = f.lastModified();
+		cache.bundle = b;
+		cache.file = f;
+		cache.etag = Hex.toHexString(etag);
+		cache.md5 = Base64.encodeBase64(etag);
+		if (b != null && b.getLastModified() > f.lastModified()) {
+			cache.time = b.getLastModified();
+			cache.file.setLastModified(cache.time);
+		}
+		int n = path.lastIndexOf('.');
+		if (n > 0) {
+			String ext = path.substring(n + 1);
+			cache.mime = Mimes.mimes().getProperty(ext);
+		}
+		cache.expiration = expiration;
+
+		return cache;
+	}
+
+	public PluginCache newPluginCache(WebServer webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application) throws Exception {
+		FileCache cache = newCache(File.createTempFile(application, ".js"));
+		return new PluginCache(cache, webServer, pluginTracker);
+	}
+
+	public File cacheFile()
+	{
+		return cacheFile;
 	}
 }

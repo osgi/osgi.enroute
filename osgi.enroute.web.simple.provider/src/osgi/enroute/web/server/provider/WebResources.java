@@ -95,7 +95,7 @@ public class WebResources {
 	static Logger						logger						= LoggerFactory.getLogger(WebResources.class);
 	final BundleContext					context;
 	final WebServer						ws;
-	final CacheFactory					cacheFactory;
+	final Cache					cacheFactory;
 
 	/**
 	 * Constructor
@@ -105,7 +105,7 @@ public class WebResources {
 	 * @param context
 	 *            To see the bundles
 	 */
-	WebResources(WebServer ws, CacheFactory cacheFactory, BundleContext context) {
+	WebResources(WebServer ws, Cache cacheFactory, BundleContext context) {
 		this.context = context;
 		this.cacheFactory = cacheFactory;
 		this.ws = ws;
@@ -140,7 +140,7 @@ public class WebResources {
 	 * return it in a cache object. The file is stored in the bundle's directory
 	 * so it gets cleaned up when the bundle is uninstalled.
 	 */
-	Cache find(String path) throws Exception {
+	FileCache find(String path) throws Exception {
 
 		//
 		// Verify if it actually is for us in the fastest way possible

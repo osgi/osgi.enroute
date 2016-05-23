@@ -50,15 +50,14 @@ public class WebServer implements ConditionalServlet {
 			.compile("bytes\\s*=\\s*(\\d+)?\\s*-\\s*(\\d+)?(?:\\s*,\\s*(\\d+)\\s*-\\s*(\\d+)?)*\\s*");
 	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
 			Locale.ENGLISH);
-	Map<String,Cache>		cached							= new HashMap<String,Cache>();
-	File					cache;
+	Map<String,FileCache>		cached							= new HashMap<String,FileCache>();
 	LogService				log;
 	boolean					proxy;
 	PluginContributions		pluginContributions;
 	WebResources			webResources;
 	IndexDTO				index							= new IndexDTO();
 	DTOs					dtos;
-	CacheFactory			cacheFactory;
+	Cache					cache;
 
 	static class Range {
 		Range	next;
@@ -173,11 +172,8 @@ public class WebServer implements ConditionalServlet {
 		if (directories != null)
 			this.directories = Stream.of(directories).map((b) -> IO.getFile(b)).collect(Collectors.toList());
 
-		pluginContributions = new PluginContributions(this, cacheFactory, context);
-		webResources = new WebResources(this, cacheFactory, context);
-
-		this.cache = context.getDataFile("cache");
-		cache.mkdir();
+		pluginContributions = new PluginContributions(this, cache, context);
+		webResources = new WebResources(this, cache, context);
 
 		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
@@ -251,7 +247,7 @@ public class WebServer implements ConditionalServlet {
 			if (path != null && path.startsWith("/"))
 				path = path.substring(1);
 
-			Cache c = getCache(path);
+			FileCache c = getCache(path);
 
 			if (c == null || !c.isSynched()) {
 				if ("index.html".equals(path)) {
@@ -367,7 +363,7 @@ public class WebServer implements ConditionalServlet {
 	}
 
 	private void index(HttpServletResponse rsp) throws Exception {
-		Cache c = getCache("osgi/enroute/web/index.html");
+		FileCache c = getCache("osgi/enroute/web/index.html");
 		if (c == null || c.is404 || c.isNotFound()) {
 			c = getCache("osgi/enroute/web/local/index.html");
 		}
@@ -384,8 +380,8 @@ public class WebServer implements ConditionalServlet {
 		IO.store(content, rsp.getOutputStream());
 	}
 
-	Cache getCache(String path) throws Exception {
-		Cache c;
+	FileCache getCache(String path) throws Exception {
+		FileCache c;
 		synchronized (cached) {
 			c = cached.get(path);
 			if (c == null || c.isExpired()) {
@@ -400,7 +396,7 @@ public class WebServer implements ConditionalServlet {
 	}
 
 	public File getFile(String path) throws Exception {
-		Cache c = getCache(path);
+		FileCache c = getCache(path);
 		if (c == null)
 			return null;
 
@@ -410,9 +406,9 @@ public class WebServer implements ConditionalServlet {
 		return c.file;
 	}
 
-	private Cache do404(String path) throws Exception {
+	private FileCache do404(String path) throws Exception {
 		log.log(LogService.LOG_INFO, "404 " + path);
-		Cache c = find("404.html");
+		FileCache c = find("404.html");
 		if (c == null)
 			c = findBundle("default/404.html");
 		if (c != null)
@@ -421,7 +417,7 @@ public class WebServer implements ConditionalServlet {
 		return c;
 	}
 
-	Cache find(String path) throws Exception {
+	FileCache find(String path) throws Exception {
 		if (proxy && path.startsWith("$"))
 			return findCachedUrl(path);
 
@@ -429,7 +425,7 @@ public class WebServer implements ConditionalServlet {
 			return pluginContributions
 					.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length() + 1));
 
-		Cache c = webResources.find(path);
+		FileCache c = webResources.find(path);
 		if (c != null)
 			return c;
 
@@ -452,10 +448,10 @@ public class WebServer implements ConditionalServlet {
 	 * @return
 	 * @throws Exception
 	 */
-	private Cache findCachedUrl(final String path) throws Exception {
+	private FileCache findCachedUrl(final String path) throws Exception {
 		final File cached = getCached(path);
 		if (cached.isFile())
-			return cacheFactory.newCache(cached);
+			return cache.newCache(cached);
 
 		cached.getAbsoluteFile().getParentFile().mkdirs();
 
@@ -469,7 +465,7 @@ public class WebServer implements ConditionalServlet {
 					URLConnection con = url.openConnection();
 					con.setConnectTimeout(10000);
 					con.setRequestProperty("Accept-Encoding", "deflate, gzip");
-					File tmp = IO.createTempFile(cache, "path", ".tmp");
+					File tmp = IO.createTempFile(cache.cacheFile(), "path", ".tmp");
 
 					InputStream in = con.getInputStream();
 					String encoding = con.getContentEncoding();
@@ -492,10 +488,10 @@ public class WebServer implements ConditionalServlet {
 
 		});
 		executor.execute(task);
-		return cacheFactory.newCache(task);
+		return cache.newCache(task);
 	}
 
-	Cache findFile(String path) throws Exception {
+	FileCache findFile(String path) throws Exception {
 		if (config.directories() != null)
 			for (File base : directories) {
 				File f = IO.getFile(base, path);
@@ -504,13 +500,13 @@ public class WebServer implements ConditionalServlet {
 					f = new File(f, "index.html");
 
 				if (f.isFile()) {
-					return cacheFactory.newCache(f);
+					return cache.newCache(f);
 				}
 			}
 		return null;
 	}
 
-	Cache findBundle(String path) throws Exception {
+	FileCache findBundle(String path) throws Exception {
 		Bundle[] bundles = tracker.getBundles();
 		if (bundles != null) {
 			for (Bundle b : bundles) {
@@ -543,9 +539,9 @@ public class WebServer implements ConditionalServlet {
 						IO.copy(url.openStream(), digester);
 						digester.close();
 						cached.setLastModified(b.getLastModified() + 1000);
-						return cacheFactory.newCache(cached, b, digester.digest().digest(), path);
+						return cache.newCache(cached, b, digester.digest().digest(), path);
 					}
-					return cacheFactory.newCache(cached, b, path);
+					return cache.newCache(cached, b, path);
 				}
 			}
 		}
@@ -554,7 +550,7 @@ public class WebServer implements ConditionalServlet {
 
 	private File getCached(String path) throws Exception {
 		String name = SHA1.digest(path.getBytes("UTF-8")).asHex();
-		return new File(cache, name);
+		return new File(cache.cacheFile(), name);
 	}
 
 	public String getMimeType(String name) {
@@ -595,7 +591,7 @@ public class WebServer implements ConditionalServlet {
 	}
 
 	@Reference
-	void setCacheFactory(CacheFactory cacheFactory) {
-		this.cacheFactory = cacheFactory;
+	void setCacheFactory(Cache cacheFactory) {
+		this.cache = cacheFactory;
 	}
 }
