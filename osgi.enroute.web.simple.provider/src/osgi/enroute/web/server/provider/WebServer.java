@@ -4,8 +4,6 @@ import java.io.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.regex.*;
 import java.util.stream.*;
 
 import javax.servlet.http.*;
@@ -35,85 +33,11 @@ public class WebServer implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.server";
 
-	static final long		DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
-	static String			BYTE_RANGE_SET_S				= "(\\d+)?\\s*-\\s*(\\d+)?";
-	static Pattern			BYTE_RANGE_SET					= Pattern.compile(BYTE_RANGE_SET_S);
-	static Pattern			BYTE_RANGE						= Pattern
-			.compile("bytes\\s*=\\s*(\\d+)?\\s*-\\s*(\\d+)?(?:\\s*,\\s*(\\d+)\\s*-\\s*(\\d+)?)*\\s*");
 	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
 			Locale.ENGLISH);
-	Map<String,FileCache>		cached							= new HashMap<String,FileCache>();
 	LogService				log;
 	DTOs					dtos;
 	Cache					cache;
-
-	static class Range {
-		Range	next;
-		long	start;
-		long	end;
-
-		public long length() {
-			if (next == null)
-				return end - start;
-
-			return next.length() + end - start;
-		}
-
-		Range(String range, long length) {
-			if (range != null) {
-				if (!BYTE_RANGE.matcher(range).matches())
-					throw new IllegalArgumentException("Bytes ranges does not match specification " + range);
-
-				Matcher m = BYTE_RANGE_SET.matcher(range);
-				m.find();
-				init(m, length);
-			} else {
-				start = 0;
-				end = length;
-			}
-		}
-
-		private Range() {}
-
-		void init(Matcher m, long length) {
-			String s = m.group(1);
-			String e = m.group(2);
-			if (s == null && e == null)
-				throw new IllegalArgumentException("Invalid range, both begin and end not specified: " + m.group(0));
-
-			if (s == null) { // -n == l-n -> l
-				start = length - Long.parseLong(e);
-				end = length - 1;
-			} else if (e == null) { // n- == n -> l
-				start = Long.parseLong(s);
-				end = length - 1;
-			} else {
-				start = Long.parseLong(s);
-				end = Long.parseLong(e);
-			}
-			end++; // e is specified as inclusive, Java uses exclusive
-
-			if (end > length)
-				end = length;
-
-			if (start < 0)
-				start = 0;
-
-			if (start >= end)
-				throw new IllegalArgumentException("Invalid range, start higher than end " + m.group(0));
-
-			if (m.find()) {
-				next = new Range();
-				next.init(m, length);
-			}
-		}
-
-		void copy(FileChannel from, WritableByteChannel to) throws IOException {
-			from.transferTo(start, end - start, to);
-			if (next != null)
-				next.copy(from, to);
-		}
-	}
 
 	@interface Config {
 		String[] directories() default {};
@@ -147,10 +71,6 @@ public class WebServer implements ConditionalServlet {
 			}
 		};
 		tracker.open();
-	}
-
-	public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		return true;
 	}
 
 	@Override
@@ -270,15 +190,18 @@ public class WebServer implements ConditionalServlet {
 
 	FileCache getCache(String path) throws Exception {
 		FileCache c;
-		synchronized (cached) {
-			c = cached.get(path);
+		cache.lock();
+		try {
+			c = cache.getFromCache(path);
 			if (c == null || c.isExpired()) {
 				c = find(path);
 				if (c == null) {
 					c = do404(path);
 				} else
-					cached.put(path, c);
+					cache.putToCache(path, c);
 			}
+		} finally {
+			cache.unlock();
 		}
 		return c;
 	}

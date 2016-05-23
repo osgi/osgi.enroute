@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 import java.util.zip.*;
 
 import org.osgi.framework.*;
@@ -27,6 +28,9 @@ public class Cache {
 	File							cacheFile;
 	private Executor				executor;
 	LogService						log;
+
+	private final Map<String,FileCache>	cached = new HashMap<String,FileCache>();
+	private Lock 					lock = new ReentrantLock();
 
 	@Activate
 	void activate(BundleContext context)
@@ -183,6 +187,36 @@ public class Cache {
 		}
 
 		return null;
+	}
+
+	public FileCache getFromCache(String path)
+	{
+		lock.lock();
+		try {
+			return cached.get(path);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public void putToCache(String path, FileCache c)
+	{
+		lock.lock();
+		try {
+			cached.put(path, c);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public void lock()
+	{
+		lock.lock();
+	}
+
+	public void unlock()
+	{
+		lock.unlock();
 	}
 
 	@Reference
