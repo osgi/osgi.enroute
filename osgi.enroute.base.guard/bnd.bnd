@@ -1,6 +1,7 @@
+-dependson: osgi.enroute.base.provider
 -includeresource: {${build}/legal}
 
--buildpath: osgi.enroute.base.api;version=latest
+-buildpath: osgi.enroute.base.api;version=${base.version}
 
 Bundle-Description: 
 	This bundle requires ALL osgi.enroute.authentication.capabilities provided by the OSGi enRoute Base API. It is \

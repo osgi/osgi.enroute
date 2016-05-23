@@ -30,8 +30,22 @@ subprojects {
   def bndProject = bndWorkspace.getProject(name)
   if (bndProject != null) {
     plugins.apply 'biz.aQute.bnd'
-    group bnd('groupid')
-    version bnd('base.version')
+    javadoc {
+        configure(options) {
+            charSet = 'UTF-8'
+            encoding = 'UTF-8'
+            docEncoding = 'UTF-8'
+            /* Turn off javadoc 8 overly pedantic lint checking */
+            if (JavaVersion.current().isJava8Compatible()) {
+              addStringOption('Xdoclint:none', '-quiet') 
+            }
+        }
+    }
+    test {
+      testLogging {
+        exceptionFormat 'full'
+      }
+    }
   }
 }
 
