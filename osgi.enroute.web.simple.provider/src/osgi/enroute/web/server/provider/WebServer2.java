@@ -49,33 +49,7 @@ public class WebServer2 implements ConditionalServlet {
 	Cache					cache;
 	BundleContext			context;
 
-	@interface Config {
-		String osgi_http_whiteboard_servlet_pattern();
-
-		boolean noBundles();
-
-		String[]directories() default {};
-
-		int expires();
-
-		boolean exceptions();
-
-		boolean debug();
-
-		boolean noproxy();
-
-		long expiration();
-
-		int maxConnections();
-
-		String maxConnectionMessage();
-
-		int maxTime();
-
-		String maxTimeMessage();
-	}
-
-	Config								config;
+	WebServerConfig						config;
 	private ServiceRegistration<Filter>	webfilter;
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
@@ -83,7 +57,7 @@ public class WebServer2 implements ConditionalServlet {
 	private List<File>					directories	= Collections.emptyList();
 
 	@Activate
-	void activate(Config config, Map<String,Object> props, BundleContext context) throws Exception {
+	void activate(WebServerConfig config, Map<String,Object> props, BundleContext context) throws Exception {
 		this.context = context;
 		index.configuration = props;
 		this.config = config;

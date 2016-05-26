@@ -18,24 +18,30 @@ import aQute.lib.io.*;
 import aQute.libg.cryptography.*;
 import osgi.enroute.web.server.provider.*;
 
-@Component( service = Cache.class )
+@Component( 
+		service = Cache.class,
+		name = Cache.NAME, 
+		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class Cache {
-	static final long		DEFAULT_NOT_FOUND_EXPIRATION	= TimeUnit.MINUTES.toMillis(20);
+	static final String NAME = "osgi.enroute.simple.server.cache";
 
-	// Make this configurable
+	static final long				DEFAULT_NOT_FOUND_EXPIRATION = TimeUnit.MINUTES.toMillis(20);
+
 	private long					expiration = DEFAULT_NOT_FOUND_EXPIRATION;
 
 	File							cacheFile;
 	private Executor				executor;
 	LogService						log;
+	WebServerConfig					config;
 
 	private final Map<String,FileCache>	cached = new HashMap<String,FileCache>();
 	private Lock 					lock = new ReentrantLock();
 
 	@Activate
-	void activate(BundleContext context)
+	void activate(WebServerConfig config, BundleContext context)
 		throws Exception
 	{
+		this.config = config;
 		InputStream in = Cache.class.getResourceAsStream("mimetypes");
 		if (in != null)
 			try {
@@ -163,9 +169,9 @@ public class Cache {
 			return null;
 		}
 		URL url = null;
-//		if (config.debug()) {
-//			url = b.getResource("static/debug/" + path);
-//		}
+		if (config.debug()) {
+			url = b.getResource("static/debug/" + path);
+		}
 		if (url == null) {
 			url = b.getResource("static/" + path);
 		}

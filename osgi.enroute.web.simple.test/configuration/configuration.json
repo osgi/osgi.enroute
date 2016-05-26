@@ -3,5 +3,10 @@
       "service.factoryPid":					"osgi.enroute.web.service.provider",
       "service.pid":						"short-timeout",
       "timeout":							500
+   },
+   { 
+      "service.factoryPid":					"osgi.enroute.simple.server.cache",
+      "service.pid":						"debug",
+      "debug":								true
    }
 ]
