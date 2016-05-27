@@ -4,8 +4,7 @@
 
 
 Bundle-Description: 				\
-	Provides a simple implementation of the OSGi enRoute webserver with a number \
-	of useful filters.
+	Provides a simple implementation of the OSGi enRoute webserver.
 Export-Package: \
 	aQute.service.reporter,\
 	osgi.enroute.webserver.capabilities,\

@@ -34,6 +34,10 @@ public class WebServerTest extends TestCase {
 		super.tearDown();
 	}
 
+    public void testBnd() throws Exception {
+        assertValid("TEST - BND - TOP", 200, "http://localhost:8080/bnd/org.osgi.enroute.web.simple.test/");
+    }
+
 	/**
 	 * If only the hostname is provided (no slash), then the default action by the RedirectServlet
 	 * will append "/index.html". In debug mode, WebServer will call upon the cache to serve up the 
