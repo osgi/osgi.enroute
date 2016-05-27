@@ -36,10 +36,10 @@ Sometimes you may want to deploy your web application as a single, segregated un
 In this case, it is possible to put your static resources (and possibly java code)
 together into a bundle, and use the bundle as the deployable unit.
 
-This is accomplished by shipping your code in the `/static/[PID]` folder of the
-bundle. The WebServer will validate that *only* the bundle with the actual PID of
+This is accomplished by shipping your code in the `/static/[BSN]` folder of the
+bundle. The WebServer will validate that *only* the bundle with the actual Bundle-SymbolicName (BSN) of
 the folder can serve the files, and will make the files available on the URL path:
-`/bnd/[PID]/`
+`/bnd/[BSN]/`
 
 For example, given a bundle `osgi.enroute.web.example`, and a file `index.txt` 
 with the contents "Hello, World!", you would ensure that you ship the file in this directory:
@@ -53,8 +53,11 @@ Of course, the URL starting with `/bnd/osgi.enroute.web.example` is not very fri
 either use a front-end proxy (such as ngnix) or a `ConditionalServlet` (see below) at the front end
 to accept more frienly URLs, and then forward to the correct internal path.
 
-The `BundleFileServer` tracks all bundles having a `/static/[PID]` folder, and serves these 
-resources via http on the `/bnd/[PID]` path.
+The `BundleFileServer` tracks all bundles having a `/static/[BSN]` folder, and serves these 
+resources via http on the `/bnd/[BSN]` path.
+
+Note that the BundleFileServer is unforgiving about paths. It will not append "/" to a directory
+or "index.html" to a path ending in "/". The exact matching path is required.
 
 ### Mixins
 
@@ -62,7 +65,7 @@ The principle of mixins is similar to the segregated bundles described above, bu
 does not ensure content segregation. This means that instead of serving a self-contained application
 from a single bundle, it is possible to mix content from different bundles together in a composed
 application. As above, the static files are shipped in the `/static` directory, but this time,
-instead of using a directory corresponding to the PID of the bundle, you use virtually any other
+instead of using a directory corresponding to the BSN of the bundle, you use virtually any other
 name that is appropriate to your application.
 
 For example, given two bundles com.acme.foo and com.acme.bar:
@@ -77,7 +80,7 @@ Accessing `http://localhost:8080/myapp/foo.html` will display the contents of fo
 and `http://localhost:8080/myapp/foo.html` will display the contents of bar.html from com.acme.bar.
 
 Note that using the mixin mechanism, it is also possible to access files from a segregated bundle
-via the PID path (without the `/bnd` part): `http://localhost:8080/osgi.enroute.web.example/index.txt`.
+via the BSN path (without the `/bnd` part): `http://localhost:8080/osgi.enroute.web.example/index.txt`.
 This is provided for convenience and backwards-compatibility.
 
 The `BundleMixinServer` tracks all bundles having a `/static/` folder (which includes those bundles

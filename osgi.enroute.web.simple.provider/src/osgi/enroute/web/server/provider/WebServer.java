@@ -50,7 +50,7 @@ public class WebServer implements ConditionalServlet {
 	private List<File>					directories	= Collections.emptyList();
 
 	@Activate
-	void activate(WebServerConfig config, Map<String,Object> props, BundleContext context) throws Exception {
+	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
 
 		String[] directories = config.directories();

@@ -158,25 +158,25 @@ public class Cache {
 	}
 
 	public FileCache getFromBundle(Bundle b, String path) throws Exception {
-		Enumeration<URL> urls = b.findEntries("static/" + path, "*", false);
-		// What happens here is that we have hit a folder, but the path does not
-		// end with a "/". I do not think that it is correct to do a redirect here.
-		// In any case, when redirects are turned off, this causes an infinite redirect loop.
-		// Instead, a 404 should be thrown.
-		// I would argue that a 404 should **always** be thrown here for this case.
+		Enumeration<URL> urls;
+		if (config.debug())
+			urls = b.findEntries("static/debug/" + path, "*", false);
+		else
+			urls = b.findEntries("static/" + path, "*", false);
+
+		// We have hit a folder
 		if (urls != null && urls.hasMoreElements()) {
-			// TODO - this is a directory! What do we do?
 			return null;
 		}
+
 		URL url = null;
 		if (config.debug()) {
 			url = b.getResource("static/debug/" + path);
 		}
-		if (url == null) {
+		else if (url == null) {
 			url = b.getResource("static/" + path);
 		}
-		if (url == null)
-			url = b.getResource("static/" + path + "/index.html");
+
 		if (url != null) {
 			File cached = getCachedRawFile(path);
 			if (!cached.exists() || cached.lastModified() <= b.getLastModified()) {
@@ -189,6 +189,7 @@ public class Cache {
 				cached.setLastModified(b.getLastModified() + 1000);
 				return newFileCache(cached, b, digester.digest().digest(), path);
 			}
+
 			return newFileCache(cached, b, path);
 		}
 

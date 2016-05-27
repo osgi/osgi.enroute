@@ -5,7 +5,7 @@ public @interface WebServerConfig {
 
 	boolean noBundles();
 
-	String[]directories() default {};
+	String[] directories() default {};
 
 	int expires();
 
