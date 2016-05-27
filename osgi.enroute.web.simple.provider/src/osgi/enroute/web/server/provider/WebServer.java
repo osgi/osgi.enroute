@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
-import java.util.stream.*;
 
 import javax.servlet.http.*;
 
@@ -15,8 +14,6 @@ import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
 import aQute.bnd.annotation.headers.*;
-import aQute.lib.io.*;
-import osgi.enroute.dto.api.*;
 import osgi.enroute.http.capabilities.*;
 import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
@@ -42,20 +39,14 @@ public class WebServer implements ConditionalServlet {
 	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
 			Locale.ENGLISH);
 	LogService				log;
-	DTOs					dtos;
 	Cache					cache;
 
 	WebServerConfig						config;
 	BundleTracker< ? >					tracker;
-	private List<File>					directories	= Collections.emptyList();
 
 	@Activate
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
-
-		String[] directories = config.directories();
-		if (directories != null)
-			this.directories = Stream.of(directories).map((b) -> IO.getFile(b)).collect(Collectors.toList());
 
 		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
@@ -188,7 +179,7 @@ public class WebServer implements ConditionalServlet {
 		try {
 			c = cache.getFromCache(path);
 			if (c == null || c.isExpired()) {
-				c = find(path);
+				c = findBundle(path);
 				if (c == null) {
 					c = do404(path);
 				} else
@@ -202,35 +193,13 @@ public class WebServer implements ConditionalServlet {
 
 	private FileCache do404(String path) throws Exception {
 		log.log(LogService.LOG_INFO, "404 " + path);
-		FileCache c = find("404.html");
+		FileCache c = findBundle("404.html");
 		if (c == null)
 			c = findBundle("default/404.html");
 		if (c != null)
 			c.is404 = true;
 
 		return c;
-	}
-
-	FileCache find(String path) throws Exception {
-		FileCache c = findFile(path);
-		if (c != null)
-			return c;
-		return findBundle(path);
-	}
-
-	FileCache findFile(String path) throws Exception {
-		if (config.directories() != null)
-			for (File base : directories) {
-				File f = IO.getFile(base, path);
-
-				if (f.isDirectory())
-					f = new File(f, "index.html");
-
-				if (f.isFile()) {
-					return cache.newFileCache(f);
-				}
-			}
-		return null;
 	}
 
 	FileCache findBundle(String path) throws Exception {
@@ -266,11 +235,6 @@ public class WebServer implements ConditionalServlet {
 	@Reference
 	void setLog(LogService log) {
 		this.log = log;
-	}
-
-	@Reference
-	void setDTOs(DTOs dtos) {
-		this.dtos = dtos;
 	}
 
 	@Reference

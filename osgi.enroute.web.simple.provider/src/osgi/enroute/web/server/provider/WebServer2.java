@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
-import java.util.stream.*;
 
 import javax.servlet.Filter;
 import javax.servlet.http.*;
@@ -20,7 +19,6 @@ import aQute.bnd.annotation.headers.*;
 import aQute.lib.io.*;
 import aQute.lib.json.*;
 import aQute.libg.sed.*;
-import osgi.enroute.dto.api.*;
 import osgi.enroute.http.capabilities.*;
 import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
@@ -53,7 +51,6 @@ public class WebServer2 implements ConditionalServlet {
 	PluginContributions		pluginContributions;
 	WebResources			webResources;
 	IndexDTO				index							= new IndexDTO();
-	DTOs					dtos;
 	Cache					cache;
 	BundleContext			context;
 
@@ -62,7 +59,6 @@ public class WebServer2 implements ConditionalServlet {
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
 	private BundleTracker<Bundle>		apps;
-	private List<File>					directories	= Collections.emptyList();
 
 	@Activate
 	void activate(WebServerConfig config, Map<String,Object> props, BundleContext context) throws Exception {
@@ -70,10 +66,6 @@ public class WebServer2 implements ConditionalServlet {
 		index.configuration = props;
 		this.config = config;
 		proxy = !config.noproxy();
-
-		String[] directories = config.directories();
-		if (directories != null)
-			this.directories = Stream.of(directories).map((b) -> IO.getFile(b)).collect(Collectors.toList());
 
 		pluginContributions = new PluginContributions(this, cache, context);
 		webResources = new WebResources(this, cache, context);
@@ -307,25 +299,8 @@ public class WebServer2 implements ConditionalServlet {
 					.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length() + 1));
 
 		FileCache c = webResources.find(path);
-		if (c != null)
-			return c;
 
-		return findFile(path);
-	}
-
-	FileCache findFile(String path) throws Exception {
-		if (config.directories() != null)
-			for (File base : directories) {
-				File f = IO.getFile(base, path);
-
-				if (f.isDirectory())
-					f = new File(f, "index.html");
-
-				if (f.isFile()) {
-					return cache.newFileCache(f);
-				}
-			}
-		return null;
+		return c;
 	}
 
 	//-------------- PLUGIN-CACHE --------------
@@ -360,11 +335,6 @@ public class WebServer2 implements ConditionalServlet {
 	@Reference
 	public void setCoordinator(Coordinator coordinator) {
 		this.coordinator = coordinator;
-	}
-
-	@Reference
-	void setDTOs(DTOs dtos) {
-		this.dtos = dtos;
 	}
 
 	@Reference
