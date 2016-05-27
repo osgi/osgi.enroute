@@ -27,13 +27,21 @@ import osgi.enroute.web.server.cache.*;
 import osgi.enroute.web.server.provider.IndexDTO.*;
 import osgi.enroute.webserver.capabilities.*;
 
-@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
+@ProvideCapability(
+		ns = ExtenderNamespace.EXTENDER_NAMESPACE, 
+		name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, 
+		version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
 @RequireHttpImplementation
-@Component(service = {
-		ConditionalServlet.class
-}, immediate = true, property = {
-		"service.ranking:Integer=1001", "name=" + WebServer2.NAME, "no.index=true"
-}, name = WebServer2.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(
+		service = { ConditionalServlet.class }, 
+		immediate = true, 
+		property = {
+				"service.ranking:Integer=1001", 
+				"name=" + WebServer2.NAME, 
+		}, 
+		name = WebServer2.NAME, 
+		configurationPolicy = 
+		ConfigurationPolicy.OPTIONAL)
 public class WebServer2 implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.server2";

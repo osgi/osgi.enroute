@@ -15,8 +15,6 @@ import osgi.enroute.servlet.api.*;
 		property = {
 				"service.ranking:Integer=999", 
 				"name=" + RedirectServlet.NAME, 
-				// What the heck is this???? Can't find any doc about it.
-				"no.index=true"
 		}, 
 		name = RedirectServlet.NAME, 
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)

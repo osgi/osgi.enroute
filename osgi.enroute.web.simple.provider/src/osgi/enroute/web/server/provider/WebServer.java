@@ -32,8 +32,7 @@ import osgi.enroute.webserver.capabilities.*;
 		immediate = true, 
 		property = {
 				"service.ranking:Integer=1000", 
-				"name=" + WebServer.NAME, 
-				"no.index=true" }, 
+				"name=" + WebServer.NAME}, 
 		name = WebServer.NAME, 
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class WebServer implements ConditionalServlet {
