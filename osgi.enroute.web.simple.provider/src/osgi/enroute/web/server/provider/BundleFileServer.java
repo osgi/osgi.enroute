@@ -14,6 +14,7 @@ import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
 import osgi.enroute.web.server.cache.*;
+import osgi.enroute.web.server.exceptions.*;
 
 @Component(
 		name = "osgi.enroute.web.service.provider.bfs",
@@ -31,11 +32,10 @@ public class BundleFileServer extends HttpServlet {
 	protected WebServerConfig					config;
 	private BundleTracker<?>					tracker;
 	protected Map<String, Bundle>				bundles = new HashMap<>();
+	private Cache								cache;
 	private ResponseWriter						writer;
 	private ExceptionHandler					exceptionHandler;
-
 	private LogService							log;
-	private Cache								cache;
 
 	@Activate
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
@@ -70,36 +70,33 @@ public class BundleFileServer extends HttpServlet {
 
 	public void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
 
-		String path = rq.getPathInfo();
-
-		if (path == null ) {
-			rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-
-		String bsn = null;
-
-		if (path.startsWith("/"))
-			path = path.substring(1);
-
-		if (path.contains("/"))
-			bsn = path.substring(0, path.indexOf('/'));
-		else
-			bsn = path;
-
-		Bundle b = bundles.get(bsn);
-		if (b == null) {
-			rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-
-		URL url = cache.urlOf(b, path);
-		if (url == null ) {
-			rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-
 		try {
+			String path = rq.getPathInfo();
+
+			if (path == null ) {
+				throw new NotFound404Exception();
+			}
+
+			String bsn = null;
+
+			if (path.startsWith("/"))
+				path = path.substring(1);
+
+			if (path.contains("/"))
+				bsn = path.substring(0, path.indexOf('/'));
+			else
+				bsn = path;
+
+			Bundle b = bundles.get(bsn);
+			if (b == null) {
+				throw new NotFound404Exception();
+			}
+
+			URL url = cache.urlOf(b, path);
+			if (url == null ) {
+				throw new NotFound404Exception();
+			}
+
 			FileCache c = cache.getFromBundle(b, url, path);
 			writer.writeResponse(rq, rsp, c);
 		}
