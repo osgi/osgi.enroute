@@ -23,6 +23,8 @@ import aQute.libg.sed.*;
 import osgi.enroute.http.capabilities.*;
 import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
+import osgi.enroute.web.server.config.*;
+import osgi.enroute.web.server.exceptions.*;
 import osgi.enroute.web.server.provider.IndexDTO.*;
 import osgi.enroute.webserver.capabilities.*;
 

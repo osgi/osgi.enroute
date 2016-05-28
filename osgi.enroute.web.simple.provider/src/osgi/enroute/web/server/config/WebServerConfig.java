@@ -1,4 +1,4 @@
-package osgi.enroute.web.server.provider;
+package osgi.enroute.web.server.config;
 
 public @interface WebServerConfig {
 	String osgi_http_whiteboard_servlet_pattern();

@@ -16,6 +16,7 @@ import aQute.lib.base64.Base64;
 import aQute.lib.hex.*;
 import aQute.lib.io.*;
 import aQute.libg.cryptography.*;
+import osgi.enroute.web.server.config.*;
 import osgi.enroute.web.server.exceptions.*;
 import osgi.enroute.web.server.provider.*;
 

@@ -13,6 +13,7 @@ import org.osgi.service.http.whiteboard.*;
 import org.osgi.service.log.*;
 
 import osgi.enroute.servlet.api.*;
+import osgi.enroute.web.server.config.*;
 
 @Component(
 		name = "osgi.enroute.web.service.provider", //

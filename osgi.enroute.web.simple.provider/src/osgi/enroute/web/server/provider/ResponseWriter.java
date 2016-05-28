@@ -8,6 +8,7 @@ import java.util.*;
 import javax.servlet.http.*;
 
 import osgi.enroute.web.server.cache.*;
+import osgi.enroute.web.server.config.*;
 
 public class ResponseWriter {
 	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",

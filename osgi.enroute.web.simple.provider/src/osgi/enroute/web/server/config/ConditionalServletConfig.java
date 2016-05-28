@@ -1,4 +1,4 @@
-package osgi.enroute.web.server.provider;
+package osgi.enroute.web.server.config;
 
 import osgi.enroute.servlet.api.*;
 

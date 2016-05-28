@@ -13,7 +13,8 @@ Export-Package: \
 Private-Package: \
 	osgi.enroute.web.server.provider,\
 	osgi.enroute.web.server.cache,\
-	osgi.enroute.web.server.exceptions
+	osgi.enroute.web.server.exceptions,\
+	osgi.enroute.web.server.config
 
 Conditional-Package: aQute.lib*
 	

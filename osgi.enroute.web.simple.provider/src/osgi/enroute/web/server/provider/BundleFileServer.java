@@ -14,6 +14,7 @@ import org.osgi.service.log.*;
 import org.osgi.util.tracker.*;
 
 import osgi.enroute.web.server.cache.*;
+import osgi.enroute.web.server.config.*;
 import osgi.enroute.web.server.exceptions.*;
 
 @Component(

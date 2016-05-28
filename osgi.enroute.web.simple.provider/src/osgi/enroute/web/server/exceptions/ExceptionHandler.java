@@ -1,10 +1,8 @@
-package osgi.enroute.web.server.provider;
+package osgi.enroute.web.server.exceptions;
 
 import javax.servlet.http.*;
 
 import org.osgi.service.log.*;
-
-import osgi.enroute.web.server.exceptions.*;
 
 public class ExceptionHandler {
 
@@ -14,7 +12,7 @@ public class ExceptionHandler {
 		this.log = log;
 	}
 
-	void handle(HttpServletRequest rq, HttpServletResponse rsp, Exception exception) {
+	public void handle(HttpServletRequest rq, HttpServletResponse rsp, Exception exception) {
 		try {
 			try {
 				throw exception;
