@@ -7,8 +7,6 @@ public @interface WebServerConfig {
 
 	int expires();
 
-	boolean exceptions();
-
 	boolean debug();
 
 	boolean noproxy();

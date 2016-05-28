@@ -1,6 +1,7 @@
 package osgi.enroute.web.server.provider;
 
 import java.io.*;
+import java.net.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
@@ -44,9 +45,11 @@ public class WebServer implements ConditionalServlet {
 	WebServerConfig						config;
 	BundleTracker< ? >					tracker;
 
+	private ExceptionHandler			exceptionHandler;
 	@Activate
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
+		exceptionHandler = new ExceptionHandler(log);
 
 		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
@@ -153,23 +156,10 @@ public class WebServer implements ConditionalServlet {
 				rsp.setStatus(HttpServletResponse.SC_OK);
 
 		}
-		catch (RedirectException e) {
-			rsp.sendRedirect(e.getPath());
+		catch (Exception e ) {
+			exceptionHandler.handle(rq, rsp, e);
 		}
-		catch (Exception e) {
-			log.log(LogService.LOG_ERROR, "Internal webserver error", e);
-			if (config.exceptions())
-				throw new RuntimeException(e);
 
-			try {
-				PrintWriter pw = rsp.getWriter();
-				pw.println("Internal server error\n");
-				rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
-			catch (Exception ee) {
-				log.log(LogService.LOG_ERROR, "Second level internal webserver error", ee);
-			}
-		}
 		return true;
 	}
 
@@ -206,7 +196,8 @@ public class WebServer implements ConditionalServlet {
 		Bundle[] bundles = tracker.getBundles();
 		if (bundles != null) {
 			for (Bundle b : bundles) {
-				FileCache c = cache.getFromBundle(b, path);
+				URL url = cache.urlOf(b, path);
+				FileCache c = cache.getFromBundle(b, url, path);
 				if(c != null)
 					return c;
 			}

@@ -16,6 +16,7 @@ import aQute.lib.base64.Base64;
 import aQute.lib.hex.*;
 import aQute.lib.io.*;
 import aQute.libg.cryptography.*;
+import osgi.enroute.web.server.exceptions.*;
 import osgi.enroute.web.server.provider.*;
 
 @Component( 
@@ -55,11 +56,11 @@ public class Cache {
 		cacheFile.mkdir();
 	}
 
-	public FileCache newFileCache(File f, Bundle b, String path) throws Exception {
+	public FileCache newFileCache(File f, Bundle b, String path) throws NotFound404Exception, InternalServer500Exception {
 		return newFileCache(f, b, Etag.get(f), path);
 	}
 
-	public FileCache newFileCache(File f) throws Exception {
+	public FileCache newFileCache(File f) throws NotFound404Exception, InternalServer500Exception {
 		return newFileCache(f, null, f.getAbsolutePath());
 	}
 
@@ -88,19 +89,24 @@ public class Cache {
 		return cache;
 	}
 
-	public PluginCache newPluginCache(WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application) throws Exception {
-		FileCache cache = newFileCache(File.createTempFile(application, ".js"));
-		return new PluginCache(cache, webServer, pluginTracker);
+	public PluginCache newPluginCache(WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application) throws WebServerException {
+		try {
+			FileCache cache = newFileCache(File.createTempFile(application, ".js"));
+			return new PluginCache(cache, webServer, pluginTracker);
+		}
+		catch (IOException e) {
+			throw new InternalServer500Exception();
+		}
 	}
-//
-//	public File cacheFile()
-//	{
-//		return cacheFile;
-//	}
-//
-	public File getCachedRawFile(String path) throws Exception {
-		String name = SHA1.digest(path.getBytes("UTF-8")).asHex();
-		return new File(cacheFile, name);
+
+	public File getCachedRawFile(String path) throws InternalServer500Exception {
+		try {
+			String name = SHA1.digest(path.getBytes("UTF-8")).asHex();
+			return new File(cacheFile, name);
+		}
+		catch (Exception e) {
+			throw new InternalServer500Exception(e);
+		}
 	}
 
 	/**
@@ -109,12 +115,8 @@ public class Cache {
 	 * webserver has a possibility to proxy other urls. For efficiency, it
 	 * reuses the caching mechanism. It proxies any path that starts with $, it
 	 * assumes the remainder is an encoded URL.
-	 * 
-	 * @param path
-	 * @return
-	 * @throws Exception
 	 */
-	public FileCache findCachedUrl(final String path) throws Exception {
+	public FileCache findCachedUrl(final String path) throws NotFound404Exception, InternalServer500Exception {
 		final File cached = getCachedRawFile(path);
 		if (cached.isFile())
 			return newFileCache(cached);
@@ -147,8 +149,7 @@ public class Cache {
 					return cached;
 				}
 				catch (Exception e) {
-					log.log(LogService.LOG_ERROR, "Cannot read url " + path);
-					throw new RuntimeException(e);
+					throw new RuntimeException(new InternalServer500Exception(e));
 				}
 			}
 
@@ -157,7 +158,11 @@ public class Cache {
 		return newFileCache(task);
 	}
 
-	public FileCache getFromBundle(Bundle b, String path) throws Exception {
+	/**
+	 * Returns a URL of the existing file in the bundle or null if there is no
+	 * file corresponding to the path.
+	 */
+	public URL urlOf(Bundle b, String path) {
 		Enumeration<URL> urls;
 		if (config.debug())
 			urls = b.findEntries("static/debug/" + path, "*", false);
@@ -177,7 +182,14 @@ public class Cache {
 			url = b.getResource("static/" + path);
 		}
 
-		if (url != null) {
+		return url;
+	}
+
+	public FileCache getFromBundle(Bundle b, URL url, String path) throws InternalServer500Exception {
+		try {
+			if (url == null )
+				return null;
+
 			File cached = getCachedRawFile(path);
 			if (!cached.exists() || cached.lastModified() <= b.getLastModified()) {
 				cached.delete();
@@ -192,8 +204,9 @@ public class Cache {
 
 			return newFileCache(cached, b, path);
 		}
-
-		return null;
+		catch (Exception e) {
+			throw new InternalServer500Exception(e);
+		}
 	}
 
 	public FileCache getFromCache(String path)

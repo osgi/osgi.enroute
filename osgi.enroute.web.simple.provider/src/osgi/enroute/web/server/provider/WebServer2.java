@@ -1,6 +1,7 @@
 package osgi.enroute.web.server.provider;
 
 import java.io.*;
+import java.net.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
@@ -59,12 +60,14 @@ public class WebServer2 implements ConditionalServlet {
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
 	private BundleTracker<Bundle>		apps;
+	private ExceptionHandler			exceptionHandler;
 
 	@Activate
 	void activate(WebServerConfig config, Map<String,Object> props, BundleContext context) throws Exception {
 		this.context = context;
 		index.configuration = props;
 		this.config = config;
+		this.exceptionHandler = new ExceptionHandler(log);
 		proxy = !config.noproxy();
 
 		pluginContributions = new PluginContributions(this, cache, context);
@@ -74,11 +77,6 @@ public class WebServer2 implements ConditionalServlet {
 		p.put("pattern", ".*");
 		webfilter = context.registerService(Filter.class,
 				new WebFilter(config.maxConnections(), config.maxConnectionMessage(), coordinator), p);
-
-		if (config.exceptions()) {
-			p.putAll(props);
-			exceptionFilter = context.registerService(Filter.class, new ExceptionFilter(), p);
-		}
 
 		apps = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null) {
 			@Override
@@ -224,31 +222,20 @@ public class WebServer2 implements ConditionalServlet {
 				rsp.setStatus(HttpServletResponse.SC_OK);
 
 		}
-		catch (RedirectException e) {
-			rsp.sendRedirect(e.getPath());
-		}
 		catch (Exception e) {
-			log.log(LogService.LOG_ERROR, "Internal webserver error", e);
-			if (config.exceptions())
-				throw new RuntimeException(e);
-
-			try {
-				PrintWriter pw = rsp.getWriter();
-				pw.println("Internal server error\n");
-				rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
-			catch (Exception ee) {
-				log.log(LogService.LOG_ERROR, "Second level internal webserver error", ee);
-			}
+			exceptionHandler.handle(rq, rsp, e);
 		}
+
 		return true;
 	}
 
 	private void index(HttpServletResponse rsp) throws Exception {
 		Bundle b = context.getBundle();
-		FileCache c = cache.getFromBundle(b, "osgi/enroute/web/index.html");
+		URL url = cache.urlOf(b, "osgi/enroute/web/index.html");
+		FileCache c = cache.getFromBundle(b, url, "osgi/enroute/web/index.html");
 		if (c == null || c.is404 || c.isNotFound()) {
-			c = cache.getFromBundle(b, "osgi/enroute/web/local/index.html");
+			url = cache.urlOf(b, "osgi/enroute/web/local/index.html");
+			c = cache.getFromBundle(b, url, "osgi/enroute/web/local/index.html");
 		}
 
 		String content = IO.collect(c.file);

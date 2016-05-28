@@ -1,6 +1,7 @@
 package osgi.enroute.web.server.provider;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import javax.servlet.*;
@@ -18,7 +19,6 @@ import osgi.enroute.web.server.cache.*;
 		name = "osgi.enroute.web.service.provider.bfs",
 		property = {
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/bnd", 
-				"name=DispatchServlet", 
 				Constants.SERVICE_RANKING + ":Integer=100"
 		}, 
 		service = Servlet.class, 
@@ -32,6 +32,7 @@ public class BundleFileServer extends HttpServlet {
 	private BundleTracker<?>					tracker;
 	protected Map<String, Bundle>				bundles = new HashMap<>();
 	private ResponseWriter						writer;
+	private ExceptionHandler					exceptionHandler;
 
 	private LogService							log;
 	private Cache								cache;
@@ -40,6 +41,7 @@ public class BundleFileServer extends HttpServlet {
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
 		writer = new ResponseWriter(config);
+		exceptionHandler = new ExceptionHandler(log);
 
 		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
@@ -91,31 +93,18 @@ public class BundleFileServer extends HttpServlet {
 			return;
 		}
 
-		try {
-			FileCache c = cache.getFromBundle(b, path);
-			if (c == null ) {
-				rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return;
-			}
+		URL url = cache.urlOf(b, path);
+		if (url == null ) {
+			rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
 
+		try {
+			FileCache c = cache.getFromBundle(b, url, path);
 			writer.writeResponse(rq, rsp, c);
 		}
-		catch (RedirectException e) {
-			rsp.sendRedirect(e.getPath());
-		}
-		catch (Exception e) {
-			log.log(LogService.LOG_ERROR, "Internal webserver error", e);
-			if (config.exceptions())
-				throw new RuntimeException(e);
-
-			try {
-				PrintWriter pw = rsp.getWriter();
-				pw.println("Internal server error\n");
-				rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
-			catch (Exception ee) {
-				log.log(LogService.LOG_ERROR, "Second level internal webserver error", ee);
-			}
+		catch (Exception e ) {
+			exceptionHandler.handle(rq, rsp, e);
 		}
 	}
 
