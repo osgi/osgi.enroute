@@ -23,8 +23,7 @@ import osgi.enroute.web.server.config.*;
 				Constants.SERVICE_RANKING + ":Integer=100"
 		}, 
 		service = Servlet.class, 
-		configurationPolicy = 
-		ConfigurationPolicy.OPTIONAL, 
+		configurationPolicy = ConfigurationPolicy.OPTIONAL, 
 		immediate = true)
 public class DispatchServlet extends HttpServlet {
 

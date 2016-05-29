@@ -24,7 +24,8 @@ import osgi.enroute.web.server.exceptions.*;
 				Constants.SERVICE_RANKING + ":Integer=100"
 		}, 
 		service = Servlet.class, 
-		configurationPolicy = ConfigurationPolicy.OPTIONAL, 
+		configurationPid = WebServer.NAME,
+		configurationPolicy = ConfigurationPolicy.OPTIONAL,
 		immediate = true)
 public class BundleFileServer extends HttpServlet {
 

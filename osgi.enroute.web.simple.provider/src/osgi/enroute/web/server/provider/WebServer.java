@@ -34,10 +34,11 @@ import osgi.enroute.webserver.capabilities.*;
 				"service.ranking:Integer=1000", 
 				"name=" + WebServer.NAME}, 
 		name = WebServer.NAME, 
+		configurationPid = WebServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class WebServer implements ConditionalServlet {
 
-	static final String NAME = "osgi.enroute.simple.server";
+	public static final String NAME = "osgi.enroute.simple.server";
 
 	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
 			Locale.ENGLISH);

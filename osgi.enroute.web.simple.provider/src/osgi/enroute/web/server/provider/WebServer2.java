@@ -41,8 +41,8 @@ import osgi.enroute.webserver.capabilities.*;
 				"name=" + WebServer2.NAME, 
 		}, 
 		name = WebServer2.NAME, 
-		configurationPolicy = 
-		ConfigurationPolicy.OPTIONAL)
+		configurationPid = WebServer.NAME,
+		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class WebServer2 implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.server2";

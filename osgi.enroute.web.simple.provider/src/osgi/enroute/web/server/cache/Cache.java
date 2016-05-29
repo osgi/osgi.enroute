@@ -23,6 +23,7 @@ import osgi.enroute.web.server.provider.*;
 @Component( 
 		service = Cache.class,
 		name = Cache.NAME, 
+		configurationPid = WebServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class Cache {
 	static final String NAME = "osgi.enroute.simple.server.cache";
