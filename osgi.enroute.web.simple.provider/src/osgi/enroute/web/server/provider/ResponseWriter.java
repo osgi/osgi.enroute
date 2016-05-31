@@ -43,6 +43,9 @@ public class ResponseWriter {
 		if (c.mime != null)
 			rsp.setContentType(c.mime);
 
+		if (c.is404)
+			rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
 		Range range = new Range(rq.getHeader("Range"), c.file.length());
 		long length = range.length();
 		if (length >= Integer.MAX_VALUE)

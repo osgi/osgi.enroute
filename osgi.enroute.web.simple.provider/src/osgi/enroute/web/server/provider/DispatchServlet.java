@@ -16,7 +16,7 @@ import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.config.*;
 
 @Component(
-		name = "osgi.enroute.web.service.provider", //
+		name = "osgi.enroute.web.service.provider",
 		property = {
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/", 
 				"name=DispatchServlet", 

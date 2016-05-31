@@ -2,9 +2,6 @@ package osgi.enroute.web.server.provider;
 
 import java.io.*;
 import java.net.*;
-import java.nio.channels.*;
-import java.text.*;
-import java.util.*;
 
 import javax.servlet.http.*;
 
@@ -40,18 +37,17 @@ public class WebServer implements ConditionalServlet {
 
 	public static final String NAME = "osgi.enroute.simple.server";
 
-	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
-			Locale.ENGLISH);
-	LogService				log;
-	Cache					cache;
-
 	WebServerConfig						config;
 	BundleTracker< ? >					tracker;
-
+	Cache					cache;
+	private ResponseWriter						writer;
 	private ExceptionHandler			exceptionHandler;
+	LogService				log;
+
 	@Activate
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
+		writer = new ResponseWriter(config);
 		exceptionHandler = new ExceptionHandler(log);
 
 		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
@@ -75,89 +71,7 @@ public class WebServer implements ConditionalServlet {
 			if(c == null)
 				return false;
 
-			rsp.setDateHeader("Last-Modified", c.time);
-			rsp.setHeader("Etag", c.etag);
-			rsp.setHeader("Content-MD5", c.md5);
-			rsp.setHeader("Allow", "GET, HEAD");
-			rsp.setHeader("Accept-Ranges", "bytes");
-
-			long diff = 0;
-			if (c.expiration != 0)
-				diff = c.expiration - System.currentTimeMillis();
-			else {
-				diff = config.expiration();
-				if (diff == 0)
-					diff = 120000;
-			}
-
-			if (diff > 0) {
-				rsp.setHeader("Cache-Control", "max-age=" + diff / 1000);
-			}
-
-			if (c.mime != null)
-				rsp.setContentType(c.mime);
-
-			Range range = new Range(rq.getHeader("Range"), c.file.length());
-			long length = range.length();
-			if (length >= Integer.MAX_VALUE)
-				throw new IllegalArgumentException("Range to read is too high: " + length);
-
-			rsp.setContentLength((int) range.length());
-
-			if (config.expires() != 0) {
-				Date expires = new Date(System.currentTimeMillis() + 60000 * config.expires());
-				rsp.setHeader("Expires", format.format(expires));
-			}
-
-			String ifModifiedSince = rq.getHeader("If-Modified-Since");
-			if (ifModifiedSince != null) {
-				long time = 0;
-				try {
-					synchronized (format) {
-						time = format.parse(ifModifiedSince).getTime();
-					}
-					if (time > c.time) {
-						rsp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-						return true;
-					}
-				}
-				catch (Exception e) {
-					// e.printStackTrace();
-				}
-			}
-
-			String ifNoneMatch = rq.getHeader("If-None-Match");
-			if (ifNoneMatch != null) {
-				if (ifNoneMatch.indexOf(c.etag) >= 0) {
-					rsp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-					return true;
-				}
-			}
-
-			if (rq.getMethod().equalsIgnoreCase("GET")) {
-
-				rsp.setContentLengthLong(range.length());
-				OutputStream out = rsp.getOutputStream();
-
-				try (FileInputStream file = new FileInputStream(c.file);) {
-					FileChannel from = file.getChannel();
-					WritableByteChannel to = Channels.newChannel(out);
-					range.copy(from, to);
-					from.close();
-					to.close();
-				}
-
-				out.flush();
-				out.close();
-				rsp.getOutputStream().flush();
-				rsp.getOutputStream().close();
-			}
-
-			if (c.is404)
-				return false;
-			else
-				rsp.setStatus(HttpServletResponse.SC_OK);
-
+			writer.writeResponse(rq, rsp, c);
 		}
 		catch (Exception e ) {
 			exceptionHandler.handle(rq, rsp, e);

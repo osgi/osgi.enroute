@@ -114,3 +114,6 @@ See the "Configuration" section below for more information.
 
 ### File caching
 
+### Error Handling
+
+For Segregated Bundles, it is possible to provide a static error page for 404 errors. For any other usage, you should register a servlet with the `osgi.http.whiteboard.servlet.errorPage` property in the usual way. (See 140.4.1 of the Compendium.)

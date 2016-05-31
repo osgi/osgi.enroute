@@ -72,14 +72,15 @@ public class BundleFileServer extends HttpServlet {
 
 	public void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
 
+		Bundle b = null;
+		String bsn = null;
+
 		try {
 			String path = rq.getPathInfo();
 
 			if (path == null ) {
-				throw new NotFound404Exception();
+				throw new NotFound404Exception(bsn);
 			}
-
-			String bsn = null;
 
 			if (path.startsWith("/"))
 				path = path.substring(1);
@@ -89,20 +90,26 @@ public class BundleFileServer extends HttpServlet {
 			else
 				bsn = path;
 
-			Bundle b = bundles.get(bsn);
+			b = bundles.get(bsn);
 			if (b == null) {
-				throw new NotFound404Exception();
+				throw new NotFound404Exception(bsn);
 			}
 
+			boolean is404 = false;
 			URL url = cache.urlOf(b, path);
 			if (url == null ) {
-				throw new NotFound404Exception();
+				// Attempt to load the 404.html file within the bundle
+				path = bsn + "/404.html";
+				is404 = true;
+				url = cache.urlOf(b, path);
+				if (url == null )
+					throw new NotFound404Exception(bsn);
 			}
 
 			FileCache c = cache.getFromBundle(b, url, path);
+			c.is404 = is404;
 			writer.writeResponse(rq, rsp, c);
-		}
-		catch (Exception e ) {
+		} catch (Exception e ) {
 			exceptionHandler.handle(rq, rsp, e);
 		}
 	}

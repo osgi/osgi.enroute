@@ -10,7 +10,8 @@ public class Etag {
 	static byte[] get(File f) throws NotFound404Exception, InternalServer500Exception {
 		try {
 			if (!f.isFile())
-				throw new NotFound404Exception(new IllegalArgumentException("not a file (anymore?) " + f));
+				// Shouldn't this be a 500 instead??
+				throw new NotFound404Exception(null, new IllegalArgumentException("not a file (anymore?) " + f));
 			Digester<MD5> digester = MD5.getDigester();
 			IO.copy(f, digester);
 			return digester.digest().digest();
