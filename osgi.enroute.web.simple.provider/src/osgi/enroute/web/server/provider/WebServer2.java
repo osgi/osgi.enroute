@@ -233,10 +233,10 @@ public class WebServer2 implements ConditionalServlet {
 
 	private void index(HttpServletResponse rsp) throws Exception {
 		Bundle b = context.getBundle();
-		URL url = cache.urlOf(b, "osgi/enroute/web/index.html");
+		URL url = cache.internalUrlOf(b, "osgi/enroute/web/index.html");
 		CacheFile c = cache.getFromBundle(b, url, "osgi/enroute/web/index.html");
 		if (c == null || c.is404 || c.isNotFound()) {
-			url = cache.urlOf(b, "osgi/enroute/web/local/index.html");
+			url = cache.internalUrlOf(b, "osgi/enroute/web/local/index.html");
 			c = cache.getFromBundle(b, url, "osgi/enroute/web/local/index.html");
 		}
 

@@ -13,6 +13,7 @@ import org.osgi.service.log.*;
 
 import aQute.lib.io.*;
 import aQute.libg.cryptography.*;
+import osgi.enroute.web.server.cache.CacheFileFactory.*;
 import osgi.enroute.web.server.config.*;
 import osgi.enroute.web.server.exceptions.*;
 import osgi.enroute.web.server.provider.*;
@@ -115,10 +116,11 @@ public class Cache {
 	}
 
 	/**
-	 * Returns a URL of the existing file in the bundle or null if there is no
-	 * file corresponding to the path.
+	 * Returns an "internal" URL of the existing file in the bundle or null if there is no
+	 * file corresponding to the path. This URL is only used for accessing the file content; it
+	 * is NOT and must not be exposed externally.
 	 */
-	public URL urlOf(Bundle b, String path) {
+	public URL internalUrlOf(Bundle b, String path) {
 		Enumeration<URL> urls;
 		if (config.debug())
 			urls = b.findEntries("static/debug/" + path, "*", false);

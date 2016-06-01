@@ -7,6 +7,7 @@ import org.osgi.framework.*;
 
 import aQute.lib.base64.*;
 import aQute.lib.hex.*;
+import osgi.enroute.web.server.cache.CacheFileFactory.*;
 
 /**
  * Requires some setting up, so should only be instantiated by the CacheFactory.

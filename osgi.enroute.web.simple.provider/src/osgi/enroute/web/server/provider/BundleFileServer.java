@@ -96,12 +96,12 @@ public class BundleFileServer extends HttpServlet {
 			}
 
 			boolean is404 = false;
-			URL url = cache.urlOf(b, path);
+			URL url = cache.internalUrlOf(b, path);
 			if (url == null ) {
 				// Attempt to load the 404.html file within the bundle
 				path = bsn + "/404.html";
 				is404 = true;
-				url = cache.urlOf(b, path);
+				url = cache.internalUrlOf(b, path);
 				if (url == null )
 					throw new NotFound404Exception(bsn);
 			}

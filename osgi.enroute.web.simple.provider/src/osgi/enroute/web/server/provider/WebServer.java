@@ -112,7 +112,7 @@ public class WebServer implements ConditionalServlet {
 		Bundle[] bundles = tracker.getBundles();
 		if (bundles != null) {
 			for (Bundle b : bundles) {
-				URL url = cache.urlOf(b, path);
+				URL url = cache.internalUrlOf(b, path);
 				CacheFile c = cache.getFromBundle(b, url, path);
 				if(c != null)
 					return c;
