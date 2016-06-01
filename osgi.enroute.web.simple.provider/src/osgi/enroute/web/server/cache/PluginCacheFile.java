@@ -10,7 +10,7 @@ import aQute.lib.converter.*;
 import aQute.lib.io.*;
 import osgi.enroute.web.server.provider.*;
 
-public class PluginCache extends FileCache {
+public class PluginCacheFile extends CacheFile {
 	private static final Set<String> EMPTY = new HashSet<String>();
 
 	private int count = -1;
@@ -18,11 +18,11 @@ public class PluginCache extends FileCache {
 	private ServiceTracker<Object, ServiceReference<?>> pluginTracker;
 	public Set<ServiceReference<?>> dependencies = new HashSet<>();
 
-	PluginCache(FileCache cache, WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
+	PluginCacheFile(CacheFile cache, WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
 		this(cache.time, cache.etag, cache.md5, cache.file, cache.bundle, cache.mime, cache.expiration, cache.publc, cache.is404, webServer, pluginTracker);
 	}
 
-	PluginCache(
+	PluginCacheFile(
 			long			time,
 			String			etag,
 			String			md5,

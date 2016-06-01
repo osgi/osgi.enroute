@@ -10,10 +10,7 @@ import java.util.zip.*;
 import org.osgi.framework.*;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.log.*;
-import org.osgi.util.tracker.*;
 
-import aQute.lib.base64.Base64;
-import aQute.lib.hex.*;
 import aQute.lib.io.*;
 import aQute.libg.cryptography.*;
 import osgi.enroute.web.server.config.*;
@@ -37,7 +34,7 @@ public class Cache {
 	LogService						log;
 	WebServerConfig					config;
 
-	private final Map<String,FileCache>	cached = new HashMap<String,FileCache>();
+	private final Map<String,CacheFile>	cached = new HashMap<String,CacheFile>();
 	private Lock 					lock = new ReentrantLock();
 
 	@Activate
@@ -58,50 +55,7 @@ public class Cache {
 		cacheFile.mkdir();
 	}
 
-	public FileCache newFileCache(File f, Bundle b, String path) throws NotFound404Exception, InternalServer500Exception {
-		return newFileCache(f, b, Etag.get(f), path);
-	}
-
-	public FileCache newFileCache(File f) throws NotFound404Exception, InternalServer500Exception {
-		return newFileCache(f, null, f.getAbsolutePath());
-	}
-
-	public FileCache newFileCache(Future<File> future) {
-		return new FileCache(future);
-	}
-
-	public FileCache newFileCache(File f, Bundle b, byte[] etag, String path) {
-		FileCache cache = new FileCache();
-		cache.time = f.lastModified();
-		cache.bundle = b;
-		cache.file = f;
-		cache.etag = Hex.toHexString(etag);
-		cache.md5 = Base64.encodeBase64(etag);
-		if (b != null && b.getLastModified() > f.lastModified()) {
-			cache.time = b.getLastModified();
-			cache.file.setLastModified(cache.time);
-		}
-		int n = path.lastIndexOf('.');
-		if (n > 0) {
-			String ext = path.substring(n + 1);
-			cache.mime = Mimes.mimes().getProperty(ext);
-		}
-		cache.expiration = expiration;
-
-		return cache;
-	}
-
-	public PluginCache newPluginCache(WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application) throws WebServerException {
-		try {
-			FileCache cache = newFileCache(File.createTempFile(application, ".js"));
-			return new PluginCache(cache, webServer, pluginTracker);
-		}
-		catch (IOException e) {
-			throw new InternalServer500Exception();
-		}
-	}
-
-	public File getCachedRawFile(String path) throws InternalServer500Exception {
+	private File getRawFile(String path) throws InternalServer500Exception {
 		try {
 			String name = SHA1.digest(path.getBytes("UTF-8")).asHex();
 			return new File(cacheFile, name);
@@ -118,10 +72,10 @@ public class Cache {
 	 * reuses the caching mechanism. It proxies any path that starts with $, it
 	 * assumes the remainder is an encoded URL.
 	 */
-	public FileCache findCachedUrl(final String path) throws NotFound404Exception, InternalServer500Exception {
-		final File cached = getCachedRawFile(path);
+	public CacheFile findCacheFileByPath(final String path) throws NotFound404Exception, InternalServer500Exception {
+		final File cached = getRawFile(path);
 		if (cached.isFile())
-			return newFileCache(cached);
+			return CacheFileFactory.newCacheFile(cached, expiration);
 
 		cached.getAbsoluteFile().getParentFile().mkdirs();
 
@@ -157,7 +111,7 @@ public class Cache {
 
 		});
 		executor.execute(task);
-		return newFileCache(task);
+		return CacheFileFactory.newCacheFile(task);
 	}
 
 	/**
@@ -187,12 +141,12 @@ public class Cache {
 		return url;
 	}
 
-	public FileCache getFromBundle(Bundle b, URL url, String path) throws InternalServer500Exception {
+	public CacheFile getFromBundle(Bundle b, URL url, String path) throws InternalServer500Exception {
 		try {
 			if (url == null )
 				return null;
 
-			File cached = getCachedRawFile(path);
+			File cached = getRawFile(path);
 			if (!cached.exists() || cached.lastModified() <= b.getLastModified()) {
 				cached.delete();
 				cached.getAbsoluteFile().getParentFile().mkdirs();
@@ -201,17 +155,17 @@ public class Cache {
 				IO.copy(url.openStream(), digester);
 				digester.close();
 				cached.setLastModified(b.getLastModified() + 1000);
-				return newFileCache(cached, b, digester.digest().digest(), path);
+				return CacheFileFactory.newCacheFile(cached, b, digester.digest().digest(), expiration, path);
 			}
 
-			return newFileCache(cached, b, path);
+			return CacheFileFactory.newCacheFile(cached, b, expiration, path);
 		}
 		catch (Exception e) {
 			throw new InternalServer500Exception(e);
 		}
 	}
 
-	public FileCache getFromCache(String path)
+	public CacheFile get(String path)
 	{
 		lock.lock();
 		try {
@@ -221,7 +175,7 @@ public class Cache {
 		}
 	}
 
-	public void putToCache(String path, FileCache c)
+	public void put(String path, CacheFile c)
 	{
 		lock.lock();
 		try {

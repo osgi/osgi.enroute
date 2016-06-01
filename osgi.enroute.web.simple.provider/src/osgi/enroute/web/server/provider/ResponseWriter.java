@@ -20,7 +20,7 @@ public class ResponseWriter {
 		this.config = config;
 	}
 
-	boolean writeResponse(HttpServletRequest rq, HttpServletResponse rsp, FileCache c) throws Exception {
+	boolean writeResponse(HttpServletRequest rq, HttpServletResponse rsp, CacheFile c) throws Exception {
 		rsp.setDateHeader("Last-Modified", c.time);
 		rsp.setHeader("Etag", c.etag);
 		rsp.setHeader("Content-MD5", c.md5);

@@ -11,7 +11,7 @@ import aQute.lib.hex.*;
 /**
  * Requires some setting up, so should only be instantiated by the CacheFactory.
  */
-public class FileCache {
+public class CacheFile {
 	public long				time;
 	public String			etag;
 	public String			md5;
@@ -23,9 +23,9 @@ public class FileCache {
 	private Future<File>	future;
 	public boolean			is404;
 
-	FileCache() {}
+	CacheFile() {}
 
-	FileCache(Future<File> future) {
+	CacheFile(Future<File> future) {
 		this.future = future;
 	}
 

@@ -1,6 +1,5 @@
 package osgi.enroute.web.server.provider;
 
-import java.io.*;
 import java.net.*;
 
 import javax.servlet.http.*;
@@ -67,7 +66,7 @@ public class WebServer implements ConditionalServlet {
 			if (path != null && path.startsWith("/"))
 				path = path.substring(1);
 
-			FileCache c = getCache(path);
+			CacheFile c = getCache(path);
 			if(c == null)
 				return false;
 
@@ -80,17 +79,17 @@ public class WebServer implements ConditionalServlet {
 		return true;
 	}
 
-	FileCache getCache(String path) throws Exception {
-		FileCache c;
+	CacheFile getCache(String path) throws Exception {
+		CacheFile c;
 		cache.lock();
 		try {
-			c = cache.getFromCache(path);
+			c = cache.get(path);
 			if (c == null || c.isExpired()) {
 				c = findBundle(path);
 				if (c == null) {
 					c = do404(path);
 				} else
-					cache.putToCache(path, c);
+					cache.put(path, c);
 			}
 		} finally {
 			cache.unlock();
@@ -98,9 +97,9 @@ public class WebServer implements ConditionalServlet {
 		return c;
 	}
 
-	private FileCache do404(String path) throws Exception {
+	private CacheFile do404(String path) throws Exception {
 		log.log(LogService.LOG_INFO, "404 " + path);
-		FileCache c = findBundle("404.html");
+		CacheFile c = findBundle("404.html");
 		if (c == null)
 			c = findBundle("default/404.html");
 		if (c != null)
@@ -109,31 +108,18 @@ public class WebServer implements ConditionalServlet {
 		return c;
 	}
 
-	FileCache findBundle(String path) throws Exception {
+	CacheFile findBundle(String path) throws Exception {
 		Bundle[] bundles = tracker.getBundles();
 		if (bundles != null) {
 			for (Bundle b : bundles) {
 				URL url = cache.urlOf(b, path);
-				FileCache c = cache.getFromBundle(b, url, path);
+				CacheFile c = cache.getFromBundle(b, url, path);
 				if(c != null)
 					return c;
 			}
 		}
 		return null;
 	}
-
-	//-------------- PLUGIN-CACHE --------------
-	public File getFile(String path) throws Exception {
-		FileCache c = getCache(path);
-		if (c == null)
-			return null;
-
-		if (!c.isSynched())
-			return null;
-
-		return c.file;
-	}
-
 
 	@Deactivate
 	void deactivate() {

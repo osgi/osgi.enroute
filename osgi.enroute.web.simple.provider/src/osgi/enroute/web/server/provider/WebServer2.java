@@ -72,8 +72,8 @@ public class WebServer2 implements ConditionalServlet {
 		this.exceptionHandler = new ExceptionHandler(log);
 		proxy = !config.noproxy();
 
-		pluginContributions = new PluginContributions(this, cache, context);
-		webResources = new WebResources(this, cache, context);
+		pluginContributions = new PluginContributions(this, context);
+		webResources = new WebResources(this, context);
 
 		Hashtable<String,Object> p = new Hashtable<String,Object>();
 		p.put("pattern", ".*");
@@ -129,7 +129,7 @@ public class WebServer2 implements ConditionalServlet {
 			if (path != null && path.startsWith("/"))
 				path = path.substring(1);
 
-			FileCache c = getCache(path);
+			CacheFile c = getCache(path);
 
 			if (c == null || !c.isSynched()) {
 				if ("index.html".equals(path)) {
@@ -234,7 +234,7 @@ public class WebServer2 implements ConditionalServlet {
 	private void index(HttpServletResponse rsp) throws Exception {
 		Bundle b = context.getBundle();
 		URL url = cache.urlOf(b, "osgi/enroute/web/index.html");
-		FileCache c = cache.getFromBundle(b, url, "osgi/enroute/web/index.html");
+		CacheFile c = cache.getFromBundle(b, url, "osgi/enroute/web/index.html");
 		if (c == null || c.is404 || c.isNotFound()) {
 			url = cache.urlOf(b, "osgi/enroute/web/local/index.html");
 			c = cache.getFromBundle(b, url, "osgi/enroute/web/local/index.html");
@@ -252,17 +252,17 @@ public class WebServer2 implements ConditionalServlet {
 		IO.store(content, rsp.getOutputStream());
 	}
 
-	FileCache getCache(String path) throws Exception {
-		FileCache c;
+	CacheFile getCache(String path) throws Exception {
+		CacheFile c;
 		cache.lock();
 		try {
-			c = cache.getFromCache(path);
+			c = cache.get(path);
 			if (c == null || c.isExpired()) {
 				c = find(path);
 				if (c == null) {
 					c = do404(path);
 				} else
-					cache.putToCache(path, c);
+					cache.put(path, c);
 			}
 		} finally {
 			cache.unlock();
@@ -270,31 +270,31 @@ public class WebServer2 implements ConditionalServlet {
 		return c;
 	}
 
-	private FileCache do404(String path) throws Exception {
+	private CacheFile do404(String path) throws Exception {
 		log.log(LogService.LOG_INFO, "404 " + path);
-		FileCache c = find("404.html");
+		CacheFile c = find("404.html");
 		if (c != null)
 			c.is404 = true;
 
 		return c;
 	}
 
-	FileCache find(String path) throws Exception {
+	CacheFile find(String path) throws Exception {
 		if (proxy && path.startsWith("$"))
-			return cache.findCachedUrl(path);
+			return cache.findCacheFileByPath(path);
 
 		if (path.startsWith(PluginContributions.CONTRIBUTIONS + "/"))
 			return pluginContributions
 					.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length() + 1));
 
-		FileCache c = webResources.find(path);
+		CacheFile c = webResources.find(path);
 
 		return c;
 	}
 
 	//-------------- PLUGIN-CACHE --------------
 	public File getFile(String path) throws Exception {
-		FileCache c = getCache(path);
+		CacheFile c = getCache(path);
 		if (c == null)
 			return null;
 

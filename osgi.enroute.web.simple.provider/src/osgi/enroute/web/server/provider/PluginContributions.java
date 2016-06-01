@@ -46,12 +46,11 @@ public class PluginContributions extends HttpServlet implements Closeable {
 	ServiceTracker<Object, ServiceReference<?>> pluginTracker;
 	WebServer2 webserver;
 	Cache cacheFactory;
-	Map<String, PluginCache> pluginCache = new ConcurrentHashMap<>();
+	Map<String, PluginCacheFile> pluginCache = new ConcurrentHashMap<>();
 
-	public PluginContributions(WebServer2 w, Cache cacheFactory, BundleContext context)
+	public PluginContributions(WebServer2 w, BundleContext context)
 			throws InvalidSyntaxException {
 		this.webserver = w;
-		this.cacheFactory = cacheFactory;
 		pluginTracker = new ServiceTracker<Object, ServiceReference<?>>(context,
 				FrameworkUtil.createFilter("(" + PLUGIN + "=*)"),
 				null) {
@@ -62,11 +61,11 @@ public class PluginContributions extends HttpServlet implements Closeable {
 					Set<String> applications = toSet(ref
 							.getProperty(PLUGIN));
 					for (String app : applications) {
-						PluginCache pc;
+						PluginCacheFile pc;
 						synchronized (pluginCache) {
 							pc = pluginCache.get(app);
 							if (pc == null) {
-								pc = cacheFactory.newPluginCache(webserver, pluginTracker, app);
+								pc = CacheFileFactory.newPluginCacheFile(webserver, pluginTracker, app, 0);
 								pluginCache.put(app, pc);
 							}
 						}
@@ -86,7 +85,7 @@ public class PluginContributions extends HttpServlet implements Closeable {
 				Set<String> applications = toSet(ref
 						.getProperty(PLUGIN));
 				for (String app : applications) {
-					PluginCache pc;
+					PluginCacheFile pc;
 					synchronized (pluginCache) {
 						pc = pluginCache.get(app);
 						if (pc != null) {
@@ -105,7 +104,7 @@ public class PluginContributions extends HttpServlet implements Closeable {
 		pluginTracker.close();
 	}
 
-	public FileCache findCachedPlugins(String path) {
+	public CacheFile findCachedPlugins(String path) {
 		Matcher m = EXTENSION.matcher(path);
 		if ( !m.matches())
 			return pluginCache.get(path);;

@@ -106,7 +106,7 @@ public class BundleFileServer extends HttpServlet {
 					throw new NotFound404Exception(bsn);
 			}
 
-			FileCache c = cache.getFromBundle(b, url, path);
+			CacheFile c = cache.getFromBundle(b, url, path);
 			c.is404 = is404;
 			writer.writeResponse(rq, rsp, c);
 		} catch (Exception e ) {
