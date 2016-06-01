@@ -41,7 +41,7 @@ import osgi.enroute.webserver.capabilities.*;
 				"name=" + WebServer2.NAME, 
 		}, 
 		name = WebServer2.NAME, 
-		configurationPid = WebServer.NAME,
+		configurationPid = BundleMixinServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class WebServer2 implements ConditionalServlet {
 

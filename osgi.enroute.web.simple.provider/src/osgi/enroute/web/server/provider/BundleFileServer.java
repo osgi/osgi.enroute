@@ -24,7 +24,7 @@ import osgi.enroute.web.server.exceptions.*;
 				Constants.SERVICE_RANKING + ":Integer=100"
 		}, 
 		service = Servlet.class, 
-		configurationPid = WebServer.NAME,
+		configurationPid = BundleMixinServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL,
 		immediate = true)
 public class BundleFileServer extends HttpServlet {
@@ -108,6 +108,7 @@ public class BundleFileServer extends HttpServlet {
 
 			CacheFile c = cache.getFromBundle(b, url, path);
 			c.is404 = is404;
+			cache.put(path, c);
 			writer.writeResponse(rq, rsp, c);
 		} catch (Exception e ) {
 			exceptionHandler.handle(rq, rsp, e);

@@ -30,7 +30,7 @@ OSGi can help you organize your code, then the WebServer could be a very good ch
 
 ## Code organization
 
-### Segregated bundles
+### Segregated content
 
 Sometimes you may want to deploy your web application as a single, segregated unit.
 In this case, it is possible to put your static resources (and possibly java code)
@@ -61,7 +61,7 @@ or "index.html" to a path ending in "/". The exact matching path is required.
 
 ### Mixins
 
-The principle of mixins is similar to the segregated bundles described above, but the WebServer
+The principle of mixins is similar to the segregated content described above, but the WebServer
 does not ensure content segregation. This means that instead of serving a self-contained application
 from a single bundle, it is possible to mix content from different bundles together in a composed
 application. As above, the static files are shipped in the `/static` directory, but this time,
@@ -79,7 +79,7 @@ For example, given two bundles com.acme.foo and com.acme.bar:
 Accessing `http://localhost:8080/myapp/foo.html` will display the contents of foo.html from `com.acme.foo`,
 and `http://localhost:8080/myapp/foo.html` will display the contents of bar.html from com.acme.bar.
 
-Note that using the mixin mechanism, it is also possible to access files from a segregated bundle
+Note that using the mixin mechanism, it is also possible to access files from a segregated content bundle
 via the BSN path (without the `/bnd` part): `http://localhost:8080/osgi.enroute.web.example/index.txt`.
 This is provided for convenience and backwards-compatibility.
 
@@ -116,4 +116,4 @@ See the "Configuration" section below for more information.
 
 ### Error Handling
 
-For Segregated Bundles, it is possible to provide a static error page for 404 errors. For any other usage, you should register a servlet with the `osgi.http.whiteboard.servlet.errorPage` property in the usual way. (See 140.4.1 of the Compendium.)
+For Segregated Content bundles, it is possible to provide a static error page for 404 errors. For any other usage, you should register a servlet with the `osgi.http.whiteboard.servlet.errorPage` property in the usual way. (See 140.4.1 of the Compendium.)

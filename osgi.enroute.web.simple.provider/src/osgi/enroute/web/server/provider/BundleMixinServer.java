@@ -28,20 +28,20 @@ import osgi.enroute.webserver.capabilities.*;
 		immediate = true, 
 		property = {
 				"service.ranking:Integer=1000", 
-				"name=" + WebServer.NAME}, 
-		name = WebServer.NAME, 
-		configurationPid = WebServer.NAME,
+				"name=" + BundleMixinServer.NAME}, 
+		name = BundleMixinServer.NAME, 
+		configurationPid = BundleMixinServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
-public class WebServer implements ConditionalServlet {
+public class BundleMixinServer implements ConditionalServlet {
 
 	public static final String NAME = "osgi.enroute.simple.server";
 
 	WebServerConfig						config;
 	BundleTracker< ? >					tracker;
-	Cache					cache;
-	private ResponseWriter						writer;
+	Cache								cache;
+	private ResponseWriter				writer;
 	private ExceptionHandler			exceptionHandler;
-	LogService				log;
+	LogService							log;
 
 	@Activate
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
@@ -66,10 +66,13 @@ public class WebServer implements ConditionalServlet {
 			if (path != null && path.startsWith("/"))
 				path = path.substring(1);
 
-			CacheFile c = getCache(path);
+			CacheFile c = cache.get(path);
+			if (c == null || c.isExpired())
+				c = findBundle(path);
 			if(c == null)
 				return false;
 
+			cache.put(path, c);
 			writer.writeResponse(rq, rsp, c);
 		}
 		catch (Exception e ) {
@@ -77,35 +80,6 @@ public class WebServer implements ConditionalServlet {
 		}
 
 		return true;
-	}
-
-	CacheFile getCache(String path) throws Exception {
-		CacheFile c;
-		cache.lock();
-		try {
-			c = cache.get(path);
-			if (c == null || c.isExpired()) {
-				c = findBundle(path);
-				if (c == null) {
-					c = do404(path);
-				} else
-					cache.put(path, c);
-			}
-		} finally {
-			cache.unlock();
-		}
-		return c;
-	}
-
-	private CacheFile do404(String path) throws Exception {
-		log.log(LogService.LOG_INFO, "404 " + path);
-		CacheFile c = findBundle("404.html");
-		if (c == null)
-			c = findBundle("default/404.html");
-		if (c != null)
-			c.is404 = true;
-
-		return c;
 	}
 
 	CacheFile findBundle(String path) throws Exception {

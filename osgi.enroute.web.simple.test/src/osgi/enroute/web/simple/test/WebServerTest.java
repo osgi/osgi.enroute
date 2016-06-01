@@ -40,7 +40,7 @@ public class WebServerTest extends TestCase {
 	 * contents of the static/debug/index.html file.
 	 */
     public void testHostNameOnly() throws Exception {
-        assertValid("INDEX", 200, "http://localhost:8080");
+        assertValid("TEST - MIXIN - TOP - HTML", 200, "http://localhost:8080");
     }
 
     /**
@@ -49,7 +49,7 @@ public class WebServerTest extends TestCase {
      * contents of the static/debug/index.html file.
      */
 	public void testEmptyRootPartition() throws Exception {
-		assertValid("INDEX", 200, "http://localhost:8080/");
+		assertValid("TEST - MIXIN - TOP - HTML", 200, "http://localhost:8080/");
 	}
 
 	private void assertValid(String contents, int code, String uri) throws IOException {
