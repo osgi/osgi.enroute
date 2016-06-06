@@ -69,10 +69,11 @@ An record with a .comment key will be ignored.
 		"[debug]org.apache.felix.https.debug": true, 
 		"[debug]org.apache.felix.https.enable": true, 
 		"org.osgi.service.http.port.secure": 8085, 
-		"org.apache.felix.https.keystore": "@{resource:jpm4j.ks}", 		"org.apache.felix.https.keystore.password":"@{.jpm4j.keystore}"
+		"org.apache.felix.https.keystore": "@{resource:jpm4j.ks}",
+		"org.apache.felix.https.keystore.password":"@{.jpm4j.keystore}"
 	},{ 
 		"service.factoryPid": "aQute.executor.ExecutorImpl", 
 		"service.pid": "DefaultExecutor", "type": "FIXED", "size": 10 
 	}
-]
+	]
 
