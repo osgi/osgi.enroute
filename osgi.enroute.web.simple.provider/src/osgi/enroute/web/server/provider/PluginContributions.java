@@ -44,11 +44,11 @@ public class PluginContributions extends HttpServlet implements Closeable {
 	private static final long serialVersionUID = 1L;
 	private static final Set<String> EMPTY = new HashSet<String>();
 	ServiceTracker<Object, ServiceReference<?>> pluginTracker;
-	WebServer2 webserver;
+	WebresourceServer webserver;
 	Cache cacheFactory;
 	Map<String, PluginCacheFile> pluginCache = new ConcurrentHashMap<>();
 
-	public PluginContributions(WebServer2 w, BundleContext context)
+	public PluginContributions(WebresourceServer w, BundleContext context)
 			throws InvalidSyntaxException {
 		this.webserver = w;
 		pluginTracker = new ServiceTracker<Object, ServiceReference<?>>(context,

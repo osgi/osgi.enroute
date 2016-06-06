@@ -17,7 +17,7 @@ import org.osgi.service.coordinator.Coordinator;
 /**
  * Create a filter that limits the # of connections
  */
-public class WebFilter implements Filter {
+public class MaxConnectionsFilter implements Filter {
 
 	int maxConnections;
 	String maxConnectionMessage;
@@ -25,7 +25,7 @@ public class WebFilter implements Filter {
 	AtomicInteger active = new AtomicInteger();
 	private Coordinator coordinator;
 
-	public WebFilter(int maxConnections, String maxConnectionMessage,
+	public MaxConnectionsFilter(int maxConnections, String maxConnectionMessage,
 			Coordinator coordinator) {
 		this.maxConnections = maxConnections;
 		this.maxConnectionMessage = maxConnectionMessage;
@@ -33,8 +33,7 @@ public class WebFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse rsp,
-			FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest req, ServletResponse rsp, FilterChain chain) throws IOException, ServletException {
 
 		try {
 			HttpServletResponse hrsp = (HttpServletResponse) rsp;
@@ -50,8 +49,7 @@ public class WebFilter implements Filter {
 				}
 			}
 
-			Coordination c = coordinator.begin("osgi.enroute.webrequest."
-					+ active.incrementAndGet(), 0);
+			Coordination c = coordinator.begin("osgi.enroute.webrequest." + active.incrementAndGet(), 0);
 			try {
 				chain.doFilter(req, rsp);
 				c.end();

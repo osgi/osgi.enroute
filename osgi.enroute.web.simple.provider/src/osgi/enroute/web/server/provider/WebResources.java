@@ -94,7 +94,7 @@ public class WebResources {
 	final TypeReference<List<String>>	listOfStrings				= new TypeReference<List<String>>() {};
 	static Logger						logger						= LoggerFactory.getLogger(WebResources.class);
 	final BundleContext					context;
-	final WebServer2						ws;
+	final WebresourceServer						ws;
 
 	/**
 	 * Constructor
@@ -104,7 +104,7 @@ public class WebResources {
 	 * @param context
 	 *            To see the bundles
 	 */
-	WebResources(WebServer2 ws, BundleContext context) {
+	WebResources(WebresourceServer ws, BundleContext context) {
 		this.context = context;
 		this.ws = ws;
 	}

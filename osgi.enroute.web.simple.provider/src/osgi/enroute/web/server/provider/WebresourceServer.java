@@ -38,14 +38,14 @@ import osgi.enroute.webserver.capabilities.*;
 		immediate = true, 
 		property = {
 				"service.ranking:Integer=1001", 
-				"name=" + WebServer2.NAME, 
+				"name=" + WebresourceServer.NAME, 
 		}, 
-		name = WebServer2.NAME, 
+		name = WebresourceServer.NAME, 
 		configurationPid = BundleMixinServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
-public class WebServer2 implements ConditionalServlet {
+public class WebresourceServer implements ConditionalServlet {
 
-	static final String NAME = "osgi.enroute.simple.server2";
+	static final String NAME = "osgi.enroute.simple.webresource";
 
 	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
 			Locale.ENGLISH);
@@ -78,7 +78,7 @@ public class WebServer2 implements ConditionalServlet {
 		Hashtable<String,Object> p = new Hashtable<String,Object>();
 		p.put("pattern", ".*");
 		webfilter = context.registerService(Filter.class,
-				new WebFilter(config.maxConnections(), config.maxConnectionMessage(), coordinator), p);
+				new MaxConnectionsFilter(config.maxConnections(), config.maxConnectionMessage(), coordinator), p);
 
 		apps = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null) {
 			@Override

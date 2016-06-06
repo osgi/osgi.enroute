@@ -77,7 +77,7 @@ public class CacheFileFactory {
 		return c;
 	}
 
-	public static PluginCacheFile newPluginCacheFile(WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application, long expiration) throws WebServerException {
+	public static PluginCacheFile newPluginCacheFile(WebresourceServer webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application, long expiration) throws WebServerException {
 		try {
 			CacheFile cache = newCacheFile(File.createTempFile(application, ".js"), expiration);
 			return new PluginCacheFile(cache, webServer, pluginTracker);

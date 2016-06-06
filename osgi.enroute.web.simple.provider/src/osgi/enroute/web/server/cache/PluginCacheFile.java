@@ -14,11 +14,11 @@ public class PluginCacheFile extends CacheFile {
 	private static final Set<String> EMPTY = new HashSet<String>();
 
 	private int count = -1;
-	private WebServer2 webServer;
+	private WebresourceServer webServer;
 	private ServiceTracker<Object, ServiceReference<?>> pluginTracker;
 	public Set<ServiceReference<?>> dependencies = new HashSet<>();
 
-	PluginCacheFile(CacheFile cache, WebServer2 webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
+	PluginCacheFile(CacheFile cache, WebresourceServer webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
 		this(cache.time, cache.etag, cache.md5, cache.file, cache.bundle, cache.mime, cache.expiration, cache.publc, cache.is404, webServer, pluginTracker);
 	}
 
@@ -32,7 +32,7 @@ public class PluginCacheFile extends CacheFile {
 			long			expiration,
 			boolean			publc,
 			boolean			is404,
-			WebServer2 		webServer,
+			WebresourceServer 		webServer,
 			ServiceTracker<Object, ServiceReference<?>> pluginTracker) {
 		this.time = time;
 		this.etag = etag;
