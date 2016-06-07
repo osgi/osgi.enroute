@@ -1,7 +1,6 @@
 package osgi.enroute.web.server.provider;
 
 import java.io.*;
-import java.net.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
@@ -14,18 +13,13 @@ import org.osgi.namespace.extender.*;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.coordinator.*;
 import org.osgi.service.log.*;
-import org.osgi.util.tracker.*;
 
 import aQute.bnd.annotation.headers.*;
-import aQute.lib.io.*;
-import aQute.lib.json.*;
-import aQute.libg.sed.*;
 import osgi.enroute.http.capabilities.*;
 import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
 import osgi.enroute.web.server.config.*;
 import osgi.enroute.web.server.exceptions.*;
-import osgi.enroute.web.server.provider.IndexDTO.*;
 import osgi.enroute.webserver.capabilities.*;
 
 @ProvideCapability(
@@ -37,7 +31,7 @@ import osgi.enroute.webserver.capabilities.*;
 		service = { ConditionalServlet.class }, 
 		immediate = true, 
 		property = {
-				"service.ranking:Integer=1001", 
+				"service.ranking:Integer=1011", 
 				"name=" + PluginContributionsServer.NAME, 
 		}, 
 		name = PluginContributionsServer.NAME, 
@@ -53,7 +47,6 @@ public class PluginContributionsServer implements ConditionalServlet {
 	boolean					proxy;
 	PluginContributions		pluginContributions;
 	WebResources			webResources;
-	IndexDTO				index							= new IndexDTO();
 	Cache					cache;
 	BundleContext			context;
 
@@ -61,13 +54,11 @@ public class PluginContributionsServer implements ConditionalServlet {
 	private ServiceRegistration<Filter>	webfilter;
 	private Coordinator					coordinator;
 	private ServiceRegistration<Filter>	exceptionFilter;
-	private BundleTracker<Bundle>		apps;
 	private ExceptionHandler			exceptionHandler;
 
 	@Activate
-	void activate(WebServerConfig config, Map<String,Object> props, BundleContext context) throws Exception {
+	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.context = context;
-		index.configuration = props;
 		this.config = config;
 		this.exceptionHandler = new ExceptionHandler(log);
 		proxy = !config.noproxy();
@@ -79,47 +70,6 @@ public class PluginContributionsServer implements ConditionalServlet {
 		p.put("pattern", ".*");
 		webfilter = context.registerService(Filter.class,
 				new MaxConnectionsFilter(config.maxConnections(), config.maxConnectionMessage(), coordinator), p);
-
-		apps = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null) {
-			@Override
-			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
-				String app = bundle.getHeaders().get("EnRoute-Application");
-				if (app == null)
-					return null;
-
-				String[] links = app.split("\\s*,\\s*");
-				for (String link : links) {
-					ApplicationDTO appdto = new ApplicationDTO();
-					appdto.bsn = bundle.getSymbolicName();
-					appdto.version = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
-					appdto.bundle = bundle.getBundleId();
-					appdto.description = bundle.getHeaders().get(Constants.BUNDLE_DESCRIPTION);
-					appdto.link = link;
-					appdto.name = bundle.getHeaders().get(Constants.BUNDLE_NAME);
-					if (appdto.name == null)
-						appdto.name = appdto.bsn;
-
-					synchronized (index) {
-						index.applications.add(appdto);
-					}
-				}
-
-				return super.addingBundle(bundle, event);
-			}
-
-			@Override
-			public void removedBundle(Bundle bundle, BundleEvent event, Bundle object) {
-				synchronized (index) {
-					for (Iterator<ApplicationDTO> i = index.applications.iterator(); i.hasNext();) {
-						ApplicationDTO dto = i.next();
-						if (dto.bundle == bundle.getBundleId())
-							i.remove();
-					}
-				}
-				super.removedBundle(bundle, event, object);
-			}
-		};
-		apps.open();
 	}
 
 	@Override
@@ -131,14 +81,8 @@ public class PluginContributionsServer implements ConditionalServlet {
 
 			CacheFile c = getCache(path);
 
-			if (c == null || !c.isSynched()) {
-				if ("index.html".equals(path)) {
-					index(rsp);
-					return true;
-				} else {
-					return false;
-				}
-			}
+			if (c == null || !c.isSynched())
+				return false;
 
 			rsp.setDateHeader("Last-Modified", c.time);
 			rsp.setHeader("Etag", c.etag);
@@ -231,27 +175,6 @@ public class PluginContributionsServer implements ConditionalServlet {
 		return true;
 	}
 
-	private void index(HttpServletResponse rsp) throws Exception {
-		Bundle b = context.getBundle();
-		URL url = cache.internalUrlOf(b, "osgi/enroute/web/index.html");
-		CacheFile c = cache.getFromBundle(b, url, "osgi/enroute/web/index.html");
-		if (c == null || c.is404 || c.isNotFound()) {
-			url = cache.internalUrlOf(b, "osgi/enroute/web/local/index.html");
-			c = cache.getFromBundle(b, url, "osgi/enroute/web/local/index.html");
-		}
-
-		String content = IO.collect(c.file);
-		Map<String,String> map = new HashMap<>();
-
-		synchronized (index) {
-			map.put("index", new JSONCodec().enc().put(index).indent(" ").toString());
-		}
-
-		ReplacerAdapter ra = new ReplacerAdapter(map);
-		content = ra.process(content);
-		IO.store(content, rsp.getOutputStream());
-	}
-
 	CacheFile getCache(String path) throws Exception {
 		CacheFile c;
 		cache.lock();
@@ -287,9 +210,11 @@ public class PluginContributionsServer implements ConditionalServlet {
 			return pluginContributions
 					.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length() + 1));
 
-		CacheFile c = webResources.find(path);
-
-		return c;
+		// This is null at this time... need to fix.
+//		CacheFile c = webResources.find(path);
+//
+//		return c;
+		return null;
 	}
 
 	//-------------- PLUGIN-CACHE --------------
@@ -312,8 +237,6 @@ public class PluginContributionsServer implements ConditionalServlet {
 			webfilter.unregister();
 		if (exceptionFilter != null)
 			exceptionFilter.unregister();
-
-		apps.close();
 	}
 
 	@Reference

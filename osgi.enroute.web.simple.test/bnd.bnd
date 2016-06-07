@@ -4,6 +4,7 @@
 
 
 Bundle-Description: Test case for osgi.enroute.web.simple.provider
+EnRoute-Application: org.enroute.web.simple.test
 
 Private-Package:  \
 	osgi.enroute.web.simple.test

@@ -27,7 +27,7 @@ import osgi.enroute.webserver.capabilities.*;
 		service = { ConditionalServlet.class }, 
 		immediate = true, 
 		property = {
-				"service.ranking:Integer=1000", 
+				"service.ranking:Integer=1001", 
 				"name=" + BundleMixinServer.NAME}, 
 		name = BundleMixinServer.NAME, 
 		configurationPid = BundleMixinServer.NAME,

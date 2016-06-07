@@ -13,9 +13,7 @@ import aQute.bnd.testing.DSTestWiring;
 import aQute.lib.io.IO;
 import junit.framework.TestCase;
 import osgi.enroute.configurer.api.ConfigurationDone;
-import osgi.enroute.configurer.api.RequireConfigurerExtender;
 
-@RequireConfigurerExtender
 @Component
 public class BundleFileServerTest extends TestCase {
 

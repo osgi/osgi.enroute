@@ -19,11 +19,8 @@ import aQute.lib.io.IO;
 import aQute.libg.map.MAP;
 import junit.framework.TestCase;
 import osgi.enroute.configurer.api.ConfigurationDone;
-import osgi.enroute.configurer.api.RequireConfigurerExtender;
 import osgi.enroute.servlet.api.ConditionalServlet;
 
-
-@RequireConfigurerExtender
 @Component
 public class DispatcherTest extends TestCase {
 

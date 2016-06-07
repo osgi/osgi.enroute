@@ -13,9 +13,7 @@ import aQute.bnd.testing.DSTestWiring;
 import aQute.lib.io.IO;
 import junit.framework.TestCase;
 import osgi.enroute.configurer.api.ConfigurationDone;
-import osgi.enroute.configurer.api.RequireConfigurerExtender;
 
-@RequireConfigurerExtender
 @Component
 public class BundleMixinServerTest extends TestCase {
 
@@ -35,7 +33,7 @@ public class BundleMixinServerTest extends TestCase {
 	}
 
     public void testBundleMixinServer() throws Exception {
-        assertValid("TEST - MIXIN - TOP - HTML", 200, "http://localhost:8080/index.html");
+        assertValid("enRoute INDEX", 200, "http://localhost:8080/index.html");
     }
 
     /**
@@ -44,7 +42,7 @@ public class BundleMixinServerTest extends TestCase {
      * contents of the static/debug/index.html file.
      */
     public void testHostNameOnly() throws Exception {
-        assertValid("TEST - MIXIN - TOP - HTML", 200, "http://localhost:8080");
+        assertValid("enRoute INDEX", 200, "http://localhost:8080");
     }
 
     /**
@@ -53,7 +51,7 @@ public class BundleMixinServerTest extends TestCase {
      * contents of the static/debug/index.html file.
      */
     public void testEmptyRootPartition() throws Exception {
-        assertValid("TEST - MIXIN - TOP - HTML", 200, "http://localhost:8080/");
+        assertValid("enRoute INDEX", 200, "http://localhost:8080/");
     }
 
     public void testFolderNoSlash() throws Exception {
