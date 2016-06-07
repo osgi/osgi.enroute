@@ -52,7 +52,6 @@ public class EnrouteApplicationIndexServer implements ConditionalServlet {
 	WebServerConfig								config;
 	private BundleTracker<Bundle>				applicationTracker;
 	private Cache								cache;
-	private ResponseWriter						writer;
 	private ExceptionHandler					exceptionHandler;
 	private LogService							log;
 	IndexDTO									index = new IndexDTO();
@@ -63,13 +62,11 @@ public class EnrouteApplicationIndexServer implements ConditionalServlet {
 		this.context = context;
 		index.configuration = props;
 		this.config = config;
-		this.writer = new ResponseWriter(config);
 		this.exceptionHandler = new ExceptionHandler(log);
 
 		applicationTracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null) {
 			@Override
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {
-//				String header = bundle.
 				String applicationBundle = bundle.getHeaders().get("EnRoute-Application");
 				if (applicationBundle == null)
 					return null;
@@ -142,14 +139,9 @@ public class EnrouteApplicationIndexServer implements ConditionalServlet {
 		String content = IO.collect(c.file);
 		Map<String,String> map = new HashMap<>();
 
-//		synchronized (index) {
-		Encoder e = new JSONCodec().enc();
-		e = e.put(index);
-		e = e.indent(" ");
-		String v = e.toString();
-		map.put("index", v);
-//			map.put("index", new JSONCodec().enc().put(index).indent(" ").toString());
-//		}
+		synchronized (index) {
+			map.put("index", new JSONCodec().enc().put(index).indent(" ").toString());
+		}
 
 		ReplacerAdapter ra = new ReplacerAdapter(map);
 		content = ra.process(content);
