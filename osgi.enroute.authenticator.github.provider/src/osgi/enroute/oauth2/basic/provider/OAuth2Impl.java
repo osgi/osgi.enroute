@@ -3,7 +3,6 @@ package osgi.enroute.oauth2.basic.provider;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URI;

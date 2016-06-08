@@ -39,6 +39,8 @@ public class GithubLoginRequest implements REST {
 	};
 
 	public static class AccessToken extends DTO implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
 		public String				access_token;
 		public String				token_type;
 		public long					expires_in;

@@ -55,6 +55,7 @@ public class GenericAuthorizationFilter implements Filter, REST {
 	private CopyOnWriteArrayList<Authenticator>	authenticators		= new CopyOnWriteArrayList<Authenticator>();
 	private AtomicReference<AuthorityAdmin>		authorityAdminRef	= new AtomicReference<AuthorityAdmin>();
 	private volatile boolean					reported;
+	@SuppressWarnings("unused")
 	private String								realm;
 
 	@ObjectClassDefinition

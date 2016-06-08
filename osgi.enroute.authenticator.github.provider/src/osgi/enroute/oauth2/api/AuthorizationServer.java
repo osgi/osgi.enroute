@@ -1,7 +1,6 @@
 package osgi.enroute.oauth2.api;
 
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
 import java.util.Set;
