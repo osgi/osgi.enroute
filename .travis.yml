@@ -16,4 +16,5 @@ cache:
   - "$HOME/.gradle"
 env:
   global:
-    secure: TQaySV8DdG33e6LZ5loIVNK2WRZ2iClztFSRgw/NTEg9KA69GQMnpBXCcme/lsOlVPUkUtucR7P3QTWUAX9iJTw6Dfyew+dKu6wchBhto9/TsFG6xV43fpr5ePp2ToUNbm2+hKBXpxT4fWRvMDRJPKLgQBYsH0DAYM4IXqI5QFU=
+  - secure: FsbMJlt/5+yUxjrR/z89E8HhPfs3qFcUhfvChr5WkmtcFgGfpJOwYW7D8sLGmmqhSd1YWUvhwdLQmZb8jYQcHoDshVqCo07n8b7u8XE8LOcNBBhQubHizaBKXU4ROMw+LUXRszOyxDS3ZQvmIc7Y40+Nml8OqbM9aXHOeuBl/LY=
+  - secure: azls2j4Fy5x6ckrEGY+ttqTaWHaFWb69lFdyaY4p0SP7cSQEOQNjcm5gdadIPM/moH7Ye0JhNlt1dYaejqp+uvd4r0TneI6Wnv5Qe2cyqYUbYmak08RtBufjsJZ8jjZvHCQgeou0LdRLarmN5PlzgLATz95u+EiU4T5gUS9HdMY=

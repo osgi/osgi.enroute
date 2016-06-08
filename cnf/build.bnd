@@ -29,7 +29,10 @@ Bundle-Developers: 		osgi; \
 Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
 Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
--connection-settings: ${env;OSGI_NEXUS_SETTING}, -bnd
+pwd = ${env;OSGI_NEXUS_PASSWORD;}
+usr = ${env;OSGI_NEXUS_USERNAME;}
+
+-connection-settings: ${if;${pwd};server;-dummy};id=https://oss.sonatype.org;username=${usr};password=${pwd}, -bnd
 
 -plugin.osgi.nexus: \
 \
