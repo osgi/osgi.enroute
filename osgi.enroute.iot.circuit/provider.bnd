@@ -2,7 +2,6 @@
 # OSGI ENROUTE IOT CIRCUIT	BUNDLE 
 #
 
-base.version: 2.0.1
 Bundle-Description: \
 	Implements a Circuit Board for ICs. ICs have inputs and outputs. The Circuit board \
 	can fire events to the ICs and ICs can fire events to the board. The board then dispatches \

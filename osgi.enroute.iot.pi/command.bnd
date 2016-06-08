@@ -11,4 +11,3 @@ Private-Package:  \
 	
 	
 -includeresource: {readme.md}
-base.version: 1.0.1

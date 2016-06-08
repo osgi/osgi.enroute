@@ -3,7 +3,6 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
 Bundle-Description: 				\
 	Provides a number of commands that are dearly needed in Gogo. There is \
 	special help support so type: `help` and you see all commands. Then type `help <cmd>` \

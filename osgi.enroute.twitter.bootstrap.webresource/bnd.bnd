@@ -22,6 +22,10 @@ Provide-Capability: 	\
 		osgi.enroute.webresource=${name}; \
 		root=${path}; \
 		version:Version=${base.version}
+Bundle-SCM:				\
+						url=https://github.com/angular/angular.js, \
+						connection=scm:git@github.com:twbs/bootstrap.git, \
+                        developerConnection=scm:git@github.com:twbs/bootstrap.git
 
 -buildpath: \
 	osgi.enroute.base.api

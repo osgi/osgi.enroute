@@ -3,7 +3,7 @@
 #
 
 
-Bundle-Version:					1.0.0.${tstamp}
+
 Bundle-Description: 				\
 	Implements a Log Reader that stores the logs on disks and rolls them over.
 

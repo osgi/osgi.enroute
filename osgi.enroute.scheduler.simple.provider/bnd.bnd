@@ -3,7 +3,6 @@
 #
 
 
-base.version: 1.1.1
 Bundle-Description: 				\
   This bundle implements a scheduler and some Promise support methods related to time.  
 Private-Package:  \

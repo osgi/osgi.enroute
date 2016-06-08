@@ -3,7 +3,6 @@
 #
 -nobundles: true
 
-Bundle-Version:					1.0.0.${tstamp}
 Bundle-Description: 				\
 	An alternative to PAX JDBC's config bundle because it assumes the config dictionary values are all \
 	string and does not provide Metatype information.

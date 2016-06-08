@@ -3,7 +3,6 @@
 #
 
 
-base.version: 1.0.0
 Bundle-Description: 				\
 	A provider of the DTOs service 
 Export-Package:  \

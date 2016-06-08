@@ -3,7 +3,6 @@
 #
 
 
-base.version: 2.0.2
 Bundle-Description: 				\
 	A simple REST endpoint. This service will look for REST services. It then \
 	assumes any public method that has an interface that extends RESTRequest \

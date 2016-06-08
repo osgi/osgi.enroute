@@ -15,6 +15,10 @@ Bundle-License:			http://opensource.org/licenses/MIT, link="https://github.com/s
 Bundle-DocURL:			http://jsplumb.org/doc/home.html
 Bundle-Icon:			https://jsplumbtoolkit.com/img/logo-jsplumb-green.png
 Export-Package: 		osgi.enroute.jsplumb.capabilities;-split-package:=first
+Bundle-SCM:				\
+						url=https://github.com:sporritt/jsPlumb, \
+						connection=scm:git@github.com:sporritt/jsPlumb.git, \
+                        developerConnection=scm:git@github.com:sporritt/jsPlumb.git
 
 Provide-Capability: 	\
 	osgi.enroute.webresource; \

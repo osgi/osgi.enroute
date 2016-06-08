@@ -1,5 +1,5 @@
 Bundle-SymbolicName: 	test
-Bundle-Version: 		1.2.3
+
 -resourceonly:			true
 -includeresource:		\
 	static/test.html;literal='<html><head> \

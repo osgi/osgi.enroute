@@ -3,7 +3,6 @@
 #
 
 
-base.version: 1.0.2
 Bundle-Description: 				\
 	An implementation of the Authenticator API based on User Admin.
 

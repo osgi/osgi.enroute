@@ -2,7 +2,6 @@
 # OSGI ENROUTE IOT PI DEFAULTS
 #
 
-base.version: 1.1.0
 Bundle-Description: \
 	This bundle wraps Pi4j (http://pi4j.com) that wraps the native code Wiring Pi (http://wiringpi.com). \
 	It wraps these libraries to make them OSGi friendly and allow them to work together with the \

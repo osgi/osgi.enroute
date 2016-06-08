@@ -2,7 +2,6 @@
 # OSGI ENROUTE QUANTITY UTIL DEFAULTS
 #
 
-Bundle-Version:					0.0.0.${tstamp}
 Bundle-Description: 				\
 	A proposal for a quantity API. This proposal is in the same realm as the \
 	JSR 363 JCP API. The reason to do this different has several reasons. However, \

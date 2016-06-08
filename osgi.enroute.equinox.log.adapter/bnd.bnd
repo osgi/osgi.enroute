@@ -3,7 +3,6 @@
 #
 
 
-base.version: 1.0.1
 Bundle-Description: 				\
 	This bundle must be placed on the run path or test path. It will then hide the Equinox Log Service \
 	while forwarding all events to all registered Log Services. If not running on \
