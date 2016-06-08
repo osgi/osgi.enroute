@@ -9,7 +9,7 @@ install:
   - ./gradlew --version
 
 script:
-  - ./gradlew --continue build 
+  - ./gradlew --continue --info build 
   - export BRANCH=`git rev-parse --abbrev-ref HEAD` 
   - if [ $BRANCH == "master" -a -n $OSGI_NEXUS_SETTING ]; then ./gradlew --info --continue release; fi
 
