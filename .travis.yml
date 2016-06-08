@@ -6,9 +6,10 @@ install:
 - "./gradlew --version"
 script:
 - "./gradlew --continue --info build"
-- echo $(git symbolic-ref --short -q HEAD)
+- branch=$(basename $(git symbolic-ref HEAD))
 - echo $OSGI_NEXUS_SETTING
-- if [ "master" == $(git symbolic-ref --short -q HEAD) -a -n $OSGI_NEXUS_SETTING ]; then ./gradlew --info --continue
+- echo $branch
+- if [ "master" == $branch -a -n $OSGI_NEXUS_SETTING ]; then ./gradlew --info --continue
   release; fi
 cache:
   directories:
