@@ -4,17 +4,17 @@ jdk:
 - oraclejdk8
 install:
 - "./gradlew --version"
-
 script:
-- "./gradlew --continue --info build"
+- "./gradlew --continue build"
 - echo $OSGI_NEXUS_SETTING
 - echo $TRAVIS_PULL_REQUEST
 - echo $TRAVIS_BRANCH
-- if [ "master" == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST -a -n $OSGI_NEXUS_SETTING ]; then ./gradlew --info --continue release; fi
-
+- if [ "master" == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a -n $OSGI_NEXUS_SETTING
+  ]; then ./gradlew --info --continue release; fi
 cache:
   directories:
   - "$HOME/.gradle"
 env:
   global:
-    secure: Hy5Diaf51yfsuLnrNiaa993AshiE++VwUZkwvj+vl+uDmnynyMZ6t1ryUgpnkOSTcwDaTtkfae97Ujd5ZE9d8EHHTDlQ0ntCb80z38ucdIfqc/cqdH9VW9qRkxRojwKvG9yf/QSC1YfNIVUnaNRsIOk40hcfQ2qhWNRr6Yy7EFU=
+  - secure: Hy5Diaf51yfsuLnrNiaa993AshiE++VwUZkwvj+vl+uDmnynyMZ6t1ryUgpnkOSTcwDaTtkfae97Ujd5ZE9d8EHHTDlQ0ntCb80z38ucdIfqc/cqdH9VW9qRkxRojwKvG9yf/QSC1YfNIVUnaNRsIOk40hcfQ2qhWNRr6Yy7EFU=
+  - secure: mPitANnU6X/WhNoKZpWibRVzKUFvz3rcOlrhmaUnKMhIX9LpHckxeIPKQPqvc+GXjE/q/LfEmA8gHMxFAiqksLJ84G/TxhZRRWwWTtVvPbuTUwG+eSqP2qC+e4p16++Olh5f+HBvD5ZO0MtKa43ssGpE14EWDiJkYf6lPkLhxts=
