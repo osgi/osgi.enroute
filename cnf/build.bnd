@@ -3,13 +3,17 @@
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-build.version			2.0.0.SNAPSHOT
+baseline.version:       1.0.0
+base.version:           2.0.0
 -groupid:               org.osgi
--pom					true
+-pom:                   version=${versionmask;===s;${@version}}
+Bundle-Version:         ${base.version}.${tstamp}-SNAPSHOT
+
+# Uncomment the following line to build the non-snapshot version.
+#-snapshot: REL
 
 Bundle-Copyright: 		${copyright}
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
-Bundle-Version:   		${build.version}
 Bundle-License: 		http://opensource.org/licenses/apache2.0.php; \
                 			link="http://www.apache.org/licenses/LICENSE-2.0"; \
                 			description="Apache License, Version 2.0"
@@ -25,7 +29,16 @@ Bundle-Developers: 		osgi; \
 Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
 Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
+-connection-settings: ${env;OSGI_NEXUS_SETTING}, bnd
 
--releaserepo: Release
+-plugin.osgi.nexus: \
+\
+	aQute.bnd.repository.maven.provider.MavenBndRepository; \
+		snapshotUrl=https://oss.sonatype.org/content/repositories/osgi-snapshots/; \
+		releaseUrl= https://oss.sonatype.org/content/repositories/osgi-releases/; \
+		index=${.}/osgi-nexus.maven; \
+		name="OSGiNexus"
+
+-releaserepo: OSGiNexus
 -baselinerepo: Distro
 

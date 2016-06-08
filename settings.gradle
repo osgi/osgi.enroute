@@ -10,7 +10,9 @@ import aQute.bnd.osgi.Constants
 /* Add bnd gradle plugin as a script dependency */
 buildscript {
   repositories {
-    jcenter()
+	maven {
+  		url 'https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/dist/bundles'
+	}
   }
   dependencies {
     classpath bnd_plugin

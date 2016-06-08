@@ -9,7 +9,13 @@ install:
   - ./gradlew --version
 
 script:
-  - ./gradlew --continue release
+  - ./gradlew --continue build 
+  - export BRANCH=`git rev-parse --abbrev-ref HEAD` 
+  - if [ $BRANCH == "master" -a -n $OSGI_NEXUS_SETTING ]; then ./gradlew --info --continue release; fi
+
+
+env:
+  - secure: "U43zbnrgmxZm2O9RtRiy69HfREkQxW3DjKMrCdyLeqTaVHDDpfnQ14TgACXO8WqTTFzxicRAgK9eVkPx8pVmI8B5ynYh1seGsqLoxtw5pzVMbqK2gp41M7wNMuPUtF0+RCuWiT6VEw4aKD7tfdYHZNiVL77LfopmtMHeeMJj3yI="
 
 cache:
   directories:
