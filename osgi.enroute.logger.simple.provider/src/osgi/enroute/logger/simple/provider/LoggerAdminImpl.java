@@ -26,8 +26,12 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ServiceScope;
 import org.osgi.service.log.LogService;
 import org.osgi.service.metatype.annotations.Designate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
+import aQute.lib.converter.Converter;
+import aQute.lib.strings.Strings;
 import aQute.libg.glob.Glob;
 import osgi.enroute.debug.api.Debug;
 import osgi.enroute.logger.api.Level;
@@ -39,6 +43,7 @@ import osgi.enroute.logger.simple.provider.LoggerDispatcher.Eval;
  * This is the Logger Admin component. It registers a {@link LoggerAdmin}
  * service.
  */
+// @formatter:off
 @ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=LoggerConstants.LOGGER_SPECIFICATION_NAME, version=LoggerConstants.LOGGER_SPECIFICATION_VERSION)
 @Designate(ocd=Configuration.class)
 @Component(
@@ -51,17 +56,19 @@ import osgi.enroute.logger.simple.provider.LoggerDispatcher.Eval;
 				Debug.COMMAND_FUNCTION + "=add",
 				Debug.COMMAND_FUNCTION + "=remove",
 				Debug.COMMAND_FUNCTION + "=settings",
-				Debug.COMMAND_FUNCTION + "=list"
+				Debug.COMMAND_FUNCTION + "=list",
+				Debug.COMMAND_FUNCTION + "=slf4j"
 		})
+// @formatter:on
 public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
-
-	final static int							LOG_TRACE		= LogService.LOG_DEBUG + 1;
+	final static Logger	logger		= LoggerFactory.getLogger(LoggerAdminImpl.class);
+	final static int	LOG_TRACE	= LogService.LOG_DEBUG + 1;
 
 	boolean										traces;
 	PrintStream									out				= System.err;
 	final List<ServiceReference<LogService>>	logReferences	= new CopyOnWriteArrayList<>();
 	final List<LogService>						logs			= new CopyOnWriteArrayList<>();
-	final Map<Pattern,Control>					controls		= new ConcurrentHashMap<>();
+	final Map<Pattern, Control>					controls		= new ConcurrentHashMap<>();
 	Control										control			= new Control();
 	Settings									settings		= new Settings();
 	JavaUtilLoggingHandler						javaUtilLogging;
@@ -166,25 +173,24 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 							n += take.reference == null ? 0 : 2;
 
 							switch (n) {
-								case 0 :
-									log.log(take.level, take.message);
-									break;
+							case 0:
+								log.log(take.level, take.message);
+								break;
 
-								case 1 :
-									log.log(take.level, take.message, take.exception);
-									break;
+							case 1:
+								log.log(take.level, take.message, take.exception);
+								break;
 
-								case 2 :
-									log.log(take.reference, take.level, take.message);
-									break;
+							case 2:
+								log.log(take.reference, take.level, take.message);
+								break;
 
-								case 3 :
-									log.log(take.reference, take.level, take.message, take.exception);
-									break;
+							case 3:
+								log.log(take.reference, take.level, take.message, take.exception);
+								break;
 							}
 
-						}
-						catch (Exception e) {
+						} catch (Exception e) {
 							//
 							// Hmm, not much we can do here ...
 							// Since we're the logging subsystem
@@ -192,19 +198,17 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 							e.printStackTrace();
 						}
 					}
-				}
-				catch (InterruptedException e) {
+				} catch (InterruptedException e) {
 					interrupt();
 					return;
 				}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			//
 			// Hmm, not much we can do here ...
 			//
 			e.printStackTrace();
+		} finally {
 		}
-		finally {}
 	}
 
 	private List<LogService> getLogs(Entry take) throws InvalidSyntaxException {
@@ -213,9 +217,9 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 
 		List<LogService> logs = new ArrayList<>();
 		BundleContext ctx = take.source.getBundleContext();
-		if ( ctx == null)
+		if (ctx == null)
 			return this.logs;
-		
+
 		for (ServiceReference<LogService> ref : ctx.getServiceReferences(LogService.class, null)) {
 			LogService service = ctx.getService(ref);
 			if (service != null)
@@ -237,7 +241,7 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	 * Called by an Abstract Logger when it is initing.
 	 */
 	Control getControl(String identifier) {
-		for (java.util.Map.Entry<Pattern,Control> p : controls.entrySet()) {
+		for (java.util.Map.Entry<Pattern, Control> p : controls.entrySet()) {
 			if (p.getKey().matcher(identifier).matches())
 				return p.getValue();
 		}
@@ -268,9 +272,11 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 		});
 		return infos;
 	}
+
 	public List<Info> list() throws Exception {
 		return list("*");
 	}
+
 	/*
 	 * Get the current settings
 	 */
@@ -284,14 +290,13 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	 */
 	@Override
 	public void setSettings(Settings settings) throws Exception {
-		Map<Pattern,Control> controls = new HashMap<>();
+		Map<Pattern, Control> controls = new HashMap<>();
 
 		for (Control c : settings.controls) {
 			try {
 				Pattern p = Glob.toPattern(c.pattern);
 				controls.put(p, c);
-			}
-			catch (Exception ee) {
+			} catch (Exception ee) {
 				error("Invalid filter " + c.pattern, ee);
 				return;
 			}
@@ -321,29 +326,33 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	 *            set of options: stacktrace, where
 	 * @return the Control added
 	 */
-	public Control add(Glob pattern, Level level, String... options) throws Exception {
+	public Control add(Glob pattern, String level, String... options) throws Exception {
 		Settings settings = getSettings();
 		Control control = new Control();
-		control.level = level;
+		control.level = toLevel(level);
 		control.pattern = pattern.toString();
 		for (String option : options) {
 			switch (option) {
-				case "stacktrace" :
-					control.stackTraces = true;
-					break;
+			case "stacktrace":
+				control.stackTraces = true;
+				break;
 
-				case "where" :
-					control.where = true;
-					break;
+			case "where":
+				control.where = true;
+				break;
 
-				default :
-					System.err.println("Unknown option " + option);
-					break;
+			default:
+				System.err.println("Unknown option " + option);
+				break;
 			}
 		}
 		settings.controls.add(control);
 		setSettings(settings);
 		return control;
+	}
+
+	private Level toLevel(String level) throws Exception {
+		return Converter.cnv(Level.class, level.toUpperCase());
 	}
 
 	/**
@@ -369,10 +378,50 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 		return deleted;
 	}
 
+	/**
+	 * Create a log event
+	 * 
+	 * @param log
+	 * @throws Exception
+	 */
+
+	public void slf4j(String level, String... msg) throws Exception {
+		Level l = toLevel(level);
+		String s = Strings.join(" ", msg);
+		if ( s.isEmpty())
+			s = level;
+		
+		switch(l) {
+		case AUDIT:
+			logger.error("{}",s);
+			break;
+		case DEBUG:
+			logger.debug("{}",s);
+			break;
+		default:
+		case R1:
+		case R2:
+		case R3:
+		case ERROR:
+			logger.error("{}",s);
+			break;
+		case INFO:
+			logger.info("{}",s);
+			break;
+
+		case TRACE:
+			logger.trace("{}",s);
+			break;
+		case WARN:
+			logger.warn("{}",s);
+			break;
+		}
+	}
+
 	/*
 	 * Get the log services
 	 */
-	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC, service = LogService.class)
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, service = LogService.class)
 	void addLog(ServiceReference<LogService> log) {
 		latch.countDown();
 		logReferences.add(log);
@@ -388,7 +437,7 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	/*
 	 * Get the log services
 	 */
-	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
 	void addLogService(LogService log) {
 		latch.countDown();
 		logs.add(log);
