@@ -2,7 +2,6 @@ package osgi.enroute.authenticator.github.provider;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -18,7 +17,6 @@ import aQute.lib.base64.Base64;
 import aQute.lib.io.IO;
 import osgi.enroute.authorization.api.Authority;
 import osgi.enroute.dto.api.DTOs;
-import osgi.enroute.oauth2.api.AuthorizationServer;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
 

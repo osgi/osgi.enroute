@@ -13,7 +13,6 @@ import org.osgi.service.component.annotations.Reference;
 import aQute.lib.io.IO;
 import osgi.enroute.debug.api.Debug;
 import osgi.enroute.dto.api.DTOs;
-import osgi.enroute.dto.api.TypeReference;
 import osgi.enroute.oauth2.api.AuthorizationServer;
 import osgi.enroute.oauth2.api.AuthorizationServer.AccessToken;
 import osgi.enroute.twitter.provider.dto.SearchResult;
