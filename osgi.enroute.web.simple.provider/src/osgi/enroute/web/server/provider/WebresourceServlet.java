@@ -5,12 +5,15 @@ import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 
+import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.osgi.framework.*;
+import org.osgi.framework.Constants;
 import org.osgi.framework.wiring.*;
 import org.osgi.namespace.extender.*;
 import org.osgi.service.component.annotations.*;
+import org.osgi.service.http.whiteboard.*;
 import org.osgi.service.log.*;
 
 import aQute.bnd.annotation.headers.*;
@@ -19,7 +22,6 @@ import aQute.lib.converter.*;
 import aQute.lib.io.*;
 import aQute.libg.glob.*;
 import osgi.enroute.http.capabilities.*;
-import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
 import osgi.enroute.web.server.config.*;
 import osgi.enroute.web.server.exceptions.*;
@@ -97,20 +99,21 @@ import osgi.enroute.webserver.capabilities.*;
 		version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
 @RequireHttpImplementation
 @Component(
-		service = { ConditionalServlet.class }, 
-		immediate = true, 
 		property = {
-				// Should be phased out
-				"service.ranking:Integer=1003", 
-				"name=" + WebresourceServer.NAME, 
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/" + WebresourceServlet.OSGI_ENROUTE_WEBRESOURCE, 
+				Constants.SERVICE_RANKING + ":Integer=101"
 		}, 
-		name = WebresourceServer.NAME, 
+		service = Servlet.class, 
+		immediate = true,
+		name = WebresourceServlet.NAME, 
 		configurationPid = BundleMixinServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
-public class WebresourceServer implements ConditionalServlet {
+public class WebresourceServlet extends HttpServlet {
 
-	static final String NAME = "osgi.enroute.simple.webresource";
-	private static final String			OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
+	private static final long			serialVersionUID	= 1L;
+
+	static final String 				NAME = "osgi.enroute.simple.webresource";
+	public static final String			OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
 
 	final static Pattern				WEBRESOURCES_P				= Pattern
 																			.compile("osgi.enroute.webresource/(?<bsn>"
@@ -159,19 +162,21 @@ public class WebresourceServer implements ConditionalServlet {
 		proxy = !config.noproxy();
 	}
 
+	
 	@Override
-	public boolean doConditionalService(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
+	protected void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
 		try {
 			String path = rq.getRequestURI();
 
 			if (path == null )
-				return false;
+				throw new NotFound404Exception(null);
 
 			if (path.startsWith("/"))
 				path = path.substring(1);
 
+			// Useless check??
 			if (!path.startsWith(OSGI_ENROUTE_WEBRESOURCE))
-					return false;
+				throw new NotFound404Exception(null);
 
 			CacheFile c;
 			cache.lock();
@@ -194,15 +199,13 @@ public class WebresourceServer implements ConditionalServlet {
 			}
 
 			if (c == null || !c.isSynched())
-				return false;
+				throw new NotFound404Exception(null);
 
 			writer.writeResponse(rq, rsp, c);
 		}
 		catch (Exception e) {
 			exceptionHandler.handle(rq, rsp, e);
 		}
-
-		return true;
 	}
 
 	/*
@@ -211,13 +214,6 @@ public class WebresourceServer implements ConditionalServlet {
 	 * so it gets cleaned up when the bundle is uninstalled.
 	 */
 	CacheFile find(String path) throws Exception {
-
-		//
-		// Verify if it actually is for us in the fastest way possible
-		//
-
-		if (!path.startsWith(OSGI_ENROUTE_WEBRESOURCE))
-			return null;
 
 		//
 		// Parse the path so we get the bundle, version, and glob
