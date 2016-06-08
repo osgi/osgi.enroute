@@ -9,10 +9,8 @@ import junit.framework.TestCase;
  */
 
 public class RollingLogReaderImplTest extends TestCase {
-	
-	/*
-	 * 
-	 * 
-	 * 
-	 */
+
+	public void testSomething() {
+		
+	}
 }
