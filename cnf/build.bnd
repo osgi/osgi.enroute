@@ -3,9 +3,9 @@
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-build.version:          ${base.version}.${tstamp}
--outputmask:            ${@bsn}-${version;===;${@version}}.jar
-groupid:                osgi.enroute
+build.version			2.0.0.SNAPSHOT
+-groupid:               org.osgi
+-pom					true
 
 Bundle-Copyright: 		${copyright}
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
@@ -25,9 +25,6 @@ Bundle-Developers: 		osgi; \
 Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
 Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
--pom = \
- 	groupid=${groupid}, \
- 	version=${base.version}
 
 -releaserepo: Release
 -baselinerepo: Distro
