@@ -7,6 +7,7 @@ import java.util.List;
 public class Unit {
 	final private Dimension[]														dimensions;
 	final private Unit																inverse;
+	@SuppressWarnings("unused")
 	private static final String														EXPONENT	= "⁰¹²³⁴⁵⁶⁷⁸⁹";
 
 	public static final Unit DIMENSIONLESS = new Unit(Unity.class, new Dimension[0]);
