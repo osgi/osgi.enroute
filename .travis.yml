@@ -4,13 +4,14 @@ jdk:
 - oraclejdk8
 install:
 - "./gradlew --version"
+
 script:
 - "./gradlew --continue --info build"
-- branch=$(basename $(git symbolic-ref HEAD))
 - echo $OSGI_NEXUS_SETTING
-- echo $branch
-- if [ "master" == $branch -a -n $OSGI_NEXUS_SETTING ]; then ./gradlew --info --continue
-  release; fi
+- echo $TRAVIS_PULL_REQUEST
+- echo $TRAVIS_BRANCH
+- if [ "master" == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST -a -n $OSGI_NEXUS_SETTING ]; then ./gradlew --info --continue release; fi
+
 cache:
   directories:
   - "$HOME/.gradle"
