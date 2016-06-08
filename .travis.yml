@@ -9,8 +9,7 @@ script:
 - echo $OSGI_NEXUS_SETTING
 - echo $TRAVIS_PULL_REQUEST
 - echo $TRAVIS_BRANCH
-- if [ "master" == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a -n $OSGI_NEXUS_SETTING
-  ]; then ./gradlew --info --continue release; fi
+- if [ "master" == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == "false -a -n $OSGI_NEXUS_PASSWORD ]; then ./gradlew --info --continue release; fi
 cache:
   directories:
   - "$HOME/.gradle"
