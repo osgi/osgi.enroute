@@ -124,14 +124,6 @@ as adding an annotation to the requiring bundle.
 
 More information is available [here](https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?raw=true).
 
-### Plug-in contributions
-
-<<I still need to improve my understanding of this>>
-
-### Combinations
-
-[TBD]
-
 ## Features
 
 ### Application indexing

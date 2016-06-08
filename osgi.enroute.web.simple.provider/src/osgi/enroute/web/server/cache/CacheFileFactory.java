@@ -5,14 +5,12 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import org.osgi.framework.*;
-import org.osgi.util.tracker.*;
 
 import aQute.lib.base64.Base64;
 import aQute.lib.hex.*;
 import aQute.lib.io.*;
 import aQute.libg.cryptography.*;
 import osgi.enroute.web.server.exceptions.*;
-import osgi.enroute.web.server.provider.*;
 
 public class CacheFileFactory {
 
@@ -75,15 +73,5 @@ public class CacheFileFactory {
 		c.expiration = expiration;
 
 		return c;
-	}
-
-	public static PluginCacheFile newPluginCacheFile(WebresourceServer webServer, ServiceTracker<Object, ServiceReference<?>> pluginTracker, String application, long expiration) throws WebServerException {
-		try {
-			CacheFile cache = newCacheFile(File.createTempFile(application, ".js"), expiration);
-			return new PluginCacheFile(cache, webServer, pluginTracker);
-		}
-		catch (IOException e) {
-			throw new InternalServer500Exception();
-		}
 	}
 }
