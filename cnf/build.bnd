@@ -29,7 +29,7 @@ Bundle-Developers: 		osgi; \
 Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
 Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
--connection-settings: ${env;OSGI_NEXUS_SETTING}, bnd
+-connection-settings: ${env;OSGI_NEXUS_SETTING}, -bnd
 
 -plugin.osgi.nexus: \
 \
