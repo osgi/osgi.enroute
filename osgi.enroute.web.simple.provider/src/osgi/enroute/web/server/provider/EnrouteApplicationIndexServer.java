@@ -24,7 +24,7 @@ import osgi.enroute.web.server.provider.EnrouteApplicationIndexServer.IndexDTO.*
 		service = { ConditionalServlet.class }, 
 		immediate = true, 
 		property = {
-				"service.ranking:Integer=1000", 
+				"service.ranking:Integer=1001", 
 				"name=" + EnrouteApplicationIndexServer.NAME, 
 		}, 
 		name = EnrouteApplicationIndexServer.NAME, 

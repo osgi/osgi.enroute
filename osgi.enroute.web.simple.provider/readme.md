@@ -35,7 +35,10 @@ OSGi can help you organize your code, then the WebServer could be a very good ch
   <dd>See: web application</dd>
 
   <dt>web application</dt>
-  <dd>a means of organizing your code in order to serve html, css, and javascript files</dd>
+  <dd>a means of organizing your code in order to serve html, css, and javascript resources</dd>
+
+  <dt>WebResource</dt>
+  <dd>a resource or resources delivered from a bundle that is controlled through requirements and capabilities</dd>
 </dl>
 
 ## Code organization
@@ -106,7 +109,20 @@ See the "Configuration" section below for more information.
 
 ### WebResources
 
-<<I still need to improve my understanding of this>>
+WebResources are quite different from the web applications described above.
+
+Whereas the application is generally intended to provide a complete and coherent unit of deployment,
+the WebResource is intended to be used as building blocks for your applications.
+
+Oftentimes, applications will leverage a CDN to serve resources, such as javascript libraries. However, using
+a CDN is by no means a panacea. There are certain problems that come with this approach. Using WebResources
+allows you to manage resources as if you had your own local CDN.
+
+The WebResource functionality allows you to do this using the requirement/capabilities
+model in OSGi. It takes a bit of effort to set up a WebResource, but once you do, using it becomes as simple
+as adding an annotation to the requiring bundle.
+
+More information is available [here](https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?raw=true).
 
 ### Plug-in contributions
 

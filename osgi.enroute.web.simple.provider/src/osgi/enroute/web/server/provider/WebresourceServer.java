@@ -1,20 +1,23 @@
 package osgi.enroute.web.server.provider;
 
 import java.io.*;
-import java.nio.channels.*;
-import java.text.*;
+import java.net.*;
 import java.util.*;
+import java.util.regex.*;
 
-import javax.servlet.Filter;
 import javax.servlet.http.*;
 
 import org.osgi.framework.*;
+import org.osgi.framework.wiring.*;
 import org.osgi.namespace.extender.*;
 import org.osgi.service.component.annotations.*;
-import org.osgi.service.coordinator.*;
 import org.osgi.service.log.*;
 
 import aQute.bnd.annotation.headers.*;
+import aQute.bnd.osgi.*;
+import aQute.lib.converter.*;
+import aQute.lib.io.*;
+import aQute.libg.glob.*;
 import osgi.enroute.http.capabilities.*;
 import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
@@ -22,6 +25,72 @@ import osgi.enroute.web.server.config.*;
 import osgi.enroute.web.server.exceptions.*;
 import osgi.enroute.webserver.capabilities.*;
 
+/**
+ * This class adds support for Web Resources. A Web Resource is a resource
+ * delivered from a bundle that is controlled through Requirements and
+ * Capabilities. It enables the use of web resources without having to know the
+ * actual location of the web resource in the system. The path to the resource can even
+ * be private. An application can refer to the web resources it needs by creating a
+ * requirement to a webresource capability. The requirement has a
+ * {@code resource} and {@code priority} property. If the application now refers
+ * to a URI {@value #OSGI_ENROUTE_WEBRESOURCE}{@code /<bundle>/<version>/<type>}
+ * this code will append all the required resources in order of occurrence and
+ * priority. The {@code type} is a Glob expression that must match the file path
+ * of the URL. Additionally, the content of the {@code web} resource directory
+ * is traversed recursively for any resources that match the glob expression.
+ * <p>
+ * Example using manifest headers:
+ * 
+ * <pre>
+ * 
+ * &#064;RequireCapability(ns = &quot;osgi.enroute.webresource&quot;, filter = &quot;(osgi.enroute.webresource=/google/angular)&quot;)
+ * public @interface AngularWebResource {
+ * 	String[] resource();
+ * 
+ * 	int priority() default 1000;
+ * }
+ * 
+ * &#064;RequireCapability(ns = &quot;osgi.enroute.webresource&quot;, filter = &quot;(osgi.enroute.webresource=/twitter/bootstrap)&quot;)
+ * public @interface BootstrapWebResource {
+ * 	String[] resource() default {
+ * 		&quot;bootstrap.css&quot;
+ * 	};
+ * 
+ * 	int priority() default 1000;
+ * }
+ * 
+ * &#064;BootstrapWebResource(resource = {
+ * 		&quot;angular.js&quot;, &quot;angular-resource.js&quot;
+ * })
+ * &#064;AngularWebResource(resource = {
+ * 		&quot;angular.js&quot;, &quot;angular-resource.js&quot;
+ * })
+ * public class App {
+ * 
+ * }
+ * </pre>
+ * 
+ * <pre>
+ * {@code
+ * index.html
+ *   <html>
+ *     <head>
+ *       <link href="/osgi.enroute.webresource/bundle/1.2.3/*.css" type="text/css" rel="stylesheet">
+ *     </head>
+ *     <body>
+ *       ...
+ *       
+ *       <script src="/osgi.enroute.webresource/bundle/1.2.3/*.js"></script>
+ *     </body>
+ *   </html>
+ *     
+ * }
+ * </pre>
+ * <p>
+ * <a href=
+ * 'https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?raw=true'
+ *  > RFP 171 Web Resources (PDF)</a>
+ */
 @ProvideCapability(
 		ns = ExtenderNamespace.EXTENDER_NAMESPACE, 
 		name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, 
@@ -31,7 +100,8 @@ import osgi.enroute.webserver.capabilities.*;
 		service = { ConditionalServlet.class }, 
 		immediate = true, 
 		property = {
-				"service.ranking:Integer=1012", 
+				// Should be phased out
+				"service.ranking:Integer=1003", 
 				"name=" + WebresourceServer.NAME, 
 		}, 
 		name = WebresourceServer.NAME, 
@@ -40,133 +110,93 @@ import osgi.enroute.webserver.capabilities.*;
 public class WebresourceServer implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.webresource";
+	private static final String			OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
 
-	static SimpleDateFormat	format							= new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz",
-			Locale.ENGLISH);
-	LogService				log;
-	boolean					proxy;
-	PluginContributions		pluginContributions;
-	WebResources			webResources;
-	Cache					cache;
-	BundleContext			context;
+	final static Pattern				WEBRESOURCES_P				= Pattern
+																			.compile("osgi.enroute.webresource/(?<bsn>"
+																					+ Verifier.SYMBOLICNAME_STRING
+																					+ "+)/(?<version>"
+																					+ Verifier.VERSION_STRING
+																					+ ")/(?<glob>.+)");
 
-	WebServerConfig						config;
-	private ServiceRegistration<Filter>	webfilter;
-	private Coordinator					coordinator;
-	private ServiceRegistration<Filter>	exceptionFilter;
-	private ExceptionHandler			exceptionHandler;
+	/*
+	 * Helper class to sort the entries according to their priority and order.
+	 */
+	static class WR implements Comparable<WR> {
+		URL	resource;
+		int	priority;
+		int	order;
+
+		public WR(URL url, int priority, int order) {
+			this.resource = url;
+			this.priority = priority;
+			this.order = order;
+		}
+
+		@Override
+		public int compareTo(WR o) {
+			int result = Integer.compare(o.priority, priority);
+			if (result != 0)
+				return result;
+
+			return Integer.compare(order, o.order);
+		}
+	}
+
+	final TypeReference<List<String>>				listOfStrings = new TypeReference<List<String>>() {};
+	WebServerConfig									config;
+	private Cache									cache;
+	private ResponseWriter							writer;
+	private ExceptionHandler						exceptionHandler;
+	private LogService								log;
+	boolean											proxy;
 
 	@Activate
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
-		this.context = context;
 		this.config = config;
+		this.writer = new ResponseWriter(config);
 		this.exceptionHandler = new ExceptionHandler(log);
 		proxy = !config.noproxy();
-
-		pluginContributions = new PluginContributions(this, context);
-		webResources = new WebResources(this, context);
-
-		Hashtable<String,Object> p = new Hashtable<String,Object>();
-		p.put("pattern", ".*");
-		webfilter = context.registerService(Filter.class,
-				new MaxConnectionsFilter(config.maxConnections(), config.maxConnectionMessage(), coordinator), p);
 	}
 
 	@Override
 	public boolean doConditionalService(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
 		try {
 			String path = rq.getRequestURI();
-			if (path != null && path.startsWith("/"))
+
+			if (path == null )
+				return false;
+
+			if (path.startsWith("/"))
 				path = path.substring(1);
 
-			CacheFile c = getCache(path);
+			if (!path.startsWith(OSGI_ENROUTE_WEBRESOURCE))
+					return false;
+
+			CacheFile c;
+			cache.lock();
+			try {
+				c = cache.get(path);
+				if (c == null || c.isExpired()) {
+					if (proxy && path.startsWith("$"))
+						// Not sure what this does...
+						c = cache.findCacheFileByPath(path);
+					else
+						c = find(path);
+
+					if (c == null) {
+						throw new NotFound404Exception(null);
+					} else
+						cache.put(path, c);
+				}
+			} finally {
+				cache.unlock();
+			}
 
 			if (c == null || !c.isSynched())
 				return false;
 
-			rsp.setDateHeader("Last-Modified", c.time);
-			rsp.setHeader("Etag", c.etag);
-			rsp.setHeader("Content-MD5", c.md5);
-			rsp.setHeader("Allow", "GET, HEAD");
-			rsp.setHeader("Accept-Ranges", "bytes");
-
-			long diff = 0;
-			if (c.expiration != 0)
-				diff = c.expiration - System.currentTimeMillis();
-			else {
-				diff = config.expiration();
-				if (diff == 0)
-					diff = 120000;
-			}
-
-			if (diff > 0) {
-				rsp.setHeader("Cache-Control", "max-age=" + diff / 1000);
-			}
-
-			if (c.mime != null)
-				rsp.setContentType(c.mime);
-
-			Range range = new Range(rq.getHeader("Range"), c.file.length());
-			long length = range.length();
-			if (length >= Integer.MAX_VALUE)
-				throw new IllegalArgumentException("Range to read is too high: " + length);
-
-			rsp.setContentLength((int) range.length());
-
-			if (config.expires() != 0) {
-				Date expires = new Date(System.currentTimeMillis() + 60000 * config.expires());
-				rsp.setHeader("Expires", format.format(expires));
-			}
-
-			String ifModifiedSince = rq.getHeader("If-Modified-Since");
-			if (ifModifiedSince != null) {
-				long time = 0;
-				try {
-					synchronized (format) {
-						time = format.parse(ifModifiedSince).getTime();
-					}
-					if (time > c.time) {
-						rsp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-						return true;
-					}
-				}
-				catch (Exception e) {
-					// e.printStackTrace();
-				}
-			}
-
-			String ifNoneMatch = rq.getHeader("If-None-Match");
-			if (ifNoneMatch != null) {
-				if (ifNoneMatch.indexOf(c.etag) >= 0) {
-					rsp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-					return true;
-				}
-			}
-
-			if (rq.getMethod().equalsIgnoreCase("GET")) {
-
-				rsp.setContentLengthLong(range.length());
-				OutputStream out = rsp.getOutputStream();
-
-				try (FileInputStream file = new FileInputStream(c.file);) {
-					FileChannel from = file.getChannel();
-					WritableByteChannel to = Channels.newChannel(out);
-					range.copy(from, to);
-					from.close();
-					to.close();
-				}
-
-				out.flush();
-				out.close();
-				rsp.getOutputStream().flush();
-				rsp.getOutputStream().close();
-			}
-
-			if (c.is404)
-				return false;
-			else
-				rsp.setStatus(HttpServletResponse.SC_OK);
-
+			writer.writeResponse(rq, rsp, c);
 		}
 		catch (Exception e) {
 			exceptionHandler.handle(rq, rsp, e);
@@ -175,76 +205,224 @@ public class WebresourceServer implements ConditionalServlet {
 		return true;
 	}
 
-	CacheFile getCache(String path) throws Exception {
-		CacheFile c;
-		cache.lock();
-		try {
-			c = cache.get(path);
-			if (c == null || c.isExpired()) {
-				c = find(path);
-				if (c == null) {
-					c = do404(path);
-				} else
-					cache.put(path, c);
-			}
-		} finally {
-			cache.unlock();
-		}
-		return c;
-	}
-
-	private CacheFile do404(String path) throws Exception {
-		log.log(LogService.LOG_INFO, "404 " + path);
-		CacheFile c = find("404.html");
-		if (c != null)
-			c.is404 = true;
-
-		return c;
-	}
-
+	/*
+	 * The core find method. If the stuff matches, then we create a file and
+	 * return it in a cache object. The file is stored in the bundle's directory
+	 * so it gets cleaned up when the bundle is uninstalled.
+	 */
 	CacheFile find(String path) throws Exception {
-		if (proxy && path.startsWith("$"))
-			return cache.findCacheFileByPath(path);
 
-		if (path.startsWith(PluginContributions.CONTRIBUTIONS + "/"))
-			return pluginContributions
-					.findCachedPlugins(path.substring(PluginContributions.CONTRIBUTIONS.length() + 1));
+		//
+		// Verify if it actually is for us in the fastest way possible
+		//
 
-		CacheFile c = webResources.find(path);
-
-		return c;
-	}
-
-	//-------------- PLUGIN-CACHE --------------
-	public File getFile(String path) throws Exception {
-		CacheFile c = getCache(path);
-		if (c == null)
+		if (!path.startsWith(OSGI_ENROUTE_WEBRESOURCE))
 			return null;
 
-		if (!c.isSynched())
+		//
+		// Parse the path so we get the bundle, version, and glob
+		//
+
+		Matcher matcher = WEBRESOURCES_P.matcher(path);
+		if (!matcher.matches())
 			return null;
 
-		return c.file;
+		String bsn = matcher.group("bsn");
+		String version = matcher.group("version");
+
+		//
+		// Check if there is such a bundle.
+		//
+
+		Bundle b = getBundle(bsn, version);
+		if (b == null)
+			return null;
+
+		//
+		// Check if we have any wiring
+		//
+
+		BundleWiring wiring = b.adapt(BundleWiring.class);
+		List<BundleWire> wires = wiring.getRequiredWires(OSGI_ENROUTE_WEBRESOURCE);
+		if (wires.isEmpty())
+			return null;
+
+		List<WR> webresources = new ArrayList<>();
+		int order = 1000;
+		String globss = matcher.group("glob");
+		boolean literal = globss.indexOf('*') < 0 && globss.indexOf('?') < 0;
+		Glob glob = new Glob(globss);
+
+		//
+		// traverse the wiring and process the
+		// requirements. The requirements provide the
+		// resource name plus extension that must match the
+		// glob expr. The capabilities provide the actual
+		// path in the bundle
+		//
+
+		for (BundleWire wire : wires) {
+
+			BundleRequirement requirement = wire.getRequirement();
+			BundleCapability capability = wire.getCapability();
+			BundleRevision provider = capability.getResource();
+
+			Map<String,Object> attrs = requirement.getAttributes();
+
+			//
+			// Get the root path
+			//
+
+			String root = (String) capability.getAttributes().get("root");
+			if (root == null)
+				root = "";
+
+			if (!root.isEmpty() && !root.endsWith("/"))
+				root = root + "/";
+
+			if (literal) {
+				URL url = provider.getBundle().getEntry(root + globss);
+				if (url != null)
+					webresources.add(new WR(url, 0, order++));
+			} else {
+
+				//
+				// We allow single entry or multiple entries for resources
+				// so we use the converter
+				//
+
+				int priority = (Integer) Converter.cnv(Integer.class, attrs.get("priority"));
+				List<String> resources = Converter.cnv(listOfStrings, attrs.get("resource"));
+				if (resources != null) {
+
+					//
+					// Add all the resources to the list
+					//
+
+					for (String resource : resources) {
+						if (glob.matcher(resource).matches()) {
+							URL url = provider.getBundle().getEntry(root + resource);
+							if (url != null) {
+								webresources.add(new WR(url, priority, order++));
+							} else {
+								log.log(LogService.LOG_ERROR, "A web resource " + resource + " from " + requirement + " in bundle "
+										+ bsn + "-" + version);
+								return null;
+							}
+						}
+					}
+				} else {
+					//
+					// If no resources are specified we fill it with
+					// the existing resources
+					//
+
+					List<URL> entries = Collections.list(provider.getBundle().findEntries(root, "*", true));
+
+					for (URL url : entries) {
+						String p = url.getPath();
+						int n = p.lastIndexOf('/');
+						if (n >= 0)
+							p = p.substring(n + 1);
+
+						if (glob.matcher(p).matches()) {
+							webresources.add(new WR(url, priority, order++));
+						}
+					}
+				}
+			}
+		}
+
+		//
+		// Add the local resources by traversing the {@code /web} directory
+		//
+
+		Enumeration<URL> entries = b.findEntries("web/", "*", true);
+		if (entries != null) {
+			while (entries.hasMoreElements()) {
+				URL url = entries.nextElement();
+				String rpath = url.getPath().substring(4);
+				if (glob.matcher(rpath).matches())
+					webresources.add(new WR(url, -1, order++));
+			}
+		}
+
+		//
+		// Write a cache file in the directory of the bundle
+		//
+		String validFileName = toValidFileName(glob.toString());
+		File file = b.getDataFile(OSGI_ENROUTE_WEBRESOURCE + "/" + version + "/" + validFileName);
+		file.getParentFile().mkdirs();
+		File tmp = new File(file.getParentFile(), validFileName + "-tmp");
+
+		//
+		// Collect the resources in the proper order and duplicates removed.
+		//
+
+		try (FileOutputStream out = new FileOutputStream(tmp); PrintStream pout = new PrintStream(out);) {
+			webresources.stream().sorted().map((wr) -> wr.resource).distinct().forEach((url) -> {
+				try {
+					IO.copy(url.openStream(), pout);
+					pout.println("\n");
+				}
+				catch (Exception e) {
+					log.log(LogService.LOG_ERROR, "A web resource fails " + url + " in bundle " + bsn + "-" + version, e);
+				}
+			});
+		}
+
+		//
+		// We could do this work multiple times so we need to make the rename
+		// atomic. The duplication is a bit of waste but should be harmless.
+		//
+
+		tmp.renameTo(file);
+
+		return CacheFileFactory.newCacheFile(file, b, 0, file.getAbsolutePath());
 	}
 
+	/**
+	 * make sure the name does not contain any offending characters
+	 */
+
+	static Pattern	BADCHAR_P	= Pattern.compile("[^a-zA-Z-_.$@%+]");
+
+	static String toValidFileName(String string) throws UnsupportedEncodingException {
+		StringBuffer sb = new StringBuffer();
+		Matcher m = BADCHAR_P.matcher(string);
+		while (m.find()) {
+			char x = m.group(0).charAt(0);
+			if (x >= 128 || x <= 0)
+				m.appendReplacement(sb, "");
+			else if (x <= 15)
+				m.appendReplacement(sb, "%0" + Integer.toHexString(x));
+			else
+				m.appendReplacement(sb, "%" + Integer.toHexString(x));
+		}
+		m.appendTail(sb);
+		return sb.toString();
+	}
+
+	/*
+	 * Helper to find a bundle
+	 */
+	private Bundle getBundle(String bsn, String version) {
+		Version v = new Version(version);
+		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
+		for (Bundle b : context.getBundles()) {
+			if (bsn.equals(b.getSymbolicName()) && v.equals(b.getVersion()))
+				return b;
+		}
+		return null;
+	}
 
 	@Deactivate
 	void deactivate() {
-		pluginContributions.close();
-		if (webfilter != null)
-			webfilter.unregister();
-		if (exceptionFilter != null)
-			exceptionFilter.unregister();
 	}
 
 	@Reference
 	void setLog(LogService log) {
 		this.log = log;
-	}
-
-	@Reference
-	public void setCoordinator(Coordinator coordinator) {
-		this.coordinator = coordinator;
 	}
 
 	@Reference

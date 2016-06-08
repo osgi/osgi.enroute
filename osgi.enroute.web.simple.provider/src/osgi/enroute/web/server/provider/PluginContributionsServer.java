@@ -31,7 +31,8 @@ import osgi.enroute.webserver.capabilities.*;
 		service = { ConditionalServlet.class }, 
 		immediate = true, 
 		property = {
-				"service.ranking:Integer=1011", 
+				// Should be 1002, then phased out
+				"service.ranking:Integer=1012", 
 				"name=" + PluginContributionsServer.NAME, 
 		}, 
 		name = PluginContributionsServer.NAME, 
@@ -46,7 +47,7 @@ public class PluginContributionsServer implements ConditionalServlet {
 	LogService				log;
 	boolean					proxy;
 	PluginContributions		pluginContributions;
-	WebResources			webResources;
+//	WebResources			webResources;
 	Cache					cache;
 	BundleContext			context;
 

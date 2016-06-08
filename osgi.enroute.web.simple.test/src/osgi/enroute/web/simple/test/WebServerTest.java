@@ -34,20 +34,18 @@ public class WebServerTest extends TestCase {
 
 	/**
 	 * If only the hostname is provided (no slash), then the default action by the RedirectServlet
-	 * will append "/index.html". In debug mode, WebServer will call upon the cache to serve up the 
-	 * contents of the static/debug/index.html file.
+	 * will append "/index.html". This will serve the "debug" version of the WebServer INDEX page.
 	 */
     public void testHostNameOnly() throws Exception {
-        assertValid("TEST - MIXIN - TOP - HTML", 200, "http://localhost:8080");
+        assertValid("enRoute INDEX", 200, "http://localhost:8080");
     }
 
     /**
      * If the request is for an empty path ("/" only), then the default action by the RedirectServlet
-     * will append "index.html". In debug mode, WebServer will call upon the cache to serve up the 
-     * contents of the static/debug/index.html file.
+     * will append "index.html". This will serve the "debug" version of the WebServer INDEX page.
      */
 	public void testEmptyRootPartition() throws Exception {
-		assertValid("TEST - MIXIN - TOP - HTML", 200, "http://localhost:8080/");
+		assertValid("enRoute INDEX", 200, "http://localhost:8080/");
 	}
 
 	private void assertValid(String contents, int code, String uri) throws IOException {

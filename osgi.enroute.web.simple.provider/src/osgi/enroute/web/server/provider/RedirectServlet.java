@@ -14,7 +14,7 @@ import osgi.enroute.web.server.exceptions.*;
 		service = { ConditionalServlet.class }, 
 		immediate = true, 
 		property = {
-				"service.ranking:Integer=999", 
+				"service.ranking:Integer=1000", 
 				"name=" + RedirectServlet.NAME, 
 		}, 
 		name = RedirectServlet.NAME, 

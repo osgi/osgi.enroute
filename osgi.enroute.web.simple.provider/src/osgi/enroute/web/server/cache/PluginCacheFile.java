@@ -14,7 +14,7 @@ public class PluginCacheFile extends CacheFile {
 	private static final Set<String> EMPTY = new HashSet<String>();
 
 	private int count = -1;
-	private WebresourceServer webServer;
+	private PluginContributionsServer webServer;
 	private ServiceTracker<Object, ServiceReference<?>> pluginTracker;
 	public Set<ServiceReference<?>> dependencies = new HashSet<>();
 
