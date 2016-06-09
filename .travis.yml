@@ -5,15 +5,16 @@ jdk:
 install:
 - "./gradlew --version"
 script:
-- echo $OSGI_NEXUS_SETTING
+- echo $REPOSITORY_USERNAME
 - echo $TRAVIS_PULL_REQUEST
 - echo $TRAVIS_BRANCH
 - "./gradlew --continue build"
-- if [ $? == "0" -a "master" == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == "false" -a -n $OSGI_NEXUS_PASSWORD ]; then ./gradlew --info --continue release; fi
+- if [ $? == 0 -a master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a -n
+  $REPOSITORY_PASSWORD ]; then ./gradlew --continue --info release; fi
 cache:
   directories:
   - "$HOME/.gradle"
 env:
   global:
-  - secure: FsbMJlt/5+yUxjrR/z89E8HhPfs3qFcUhfvChr5WkmtcFgGfpJOwYW7D8sLGmmqhSd1YWUvhwdLQmZb8jYQcHoDshVqCo07n8b7u8XE8LOcNBBhQubHizaBKXU4ROMw+LUXRszOyxDS3ZQvmIc7Y40+Nml8OqbM9aXHOeuBl/LY=
-  - secure: azls2j4Fy5x6ckrEGY+ttqTaWHaFWb69lFdyaY4p0SP7cSQEOQNjcm5gdadIPM/moH7Ye0JhNlt1dYaejqp+uvd4r0TneI6Wnv5Qe2cyqYUbYmak08RtBufjsJZ8jjZvHCQgeou0LdRLarmN5PlzgLATz95u+EiU4T5gUS9HdMY=
+  - secure: j9YcUfaC3DCdFeSM5Lo63uaM7OPBRbBmZgrV9nv2FjYprar7qmhCOOWYSOiK3KIy0+IfDhCEpenR04ENJOiVLXlv4L6VXtLWp8zzR8P74k6XlCN3sOUa4XhIwV3rY3uqTH8xjDFwbTVJodNf2RZfUYs3YlIriET9VvLpjYErOOk=
+  - secure: TgyTyOAXFbmgDZ0LeXp02eK7b9w3v3LtUBl1UU0yADrQHaxX8TAamEHy9GoJ2jCt+crRFdXmISIQuA/dTan4APBtOOokZsmTYYXB41lw8GumVkiIuKXJIUtgqTo/78RmUuOnP3thTx1x57U8KTIyelnNQZDdz48tfyRbmahA0LM=
