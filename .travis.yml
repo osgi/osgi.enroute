@@ -9,7 +9,7 @@ script:
 - echo $REPOSITORY_USERNAME
 - echo $TRAVIS_PULL_REQUEST
 - echo $TRAVIS_BRANCH
-- if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a -n $REPOSITORY_USERNAME ]; then ./gradlew --continue --info release; fi
+- if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a  ${REPOSITORY_USERNAME:=X} != X ]; then ./gradlew --continue release; fi
 cache:
   directories:
   - "$HOME/.gradle"
