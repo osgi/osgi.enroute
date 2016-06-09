@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +27,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.coordinator.Coordination;
 import org.osgi.service.coordinator.Coordinator;
 import org.osgi.service.log.LogService;
@@ -86,7 +89,7 @@ public class Configurer implements ConfigurationDone {
 	File							dir;
 	Map<String,String>				base;
 	Bundle							currentBundle;
-	private Coordinator				coordinator;
+	private final AtomicReference<Coordinator> coordinatorRef = new AtomicReference<>();
 
 	/*
 	 * Track all bundles and read their configuration.
@@ -103,7 +106,9 @@ public class Configurer implements ConfigurationDone {
 		map.putAll(settings);
 		map.putAll(converter.convert(new TypeReference<Map<String,String>>() {}, System.getProperties()));
 		this.base = Collections.unmodifiableMap(map);
-		Coordination coordination = coordinator.begin("enRoute.configurer", TimeUnit.SECONDS.toMillis(20));
+		
+		Coordinator coordinator = coordinatorRef.get();
+		Coordination coordination = coordinator != null ? coordinator.begin("enRoute.configurer", TimeUnit.SECONDS.toMillis(20)) : null;
 		try {
 			tracker = new BundleTracker<Object>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 
@@ -167,10 +172,10 @@ public class Configurer implements ConfigurationDone {
 
 		}
 		catch (Exception e) {
-			coordination.fail(e);
+			if (coordination != null) coordination.fail(e);
 		}
 		finally {
-			coordination.end();
+			if (coordination != null) coordination.end();
 		}
 
 	}
@@ -490,9 +495,12 @@ public class Configurer implements ConfigurationDone {
 		this.log = log;
 	}
 
-	@Reference
+	@Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	void setCoordinator(Coordinator coordinator) {
-		this.coordinator = coordinator;
+		coordinatorRef.set(coordinator);
+	}
+	void unsetCoordinator(Coordinator coordinator) {
+		coordinatorRef.compareAndSet(coordinator, null);
 	}
 
 	@Reference
