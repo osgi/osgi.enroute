@@ -18,8 +18,7 @@ You can organize your code in any of the following ways:
 
  * As a "private" or "segregated" collection of resources
  * As a collection of resources that can be mixed or mashed
- * As a sharable resource that is deployed to multiple applications
- * As a plug-in (<<Need more info>>)
+ * As a sharable "WebResource" that is deployed to multiple applications
  * As any combination of the above
  
 Additionally, the configuration options of the WebServer make it a very flexible
@@ -35,7 +34,7 @@ OSGi can help you organize your code, then the WebServer could be a very good ch
   <dd>See: web application</dd>
 
   <dt>web application</dt>
-  <dd>a means of organizing your code in order to serve html, css, and javascript resources</dd>
+  <dd>a means of organizing your code in order to serve resources such as html, css, and javascript</dd>
 
   <dt>WebResource</dt>
   <dd>a resource or resources delivered from a bundle that is controlled through requirements and capabilities</dd>
@@ -68,7 +67,7 @@ either use a front-end proxy (such as ngnix) or a `ConditionalServlet` (see belo
 to accept more friendly URLs, and then forward to the correct internal path.
 
 The `BundleFileServer` tracks all bundles having a `/static/[BSN]` folder, and serves these 
-resources via http on the `/bnd/[BSN]` path. Any bundle that contains such a folder is included
+resources via http(s) on the `/bnd/[BSN]` path. Any bundle that contains such a folder is included
 in the list of segregated content web application bundles.
 
 Note that the BundleFileServer is unforgiving about paths. It will not append "/" to a directory
@@ -124,6 +123,7 @@ as adding an annotation to the requiring bundle.
 
 More information is available [here](https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?raw=true).
 
+
 ## Features
 
 ### Application indexing
@@ -141,6 +141,12 @@ EnRoute-Application: com.acme.foo, com.acme.bar
 
 ### File caching
 
+Web servers are in an excellent position to optimize the traffic. They have access to the static resources
+in the bundles and can easily cache and pre-zip the resources on the file system. They should support 
+debug and production modes to handle caching.
+
+The WebServer supports caching, compression, ranges, ETags, and If* headers to optimize the use of bandwidth.
+
 ### Error handling
 
 For Segregated Content bundles, it is possible to provide a static error page for 404 errors. For any other usage, you should register a servlet with the `osgi.http.whiteboard.servlet.errorPage` property in the usual way. (See 140.4.1 of the Compendium.)
@@ -150,7 +156,93 @@ For Segregated Content bundles, it is possible to provide a static error page fo
 
 ### Handling "/"
 
+If you need access to the root path ("/"), there are two ways to accomplish this.
+
+You could use your own servlet to override how requests on the root path are handled. If you do so,
+you will lose all the functionality provided by the `ConditionalServlet`s (see below), but you can
+still benefit from Segregated content and WebResources, since they are served from their own
+servlets.
+
+The other way to inject functionality into the root is to use `ConditionalServlet`s. Please see below
+for more details.
+
+### Redirects
+
+By default, if a path ends with "/" (other than the empty path: see Application indexing above),
+then the WebServer will append "index.html" and send a 302 redirect.
+
+If you want to change the default, you have two options. Either you could configure the value of
+the redirect to use something else (including the empty string, which in effect disables redirection),
+or you could override the functionality by using your own redirect `ConditionalServlet`.
+
+For more information about redirects, see `ConditionalServlet`s below.
+
 ### Handling folders
 
+Segregated content requires an exact path match, and folders will cause a 404 to be returned.
+
+Mixin content required a design decision. What does it mean to serve a "folder"? How should that be
+accomplished? Since there is no easy or obvious answer, we decided instead that it should serve a 404.
+If you have special needs, you always have the option of overriding the behaviour of the
+`BundleMixinServer` using a `ConditionalServlet`.
+
 ### `ConditionalServlet`s
- 
+
+The problem with the special root ("/") path is that it is really coveted real estate. If you are only serving
+a single application from root, there is no problem, but if you have multiple functions on a server
+such as multiple applications or websites serving different domain names, you are in trouble.
+
+`ConditionalServlet`s solve this problem by giving multiple servlet-like classes the chance (in order of
+their `service.ranking`) to "try out" the request and decide either to handle it, or pass it off to somebody
+else to handle.
+
+`ConditionalServlet`s are controlled by the `DispatchServlet`, and the algorithm looks like this:
+
+```java
+
+	public void service(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
+
+		for (ConditionalServlet cs : targets) {
+
+			try {
+				if (isBlacklisted(cs))
+					continue;
+
+				if (cs.doConditionalService(rq, rsp)) {
+					return;
+				}
+			}
+			catch (Exception e) {
+				// throw an Exception and blacklist the bad servlet
+			}
+		}
+
+		// No ConditionalServlets were found. Since we don't know what to do, we return a 404.
+		rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
+	}
+```
+
+The default list of `ConditionalServlet`s is, in order:
+
+ * `RedirectServlet` (`servlet.ranking=1000`) - this servlet watches for a path that ends with "/".
+      Any path that ends with a slash, other than the root path, will get appended by the value
+      of `redirect` (default is "index.html").
+ * `EnrouteApplicationIndexServer` (`service.ranking=1001`) - as described above in "Application indexing",
+      this servlet tracks all `Enroute-Application`s and serves the root "/index.html".
+ * `BundleMixinServer` (`service.ranking=1002`) - this servlet tracks all bundles that contain a
+      `/static` folder, and serves the content (as described above in "Mixin content").
+
+By adding, removing, and reordering `ConditionalServlet`s, you can gain unlimited control of what happens
+on the root path.
+
+### Configuration parameters
+
+	boolean debug - use debug mode (default is "false")
+
+	int expires - value to set the "Expires" http header for a cached file.
+	              If this value is not set, the header will not be used.
+
+	long expiration - value (in ms) to set the "Cache-Control: max-age=" http header for a cached file.
+	              If this file is not set, a default of 120000 is used.
+
+	boolean noproxy - ????

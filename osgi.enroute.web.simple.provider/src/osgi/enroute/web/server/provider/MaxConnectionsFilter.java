@@ -15,7 +15,10 @@ import org.osgi.service.coordinator.Coordination;
 import org.osgi.service.coordinator.Coordinator;
 
 /**
- * Create a filter that limits the # of connections
+ * Create a filter that limits the # of connections.
+ * 
+ * Note: currently this is not used... It is a remnant from before the cleanup.
+ *       I left it here so it could be added back easily.
  */
 public class MaxConnectionsFilter implements Filter {
 
