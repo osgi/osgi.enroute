@@ -1,7 +1,7 @@
-vrs 	= ${version;===;${Bundle-Version}}
+base.version: 	0.7.2
+vrs 	= ${version;===;${base.version}}
 path 	= /static/osgi/enroute/webcomponentsjs/webresource/${vrs}
 
-Bundle-Version: 	0.7.2
 Bundle-Description: Provides polyfills in support of the Web Components specifications. 
 Bundle-License: 	https://opensource.org/licenses/BSD-3-Clause; link=/LICENSE.txt; description="BSD"
 Bundle-DocURL: 		http://webcomponents.org/
