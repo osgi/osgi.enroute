@@ -134,19 +134,24 @@ public class Configurer implements ConfigurationDone {
 							//
 							return null;
 
-						URL url = bundle.getEntry(h);
-						if (url == null) {
-							return null;
-						}
+						log.log(LogService.LOG_INFO, "Reading configurations for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + h );
+						for (String entry : h.split(",")) {
+							URL url = bundle.getEntry(entry);
+							log.log(LogService.LOG_INFO, "Reading configuration for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + entry + " " + url);
 
-						String s = IO.collect(url);
-						if (s == null) {
-							if ( defined )
-								log.log(LogService.LOG_INFO, "Cannot find configuration for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + h + " " + url);
-							return null;
+							if (url == null) {
+								return null;
+							}
+	
+							String s = IO.collect(url);
+							if (s == null) {
+								if ( defined )
+									log.log(LogService.LOG_INFO, "Cannot find configuration for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + h + " " + url);
+								return null;
+							}
+	
+							configure(bundle, s);
 						}
-
-						configure(bundle, s);
 					}
 					catch (IOException e) {
 						log.log(LogService.LOG_ERROR, "Failed to set configuration for " + bundle, e);
