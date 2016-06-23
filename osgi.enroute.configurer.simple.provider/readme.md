@@ -8,7 +8,7 @@ You need to configure the bundles in a running framework without requiring the d
 
 This bundle is an extender to create Configuration Admin records from an embedded JSON file. The JSON file must be in the bundle at `/configuration/configuration.json`. This directory can also contain (binary) files with the @{resource:} macro.
 
-Additionally, you can set a `enRoute.configurer.extra` as System property (In your bndrun file you can use `-runproperties=enRoute.configurer.extra="[{...}]"`). This property is read as if it was a file. This is simpler to use in test environments.
+Additionally, you can set a `enRoute.configurer.extra` as System property (In your bndrun file you can use `-runproperties=enRoute.configurer.extra='[{...}]'`). This property is read as if it was a file. This is simpler to use in test environments.
 
 ## Factory Configurations
 The PID of a factory configuration is normally chosen by the Configuration Admin when a new instance is created. This would create problems if a bundle was updated multiple times, each time a new instance would be added. It is therefore necessary to choose a logical service.pid. If the logical PID has never been used it will create a new instance, otherwise it will update the existing instance when the fields in the Configuration record differ.
