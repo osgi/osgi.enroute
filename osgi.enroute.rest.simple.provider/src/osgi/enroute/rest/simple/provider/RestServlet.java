@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,13 +61,26 @@ public class RestServlet extends HttpServlet implements REST {
 	@ObjectClassDefinition
 	@interface Config {
 		boolean angular();
+		boolean corsEnabled() default false;
 
 		String osgi_http_whiteboard_servlet_pattern();
+		
+		//CORS header Access-Control-Allow-Origin
+		String allowOrigin() default "*";
+		//CORS header Access-Control-Allow-Methods
+		String allowMethods() default "GET, POST, PUT";
+		//CORS header Access-Control-Allow-Headers
+		String allowHeaders() default "Content-Type";
+		//CORS Access-Control-Max-Age
+		int  maxAge() default 86400;
+		//CORS Allow methods
+		String allowedMethods() default "GET, HEAD, POST, TRACE, OPTIONS";
 	}
 
 	Config	config;
 	boolean	angular;
-
+	boolean corsEnabled;
+	
 	@Activate
 	void actvate(Map<String, Object> map) throws Exception {
 		config = Converter.cnv(Config.class, map);
@@ -86,9 +100,30 @@ public class RestServlet extends HttpServlet implements REST {
 			rsp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
+		
+		if(corsEnabled){
+			addCorsHeaders(rsp);		
+		}
+		
+		if("OPTIONS".equalsIgnoreCase(rq.getMethod())){
+			try {
+				doOptions(rq, rsp);
+			} catch (ServletException e) {
+				throw new IOException(e);
+			}
+		}
 		mapper.execute(rq, rsp);
 	}
 
+	/*
+	 * this is required to handle the Client requests with Request METHOD
+	 * &quot;OPTIONS&quot;
+	 */
+	protected void doOptions(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
+		
+		super.doOptions(rq, rsp);
+	}
+	
 	@Reference( cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	synchronized void addREST(REST resourceManager) {
 		mapper.addResource(resourceManager);
@@ -97,4 +132,14 @@ public class RestServlet extends HttpServlet implements REST {
 	synchronized void removeREST(REST resourceManager) {
 		mapper.removeResource(resourceManager);
 	}
+	
+
+	private void addCorsHeaders(HttpServletResponse rsp) {
+		rsp.setHeader("Access-Control-Allow-Origin", config.allowOrigin());
+		rsp.setHeader("Access-Control-Allow-Methods", config.allowMethods());
+		rsp.setHeader("Access-Control-Allow-Headers", config.allowHeaders());
+		rsp.addIntHeader("Access-Control-Max-Age", config.maxAge());
+		rsp.setHeader("Allow", config.allowedMethods());		
+	}
+
 }
