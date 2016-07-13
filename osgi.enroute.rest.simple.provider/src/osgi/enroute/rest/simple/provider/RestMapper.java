@@ -51,7 +51,7 @@ import osgi.enroute.rest.api.RESTRequest;
  * <p>
  * 
  * <pre>
- * interface MyOptions extends Options {
+ * interface MyOptions extends RESTRequest {
  * 	int[] value();
  * }
  * 
@@ -70,7 +70,7 @@ import osgi.enroute.rest.api.RESTRequest;
  * example:
  * 
  * <pre>
- * interface MyOptions extends Options {
+ * interface MyOptions extends RESTRequest {
  * }
  * 
  * Attr getFoo(MyOptions options, byte[] id, int attr) {
@@ -86,7 +86,7 @@ import osgi.enroute.rest.api.RESTRequest;
  * method will return the converted value from the JSON decoded input stream:
  * 
  * <pre>
- * interface MyOptions extends Options {
+ * interface MyOptions extends RESTRequest {
  * 	Person _();
  * }
  * 
