@@ -87,6 +87,7 @@ public class RestServlet extends HttpServlet implements REST {
 
 		// TODO log if ends with /
 		angular = config.angular();
+		corsEnabled = config.corsEnabled();
 	}
 
 	static Random	random	= new Random();
@@ -111,13 +112,14 @@ public class RestServlet extends HttpServlet implements REST {
 			} catch (ServletException e) {
 				throw new IOException(e);
 			}
+		}else{
+			mapper.execute(rq, rsp);
 		}
-		mapper.execute(rq, rsp);
 	}
 
 	/*
 	 * this is required to handle the Client requests with Request METHOD
-	 * &quot;OPTIONS&quot;
+	 * &quot;OPTIONS&quot; typically the preflight requests
 	 */
 	protected void doOptions(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
 		
