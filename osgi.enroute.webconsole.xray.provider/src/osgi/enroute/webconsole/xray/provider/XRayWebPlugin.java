@@ -441,8 +441,13 @@ public final class XRayWebPlugin extends AbstractWebConsolePlugin implements Bun
 	private Integer[] toIndexArray(Collection<BundleDef> bs) {
 		Integer[] result = new Integer[bs.size()];
 		Iterator<BundleDef> it = bs.iterator();
-		for (int i = 0; i < result.length; i++)
-			result[i] = it.next().index;
+		for (int i = 0; i < result.length; i++) {
+			BundleDef next = it.next();
+			if ( next != null)
+				result[i] = next.index;
+			else
+				result[i] = -1;
+		}
 		return result;
 	}
 

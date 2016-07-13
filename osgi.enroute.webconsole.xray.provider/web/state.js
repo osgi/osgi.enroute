@@ -287,8 +287,8 @@
 			}
 		}).attr(
 				"transform",
-				function(d) {
-					return "translate(" + (bdef.components.dx + d.index * 10)
+				function(d,index) {
+					return "translate(" + (bdef.components.dx + index * 8)
 							+ "," + bdef.components.dy + ")";
 				});
 	};
