@@ -183,8 +183,7 @@ public class RestDefaultTest extends TestCase {
         }
     }
 
-    // Cannot run this test due to a bug
-    public void _ignore_testPostNoPayload() throws Exception {
+    public void testPostNoPayload() throws Exception {
         RestExample example = new RestExample();
         ServiceRegistration<REST> rest = 
                 context.registerService(
@@ -201,8 +200,7 @@ public class RestDefaultTest extends TestCase {
         }
     }
 
-    // Cannot run this test due to a bug
-    public void _ignore_testPutNoPayload() throws Exception {
+    public void testPutNoPayload() throws Exception {
         RestExample example = new RestExample();
         ServiceRegistration<REST> rest = 
                 context.registerService(
@@ -231,7 +229,7 @@ public class RestDefaultTest extends TestCase {
         try {
             // Post
             Map<String, String> payload = payload("{\"input\":\"TesT\",\"output\":\"TEST\"}");
-            String s = post(new URL("http://localhost:8080/rest/upper4/TesT"), new Example(payload));
+            String s = post(new URL("http://localhost:8080/rest/upper5"), new Example(payload));
             assertEquals("{\"input\":\"TesT\",\"output\":\"TEST\"}", s);
         } finally {
             rest.unregister();
@@ -377,14 +375,6 @@ public class RestDefaultTest extends TestCase {
 	        h.input = string;
 	        h.output = string.toUpperCase();
 	        history.put(h.input, h);
-	        StringBuilder st = new StringBuilder("Put an entry: \n")
-	                .append("input: " + h.input + "\n")
-	                .append("output: " + h.output + "\n")
-	                .append("payload: " + payload + "\n") 
-	                .append("string: " + string + "\n")
-	                .append("  --> rr._host(): " + rr._host() + "\n")
-	                .append("Collection: " + history.toString() + "\n");
-	        System.out.println(st.toString());
 	        return h;
 	    }
 
@@ -393,31 +383,19 @@ public class RestDefaultTest extends TestCase {
 	    //*************************************
 	    interface UpperRequest5 extends RESTRequest {
 	        History _body();
-	    }  
-	    
-	    interface UpperRequest5bis extends RESTRequest {
-	        Customer _body();
-	    }  
-	    
-	    //POST http://localhost:8080/rest/upper5/ with a payload of {"input":"Sam3","output":"SAM3"} ==> returns ...
-	    public Customer postUpper5(UpperRequest5bis rq5) {
-	        Customer c = rq5._body();
-	        StringBuilder st = new StringBuilder("Post an entry using payload: \n")
-	                .append("first: " + c.fn + "\n")
-	                .append("last: " + c.ln + "\n");
-	        System.out.println(st.toString());
-	        return c;
+	    }
+
+	    //POST http://localhost:8080/rest/upper5/ with a payload
+	    public History postUpper5(UpperRequest5 rq5) {
+	        History h = rq5._body();
+            history.put(h.input, h);
+	        return h;
 	    }
 	    
-	    //PUT http://localhost:8080/rest/upper5/ with a payload of {"input":"Sam3","output":"SAM3"} ==> returns ...
+	    //PUT http://localhost:8080/rest/upper5/ with a payload
 	    public History putUpper5(UpperRequest5 rq5) {
 	        History h = rq5._body();
 	        history.put(h.input, h);
-	        StringBuilder st = new StringBuilder("Put an entry using payload: \n")
-	                .append("input: " + h.input + "\n")
-	                .append("output: " + h.output + "\n")
-	                .append("Collection: " + history.toString() + "\n");
-	        System.out.println(st.toString());
 	        return h;
 	    }
 
@@ -440,23 +418,30 @@ public class RestDefaultTest extends TestCase {
     }
 
     private String post(URL url, DTO payload) throws Exception {
-        HttpURLConnection httpCon = (HttpURLConnection)url.openConnection();
-        httpCon.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        httpCon.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        httpCon.setRequestMethod("POST");
-        if(payload != null) {
-            httpCon.setDoOutput(true);
-            DataOutputStream dos = new DataOutputStream(httpCon.getOutputStream());
-            JSONCodec codec = new JSONCodec();
-            codec.enc().to( dos );
-            dos.flush();
-            dos.close();
+        HttpURLConnection httpCon = null;
+        try
+        {
+            httpCon = (HttpURLConnection)url.openConnection();
+            httpCon.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+            httpCon.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            httpCon.setRequestMethod("POST");
+            if(payload != null) {
+                httpCon.setDoOutput(true);
+                DataOutputStream dos = new DataOutputStream(httpCon.getOutputStream());
+                JSONCodec codec = new JSONCodec();
+                codec.enc().to(dos).put(payload);
+                dos.close();
+            }
+            httpCon.connect();
+            String s = IO.collect(httpCon.getInputStream());
+            return s;
         }
-        httpCon.connect();
-        httpCon.getContentLength();
-        return null;
-//        String s = IO.collect(httpCon.getInputStream());
-//        return s;
+        catch ( Exception e )
+        {
+            String s = IO.collect(httpCon.getErrorStream());
+            System.err.println(s);
+            return s;
+        }
     }
 
     private String put(URL url, String payload) throws Exception {

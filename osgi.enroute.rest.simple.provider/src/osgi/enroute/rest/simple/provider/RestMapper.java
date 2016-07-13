@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,6 +29,7 @@ import aQute.lib.converter.Converter;
 import aQute.lib.getopt.Options;
 import aQute.lib.hex.Hex;
 import aQute.lib.io.IO;
+import aQute.lib.json.Decoder;
 import aQute.lib.json.JSONCodec;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
@@ -377,14 +379,17 @@ public class RestMapper {
 
 					Type type = f.getPayloadType();
 					if (type != null) {
-						
-						Object payload = codec.dec().from(rq.getInputStream()).get(type);
+                        Object payload = null;
+                        Decoder d = codec.dec().from(rq.getInputStream());
+                        if(!d.isEof())
+						    payload = d.get(type);
 
 						if (f.hasPayloadAsParameter) {
 							parameters[f.hasRequestParameter ? 1 : 0] = payload;
 						}
-						
-						args.put("_body", payload);
+
+						if(payload != null)
+						    args.put("_body", payload);
 					}
 
 
