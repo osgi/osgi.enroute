@@ -18,6 +18,7 @@ public class ExceptionHandler {
 				throw exception;
 			}
 			catch (Redirect302Exception e) {
+				rsp.setHeader("Location", e.getPath());
 				rsp.sendRedirect(e.getPath());
 			}
 			catch (NotFound404Exception e ) {

@@ -64,6 +64,7 @@ public class RedirectServlet implements ConditionalServlet {
 			return false;
 		}
 		catch (Redirect302Exception e) {
+			rsp.setHeader("Location", e.getPath());
 			rsp.sendRedirect(e.getPath());
 			return true;
 		}
