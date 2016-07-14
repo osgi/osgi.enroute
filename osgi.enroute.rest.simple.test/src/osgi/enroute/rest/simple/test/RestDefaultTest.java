@@ -1,10 +1,8 @@
 package osgi.enroute.rest.simple.test;
 
 import java.io.DataOutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +21,6 @@ import junit.framework.TestCase;
 import osgi.enroute.configurer.api.ConfigurationDone;
 import osgi.enroute.configurer.api.RequireConfigurerExtender;
 import osgi.enroute.dto.api.DTOs;
-import osgi.enroute.dto.api.TypeReference;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
 import osgi.enroute.rest.api.RequireRestImplementation;
@@ -217,8 +214,7 @@ public class RestDefaultTest extends TestCase {
         }
     }
 
-    // Cannot run this test due to a bug
-    public void _ignore_testPostWithPayload() throws Exception {
+    public void testPostWithPayload() throws Exception {
         RestExample example = new RestExample();
         ServiceRegistration<REST> rest = 
                 context.registerService(
@@ -227,9 +223,23 @@ public class RestDefaultTest extends TestCase {
                         MAP.$(Constants.SERVICE_RANKING, 100).asHashtable());
 
         try {
-            // Post
-            Map<String, String> payload = payload("{\"input\":\"TesT\",\"output\":\"TEST\"}");
-            String s = post(new URL("http://localhost:8080/rest/upper5"), new Example(payload));
+            String s = post(new URL("http://localhost:8080/rest/upper5"), new Example("TesT", "TEST"));
+            assertEquals("{\"input\":\"TesT\",\"output\":\"TEST\"}", s);
+        } finally {
+            rest.unregister();
+        }
+    }
+
+    public void testPutWithPayload() throws Exception {
+        RestExample example = new RestExample();
+        ServiceRegistration<REST> rest = 
+                context.registerService(
+                        REST.class,
+                        example, 
+                        MAP.$(Constants.SERVICE_RANKING, 100).asHashtable());
+
+        try {
+            String s = put(new URL("http://localhost:8080/rest/upper5"), new Example("TesT", "TEST"));
             assertEquals("{\"input\":\"TesT\",\"output\":\"TEST\"}", s);
         } finally {
             rest.unregister();
@@ -410,10 +420,12 @@ public class RestDefaultTest extends TestCase {
 	}
 
     public static class Example extends DTO {
-        public Map<String,String> payload;
+        public String input;
+        public String output;
 
-        Example(Map<String,String> payload) {
-            this.payload = payload;
+        Example(String input, String output) {
+            this.input = input;
+            this.output = output;
         }
     }
 
@@ -429,46 +441,39 @@ public class RestDefaultTest extends TestCase {
                 httpCon.setDoOutput(true);
                 DataOutputStream dos = new DataOutputStream(httpCon.getOutputStream());
                 JSONCodec codec = new JSONCodec();
-                codec.enc().to(dos).put(payload);
+                codec.enc().charset("UTF-8").to(dos).put(payload);
                 dos.close();
             }
             httpCon.connect();
             String s = IO.collect(httpCon.getInputStream());
             return s;
-        }
-        catch ( Exception e )
-        {
+        } catch ( Exception e ) {
             String s = IO.collect(httpCon.getErrorStream());
             System.err.println(s);
+            throw e;
+        }
+    }
+
+    private String put(URL url, DTO payload) throws Exception {
+        HttpURLConnection httpCon = null;
+        try
+        {
+            httpCon = (HttpURLConnection)url.openConnection();
+            httpCon.setRequestMethod("PUT");
+            if(payload != null) {
+                httpCon.setDoOutput(true);
+                DataOutputStream dos = new DataOutputStream(httpCon.getOutputStream());
+                JSONCodec codec = new JSONCodec();
+                codec.enc().charset("UTF-8").to(dos).put(payload);
+                dos.close();
+            }
+            httpCon.connect();
+            String s = IO.collect(httpCon.getInputStream());
             return s;
-        }
-    }
-
-    private String put(URL url, String payload) throws Exception {
-        HttpURLConnection httpCon = (HttpURLConnection)url.openConnection();
-        httpCon.setRequestMethod("PUT");
-        if(payload != null) {
-            httpCon.setDoOutput(true);
-            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
-//            out.write(payload);
-            out.write("asdf");
-            out.flush();
-            out.close();
-        }
-        httpCon.connect();
-        String s = IO.collect(httpCon.getInputStream());
-        return s;
-    }
-
-    private Map<String, String> payload(String string) {
-        if ( string == null)
-            return Collections.emptyMap();
-        
-        try {
-            return dtos.decoder( new TypeReference<Map<String,String>>() {}).get(string);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        } catch ( Exception e ) {
+            String s = IO.collect(httpCon.getErrorStream());
+            System.err.println(s);
+            throw e;
         }
     }
 
