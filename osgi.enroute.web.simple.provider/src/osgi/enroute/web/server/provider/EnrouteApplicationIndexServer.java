@@ -18,7 +18,6 @@ import osgi.enroute.servlet.api.*;
 import osgi.enroute.web.server.cache.*;
 import osgi.enroute.web.server.config.*;
 import osgi.enroute.web.server.exceptions.*;
-import osgi.enroute.web.server.provider.EnrouteApplicationIndexServer.IndexDTO.*;
 
 @Component(
 		service = { ConditionalServlet.class }, 

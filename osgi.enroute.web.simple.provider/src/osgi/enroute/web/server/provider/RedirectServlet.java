@@ -57,8 +57,7 @@ public class RedirectServlet implements ConditionalServlet {
 				path = path.substring(1);
 
 			if (path.endsWith("/")) {
-				if (path.endsWith("/"))
-					path = path.substring(0, path.length() - 1);
+				path = path.substring(0, path.length() - 1);
 				throw new Redirect302Exception("/" + path + redirect);
 			}
 
