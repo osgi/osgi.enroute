@@ -34,19 +34,18 @@ public class EnrouteApplicationIndexServer implements ConditionalServlet {
 
 	static final String NAME = "osgi.enroute.simple.web.application";
 
-	static class IndexDTO extends DTO {
+	public static class IndexDTO extends DTO {
+		public List<ApplicationDTO>	applications = new ArrayList<>();
+		public Map<String,Object> configuration;		
+	}
 
-		List<ApplicationDTO>	applications	= new ArrayList<>();
-		Map<String,Object> configuration;
-		
-		static class ApplicationDTO extends DTO {
-			public long			bundle;
-			public String		name;
-			public String		bsn;
-			public String		version;
-			public String		link;
-			public String		description;
-		}
+	public static class ApplicationDTO extends DTO {
+		public long			bundle;
+		public String		name;
+		public String		bsn;
+		public String		version;
+		public String		link;
+		public String		description;
 	}
 
 	WebServerConfig								config;
