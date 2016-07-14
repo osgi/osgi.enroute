@@ -19,5 +19,6 @@ Provide-Capability: osgi.service;\
 	
 -buildpath:  \
 	osgi.enroute.base.api;version=${base.version}
+	biz.aQute.bndlib;version=2;packages=*
 	
 -includeresource: {readme.md}

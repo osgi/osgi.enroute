@@ -4,14 +4,8 @@ Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-base.version:           1.9.0
-# Uncomment the following line to build the non-snapshot version.
-#-snapshot:
+base.version:           2.0.0
 Bundle-Version:         ${base.version}.${tstamp}-SNAPSHOT
-
-# Maven info. The maven artifactId defaults to Bundle-SymbolicName
--groupid:               org.osgi
--pom:                   version=${versionmask;===s;${@version}}
 
 # Documentation
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
@@ -19,6 +13,10 @@ Bundle-Copyright: 		${copyright}
 Bundle-License:         Apache-2.0; \
                         description="Apache License, Version 2.0"; \
                         link="http://www.apache.org/licenses/LICENSE-2.0"
+=======
+Bundle-License: 		http://opensource.org/licenses/apache2.0.php; \
+                			link="http://www.apache.org/licenses/LICENSE-2.0"; \
+                			description="Apache License, Version 2.0"
 Bundle-DocURL:    		http://enroute.osgi.org/
 Bundle-SCM:       		url=https://github.com/osgi/osgi.enroute, \
                   			connection=scm:git:https://github.com/osgi/osgi.enroute.git, \
@@ -30,6 +28,9 @@ Bundle-Developers: 		osgi; \
 
 -releaserepo: 			Distro
 -baselinerepo:			Central
+=======
+Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
+Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
 -plugin.3.Source:  \
 \
@@ -127,4 +128,70 @@ base.packages =  \
 	osgi.enroute.twitter.bootstrap.capabilities, \
 	osgi.enroute.webserver.capabilities	
 
+pwd = ${env;REPOSITORY_PASSWORD;}
+usr = ${env;REPOSITORY_USERNAME;}
 
+-groupid:               org.osgi
+-pom:                   version=${versionmask;===s;${@version}}
+-connection-settings: 	${if;${pwd};server;-dummy};id=https://oss.sonatype.org;username=${usr};password=${pwd}, -bnd
+
+-plugin.osgi.nexus: \
+\
+	aQute.bnd.repository.maven.provider.MavenBndRepository; \
+		snapshotUrl=https://oss.sonatype.org/content/repositories/osgi-snapshots/; \
+		releaseUrl= https://oss.sonatype.org/service/local/staging/deploy/maven2/; \
+		index=${.}/osgi-nexus.maven; \
+		name="OSGiNexus"
+
+-releaserepo: OSGiNexus
+-baselinerepo: Distro
+
+
+-pomaugment: \
+	org.knopflerfish.*; \
+		Bundle-DocURL=http://www.knopflerfish.org; \
+		Bundle-License=http://www.knopflerfish.org/license.html; \
+		Bundle-SCM= \
+		'url=https://github.com:knopflerfish/knopflerfish.org.git, \
+         connection=scm:git@github.com:knopflerfish/knopflerfish.org.git, \
+         developerConnection=scm:git@github.com:knopflerfish/knopflerfish.org.git'; \
+		Bundle-Developers= 'Makewave; \
+        	email=info@makewave.com; \
+        	name=Makewave; \
+        	organization=Makewave; \
+        	organizationUrl=http://makewave.com; \
+        	timezone=1'\
+        	, \
+	org.amdatu.*; \
+		Bundle-DocURL=http://www.amdatu.org; \
+		Bundle-License='https://opensource.org/licenses/Apache-2.0; \
+			link=http://www.apache.org/licenses/LICENSE-2.0; \
+			description=Apache License Version 2.0'; \
+		Bundle-Developers= 'Amdatu; \
+        	email=info@amdatu.org; \
+        	name=Amdatu; \
+        	organization=Amdatu; \
+        	organizationUrl=http://amdatu.org; \
+        	roles=enterprise; \
+        	timezone=1'; \
+		Bundle-SCM= \
+		'url=https://bitbucket.org/amdatu/amdatu-repository, \
+         connection=scm:git clone https://bitbucket.org/amdatu/amdatu-repository.git, \
+         developerConnection=scm:git clone https://bitbucket.org/amdatu/amdatu-repository.git'\
+         , \
+    org.eclipse.*; \
+		Bundle-DocURL=http://www.eclipse.org; \
+		Bundle-License='https://opensource.org/licenses/EPL-1.0; \
+			link=http://www.eclipse.org/legal/epl-v10.html; \
+			description=Eclipse Public License'; \
+		Bundle-Developers= 'Eclipse Foundation; \
+        	email=info@eclipse.org; \
+        	name=Eclipse; \
+        	organization=Eclipse; \
+        	organizationUrl=http://eclipse.org; \
+        	timezone=1'; \
+		Bundle-SCM= \
+		'url=https://git.eclipse.org/c/, \
+         connection=scm:unknown, \
+         developerConnection=scm:unknown'
+        	
