@@ -55,7 +55,7 @@ debug-bundles: \
 -augment.eq_ev: \
 	org.eclipse.equinox.event; \
 		capability:="  osgi.service;objectClass=org.osgi.service.event.EventAdmin;effective:=active, \
-					   osgi.implementation;osgi.implementation=osgi.event", \
+					   osgi.implementation;osgi.implementation=osgi.event"; \
 		requirement:= "osgi.extender;filter:='(osgi.extender=osgi.component)'"
 
 #
