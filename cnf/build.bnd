@@ -10,10 +10,6 @@ Bundle-Version:         ${base.version}.${tstamp}-SNAPSHOT
 # Documentation
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
 Bundle-Copyright: 		${copyright}
-Bundle-License:         Apache-2.0; \
-                        description="Apache License, Version 2.0"; \
-                        link="http://www.apache.org/licenses/LICENSE-2.0"
-=======
 Bundle-License: 		http://opensource.org/licenses/apache2.0.php; \
                 			link="http://www.apache.org/licenses/LICENSE-2.0"; \
                 			description="Apache License, Version 2.0"
@@ -25,12 +21,6 @@ Bundle-Developers: 		osgi; \
 							email=info@osgi.org; \
 							name="OSGi Alliance"; \
 							organization="OSGi Alliance"
-
--releaserepo: 			Distro
--baselinerepo:			Central
-=======
-Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
-Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
 -plugin.3.Source:  \
 \
