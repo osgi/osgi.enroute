@@ -24,7 +24,8 @@ import osgi.enroute.web.server.exceptions.*;
 		immediate = true, 
 		property = {
 				"service.ranking:Integer=1001", 
-				"name=" + EnrouteApplicationIndexServer.NAME, 
+				"name=" + EnrouteApplicationIndexServer.NAME,
+				"addTrailingSlash=true"
 		}, 
 		name = EnrouteApplicationIndexServer.NAME, 
 		configurationPid = BundleMixinServer.NAME,
@@ -60,7 +61,7 @@ public class EnrouteApplicationIndexServer implements ConditionalServlet {
 		this.context = context;
 		index.configuration = props;
 		this.config = config;
-		this.exceptionHandler = new ExceptionHandler(log);
+		this.exceptionHandler = new ExceptionHandler(config.addTrailingSlash(), log);
 
 		applicationTracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE, null) {
 			@Override

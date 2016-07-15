@@ -28,7 +28,9 @@ import osgi.enroute.webserver.capabilities.*;
 		immediate = true, 
 		property = {
 				"service.ranking:Integer=1002", 
-				"name=" + BundleMixinServer.NAME}, 
+				"name=" + BundleMixinServer.NAME,
+				"addTrailingSlash=true"
+		}, 
 		name = BundleMixinServer.NAME, 
 		configurationPid = BundleMixinServer.NAME,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
@@ -47,7 +49,7 @@ public class BundleMixinServer implements ConditionalServlet {
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
 		writer = new ResponseWriter(config);
-		exceptionHandler = new ExceptionHandler(log);
+		exceptionHandler = new ExceptionHandler(config.addTrailingSlash(), log);
 
 		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {

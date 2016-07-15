@@ -21,7 +21,8 @@ import osgi.enroute.web.server.exceptions.*;
 		name = "osgi.enroute.web.service.provider.bfs",
 		property = {
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/bnd", 
-				Constants.SERVICE_RANKING + ":Integer=100"
+				Constants.SERVICE_RANKING + ":Integer=100",
+				"addTrailingSlash=true"
 		}, 
 		service = Servlet.class, 
 		configurationPid = BundleMixinServer.NAME,
@@ -43,7 +44,7 @@ public class BundleFileServer extends HttpServlet {
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
 		writer = new ResponseWriter(config);
-		exceptionHandler = new ExceptionHandler(log);
+		exceptionHandler = new ExceptionHandler(config.addTrailingSlash(), log);
 
 		tracker = new BundleTracker<Bundle>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 			public Bundle addingBundle(Bundle bundle, BundleEvent event) {

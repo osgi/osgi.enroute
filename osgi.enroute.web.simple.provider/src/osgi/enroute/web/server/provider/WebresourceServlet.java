@@ -101,7 +101,8 @@ import osgi.enroute.webserver.capabilities.*;
 @Component(
 		property = {
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/" + WebresourceServlet.OSGI_ENROUTE_WEBRESOURCE, 
-				Constants.SERVICE_RANKING + ":Integer=101"
+				Constants.SERVICE_RANKING + ":Integer=101",
+				"addTrailingSlash=true"
 		}, 
 		service = Servlet.class, 
 		immediate = true,
@@ -158,7 +159,7 @@ public class WebresourceServlet extends HttpServlet {
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
 		this.config = config;
 		this.writer = new ResponseWriter(config);
-		this.exceptionHandler = new ExceptionHandler(log);
+		this.exceptionHandler = new ExceptionHandler(config.addTrailingSlash(), log);
 		proxy = !config.noproxy();
 	}
 

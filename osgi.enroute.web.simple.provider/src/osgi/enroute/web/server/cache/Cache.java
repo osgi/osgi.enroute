@@ -120,27 +120,20 @@ public class Cache {
 	 * file corresponding to the path. This URL is only used for accessing the file content; it
 	 * is NOT and must not be exposed externally.
 	 */
-	public URL internalUrlOf(Bundle b, String path) {
-		Enumeration<URL> urls;
+	public URL internalUrlOf(Bundle b, String path) throws FolderException {
 		if (config.debug())
-			urls = b.findEntries("static/debug/" + path, "*", false);
+			path = "static/debug/" + path;
 		else
-			urls = b.findEntries("static/" + path, "*", false);
+			path = "static/" + path;
+
+		Enumeration<URL> urls = b.findEntries(path, "*", false);
 
 		// We have hit a folder
 		if (urls != null && urls.hasMoreElements()) {
-			return null;
+			throw new FolderException(path);
 		}
 
-		URL url = null;
-		if (config.debug()) {
-			url = b.getResource("static/debug/" + path);
-		}
-		else if (url == null) {
-			url = b.getResource("static/" + path);
-		}
-
-		return url;
+		return b.getResource(path);
 	}
 
 	public CacheFile getFromBundle(Bundle b, URL url, String path) throws InternalServer500Exception {

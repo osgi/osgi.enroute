@@ -6,9 +6,11 @@ import org.osgi.service.log.*;
 
 public class ExceptionHandler {
 
-	private LogService 				log;
+	private final boolean			addTrailingSlash;
+	private final LogService 		log;
 
-	public ExceptionHandler(LogService log) {
+	public ExceptionHandler(boolean addTrailingSlash, LogService log) {
+		this.addTrailingSlash = addTrailingSlash;
 		this.log = log;
 	}
 
@@ -16,15 +18,21 @@ public class ExceptionHandler {
 		try {
 			try {
 				throw exception;
-			}
-			catch (Redirect302Exception e) {
+			} catch(FolderException e) {
+				if(addTrailingSlash) {
+					rsp.setHeader("Location", e.getPath());
+					rsp.sendRedirect(e.getPath() + "/");
+				} else {
+					// This is the default we will use if we don't add the trailing slash.
+					// However, it is possible to imagine other types of responses as well.
+					rsp.sendError(HttpServletResponse.SC_NOT_FOUND);					
+				}
+			} catch (Redirect302Exception e) {
 				rsp.setHeader("Location", e.getPath());
 				rsp.sendRedirect(e.getPath());
-			}
-			catch (NotFound404Exception e ) {
+			} catch (NotFound404Exception e ) {
 				rsp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			}
-			catch (InternalServer500Exception e) {
+			} catch (InternalServer500Exception e) {
 				log.log(LogService.LOG_ERROR, "Internal webserver error", e);
 				rsp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}

@@ -9,4 +9,6 @@ public @interface WebServerConfig {
 	long expiration();
 
 	boolean noproxy();
+
+	boolean addTrailingSlash();
 }
