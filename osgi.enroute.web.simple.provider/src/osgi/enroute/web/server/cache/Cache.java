@@ -121,19 +121,21 @@ public class Cache {
 	 * is NOT and must not be exposed externally.
 	 */
 	public URL internalUrlOf(Bundle b, String path) throws FolderException {
+		String internalPath;
 		if (config.debug())
-			path = "static/debug/" + path;
+			internalPath = "static/debug/" + path;
 		else
-			path = "static/" + path;
+			internalPath = "static/" + path;
 
-		Enumeration<URL> urls = b.findEntries(path, "*", false);
+		Enumeration<URL> urls = b.findEntries(internalPath, "*", false);
 
 		// We have hit a folder
 		if (urls != null && urls.hasMoreElements()) {
 			throw new FolderException(path);
+//			return null;
 		}
 
-		return b.getResource(path);
+		return b.getResource(internalPath);
 	}
 
 	public CacheFile getFromBundle(Bundle b, URL url, String path) throws InternalServer500Exception {

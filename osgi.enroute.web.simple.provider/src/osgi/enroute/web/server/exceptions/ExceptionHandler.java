@@ -20,8 +20,13 @@ public class ExceptionHandler {
 				throw exception;
 			} catch(FolderException e) {
 				if(addTrailingSlash) {
-					rsp.setHeader("Location", e.getPath());
-					rsp.sendRedirect(e.getPath() + "/");
+					String path = e.getPath();
+					if(!path.startsWith("/"))
+						path = "/" + path;
+					if(!path.endsWith("/"))
+						path = path + "/";
+					rsp.setHeader("Location", path);					
+					rsp.sendRedirect(path);
 				} else {
 					// This is the default we will use if we don't add the trailing slash.
 					// However, it is possible to imagine other types of responses as well.

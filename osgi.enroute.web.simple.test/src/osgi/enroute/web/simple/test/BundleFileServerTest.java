@@ -39,28 +39,20 @@ public class BundleFileServerTest extends TestCase {
         assertValid("TEST - BND - TOP", 200, "http://localhost:8080/bnd/osgi.enroute.web.simple.test/index.html");
     }
 
-    /**
-     * If only the BSN is provided on the path (no slash), then the result should be a 404.
-     * The BFS requires an exact path match.
-     */
     public void testBFSRootNoSlash() throws Exception {
-        assertStatusCode(404, "http://localhost:8080/bnd/osgi.enroute.web.simple.test");
+        assertValid("TEST - BND - TOP", 200, "http://localhost:8080/osgi.enroute.web.simple.test");
     }
 
-    /**
-     * If only the BSN is provided on the path (with slash), then the result should be a 404.
-     * The BFS requires an exact path match.
-     */
     public void testBFSRootWithSlash() throws Exception {
-        assertStatusCode(404, "http://localhost:8080/bnd/osgi.enroute.web.simple.test/");
+        assertValid("TEST - BND - TOP", 200, "http://localhost:8080/osgi.enroute.web.simple.test/");
     }
 
     public void testBFSFolderNoSlash() throws Exception {
-        assertStatusCode(404, "http://localhost:8080/bnd/osgi.enroute.web.simple.test/foo");
+        assertValid("TEST - FOO - INDEX", 200, "http://localhost:8080/osgi.enroute.web.simple.test/foo");
     }
 
     public void testBFSFolderWithSlash() throws Exception {
-        assertStatusCode(404, "http://localhost:8080/bnd/osgi.enroute.web.simple.test/foo/");
+        assertValid("TEST - FOO - INDEX", 200, "http://localhost:8080/osgi.enroute.web.simple.test/foo/");
     }
 
     public void testBFS404() throws Exception {
