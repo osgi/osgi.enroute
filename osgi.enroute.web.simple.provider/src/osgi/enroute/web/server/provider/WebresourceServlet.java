@@ -100,7 +100,7 @@ import osgi.enroute.webserver.capabilities.*;
 @RequireHttpImplementation
 @Component(
 		property = {
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/" + WebresourceServlet.OSGI_ENROUTE_WEBRESOURCE, 
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/" + WebresourceServlet.OSGI_ENROUTE_WEBRESOURCE + "/*", 
 				Constants.SERVICE_RANKING + ":Integer=101",
 				"addTrailingSlash=true"
 		}, 

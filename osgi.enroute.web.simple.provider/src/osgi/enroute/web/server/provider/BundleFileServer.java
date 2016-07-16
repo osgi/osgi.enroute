@@ -20,7 +20,7 @@ import osgi.enroute.web.server.exceptions.*;
 @Component(
 		name = "osgi.enroute.web.service.provider.bfs",
 		property = {
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/bnd", 
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/bnd/*", 
 				Constants.SERVICE_RANKING + ":Integer=100",
 				"addTrailingSlash=true"
 		}, 
