@@ -237,7 +237,7 @@ public class MapperTest extends TestCase {
 		String parms[] = parameters == null ? new String[0] : parameters.split("/");
 		ExtList<String> ps = new ExtList<>(parms);
 
-		RestMapper mapper = new RestMapper(null);
+		RestMapper mapper = new RestMapper();
 		mapper.addResource(clazz.newInstance());
 
 		String cardinality = method + "/" + ps.size();
