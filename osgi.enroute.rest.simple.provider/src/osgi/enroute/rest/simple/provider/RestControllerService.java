@@ -1,7 +1,10 @@
 package osgi.enroute.rest.simple.provider;
 
+import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +24,6 @@ import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.libg.map.MAP;
 import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RestConstants;
@@ -51,14 +53,14 @@ public class RestControllerService implements RestController {
     @Reference private LogService log;
 
     @Activate
-    void activate() throws Exception {
+    void activate(Map<String, Object> properties) throws Exception {
         // Add the default namespace
         resourceManagers.put(DEFAULT_NAMESPACE, new HashSet<>());
         restMappers.put(DEFAULT_NAMESPACE, new RestMapper());
         TreeMap<Integer, UriMapper> uriMapperMap = new TreeMap<>();
         uriMapperMap.put(0, new DefaultUriMapper());
         uriMappers.put(DEFAULT_SERVLET_PATTERN, uriMapperMap);
-        startServlet(DEFAULT_SERVLET_PATTERN);
+        startServlet(DEFAULT_SERVLET_PATTERN, properties);
     }
 
     void deactivate() {
@@ -120,7 +122,7 @@ public class RestControllerService implements RestController {
                 pattern = DEFAULT_SERVLET_PATTERN;
             if(!uriMappers.containsKey(pattern)) {                
                 uriMappers.put(pattern, new TreeMap<>());
-                startServlet(pattern);
+                startServlet(pattern, properties);
             }
 
             Integer ranking = (Integer)properties.get(Constants.SERVICE_RANKING);
@@ -145,11 +147,24 @@ public class RestControllerService implements RestController {
         }
     }
 
-    private void startServlet(String pattern) throws Exception {
+    private void startServlet(String pattern, Map<String, Object> properties) throws Exception {
         Configuration configuration = cm.createFactoryConfiguration("osgi.enroute.rest.simple.servlet", "?");
-        configuration.update(MAP.$(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN, pattern).asHashtable());
+        Dictionary<String, Object> d = new Hashtable<>();
+        d.put(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN, pattern);
+        // Propagate the properties we want.
+        // This way is no goo, though. There must be a better way to do this!!
+        Set<String> toCopy = new HashSet<>(Arrays.asList( new String[]{
+                "corsEnabled", "allowOrigin", "allowMethods", "allowHeaders", "maxAge", "allowedMethods"}));
+        copyProperties( properties, d, toCopy );
+        configuration.update(d);
     }
 
+    private void copyProperties(Map<String, Object> from, Dictionary<String, Object> to, Set<String> properties) {
+        for(String property : properties) {
+            if(from.containsKey(property))
+                to.put(property, from.get(property));
+        }
+    }
     private void stopServlet(String pattern) {
         // How do I do this?
     }

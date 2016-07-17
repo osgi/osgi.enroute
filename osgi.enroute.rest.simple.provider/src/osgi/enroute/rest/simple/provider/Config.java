@@ -4,8 +4,6 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition
 @interface Config {
-    String org_enroute_rest_namespace() default "";
-
     boolean corsEnabled() default false;
 
     String osgi_http_whiteboard_servlet_pattern();
