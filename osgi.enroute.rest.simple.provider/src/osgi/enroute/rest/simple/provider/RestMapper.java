@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -109,7 +108,6 @@ public class RestMapper {
 	
 	final static JSONCodec codec = new JSONCodec();
 	MultiMap<String, Function> functions = new MultiMap<String, Function>();
-	private final String prefix;
 	boolean diagnostics;
 	Converter converter = new Converter();
 
@@ -246,19 +244,6 @@ public class RestMapper {
 	}
 
 	/**
-	 * Create a mapper on the prefix. Will only react on requests that start
-	 * with the given prefix.The remainder after the prefix is mapped to a
-	 * method.
-	 * 
-	 * @param prefix
-	 *            the prefix to match
-	 */
-	public RestMapper(String prefix) {
-		this.prefix = prefix;
-
-	}
-
-	/**
 	 * Add a new resource manager. Add all public methods that have the first
 	 * argument be an interface that extends {@link Options}.
 	 */
@@ -309,70 +294,62 @@ public class RestMapper {
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean execute(HttpServletRequest rq, HttpServletResponse rsp) throws IOException {
-		String path = rq.getPathInfo();
-		if (path == null)
-			throw new IllegalArgumentException(
-					"The rest servlet requires that the name of the resource follows the servlet path ('rest'), like /rest/aQute.service.library.Program[/...]*[?...]");
+        try {
+            String path = rq.getPathInfo();
+            if (path == null)
+                throw new IllegalArgumentException(
+                        "The rest servlet requires that the name of the resource follows the servlet path ('rest'), like /rest/aQute.service.library.Program[/...]*[?...]");
 
-		//
-		// Check if this request is for us
-		//
-		if (prefix != null) {
-			if (!path.startsWith(prefix))
-				return false;
+            if (path.startsWith("/"))
+                path = path.substring(1);
 
-			path = path.substring(prefix.length());
-		} else if (path.startsWith("/"))
-			path = path.substring(1);
+            //
+            // Find the method's arguments embedded in the url
+            //
+            String[] segments = path.split("/");
+            ExtList<String> list = new ExtList<String>(segments);
+            String name = (rq.getMethod() + list.remove(0)).toLowerCase();
+            int cardinality = list.size();
 
-		//
-		// Find the method's arguments embedded in the url
-		//
-		String[] segments = path.split("/");
-		ExtList<String> list = new ExtList<String>(segments);
-		String name = (rq.getMethod() + list.remove(0)).toLowerCase();
-		int cardinality = list.size();
+            //
+            // We register methods with their cardinality to not have
+            // to wade through them one by one
+            //
+            List<Function> candidates = functions.get(name + "/" + cardinality);
+            if (candidates == null)
+                candidates = functions.get(name);
 
-		//
-		// We register methods with their cardinality to not have
-		// to wade through them one by one
-		//
-		List<Function> candidates = functions.get(name + "/" + cardinality);
-		if (candidates == null)
-			candidates = functions.get(name);
+            //
+            // check if we found a suitable candidate
+            //
 
-		//
-		// check if we found a suitable candidate
-		//
+            if (candidates == null)
+                throw new FileNotFoundException("No such method " + name + "/" + cardinality + ". Available: " + functions);
 
-		if (candidates == null)
-			throw new FileNotFoundException("No such method " + name + "/" + cardinality + ". Available: " + functions);
+            //
+            // All values are arrays, turn them into singletons when
+            // they have one element
+            //
+            Map<String, Object> args = new HashMap<String, Object>(rq.getParameterMap());
+            for (Map.Entry<String, Object> e : args.entrySet()) {
+                Object o = e.getValue();
+                if (o.getClass().isArray()) {
+                    if (Array.getLength(o) == 1)
+                        e.setValue(Array.get(o, 0));
+                }
+            }
 
-		//
-		// All values are arrays, turn them into singletons when
-		// they have one element
-		//
-		Map<String, Object> args = new HashMap<String, Object>(rq.getParameterMap());
-		for (Map.Entry<String, Object> e : args.entrySet()) {
-			Object o = e.getValue();
-			if (o.getClass().isArray()) {
-				if (Array.getLength(o) == 1)
-					e.setValue(Array.get(o, 0));
-			}
-		}
+            //
+            // Provide the context variables through the Options
+            // interface
+            //
+            args.put("_request", rq);
+            args.put("_host", rq.getHeader("Host"));
+            args.put("_response", rsp);
 
-		//
-		// Provide the context variables through the Options
-		// interface
-		//
-		args.put("_request", rq);
-		args.put("_host", rq.getHeader("Host"));
-		args.put("_response", rsp);
-		try {
-			//
+            //
 			// Find the functions matching the
 			// name
-
 			for (Function f : candidates) {
 				Object[] parameters = f.match(args, list);
 				if (parameters != null) {

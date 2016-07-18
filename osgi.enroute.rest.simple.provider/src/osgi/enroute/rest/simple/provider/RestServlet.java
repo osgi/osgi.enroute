@@ -1,7 +1,6 @@
 package osgi.enroute.rest.simple.provider;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.Servlet;
@@ -10,23 +9,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.metatype.annotations.Designate;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.lib.converter.Converter;
 import aQute.lib.json.JSONCodec;
-import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.rest.api.REST;
-import osgi.enroute.rest.api.RestConstants;
+import osgi.enroute.rest.api.UriMapper;
 
 /**
  * The rest servlet is responsible for mapping incoming requests to methods on
@@ -40,54 +31,28 @@ import osgi.enroute.rest.api.RestConstants;
  * <p/>
  * 
  */
-@RequireHttpImplementation
-@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=RestConstants.REST_SPECIFICATION_NAME, version=RestConstants.REST_SPECIFICATION_VERSION)
-@Designate(ocd = RestServlet.Config.class)
+@Designate(ocd = Config.class)
 @Component(
-	//
-	service = Servlet.class, //
-	name = "osgi.enroute.rest.simple", //
-	configurationPolicy = ConfigurationPolicy.OPTIONAL, //
-	property=HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/rest/*"
+	service = Servlet.class,
+	name = "osgi.enroute.rest.simple.servlet",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
+	immediate = true
 )
 public class RestServlet extends HttpServlet implements REST {
 	private static final long	serialVersionUID	= 1L;
 	final static JSONCodec		codec				= new JSONCodec();
-	RestMapper					mapper				= new RestMapper(null);
-
-	public RestServlet() {
-		addREST(this);
-	}
-	@ObjectClassDefinition
-	@interface Config {
-		boolean angular();
-		boolean corsEnabled() default false;
-
-		String osgi_http_whiteboard_servlet_pattern();
-		
-		//CORS header Access-Control-Allow-Origin
-		String allowOrigin() default "*";
-		//CORS header Access-Control-Allow-Methods
-		String allowMethods() default "GET, POST, PUT";
-		//CORS header Access-Control-Allow-Headers
-		String allowHeaders() default "Content-Type";
-		//CORS Access-Control-Max-Age
-		int  maxAge() default 86400;
-		//CORS Allow methods
-		String allowedMethods() default "GET, HEAD, POST, TRACE, OPTIONS";
-	}
+	String                      servletPattern;
 
 	Config	config;
 	boolean	angular;
 	boolean corsEnabled;
-	
-	@Activate
-	void actvate(Map<String, Object> map) throws Exception {
-		config = Converter.cnv(Config.class, map);
 
-		// TODO log if ends with /
-		angular = config.angular();
+	@Reference RestController controller;
+
+	@Activate
+	void actvate(Config config) throws Exception {
 		corsEnabled = config.corsEnabled();
+		servletPattern = config.osgi_http_whiteboard_servlet_pattern();
 	}
 
 	static Random	random	= new Random();
@@ -113,28 +78,29 @@ public class RestServlet extends HttpServlet implements REST {
 				throw new IOException(e);
 			}
 		}else{
-			mapper.execute(rq, rsp);
+		    // Go through the UriMappers to determine the correct namespace
+		    for(UriMapper uriMapper : controller.uriMappersFor(servletPattern)) {
+		        String namespace = uriMapper.namespaceFor(rq.getRequestURI());
+		        if(namespace != null ) {
+	                RestMapper restMapper = controller.restMapperFor(namespace);
+	                if(restMapper != null ) {                   
+	                    restMapper.execute(rq, rsp);
+	                    return;
+	                }
+		        }
+		    }
+		    // Should always fall through to the default mapper... if it does not, there is an Internal Error
+            throw new IllegalStateException("Could not find Mapper");
 		}
 	}
 
-	/*
+    /*
 	 * this is required to handle the Client requests with Request METHOD
 	 * &quot;OPTIONS&quot; typically the preflight requests
 	 */
 	protected void doOptions(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
-		
 		super.doOptions(rq, rsp);
 	}
-	
-	@Reference( cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
-	synchronized void addREST(REST resourceManager) {
-		mapper.addResource(resourceManager);
-	}
-
-	synchronized void removeREST(REST resourceManager) {
-		mapper.removeResource(resourceManager);
-	}
-	
 
 	private void addCorsHeaders(HttpServletResponse rsp) {
 		rsp.setHeader("Access-Control-Allow-Origin", config.allowOrigin());
@@ -143,5 +109,4 @@ public class RestServlet extends HttpServlet implements REST {
 		rsp.addIntHeader("Access-Control-Max-Age", config.maxAge());
 		rsp.setHeader("Allow", config.allowedMethods());		
 	}
-
 }
