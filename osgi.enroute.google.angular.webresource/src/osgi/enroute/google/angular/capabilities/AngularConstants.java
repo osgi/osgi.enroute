@@ -11,5 +11,5 @@ public interface AngularConstants {
 	/**
 	 * 
 	 */
-	String ANGULAR_WEB_RESOURCE_VERSION = "1.4.4";
+	String ANGULAR_WEB_RESOURCE_VERSION = "1.5.7";
 }
