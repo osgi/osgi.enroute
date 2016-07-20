@@ -19,11 +19,8 @@ import aQute.lib.io.IO;
 import aQute.libg.map.MAP;
 import junit.framework.TestCase;
 import osgi.enroute.configurer.api.ConfigurationDone;
-import osgi.enroute.configurer.api.RequireConfigurerExtender;
 import osgi.enroute.servlet.api.ConditionalServlet;
 
-
-@RequireConfigurerExtender
 @Component
 public class DispatcherTest extends TestCase {
 
@@ -85,7 +82,7 @@ public class DispatcherTest extends TestCase {
 			assertEquals("10.20.30.40.", buffer.toString());
 			
 			// Check if the normal resource read works
-			assertContents( "FOO", "http://localhost:8080/foo/bar/test.txt");
+			assertContents( "TEST - BAR", "http://localhost:8080/foo/bar/test.txt");
 		} finally {
 			r10.unregister();
 			r20.unregister();
@@ -180,6 +177,6 @@ public class DispatcherTest extends TestCase {
 
 	@Reference
 	void setConfigurationDone( ConfigurationDone d) {
-		System.out.println("Configuration Done");
+		System.out.println("DispatcherTest - Configuration Done");
 	}
 }

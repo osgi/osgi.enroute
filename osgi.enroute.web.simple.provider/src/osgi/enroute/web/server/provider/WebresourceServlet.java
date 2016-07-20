@@ -5,22 +5,34 @@ import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 
-import org.osgi.framework.*;
-import org.osgi.framework.wiring.*;
-import org.slf4j.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-import osgi.enroute.web.server.provider.WebServer.Cache;
+import org.osgi.framework.*;
+import org.osgi.framework.Constants;
+import org.osgi.framework.wiring.*;
+import org.osgi.namespace.extender.*;
+import org.osgi.service.component.annotations.*;
+import org.osgi.service.http.whiteboard.*;
+import org.osgi.service.log.*;
+
+import aQute.bnd.annotation.headers.*;
 import aQute.bnd.osgi.*;
 import aQute.lib.converter.*;
 import aQute.lib.io.*;
 import aQute.libg.glob.*;
+import osgi.enroute.http.capabilities.*;
+import osgi.enroute.web.server.cache.*;
+import osgi.enroute.web.server.config.*;
+import osgi.enroute.web.server.exceptions.*;
+import osgi.enroute.webserver.capabilities.*;
 
 /**
- * This class adds support for web resources. A Web Resource is a resource
+ * This class adds support for Web Resources. A Web Resource is a resource
  * delivered from a bundle that is controlled through Requirements and
- * Capabilities. It enables using web resources without having to know the
- * actual path that the web resource has in the system, actually, the path can
- * be private. An application can refer to its web resources by creating a
+ * Capabilities. It enables the use of web resources without having to know the
+ * actual location of the web resource in the system. The path to the resource can even
+ * be private. An application can refer to the web resources it needs by creating a
  * requirement to a webresource capability. The requirement has a
  * {@code resource} and {@code priority} property. If the application now refers
  * to a URI {@value #OSGI_ENROUTE_WEBRESOURCE}{@code /<bundle>/<version>/<type>}
@@ -78,11 +90,31 @@ import aQute.libg.glob.*;
  * </pre>
  * <p>
  * <a href=
- * 'https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?r
- * a w = t r u e ' > RFP 171 Web Resources (PDF)</a>
+ * 'https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?raw=true'
+ *  > RFP 171 Web Resources (PDF)</a>
  */
-public class WebResources {
-	private static final String			OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
+@ProvideCapability(
+		ns = ExtenderNamespace.EXTENDER_NAMESPACE, 
+		name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, 
+		version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
+@RequireHttpImplementation
+@Component(
+		property = {
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/" + WebresourceServlet.OSGI_ENROUTE_WEBRESOURCE + "/*", 
+				Constants.SERVICE_RANKING + ":Integer=101",
+				"addTrailingSlash=true"
+		}, 
+		service = Servlet.class, 
+		immediate = true,
+		name = WebresourceServlet.NAME, 
+		configurationPid = BundleMixinServer.NAME,
+		configurationPolicy = ConfigurationPolicy.OPTIONAL)
+public class WebresourceServlet extends HttpServlet {
+
+	private static final long			serialVersionUID	= 1L;
+
+	static final String 				NAME = "osgi.enroute.simple.webresource";
+	public static final String			OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
 
 	final static Pattern				WEBRESOURCES_P				= Pattern
 																			.compile("osgi.enroute.webresource/(?<bsn>"
@@ -90,24 +122,6 @@ public class WebResources {
 																					+ "+)/(?<version>"
 																					+ Verifier.VERSION_STRING
 																					+ ")/(?<glob>.+)");
-
-	final TypeReference<List<String>>	listOfStrings				= new TypeReference<List<String>>() {};
-	static Logger						logger						= LoggerFactory.getLogger(WebResources.class);
-	final BundleContext					context;
-	final WebServer						ws;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param ws
-	 *            the web server to create cache objects
-	 * @param context
-	 *            To see the bundles
-	 */
-	WebResources(WebServer ws, BundleContext context) {
-		this.context = context;
-		this.ws = ws;
-	}
 
 	/*
 	 * Helper class to sort the entries according to their priority and order.
@@ -133,19 +147,74 @@ public class WebResources {
 		}
 	}
 
+	final TypeReference<List<String>>				listOfStrings = new TypeReference<List<String>>() {};
+	WebServerConfig									config;
+	private Cache									cache;
+	private ResponseWriter							writer;
+	private ExceptionHandler						exceptionHandler;
+	private LogService								log;
+	boolean											proxy;
+
+	@Activate
+	void activate(WebServerConfig config, BundleContext context) throws Exception {
+		this.config = config;
+		this.writer = new ResponseWriter(config);
+		this.exceptionHandler = new ExceptionHandler(config.addTrailingSlash(), log);
+		proxy = !config.noproxy();
+	}
+
+	
+	@Override
+	protected void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
+		try {
+			String path = rq.getRequestURI();
+
+			if (path == null )
+				throw new NotFound404Exception(null);
+
+			if (path.startsWith("/"))
+				path = path.substring(1);
+
+			// Useless check??
+			if (!path.startsWith(OSGI_ENROUTE_WEBRESOURCE))
+				throw new NotFound404Exception(null);
+
+			CacheFile c;
+			cache.lock();
+			try {
+				c = cache.get(path);
+				if (c == null || c.isExpired()) {
+					if (proxy && path.startsWith("$"))
+						// Not sure what this does...
+						c = cache.findCacheFileByPath(path);
+					else
+						c = find(path);
+
+					if (c == null) {
+						throw new NotFound404Exception(null);
+					} else
+						cache.put(path, c);
+				}
+			} finally {
+				cache.unlock();
+			}
+
+			if (c == null || !c.isSynched())
+				throw new NotFound404Exception(null);
+
+			writer.writeResponse(rq, rsp, c);
+		}
+		catch (Exception e) {
+			exceptionHandler.handle(rq, rsp, e);
+		}
+	}
+
 	/*
 	 * The core find method. If the stuff matches, then we create a file and
 	 * return it in a cache object. The file is stored in the bundle's directory
 	 * so it gets cleaned up when the bundle is uninstalled.
 	 */
-	Cache find(String path) throws Exception {
-
-		//
-		// Verify if it actually is for us in the fastest way possible
-		//
-
-		if (!path.startsWith(OSGI_ENROUTE_WEBRESOURCE))
-			return null;
+	CacheFile find(String path) throws Exception {
 
 		//
 		// Parse the path so we get the bundle, version, and glob
@@ -233,7 +302,7 @@ public class WebResources {
 							if (url != null) {
 								webresources.add(new WR(url, priority, order++));
 							} else {
-								logger.error("A web resource " + resource + " from " + requirement + " in bundle "
+								log.log(LogService.LOG_ERROR, "A web resource " + resource + " from " + requirement + " in bundle "
 										+ bsn + "-" + version);
 								return null;
 							}
@@ -294,7 +363,7 @@ public class WebResources {
 					pout.println("\n");
 				}
 				catch (Exception e) {
-					logger.error("A web resource fails " + url + " in bundle " + bsn + "-" + version, e);
+					log.log(LogService.LOG_ERROR, "A web resource fails " + url + " in bundle " + bsn + "-" + version, e);
 				}
 			});
 		}
@@ -306,7 +375,7 @@ public class WebResources {
 
 		tmp.renameTo(file);
 
-		return ws.new Cache(file, b, file.getAbsolutePath());
+		return CacheFileFactory.newCacheFile(file, b, 0, file.getAbsolutePath());
 	}
 
 	/**
@@ -336,10 +405,25 @@ public class WebResources {
 	 */
 	private Bundle getBundle(String bsn, String version) {
 		Version v = new Version(version);
+		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		for (Bundle b : context.getBundles()) {
 			if (bsn.equals(b.getSymbolicName()) && v.equals(b.getVersion()))
 				return b;
 		}
 		return null;
+	}
+
+	@Deactivate
+	void deactivate() {
+	}
+
+	@Reference
+	void setLog(LogService log) {
+		this.log = log;
+	}
+
+	@Reference
+	void setCache(Cache cache) {
+		this.cache = cache;
 	}
 }

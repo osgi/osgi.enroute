@@ -13,13 +13,18 @@ import org.osgi.service.http.whiteboard.*;
 import org.osgi.service.log.*;
 
 import osgi.enroute.servlet.api.*;
+import osgi.enroute.web.server.config.*;
 
-@Component(name = "osgi.enroute.web.service.provider", //
+@Component(
+		name = "osgi.enroute.web.service.provider",
 		property = {
-
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/", "name=DispatchServlet", "no.index=true",
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/", 
+				"name=DispatchServlet", 
 				Constants.SERVICE_RANKING + ":Integer=100"
-		}, service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+		}, 
+		service = Servlet.class, 
+		configurationPolicy = ConfigurationPolicy.OPTIONAL, 
+		immediate = true)
 public class DispatchServlet extends HttpServlet {
 
 	private static final long					serialVersionUID	= 1L;

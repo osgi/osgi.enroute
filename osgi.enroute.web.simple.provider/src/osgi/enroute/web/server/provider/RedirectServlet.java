@@ -8,15 +8,14 @@ import org.osgi.framework.*;
 import org.osgi.service.component.annotations.*;
 
 import osgi.enroute.servlet.api.*;
+import osgi.enroute.web.server.exceptions.*;
 
 @Component(
 		service = { ConditionalServlet.class }, 
 		immediate = true, 
 		property = {
-				"service.ranking:Integer=999", 
+				"service.ranking:Integer=1000", 
 				"name=" + RedirectServlet.NAME, 
-				// What the heck is this???? Can't find any doc about it.
-				"no.index=true"
 		}, 
 		name = RedirectServlet.NAME, 
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
@@ -53,22 +52,21 @@ public class RedirectServlet implements ConditionalServlet {
 			String path = rq.getRequestURI();
 
 			if (path == null || path.isEmpty() || path.equals("/")) {
-				throw new RedirectException(redirect);
+				throw new Redirect302Exception(redirect);
 			} else if (path.startsWith("/"))
 				path = path.substring(1);
 
 			if (path.endsWith("/")) {
-				if (path.endsWith("/"))
-					path = path.substring(0, path.length() - 1);
-				throw new RedirectException("/" + path + redirect);
+				path = path.substring(0, path.length() - 1);
+				throw new Redirect302Exception("/" + path + redirect);
 			}
 
 			return false;
 		}
-		catch (RedirectException e) {
+		catch (Redirect302Exception e) {
+			rsp.setHeader("Location", e.getPath());
 			rsp.sendRedirect(e.getPath());
+			return true;
 		}
-
-		return false;
 	}
 }
