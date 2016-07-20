@@ -62,7 +62,7 @@ public class RestControllerService implements RestController {
         resourceManagers.put(DEFAULT_NAMESPACE, new HashSet<>());
         restMappers.put(DEFAULT_NAMESPACE, new RestMapper());
         TreeMap<Integer, UriMapper> uriMapperMap = new TreeMap<>();
-        uriMapperMap.put(0, new DefaultUriMapper());
+        uriMapperMap.put(0, s -> "");
         uriMappers.put(DEFAULT_SERVLET_PATTERN, uriMapperMap);
         startServlet(DEFAULT_SERVLET_PATTERN, properties);
         isActivated = true;
