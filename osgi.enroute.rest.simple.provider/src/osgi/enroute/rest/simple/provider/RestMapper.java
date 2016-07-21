@@ -340,17 +340,18 @@ public class RestMapper {
             }
 
             //
-            // Provide the context variables through the Options
-            // interface
+            // Provide the context variables through the Options interface
             //
             args.put("_request", rq);
             args.put("_host", rq.getHeader("Host"));
             args.put("_response", rsp);
 
-            //
-			// Find the functions matching the
-			// name
-			for (Function f : candidates) {
+            Object result = null;
+
+            if (candidates.isEmpty()) {
+                return false;                
+            } else {
+                Function f = candidates.get(0);
 				Object[] parameters = f.match(args, list);
 				if (parameters != null) {
 
@@ -369,68 +370,65 @@ public class RestMapper {
 						    args.put("_body", payload);
 					}
 
-
-					Object result;
 					try {
 						result = f.invoke(parameters);
 					} catch (InvocationTargetException e1) {
 						throw e1.getTargetException();
 					}
-
-					//
-					// Check if we can compress the result
-					//
-					OutputStream out = rsp.getOutputStream();
-
-					if (result != null) {
-						//
-						// < 14 bytes screws up
-						//
-						if (!(result instanceof Number)
-								&& !(result instanceof String && ((String) result).length() < 100)) {
-							String acceptEncoding = rq.getHeader("Accept-Encoding");
-							if (acceptEncoding != null) {
-								boolean gzip = acceptEncoding.indexOf("gzip") >= 0;
-								boolean deflate = acceptEncoding.indexOf("deflate") >= 0;
-
-								if (gzip) {
-									out = new GZIPOutputStream(out);
-									rsp.setHeader("Content-Encoding", "gzip");
-								} else if (deflate) {
-									out = new DeflaterOutputStream(out);
-									rsp.setHeader("Content-Encoding", "deflate");
-								}
-							}
-						}
-
-						//
-						// Convert based on the returned object
-						// Streams, byte[], File, and CharSequence
-						// are written without conversion. Other objects
-						// are written with json
-						//
-
-						if (result instanceof InputStream) {
-							IO.copy((InputStream) result, out);
-						} else if (result instanceof byte[]) {
-							byte[] data = (byte[]) result;
-							rsp.setContentLength(data.length);
-							out.write(data);
-						} else if (result instanceof File) {
-							File fresult = (File) result;
-							rsp.setContentLength((int) fresult.length());
-							IO.copy(fresult, out);
-						} else {
-							rsp.setContentType("application/json;charset=UTF-8");
-							if (result instanceof Iterable)
-								result = new ExtList<Object>((Iterable<Object>) result);
-							codec.enc().writeDefaults().to(out).put(result);
-						}
-					}
-					out.close();
 				}
 			}
-			return false;
+
+            //
+            // Check if we can compress the result
+            //
+            OutputStream out = rsp.getOutputStream();
+
+            if (result != null) {
+                //
+                // < 14 bytes screws up
+                //
+                if (!(result instanceof Number)
+                        && !(result instanceof String && ((String) result).length() < 100)) {
+                    String acceptEncoding = rq.getHeader("Accept-Encoding");
+                    if (acceptEncoding != null) {
+                        boolean gzip = acceptEncoding.indexOf("gzip") >= 0;
+                        boolean deflate = acceptEncoding.indexOf("deflate") >= 0;
+
+                        if (gzip) {
+                            out = new GZIPOutputStream(out);
+                            rsp.setHeader("Content-Encoding", "gzip");
+                        } else if (deflate) {
+                            out = new DeflaterOutputStream(out);
+                            rsp.setHeader("Content-Encoding", "deflate");
+                        }
+                    }
+                }
+
+                //
+                // Convert based on the returned object
+                // Streams, byte[], File, and CharSequence
+                // are written without conversion. Other objects
+                // are written with json
+                //
+
+                if (result instanceof InputStream) {
+                    IO.copy((InputStream) result, out);
+                } else if (result instanceof byte[]) {
+                    byte[] data = (byte[]) result;
+                    rsp.setContentLength(data.length);
+                    out.write(data);
+                } else if (result instanceof File) {
+                    File fresult = (File) result;
+                    rsp.setContentLength((int) fresult.length());
+                    IO.copy(fresult, out);
+                } else {
+                    rsp.setContentType("application/json;charset=UTF-8");
+                    if (result instanceof Iterable)
+                        result = new ExtList<Object>((Iterable<Object>) result);
+                    codec.enc().writeDefaults().to(out).put(result);
+                }
+            }
+            out.close();
 		} catch (FileNotFoundException e) {
 			rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (SecurityException e) {

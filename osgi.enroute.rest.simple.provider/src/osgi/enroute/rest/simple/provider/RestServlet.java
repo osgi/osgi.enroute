@@ -42,10 +42,9 @@ public class RestServlet extends HttpServlet implements REST {
 	private static final long	serialVersionUID	= 1L;
 	final static JSONCodec		codec				= new JSONCodec();
 	String                      servletPattern;
-
-	Config	config;
-	boolean	angular;
-	boolean corsEnabled;
+	Config	                    config;
+	boolean	                    angular;
+	boolean                     corsEnabled;
 
 	@Reference RestController controller;
 

@@ -1,5 +1,6 @@
 package osgi.enroute.rest.simple.provider;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -48,9 +49,12 @@ public class RestControllerService implements RestController {
     private final Map<String, Set<REST>> resourceManagers = new HashMap<>();
     private final Map<String, RestMapper> restMappers = new HashMap<>();
     private final Map<String, TreeMap<Integer, UriMapper>> uriMappers = new HashMap<>();
+    private final List<PendingMapper> pendingMappers = new ArrayList<>();
 
     @Reference private ConfigurationAdmin cm;
     @Reference private LogService log;
+
+    boolean isActivated = false;
 
     @Activate
     void activate(Map<String, Object> properties) throws Exception {
@@ -58,12 +62,16 @@ public class RestControllerService implements RestController {
         resourceManagers.put(DEFAULT_NAMESPACE, new HashSet<>());
         restMappers.put(DEFAULT_NAMESPACE, new RestMapper());
         TreeMap<Integer, UriMapper> uriMapperMap = new TreeMap<>();
-        uriMapperMap.put(0, new DefaultUriMapper());
+        uriMapperMap.put(0, s -> "");
         uriMappers.put(DEFAULT_SERVLET_PATTERN, uriMapperMap);
         startServlet(DEFAULT_SERVLET_PATTERN, properties);
+        isActivated = true;
+
+        instantiatePendingMappers();
     }
 
     void deactivate() {
+        isActivated = false;
         stopServlet(DEFAULT_SERVLET_PATTERN);
         uriMappers.clear();
         restMappers.clear();
@@ -115,23 +123,10 @@ public class RestControllerService implements RestController {
 
     @Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     synchronized void addUriMapper(UriMapper mapper, Map<String, Object> properties) throws Exception {
-        String name = (String)properties.get(Constants.SERVICE_PID);
-        if(name != null) {
-            String pattern = (String)properties.get(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN);
-            if(pattern == null || pattern.isEmpty())
-                pattern = DEFAULT_SERVLET_PATTERN;
-            if(!uriMappers.containsKey(pattern)) {                
-                uriMappers.put(pattern, new TreeMap<>());
-                startServlet(pattern, properties);
-            }
-
-            Integer ranking = (Integer)properties.get(Constants.SERVICE_RANKING);
-            if(ranking == null)
-                ranking = 0;
-            TreeMap<Integer, UriMapper> mappersForPattern = uriMappers.get(pattern);
-            mappersForPattern.put(ranking, mapper);
-            uriMappers.put(pattern, new TreeMap<>(mappersForPattern.descendingMap()));
-        }
+        if( !isActivated )
+            pendingMappers.add(new PendingMapper(mapper, properties));
+        else
+            instantiateMapper( mapper, properties );
     }
 
     synchronized void removeUriMapper(UriMapper mapper, Map<String, String> properties) {
@@ -144,6 +139,34 @@ public class RestControllerService implements RestController {
             mappersForPattern.remove(mapper);
             if(mappersForPattern.isEmpty())
                 stopServlet(pattern);
+        }
+    }
+
+    private void instantiatePendingMappers() throws Exception {
+        for( final PendingMapper mapper : pendingMappers )
+            instantiateMapper( mapper.mapper, mapper.properties );
+
+        pendingMappers.clear();
+    }
+
+    private void instantiateMapper(UriMapper mapper, Map<String, Object> properties) throws Exception {
+        String name = (String)properties.get(Constants.SERVICE_PID);
+        if(name != null) {
+            String pattern = (String)properties.get(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN);
+            if(pattern == null || pattern.isEmpty())
+                pattern = DEFAULT_SERVLET_PATTERN;
+
+            if(!uriMappers.containsKey(pattern)) {
+                uriMappers.put(pattern, new TreeMap<>());
+                startServlet(pattern, properties);
+            }
+
+            Integer ranking = (Integer)properties.get(Constants.SERVICE_RANKING);
+            if(ranking == null)
+                ranking = 0;
+            TreeMap<Integer, UriMapper> mappersForPattern = uriMappers.get(pattern);
+            mappersForPattern.put(ranking, mapper);
+            uriMappers.put(pattern, new TreeMap<>(mappersForPattern.descendingMap()));
         }
     }
 
@@ -167,5 +190,15 @@ public class RestControllerService implements RestController {
     }
     private void stopServlet(String pattern) {
         // How do I do this?
+    }
+
+    private static class PendingMapper {
+        UriMapper mapper;
+        Map<String, Object> properties;
+
+        public PendingMapper( UriMapper mapper, Map<String, Object> properties ) {
+            this.mapper = mapper;
+            this.properties = new HashMap<>(properties);
+        }
     }
 }
