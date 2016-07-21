@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import osgi.enroute.configurer.api.ConfigurationDone;
 import osgi.enroute.configurer.api.RequireConfigurerExtender;
 import osgi.enroute.dto.api.DTOs;
+import osgi.enroute.rest.api.Inf;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
 import osgi.enroute.rest.api.RequireRestImplementation;
@@ -249,24 +250,50 @@ public class RestDefaultTest extends TestCase {
         }
     }
 
+    public void testInf() throws Exception {
+        ServiceRegistration<REST> rest = 
+                context.registerService(
+                        REST.class,
+                        new RestExample(), 
+                        MAP.$(Constants.SERVICE_RANKING, 100).asHashtable());
+
+        try {
+            URL url = new URL("http://localhost:8080/rest/inf");
+            String s = IO.collect(url.openStream());
+            System.out.print(s);
+        } finally {
+            rest.unregister();
+        }
+    }
+
     public static class RestExample implements REST {
 
 	    //*************************************
 	    //GET Examples using URL arguments
 	    //*************************************
 	    
-	    //GET http://localhost:8080/rest/upper/  
+	    //GET http://localhost:8080/rest/upper/
+        @Inf("An example GET call with no arguments")
 	    public String getUpper(RESTRequest rr) {
 	        return "No Parameters";
 	    }
 	    
 	    //GET http://localhost:8080/rest/upper/arg1
-	    public String getUpper(RESTRequest rr, String first) {
+        @Inf("An example GET call with one argument")
+	    public String getUpper(RESTRequest rr, @Inf("First argument") String first) {
 	        return first.toUpperCase();
 	    }
 	    
 	    //GET http://localhost:8080/rest/upper/arg1/arg2/arg3/arg4/arg5/arg6
-	    public String getUpper(RESTRequest rr, String arg1, String arg2, String arg3, String arg4, String arg5, String arg6) {
+        @Inf("An example GET call with six arguments")
+	    public String getUpper(
+	            RESTRequest rr, 
+	            @Inf("First argument") String arg1, 
+	            @Inf("Second argument") String arg2, 
+	            @Inf("Third argument") String arg3, 
+	            @Inf("Fourth argument") String arg4, 
+	            @Inf("Fifth argument") String arg5, 
+	            @Inf("Sixth argument") String arg6) {
 	        return 
 	                arg1.toUpperCase() + "&" + 
 	                arg2.toUpperCase() + "&" +
@@ -282,15 +309,16 @@ public class RestDefaultTest extends TestCase {
 	    
 	    //note the name of the member variables map to the URL parameters
 	    interface UpperRequest2 extends RESTRequest {
-	        String param1();
-            String param2();
-            String param3();
-            String param4();
-            String param5();
-            String param6();
+	        @Inf("First parameter") String param1();
+	        @Inf("Second parameter") String param2();
+	        @Inf("Third parameter") String param3();
+	        @Inf("Fourth parameter") String param4();
+	        @Inf("Fifth parameter") String param5();
+	        @Inf("Sixth parameter") String param6();
 	    }  
 
 	    //GET http://localhost:8080/rest/upper2/?param1=x1&param2=x2...
+        @Inf("An example GET call with six parameters")
 	    public String getUpper2(UpperRequest2 ur) {
 	        StringBuilder b = new StringBuilder();
 	        if(ur.param1() != null) {
@@ -350,6 +378,7 @@ public class RestDefaultTest extends TestCase {
 
 	    //GET http://localhost:8080/rest/upper3/TesT ==> returns {"input":"TesT","output":"TEST"}
 	    //GET http://localhost:8080/rest/upper3/TesT2 ==> returns {"input":"TesT2","output":"TEST2"}
+        @Inf("An example GET call with one argument")
 	    public History getUpper3(RESTRequest rr, String string) {
 	        History h = new History();
 	        h.input = string;
@@ -359,7 +388,8 @@ public class RestDefaultTest extends TestCase {
 	    }
 
 	    //DELETE http://localhost:8080/rest/upper3/TesT2
-	    public Map<String, History> deleteUpper3(RESTRequest rr, String string) {
+        @Inf("An example DELETE call with one argument")
+	    public Map<String, History> deleteUpper3(RESTRequest rr, @Inf("First argument") String string) {
 	        history.remove(string);
 	        return history;
 	    }
@@ -369,7 +399,8 @@ public class RestDefaultTest extends TestCase {
 	    //*************************************
 	    
 	    //POST http://localhost:8080/rest/upper4/TesT
-	    public History postUpper4(RESTRequest rr, String payload, String string) {
+        @Inf("An example POST call with payload as argument and one string argument")
+	    public History postUpper4(RESTRequest rr, String payload, @Inf("First argument") String string) {
 	        History h = new History();
 	        h.input = string;
 	        h.output = string.toUpperCase();
@@ -383,7 +414,8 @@ public class RestDefaultTest extends TestCase {
         
 	    //PUT http://localhost:8080/rest/upper4/TesT
 	    //PUT http://localhost:8080/rest/upper4/TesT2
-	    public History putUpper4(RESTRequest rr, String payload, String string) {
+        @Inf("An example PUT call with payload as argument and one string argument")
+	    public History putUpper4(RESTRequest rr, String payload, @Inf("First argument") String string) {
 	        History h = new History();
 	        h.input = string;
 	        h.output = string.toUpperCase();
@@ -392,13 +424,14 @@ public class RestDefaultTest extends TestCase {
 	    }
 
 	    //*************************************
-	    //POST and PUT Examples - builds on previous History Example - using payload
+	    //POST and PUT Examples - using payload
 	    //*************************************
 	    interface UpperRequest5 extends RESTRequest {
 	        History _body();
 	    }
 
 	    //POST http://localhost:8080/rest/upper5/ with a payload
+        @Inf("An example POST call with a payload and no arguments")
 	    public History postUpper5(UpperRequest5 rq5) {
 	        History h = rq5._body();
             history.put(h.input, h);
@@ -406,6 +439,7 @@ public class RestDefaultTest extends TestCase {
 	    }
 	    
 	    //PUT http://localhost:8080/rest/upper5/ with a payload
+        @Inf("An example PUT call with a payload and no arguments")
 	    public History putUpper5(UpperRequest5 rq5) {
 	        History h = rq5._body();
 	        history.put(h.input, h);
