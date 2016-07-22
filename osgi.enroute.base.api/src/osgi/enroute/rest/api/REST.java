@@ -19,7 +19,7 @@ import org.osgi.annotation.versioning.ConsumerType;
  * first upper case letter. The first part is the HTTP verb:
  * {@code get, put, delete, option, post}. The remaining parts are the URI
  * relative from the REST base URI. I.e. {@code getFoo} maps to
- * {@code http://host.com/rest/foo/bar}, assuming that the REST endpoint is
+ * {@code http://host.com/rest/foo/bar}, assuming that the base URI is
  * {@code http://host.com/rest}.
  * <p>
  * The first argument extends {@link RESTRequest} and thereby provides access to

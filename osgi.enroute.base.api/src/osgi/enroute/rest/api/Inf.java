@@ -6,10 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to provide public information about a {@link REST} API.
- * 
- * Annotated functions will be parsed and the information displayed when calling 
- * /inf relative to the REST endpoint.
+ * Used to provide public information about a {@link REST} API. Annotated
+ * functions will be parsed and the information displayed when calling /inf
+ * relative to the base URI registered via a {@code UriMapper}.
  */
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
