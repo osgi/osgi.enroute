@@ -24,7 +24,7 @@ import osgi.enroute.rest.api.UriMapper;
  * Resource Manager services (i.e. those registered services that implement
  * {@code REST}).
  * 
- * Different REST endpoints can be registered by implementing and registering
+ * Different REST base URIs or endpoints can be registered by implementing and registering
  * a service that implements {@code UriMapper}. For each servlet pattern
  * registered, a new {@code RestServlet} will be instantiated and will accept
  * incoming HTTP requests.

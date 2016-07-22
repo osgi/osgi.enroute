@@ -33,7 +33,7 @@ import osgi.enroute.rest.api.UriMapper;
 /**
  * Making a REST service work is the result of the intersection between a
  * namespaced class that implements the {@code REST} interface, and a
- * REST endpoint, which is created when a {@code UriMapper} is registered.
+ * REST URI service hook, which is created when a {@code UriMapper} is registered.
  * Mapping between the two is handed by the {@code UriMapper}.
  * 
  * This controller is responsible for listening to service registrations for
