@@ -8,7 +8,9 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,6 +24,8 @@ import java.util.zip.GZIPOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.dto.DTO;
+
 import aQute.lib.collections.ExtList;
 import aQute.lib.collections.MultiMap;
 import aQute.lib.converter.Converter;
@@ -30,6 +34,7 @@ import aQute.lib.hex.Hex;
 import aQute.lib.io.IO;
 import aQute.lib.json.Decoder;
 import aQute.lib.json.JSONCodec;
+import osgi.enroute.rest.api.Inf;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
 
@@ -243,6 +248,28 @@ public class RestMapper {
 		}
 	}
 
+	public static class InfDTO extends DTO {
+	    public List<MethodDTO> methods = new ArrayList<>();
+        // We could do this, but if the inf is outward facing, then what's the point??
+//        public List<MethodDTO> hidden = new ArrayList<>();
+	}
+
+	public static class MethodDTO extends DTO {
+	    public String name;
+	    public String method;
+	    public String description;
+//        public String payloadType;
+//        public boolean hasRequestParameter;
+//        public boolean hasPayloadAsParameter;
+	    public List<ArgDTO> arguments = new ArrayList<>();
+	    public List<ArgDTO> parameters = new ArrayList<>();
+	}
+
+	public static class ArgDTO extends DTO {
+	    public String name;
+	    public String description;
+	}
+
 	/**
 	 * Add a new resource manager. Add all public methods that have the first
 	 * argument be an interface that extends {@link Options}.
@@ -292,7 +319,6 @@ public class RestMapper {
 	 * @return true if we matched and executed
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean execute(HttpServletRequest rq, HttpServletResponse rsp) throws IOException {
         try {
             String path = rq.getPathInfo();
@@ -302,6 +328,12 @@ public class RestMapper {
 
             if (path.startsWith("/"))
                 path = path.substring(1);
+
+            if (path.equals("inf")) {
+                InfDTO result = printInf();
+                printOutput(rq, rsp, result);
+                return true;
+            }
 
             //
             // Find the method's arguments embedded in the url
@@ -346,89 +378,36 @@ public class RestMapper {
             args.put("_host", rq.getHeader("Host"));
             args.put("_response", rsp);
 
-            Object result = null;
-
-            if (candidates.isEmpty()) {
+            if (candidates.isEmpty())
                 return false;                
-            } else {
-                Function f = candidates.get(0);
-				Object[] parameters = f.match(args, list);
-				if (parameters != null) {
 
-					Type type = f.getPayloadType();
-					if (type != null) {
-                        Object payload = null;
-                        Decoder d = codec.dec().from(rq.getInputStream());
-                        if(!d.isEof())
-						    payload = d.get(type);
+            Function f = candidates.get(0);
+            Object[] parameters = f.match(args, list);
+            if (parameters != null) {
 
-						if (f.hasPayloadAsParameter) {
-							parameters[f.hasRequestParameter ? 1 : 0] = payload;
-						}
+                Type type = f.getPayloadType();
+                if (type != null) {
+                    Object payload = null;
+                    Decoder d = codec.dec().from(rq.getInputStream());
+                    if(!d.isEof())
+                        payload = d.get(type);
 
-						if(payload != null)
-						    args.put("_body", payload);
-					}
-
-					try {
-						result = f.invoke(parameters);
-					} catch (InvocationTargetException e1) {
-						throw e1.getTargetException();
-					}
-				}
-			}
-
-            //
-            // Check if we can compress the result
-            //
-            OutputStream out = rsp.getOutputStream();
-
-            if (result != null) {
-                //
-                // < 14 bytes screws up
-                //
-                if (!(result instanceof Number)
-                        && !(result instanceof String && ((String) result).length() < 100)) {
-                    String acceptEncoding = rq.getHeader("Accept-Encoding");
-                    if (acceptEncoding != null) {
-                        boolean gzip = acceptEncoding.indexOf("gzip") >= 0;
-                        boolean deflate = acceptEncoding.indexOf("deflate") >= 0;
-
-                        if (gzip) {
-                            out = new GZIPOutputStream(out);
-                            rsp.setHeader("Content-Encoding", "gzip");
-                        } else if (deflate) {
-                            out = new DeflaterOutputStream(out);
-                            rsp.setHeader("Content-Encoding", "deflate");
-                        }
+                    if (f.hasPayloadAsParameter) {
+                        parameters[f.hasRequestParameter ? 1 : 0] = payload;
                     }
+
+                    if(payload != null)
+                        args.put("_body", payload);
                 }
 
-                //
-                // Convert based on the returned object
-                // Streams, byte[], File, and CharSequence
-                // are written without conversion. Other objects
-                // are written with json
-                //
-
-                if (result instanceof InputStream) {
-                    IO.copy((InputStream) result, out);
-                } else if (result instanceof byte[]) {
-                    byte[] data = (byte[]) result;
-                    rsp.setContentLength(data.length);
-                    out.write(data);
-                } else if (result instanceof File) {
-                    File fresult = (File) result;
-                    rsp.setContentLength((int) fresult.length());
-                    IO.copy(fresult, out);
-                } else {
-                    rsp.setContentType("application/json;charset=UTF-8");
-                    if (result instanceof Iterable)
-                        result = new ExtList<Object>((Iterable<Object>) result);
-                    codec.enc().writeDefaults().to(out).put(result);
+                try {
+                    Object result = f.invoke(parameters);
+                    if (result != null )
+                        printOutput(rq, rsp, result);
+                } catch (InvocationTargetException e1) {
+                    throw e1.getTargetException();
                 }
             }
-            out.close();
 		} catch (FileNotFoundException e) {
 			rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (SecurityException e) {
@@ -447,4 +426,115 @@ public class RestMapper {
 	public void setDiagnostics(boolean on) {
 		this.diagnostics = true;
 	}
+
+    @SuppressWarnings("unchecked")
+	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp, Object result) throws Exception {
+        //
+        // Check if we can compress the result
+        //
+        OutputStream out = rsp.getOutputStream();
+
+        if (result != null) {
+            //
+            // < 14 bytes screws up
+            //
+            if (!(result instanceof Number)
+                    && !(result instanceof String && ((String) result).length() < 100)) {
+                String acceptEncoding = rq.getHeader("Accept-Encoding");
+                if (acceptEncoding != null) {
+                    boolean gzip = acceptEncoding.indexOf("gzip") >= 0;
+                    boolean deflate = acceptEncoding.indexOf("deflate") >= 0;
+
+                    if (gzip) {
+                        out = new GZIPOutputStream(out);
+                        rsp.setHeader("Content-Encoding", "gzip");
+                    } else if (deflate) {
+                        out = new DeflaterOutputStream(out);
+                        rsp.setHeader("Content-Encoding", "deflate");
+                    }
+                }
+            }
+
+            //
+            // Convert based on the returned object
+            // Streams, byte[], File, and CharSequence
+            // are written without conversion. Other objects
+            // are written with json
+            //
+
+            if (result instanceof InputStream) {
+                IO.copy((InputStream) result, out);
+            } else if (result instanceof byte[]) {
+                byte[] data = (byte[]) result;
+                rsp.setContentLength(data.length);
+                out.write(data);
+            } else if (result instanceof File) {
+                File fresult = (File) result;
+                rsp.setContentLength((int) fresult.length());
+                IO.copy(fresult, out);
+            } else {
+                rsp.setContentType("application/json;charset=UTF-8");
+                if (result instanceof Iterable)
+                    result = new ExtList<Object>((Iterable<Object>) result);
+                codec.enc().writeDefaults().to(out).put(result);
+            }
+        }
+        out.close();
+	}
+
+    private InfDTO printInf() {
+        InfDTO dto = new InfDTO();
+        for (String key : functions.keySet()) {
+            List<Function> list = functions.get(key);
+            for (int i = 0; i < list.size(); i++) {
+                MethodDTO methodDto = toDto(list.get(i));
+                if (i == 0)
+                    dto.methods.add(methodDto);
+                // We could do this, but if the inf is outward facing, then what's the point??
+//                else
+//                    dto.hidden.add(methodDto);
+            }
+        }
+
+        return dto;
+    }
+
+    private MethodDTO toDto(Function f) {
+        MethodDTO dto = new MethodDTO();
+        dto.method = extractHttpMethod(f.name);
+        dto.name = f.name.substring(dto.method.length());
+        dto.name = dto.name.substring(0, dto.name.indexOf("/"));
+        Inf inf = f.method.getAnnotation(Inf.class);
+        dto.description = inf != null ? inf.value() : "";
+//        dto.payloadType = f.post != null ? f.post.getTypeName() : "";
+//        dto.hasRequestParameter = f.hasPayloadAsParameter;
+//        dto.hasPayloadAsParameter = f.hasPayloadAsParameter;
+        for (int i = 0; i < f.method.getParameterCount(); i++) {
+            Parameter p = f.method.getParameters()[i];
+            Class<?> pt = f.method.getParameterTypes()[i];
+            if (RESTRequest.class.isAssignableFrom(pt))
+                dto.parameters.add(toDto(f.method, p, i));
+            else
+                dto.arguments.add(toDto(f.method, p, i));
+        }
+        return dto;
+    }
+
+    private String extractHttpMethod(String name) {
+        Pattern p = Pattern.compile("(?<verb>get|post|put|delete|option|head)");
+        Matcher matcher = p.matcher(name);
+
+        if(matcher.lookingAt())
+            return matcher.group("verb");
+
+        return "???";
+    }
+
+    private ArgDTO toDto(Method m, Parameter p, int index) {
+        ArgDTO dto = new ArgDTO();
+        dto.name = p.getName();
+        Inf inf = p.getAnnotation(Inf.class);
+        dto.description = inf != null ? inf.value() : "";
+        return dto;
+    }
 }
