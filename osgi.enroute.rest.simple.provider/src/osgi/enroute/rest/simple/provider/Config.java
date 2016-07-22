@@ -4,18 +4,36 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition
 @interface Config {
-    boolean corsEnabled() default false;
 
     String osgi_http_whiteboard_servlet_pattern();
-    
-    //CORS header Access-Control-Allow-Origin
+
+    /**
+     * Configuration used to enable or disable CORS.
+     */
+    boolean corsEnabled() default false;
+
+    /**
+     * CORS header Access-Control-Allow-Origin
+     */
     String allowOrigin() default "*";
-    //CORS header Access-Control-Allow-Methods
+
+    /**
+     * CORS header Access-Control-Allow-Methods
+     */
     String allowMethods() default "GET, POST, PUT";
-    //CORS header Access-Control-Allow-Headers
+
+    /**
+     * CORS header Access-Control-Allow-Headers
+     */
     String allowHeaders() default "Content-Type";
-    //CORS Access-Control-Max-Age
+
+    /**
+     * CORS Access-Control-Max-Age
+     */
     int  maxAge() default 86400;
-    //CORS Allow methods
+
+    /**
+     * CORS Allow methods
+     */
     String allowedMethods() default "GET, HEAD, POST, TRACE, OPTIONS";
 }

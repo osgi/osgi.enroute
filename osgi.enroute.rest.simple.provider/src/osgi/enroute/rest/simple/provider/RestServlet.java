@@ -20,16 +20,18 @@ import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.UriMapper;
 
 /**
- * The rest servlet is responsible for mapping incoming requests to methods on
- * Resource Manager services. Methods on these services are name
- * {@code <verb><segment[0]>} (Where the segment's first character is upper
- * cases.) For example /rest/user is mapped to {@code getUser}. If the methods'
- * first argument extends the Options interface then such an object is created
- * and backed by the request's parameters. Any subsequent segments are mapped to
- * the arguments of the methods. Varargs can be used to get all of them and any
- * segment is converted to the proper types if possible.
- * <p/>
+ * The REST servlet is responsible for mapping incoming requests to methods on
+ * Resource Manager services (i.e. those registered services that implement
+ * {@code REST}).
  * 
+ * Different REST endpoints can be registered by implementing and registering
+ * a service that implements {@code UriMapper}. For each servlet pattern
+ * registered, a new {@code RestServlet} will be instantiated and will accept
+ * incoming HTTP requests.
+ * 
+ * The registered {@code UriMapper}s will map the request to the correct namespace.
+ * If a REST Function corresponding to the request has been implemented (see
+ * {@link RestMapper}
  */
 @Designate(ocd = Config.class)
 @Component(

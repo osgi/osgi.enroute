@@ -8,7 +8,8 @@ import java.lang.annotation.Target;
 /**
  * Used to provide public information about a {@link REST} API.
  * 
- * Annotated functions will be aggregated and provided when calling /inf.
+ * Annotated functions will be parsed and the information displayed when calling 
+ * /inf relative to the REST endpoint.
  */
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
