@@ -1,7 +1,7 @@
 package osgi.enroute.rest.api;
 
 /**
- * Specification of the JSONRPC API
+ * Constants for describing the osgi.enroute.rest.api interface.
  */
 public interface RestConstants {
 	/**
