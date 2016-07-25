@@ -115,12 +115,27 @@ In REST protocols, the `PUT` verb would be used to store a new person. To create
 
 Since the REST methods provide full type safe access to the parameters and remaining URI segments a significant amount of validation is executed by the implementation of this service. These validations will result in the appropriate HTTP error and status code. Implementation should also add explanatory texts to the response.
 
-Additionally, the REST methods may throw any exception, if an exception is thrown it is also translated to an HTTP error code. The conversions from exception to status code is as follows:
+Additionally, the REST methods may throw any exception. You have two approaches: a "DDD-ish" approach, using a limited set of Exceptions that correspond directly to the most commonly used HTTP errors, or by using regular Java Exceptions, which get translated.
 
-* File Not Found Exception <E2><80><93> 404 NOT FOUND
-* Security Exception <E2><80><93> 403 FORBIDDEN
+Example of a "DDD-ish" approach:
 
-All other exceptions are translated to a 500 SERVER ERROR error code.
+        Person putPerson( PersonRequest request ) throws BadRequest400Exception, NotFound404Exception {
+            ...
+        }
+        
+Using regular Exceptions would look more like this:
+
+        Person putPerson( PersonRequest request ) throws IllegalStateException, FileNotFoundException {
+            ...
+        }
+
+Regular Java Exceptions are translated to an HTTP error code. The conversions from exception to status code is as follows:
+
+* IllegalStateException <E2><80><93> 400 BAD REQUEST
+* SecurityException <E2><80><93> 403 FORBIDDEN
+* FileNotFoundException <E2><80><93> 404 NOT FOUND
+* UnsupportedOperationException <E2><80><93> 501 NOT IMPLEMENTED
+* All other exceptions <E2><80><93> 500 SERVER ERROR
 
 Clients can always set the response of the request through the servlet objects that are available on the RESTRequest arguments. However, this should in general be a last resort since most incompatibilities are caused by the sometimes really subtle interpretations of these error codes. In general it is best to try to make requests binary: succeed when all goes OK and fail in all other cases.
 

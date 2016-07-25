@@ -34,7 +34,11 @@ import aQute.lib.hex.Hex;
 import aQute.lib.io.IO;
 import aQute.lib.json.Decoder;
 import aQute.lib.json.JSONCodec;
+import osgi.enroute.rest.api.BadRequest400Exception;
+import osgi.enroute.rest.api.Forbidden403Exception;
 import osgi.enroute.rest.api.Inf;
+import osgi.enroute.rest.api.NotFound404Exception;
+import osgi.enroute.rest.api.NotImplemented501Exception;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
 
@@ -408,13 +412,13 @@ public class RestMapper {
                     throw e1.getTargetException();
                 }
             }
-		} catch (FileNotFoundException e) {
+		} catch (NotFound404Exception | FileNotFoundException e) {
 			rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		} catch (SecurityException e) {
+		} catch (Forbidden403Exception | SecurityException e) {
 			rsp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		} catch (UnsupportedOperationException e) {
+		} catch (NotImplemented501Exception | UnsupportedOperationException e) {
 			rsp.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
-		} catch (IllegalStateException e) {
+		} catch (BadRequest400Exception | IllegalStateException e) {
 			rsp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		} catch (Throwable e) {
 			e.printStackTrace();
