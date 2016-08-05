@@ -52,7 +52,7 @@ import osgi.enroute.jsonrpc.dto.JSON.Response;
 name = "osgi.web.jsonrpc", //
 service = Servlet.class, //
 configurationPolicy = ConfigurationPolicy.OPTIONAL, property = {
-		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/jsonrpc/2.0" })
+		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=" + "/jsonrpc/2.0/*" })
 public class JSONRpcServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	final static Converter converter = new Converter();

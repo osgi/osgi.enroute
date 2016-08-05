@@ -53,7 +53,7 @@ import osgi.enroute.http.capabilities.RequireHttpImplementation;
  * 
  */
 @RequireHttpImplementation
-@Component(name = "osgi.eventadmin.sse", property = HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/sse/1", service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(name = "osgi.eventadmin.sse", property = HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/sse/1/*", service = Servlet.class, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class ServerSideEventImpl extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static JSONCodec codec = new JSONCodec();
