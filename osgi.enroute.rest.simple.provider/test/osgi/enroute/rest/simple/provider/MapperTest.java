@@ -8,7 +8,6 @@ import aQute.lib.collections.ExtList;
 import junit.framework.TestCase;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RESTRequest;
-import osgi.enroute.rest.simple.provider.RestMapper.Function;
 
 /*
  * 
@@ -234,11 +233,13 @@ public class MapperTest extends TestCase {
 
 	private void assertMapper(Class<? extends REST> clazz, String method, String parameters, String result)
 			throws Exception {
+		
+		method = RestMapper.decode(method);
 		String parms[] = parameters == null ? new String[0] : parameters.split("/");
 		ExtList<String> ps = new ExtList<>(parms);
 
-		RestMapper mapper = new RestMapper();
-		mapper.addResource(clazz.newInstance());
+		RestMapper mapper = new RestMapper("/rest");
+		mapper.addResource(clazz.newInstance(), 100);
 
 		String cardinality = method + "/" + ps.size();
 		List<Function> fs = mapper.functions.get(cardinality);

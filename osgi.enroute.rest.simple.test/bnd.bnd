@@ -9,8 +9,8 @@ Conditional-Package: \
 -includeresource: configuration=configuration
 
 -buildpath: \
-	osgi.enroute.base.api;version=1.0,\
 	osgi.enroute.rest.simple.provider;version=latest,\
+	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.bndlib;packages=*, \
 	osgi.enroute.junit.wrapper;version=4.12
 
@@ -19,7 +19,6 @@ Conditional-Package: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)'
 	
 -runbundles: \
-	biz.aQute.bndlib;version='[3.0.0,3.0.1)',\
 	com.springsource.org.json;version='[1.0.0,1.0.1)',\
 	org.apache.commons.fileupload;version='[1.3.1,1.3.2)',\
 	org.apache.commons.io;version='[2.4.0,2.4.1)',\
@@ -44,5 +43,7 @@ Conditional-Package: \
 	osgi.enroute.logger.simple.provider;version=snapshot,\
 	osgi.enroute.rest.simple.provider;version=snapshot,\
 	osgi.enroute.rest.simple.test;version=snapshot,\
-	osgi.enroute.web.simple.provider;version=snapshot,\
-	osgi.enroute.webconsole.xray.provider;version=snapshot
+	osgi.enroute.webconsole.xray.provider;version=snapshot,\
+	biz.aQute.bndlib;version='[3.3.0,3.3.1)',\
+	osgi.enroute.rest.simple.provider;version=latest,\
+	osgi.enroute.web.simple.provider;version='[1.3.3,1.3.4)'

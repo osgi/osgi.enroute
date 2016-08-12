@@ -1,214 +1,130 @@
 package osgi.enroute.rest.simple.provider;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.IOException;
 import java.util.Hashtable;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.Servlet;
+
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.namespace.implementation.ImplementationNamespace;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
+import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.rest.api.REST;
 import osgi.enroute.rest.api.RestConstants;
-import osgi.enroute.rest.api.UriMapper;
 
 /**
  * Making a REST service work is the result of the intersection between a
- * namespaced class that implements the {@code REST} interface, and a
- * REST URI service hook, which is created when a {@code UriMapper} is registered.
+ * namespaced class that implements the {@code REST} interface, and a REST URI
+ * service hook, which is created when a {@code UriMapper} is registered.
  * Mapping between the two is handed by the {@code UriMapper}.
  * 
  * This controller is responsible for listening to service registrations for
- * REST and UriMapper services, and instatiating the necessary resources
- * (mostly {@code RestServlet}s).
+ * REST and UriMapper services, and instatiating the necessary resources (mostly
+ * {@code RestServlet}s).
  */
 @RequireHttpImplementation
-@ProvideCapability(
-        ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, 
-        name=RestConstants.REST_SPECIFICATION_NAME, 
-        version=RestConstants.REST_SPECIFICATION_VERSION)
-@Component(
-        service = RestController.class,
-        name = "osgi.enroute.rest.simple",
-        immediate = true
-    )
-public class RestControllerService implements RestController {
-    static final String NAMESPACE_PARAM = "org.enroute.rest.namespace";
+@ProvideCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = RestConstants.REST_SPECIFICATION_NAME, version = RestConstants.REST_SPECIFICATION_VERSION)
+@Component(name = "osgi.enroute.rest.simple", immediate = true)
+public class RestControllerService {
+	private static final String				DEFAULT_SERVLET_PATTERN	= "/rest/*";
+	private static Logger					log						= LoggerFactory
+			.getLogger(RestControllerService.class);
+	@Reference
+	private DTOs							dtos;
+	private BundleContext					context;
+	private final Map<String, RestServlet>	servlets				= new ConcurrentHashMap<>();
+	private Config							config;
+	private final String					defaultServletPattern[]	= new String[] {
+			DEFAULT_SERVLET_PATTERN };
 
-    static final String DEFAULT_NAMESPACE = "";
-    static final String DEFAULT_SERVLET_PATTERN = "/rest/*";
+	@Activate
+	void activate(BundleContext context, Config config) throws Exception {
+		this.context = context;
+		this.config = config;
+		if (config.osgi_http_whiteboard_servlet_pattern() != null)
+			this.defaultServletPattern[0] = config
+					.osgi_http_whiteboard_servlet_pattern();
 
-    private final Map<String, Set<REST>> resourceManagers = new HashMap<>();
-    private final Map<String, RestMapper> restMappers = new HashMap<>();
-    private final Map<String, TreeMap<Integer, UriMapper>> uriMappers = new HashMap<>();
-    private final List<PendingMapper> pendingMappers = new ArrayList<>();
+		log.trace(
+				"Using default REST endpoint " + this.defaultServletPattern[0]);
+	}
 
-    @Reference private ConfigurationAdmin cm;
-    @Reference private LogService log;
+	void deactivate() {
+		for (Iterator<RestServlet> i = servlets.values().iterator(); i
+				.hasNext();) {
+			RestServlet r = i.next();
+			try {
+				i.remove();
+				r.close();
+			} catch (IOException e) {
+				log.warn("deactivate: closing RESTServlet " + r, e);
+			}
+		}
+	}
 
-    boolean isActivated = false;
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+	void addREST(REST resourceManager, Map<String, Object> properties)
+			throws Exception {
+		String[] namespaces = getNamespaces(properties);
+		Integer ranking = (Integer) properties.get(Constants.SERVICE_RANKING);
+		if (ranking == null)
+			ranking = new Integer(0);
 
-    @Activate
-    void activate(Map<String, Object> properties) throws Exception {
-        // Add the default namespace
-        resourceManagers.put(DEFAULT_NAMESPACE, new HashSet<>());
-        restMappers.put(DEFAULT_NAMESPACE, new RestMapper());
-        TreeMap<Integer, UriMapper> uriMapperMap = new TreeMap<>();
-        uriMapperMap.put(0, s -> "");
-        uriMappers.put(DEFAULT_SERVLET_PATTERN, uriMapperMap);
-        startServlet(DEFAULT_SERVLET_PATTERN, properties);
-        isActivated = true;
+		for (String namespace : namespaces) {
+			RestServlet restServlet = servlets.computeIfAbsent(namespace,
+					this::createServlet);
+			restServlet.add(resourceManager, ranking);
+		}
+	}
 
-        instantiatePendingMappers();
-    }
+	synchronized void removeREST(REST resourceManager,
+			Map<String, Object> properties) throws Exception {
+		String[] namespaces = getNamespaces(properties);
+		for (String namespace : namespaces) {
+			RestServlet rs = servlets.get(namespace);
+			rs.remove(resourceManager);
+			
+			// we never clean them up. Seems to much work
+			// since it is likely that the namespace is reused.
+			// TODO or should we?
+		}
+	}
 
-    void deactivate() {
-        isActivated = false;
-        stopServlet(DEFAULT_SERVLET_PATTERN);
-        uriMappers.clear();
-        restMappers.clear();
-        resourceManagers.clear();
-    }
+	private String[] getNamespaces(Map<String, Object> properties)
+			throws Exception {
+		String namespaces[] = dtos.convert(properties.get(REST.ENDPOINT))
+				.to(String[].class);
+		
+		if (namespaces == null || namespaces.length == 0)
+			namespaces = defaultServletPattern;
+		
+		return namespaces;
+	}
 
-    @Override
-    public List<UriMapper> uriMappersFor(String servletPattern) {
-        return uriMappers.get( servletPattern )
-            .values()
-            .stream()
-            .collect( Collectors.toList() );
-    }
+	private RestServlet createServlet(String namespace) {
+		RestServlet rs = new RestServlet(config, namespace);
+		Hashtable<String, Object> p = new Hashtable<>();
+		p.put(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
+				namespace);
+		ServiceRegistration<Servlet> reg = context
+				.registerService(Servlet.class, rs, p);
+		rs.setCloseable(() -> reg.unregister());
+		return rs;
+	}
 
-    @Override
-    public RestMapper restMapperFor(String namespace) {
-        return restMappers.get(namespace);
-    }
-
-    @Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
-    synchronized void addREST(REST resourceManager, Map<String, String> properties) {
-        String namespace = properties.get(NAMESPACE_PARAM);
-        if(namespace == null)
-            namespace = "";
-        if(!resourceManagers.containsKey(namespace)) {
-            resourceManagers.put(namespace, new HashSet<>());
-            restMappers.put(namespace, new RestMapper());
-        }
-        RestMapper restMapper = restMappers.get(namespace);
-        restMapper.addResource(resourceManager);
-
-        Set<REST> resourceManagerSet = resourceManagers.get(namespace);
-        resourceManagerSet.add(resourceManager);
-    }
-
-    synchronized void removeREST(REST resourceManager, Map<String, String> properties) {
-        String namespace = properties.get(NAMESPACE_PARAM);
-        if(namespace == null)
-            namespace = "";
-
-        Set<REST> resourceManagerSet = resourceManagers.get(namespace);
-        resourceManagerSet.remove(resourceManager);
-
-        if(!namespace.isEmpty() && resourceManagers.containsKey(namespace) && resourceManagers.get(namespace).isEmpty()) {            
-            restMappers.remove(namespace);
-            resourceManagers.remove(namespace);
-        }
-    }
-
-    @Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
-    synchronized void addUriMapper(UriMapper mapper, Map<String, Object> properties) throws Exception {
-        if( !isActivated )
-            pendingMappers.add(new PendingMapper(mapper, properties));
-        else
-            instantiateMapper( mapper, properties );
-    }
-
-    synchronized void removeUriMapper(UriMapper mapper, Map<String, String> properties) {
-        String name = properties.get(Constants.SERVICE_PID);
-        if(name != null) {
-            String pattern = properties.get(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN);
-            if(pattern == null || pattern.isEmpty())
-                pattern = DEFAULT_SERVLET_PATTERN;
-            Map<Integer, UriMapper> mappersForPattern = uriMappers.get(pattern);
-            mappersForPattern.remove(mapper);
-            if(mappersForPattern.isEmpty())
-                stopServlet(pattern);
-        }
-    }
-
-    private void instantiatePendingMappers() throws Exception {
-        for( final PendingMapper mapper : pendingMappers )
-            instantiateMapper( mapper.mapper, mapper.properties );
-
-        pendingMappers.clear();
-    }
-
-    private void instantiateMapper(UriMapper mapper, Map<String, Object> properties) throws Exception {
-        String name = (String)properties.get(Constants.SERVICE_PID);
-        if(name != null) {
-            String pattern = (String)properties.get(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN);
-            if(pattern == null || pattern.isEmpty())
-                pattern = DEFAULT_SERVLET_PATTERN;
-
-            if(!uriMappers.containsKey(pattern)) {
-                uriMappers.put(pattern, new TreeMap<>());
-                startServlet(pattern, properties);
-            }
-
-            Integer ranking = (Integer)properties.get(Constants.SERVICE_RANKING);
-            if(ranking == null)
-                ranking = 0;
-            TreeMap<Integer, UriMapper> mappersForPattern = uriMappers.get(pattern);
-            mappersForPattern.put(ranking, mapper);
-            uriMappers.put(pattern, new TreeMap<>(mappersForPattern.descendingMap()));
-        }
-    }
-
-    private void startServlet(String pattern, Map<String, Object> properties) throws Exception {
-        Configuration configuration = cm.createFactoryConfiguration("osgi.enroute.rest.simple.servlet", "?");
-        Dictionary<String, Object> d = new Hashtable<>();
-        d.put(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN, pattern);
-        // Propagate the properties we want.
-        // This way is no goo, though. There must be a better way to do this!!
-        Set<String> toCopy = new HashSet<>(Arrays.asList( new String[]{
-                "corsEnabled", "allowOrigin", "allowMethods", "allowHeaders", "maxAge", "allowedMethods"}));
-        copyProperties( properties, d, toCopy );
-        configuration.update(d);
-    }
-
-    private void copyProperties(Map<String, Object> from, Dictionary<String, Object> to, Set<String> properties) {
-        for(String property : properties) {
-            if(from.containsKey(property))
-                to.put(property, from.get(property));
-        }
-    }
-    private void stopServlet(String pattern) {
-        // How do I do this?
-    }
-
-    private static class PendingMapper {
-        UriMapper mapper;
-        Map<String, Object> properties;
-
-        public PendingMapper( UriMapper mapper, Map<String, Object> properties ) {
-            this.mapper = mapper;
-            this.properties = new HashMap<>(properties);
-        }
-    }
 }

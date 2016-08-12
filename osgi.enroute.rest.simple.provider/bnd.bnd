@@ -12,8 +12,11 @@ Bundle-Description: 				\
 	endpoint. The remaining path is mapped to the arguments of the method. The \
 	returned object is returned as JSON.
 
-Export-Package:  \
-	osgi.enroute.rest.api; provide:=true; -split-package:=merge-first
+Export-Package: \
+	osgi.enroute.rest.api;provide:=true,\
+	osgi.enroute.rest.jsonschema.api;provide:=true,\
+	osgi.enroute.rest.openapi.annotations;provide:=true,\
+	osgi.enroute.rest.openapi.api;provide:=true
 
 Private-Package:  \
 	osgi.enroute.rest.simple.provider
@@ -23,7 +26,7 @@ Conditional-Package: aQute.lib*
 
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.bndlib;packages=*
+	biz.aQute.bndlib;packages=*;version=3.3
 
 -testpath: \
 	osgi.enroute.junit.wrapper
