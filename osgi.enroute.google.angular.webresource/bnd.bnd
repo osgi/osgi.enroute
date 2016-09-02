@@ -4,7 +4,7 @@
 
 # ENSURE TO MATCH THIS TO AngularConstants
 name = /google/angular
-base.version = 1.4.4
+base.version = 1.5.7
 
 path = static${name}/${base.version}
 
