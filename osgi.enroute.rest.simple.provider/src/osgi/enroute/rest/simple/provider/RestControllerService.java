@@ -1,8 +1,6 @@
 package osgi.enroute.rest.simple.provider;
 
-import java.io.IOException;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,18 +8,19 @@ import javax.servlet.Servlet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.util.tracker.ServiceTracker;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
+import aQute.libg.reporter.slf4j.Slf4jReporter;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.rest.api.REST;
@@ -37,20 +36,23 @@ import osgi.enroute.rest.api.RestConstants;
  * REST and UriMapper services, and instatiating the necessary resources (mostly
  * {@code RestServlet}s).
  */
+@Designate(ocd=Config.class)
 @RequireHttpImplementation
 @ProvideCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = RestConstants.REST_SPECIFICATION_NAME, version = RestConstants.REST_SPECIFICATION_VERSION)
 @Component(name = "osgi.enroute.rest.simple", immediate = true)
 public class RestControllerService {
+	private Slf4jReporter					log						= new Slf4jReporter(
+			RestControllerService.class);
 	private static final String				DEFAULT_SERVLET_PATTERN	= "/rest/*";
-	private static Logger					log						= LoggerFactory
-			.getLogger(RestControllerService.class);
+	
 	@Reference
-	private DTOs							dtos;
+	private DTOs							$dtos;
 	private BundleContext					context;
 	private final Map<String, RestServlet>	servlets				= new ConcurrentHashMap<>();
 	private Config							config;
 	private final String					defaultServletPattern[]	= new String[] {
 			DEFAULT_SERVLET_PATTERN };
+	private ServiceTracker<REST, REST>		tracker;
 
 	@Activate
 	void activate(BundleContext context, Config config) throws Exception {
@@ -62,57 +64,70 @@ public class RestControllerService {
 
 		log.trace(
 				"Using default REST endpoint " + this.defaultServletPattern[0]);
-	}
 
-	void deactivate() {
-		for (Iterator<RestServlet> i = servlets.values().iterator(); i
-				.hasNext();) {
-			RestServlet r = i.next();
-			try {
-				i.remove();
-				r.close();
-			} catch (IOException e) {
-				log.warn("deactivate: closing RESTServlet " + r, e);
+		tracker = new ServiceTracker<REST, REST>(context, REST.class, null) {
+			@Override
+			public REST addingService(ServiceReference<REST> reference) {
+				try {
+					String[] namespaces = getNamespaces(reference);
+					Integer ranking = (Integer) reference
+							.getProperty(Constants.SERVICE_RANKING);
+					if (ranking == null)
+						ranking = new Integer(0);
+
+					REST resourceManager = super.addingService(reference);
+					
+					for (String namespace : namespaces) {
+						log.trace("adding REST %s on %s", resourceManager, namespace);
+						RestServlet restServlet = servlets.computeIfAbsent(
+								namespace,
+								RestControllerService.this::createServlet);
+						restServlet.add(resourceManager, ranking);
+					}
+					return resourceManager;
+				} catch (Exception e) {
+					log.error("Failed to add rest endpoint %s", reference);
+					return null;
+				}
 			}
-		}
+
+			@Override
+			public void removedService(ServiceReference<REST> reference,
+					REST resourceManager) {
+				try {
+					String[] namespaces = getNamespaces(reference);
+					for (String namespace : namespaces) {
+						log.trace("removing REST %s on %s", resourceManager, namespace);
+						RestServlet rs = servlets.get(namespace);
+						rs.remove(resourceManager);
+
+						// we never clean them up. Seems to much work
+						// since it is likely that the namespace is reused.
+						// TODO or should we?
+					}
+					super.removedService(reference, resourceManager);
+				} catch (Exception e) {
+					log.error("Failed to remove rest endpoint %s from %s", resourceManager, reference);
+				}
+			}
+		};
+		tracker.open();
 	}
 
-	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	void addREST(REST resourceManager, Map<String, Object> properties)
+	@Deactivate
+	void deactivate() {
+		tracker.close();
+	}
+
+	private String[] getNamespaces(ServiceReference<REST> reference)
 			throws Exception {
-		String[] namespaces = getNamespaces(properties);
-		Integer ranking = (Integer) properties.get(Constants.SERVICE_RANKING);
-		if (ranking == null)
-			ranking = new Integer(0);
-
-		for (String namespace : namespaces) {
-			RestServlet restServlet = servlets.computeIfAbsent(namespace,
-					this::createServlet);
-			restServlet.add(resourceManager, ranking);
-		}
-	}
-
-	synchronized void removeREST(REST resourceManager,
-			Map<String, Object> properties) throws Exception {
-		String[] namespaces = getNamespaces(properties);
-		for (String namespace : namespaces) {
-			RestServlet rs = servlets.get(namespace);
-			rs.remove(resourceManager);
-			
-			// we never clean them up. Seems to much work
-			// since it is likely that the namespace is reused.
-			// TODO or should we?
-		}
-	}
-
-	private String[] getNamespaces(Map<String, Object> properties)
-			throws Exception {
-		String namespaces[] = dtos.convert(properties.get(REST.ENDPOINT))
+		String namespaces[] = $dtos
+				.convert(reference.getProperty(REST.ENDPOINT))
 				.to(String[].class);
-		
+
 		if (namespaces == null || namespaces.length == 0)
 			namespaces = defaultServletPattern;
-		
+
 		return namespaces;
 	}
 

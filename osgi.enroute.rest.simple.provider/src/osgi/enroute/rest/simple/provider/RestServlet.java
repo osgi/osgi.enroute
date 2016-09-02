@@ -77,7 +77,7 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 
 	private void addCorsHeaders(HttpServletResponse rsp) {
 		rsp.setHeader("Access-Control-Allow-Origin", config.allowOrigin());
-		rsp.setHeader("Access-Control-Allow-Methods", config.allowMethods());
+		rsp.setHeader("Access-Control-Allow-Methods", config.allowedMethods());
 		rsp.setHeader("Access-Control-Allow-Headers", config.allowHeaders());
 		rsp.addIntHeader("Access-Control-Max-Age", config.maxAge());
 		rsp.setHeader("Allow", config.allowedMethods());

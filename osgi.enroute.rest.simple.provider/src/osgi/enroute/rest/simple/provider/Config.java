@@ -18,11 +18,6 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
     String allowOrigin() default "*";
 
     /**
-     * CORS header Access-Control-Allow-Methods
-     */
-    String allowMethods() default "GET, POST, PUT";
-
-    /**
      * CORS header Access-Control-Allow-Headers
      */
     String allowHeaders() default "Content-Type";
