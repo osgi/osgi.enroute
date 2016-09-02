@@ -1,23 +1,36 @@
 package osgi.enroute.web.server.provider;
 
-import java.net.*;
-import java.util.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.dto.*;
-import org.osgi.framework.*;
-import org.osgi.service.component.annotations.*;
-import org.osgi.service.log.*;
-import org.osgi.util.tracker.*;
+import org.osgi.dto.DTO;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.BundleTracker;
 
-import aQute.lib.io.*;
-import aQute.lib.json.*;
-import aQute.libg.sed.*;
-import osgi.enroute.servlet.api.*;
-import osgi.enroute.web.server.cache.*;
-import osgi.enroute.web.server.config.*;
-import osgi.enroute.web.server.exceptions.*;
+import aQute.lib.io.IO;
+import aQute.lib.json.JSONCodec;
+import aQute.libg.sed.ReplacerAdapter;
+import osgi.enroute.servlet.api.ConditionalServlet;
+import osgi.enroute.web.server.cache.Cache;
+import osgi.enroute.web.server.cache.CacheFile;
+import osgi.enroute.web.server.config.WebServerConfig;
+import osgi.enroute.web.server.exceptions.ExceptionHandler;
 
 @Component(
 		service = { ConditionalServlet.class }, 

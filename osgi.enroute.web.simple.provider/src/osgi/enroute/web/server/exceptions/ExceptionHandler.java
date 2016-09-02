@@ -1,8 +1,9 @@
 package osgi.enroute.web.server.exceptions;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.service.log.*;
+import org.osgi.service.log.LogService;
 
 public class ExceptionHandler {
 

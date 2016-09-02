@@ -1,8 +1,8 @@
 package osgi.enroute.web.server.provider;
 
-import java.io.*;
+import java.io.UnsupportedEncodingException;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
 public class SimpleImplTest extends TestCase {
 

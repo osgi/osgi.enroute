@@ -1,13 +1,14 @@
 package osgi.enroute.web.server.cache;
 
-import java.io.*;
-import java.util.concurrent.*;
+import java.io.File;
+import java.util.concurrent.Future;
 
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
 
-import aQute.lib.base64.*;
-import aQute.lib.hex.*;
-import osgi.enroute.web.server.cache.CacheFileFactory.*;
+import aQute.lib.base64.Base64;
+import aQute.lib.hex.Hex;
+import osgi.enroute.web.server.cache.CacheFileFactory.Etag;
+import osgi.enroute.web.server.cache.CacheFileFactory.Mimes;
 
 /**
  * Requires some setting up, so should only be instantiated by the CacheFactory.

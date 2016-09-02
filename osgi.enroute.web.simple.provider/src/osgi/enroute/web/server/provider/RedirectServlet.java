@@ -1,14 +1,17 @@
 package osgi.enroute.web.server.provider;
 
-import java.util.*;
+import java.util.Map;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.*;
-import org.osgi.service.component.annotations.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import osgi.enroute.servlet.api.*;
-import osgi.enroute.web.server.exceptions.*;
+import osgi.enroute.servlet.api.ConditionalServlet;
+import osgi.enroute.web.server.exceptions.Redirect302Exception;
 
 @Component(
 		service = { ConditionalServlet.class }, 

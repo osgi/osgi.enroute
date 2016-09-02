@@ -1,22 +1,30 @@
 package osgi.enroute.web.server.provider;
 
-import java.net.*;
+import java.net.URL;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.*;
-import org.osgi.namespace.extender.*;
-import org.osgi.service.component.annotations.*;
-import org.osgi.service.log.*;
-import org.osgi.util.tracker.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.namespace.extender.ExtenderNamespace;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.BundleTracker;
 
-import aQute.bnd.annotation.headers.*;
-import osgi.enroute.http.capabilities.*;
-import osgi.enroute.servlet.api.*;
-import osgi.enroute.web.server.cache.*;
-import osgi.enroute.web.server.config.*;
-import osgi.enroute.web.server.exceptions.*;
-import osgi.enroute.webserver.capabilities.*;
+import aQute.bnd.annotation.headers.ProvideCapability;
+import osgi.enroute.http.capabilities.RequireHttpImplementation;
+import osgi.enroute.servlet.api.ConditionalServlet;
+import osgi.enroute.web.server.cache.Cache;
+import osgi.enroute.web.server.cache.CacheFile;
+import osgi.enroute.web.server.config.WebServerConfig;
+import osgi.enroute.web.server.exceptions.ExceptionHandler;
+import osgi.enroute.webserver.capabilities.WebServerConstants;
 
 @ProvideCapability(
 		ns = ExtenderNamespace.EXTENDER_NAMESPACE, 

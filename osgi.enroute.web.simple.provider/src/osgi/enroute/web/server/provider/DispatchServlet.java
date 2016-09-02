@@ -1,19 +1,27 @@
 package osgi.enroute.web.server.provider;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.*;
-import org.osgi.service.component.annotations.*;
-import org.osgi.service.http.whiteboard.*;
-import org.osgi.service.log.*;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.log.LogService;
 
-import osgi.enroute.servlet.api.*;
-import osgi.enroute.web.server.config.*;
+import osgi.enroute.servlet.api.ConditionalServlet;
+import osgi.enroute.web.server.config.ConditionalServletConfig;
 
 @Component(
 		name = "osgi.enroute.web.service.provider",

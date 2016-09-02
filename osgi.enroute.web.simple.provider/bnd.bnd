@@ -14,7 +14,8 @@ Private-Package: \
 	osgi.enroute.web.server.provider,\
 	osgi.enroute.web.server.cache,\
 	osgi.enroute.web.server.exceptions,\
-	osgi.enroute.web.server.config
+	osgi.enroute.web.server.config,\
+	osgi.enroute.web.server.connectionlimiter.filter
 
 Conditional-Package: aQute.lib*
 	
@@ -33,8 +34,6 @@ Conditional-Package: aQute.lib*
 	org.apache.felix.gogo.command;version='[0.14.0,0.14.1)',\
 	org.apache.felix.gogo.runtime;version='[0.16.2,0.16.3)',\
 	org.apache.felix.gogo.shell;version='[0.12.0,0.12.1)',\
-	org.apache.felix.http.api;version='[3.0.0,3.0.1)',\
-	org.apache.felix.http.jetty;version='[3.1.0,3.1.1)',\
 	org.apache.felix.http.servlet-api;version='[1.1.2,1.1.3)',\
 	org.apache.felix.log;version='[1.0.1,1.0.2)',\
 	org.apache.felix.scr;version='[2.0.0,2.0.1)',\
@@ -45,8 +44,6 @@ Conditional-Package: aQute.lib*
 	org.osgi.service.metatype;version='[1.3.0,1.3.1)',\
 	osgi.enroute.configurer.simple.provider;version=snapshot,\
 	osgi.enroute.dtos.bndlib.provider;version=snapshot,\
-	osgi.enroute.easse.simple.adapter;version=snapshot,\
-	osgi.enroute.executor.simple.provider;version='[1.0.0,1.0.1)',\
 	osgi.enroute.google.angular.webresource;version=snapshot,\
 	osgi.enroute.iot.circuit.application;version=snapshot,\
 	osgi.enroute.iot.circuit.provider;version=snapshot,\
@@ -54,9 +51,10 @@ Conditional-Package: aQute.lib*
 	osgi.enroute.logger.simple.provider;version=snapshot,\
 	osgi.enroute.scheduler.simple.provider;version=snapshot,\
 	osgi.enroute.twitter.bootstrap.webresource;version=snapshot,\
-	osgi.enroute.web.simple.provider;version='[1.3.3,1.3.4)',\
-	osgi.enroute.web.simple.provider;version=snapshot,\
-	osgi.promise;version='[6.0.0,6.0.1)'
+	org.apache.felix.http.jetty;version='[3.2.0,3.2.1)',\
+	osgi.enroute.easse.simple.adapter;version='[1.3.2,1.3.3)',\
+	osgi.enroute.executor.simple.provider;version=snapshot,\
+	osgi.enroute.web.simple.provider;version='[1.3.3,1.3.4)'
 
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.web.simple.provider)',\
