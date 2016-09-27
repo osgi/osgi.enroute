@@ -1,0 +1,8 @@
+org.osgi:org.amdatu.remote.admin.http:0.1.2
+org.osgi:org.amdatu.remote.discovery.bonjour:0.1.2
+org.osgi:org.amdatu.remote.topology.promiscuous:0.1.2
+org.osgi:org.eclipse.equinox.coordinator:1.3.100.v20150410-1453
+org.osgi:org.eclipse.equinox.event:1.3.100.v20140115-1647
+org.osgi:org.eclipse.equinox.metatype:1.4.100.v20150408-1437
+org.osgi:org.eclipse.osgi:3.10.100.v20150529-1857
+org.osgi:org.knopflerfish.bundle.useradmin:4.1.1

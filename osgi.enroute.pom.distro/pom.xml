@@ -5,14 +5,14 @@
 	<properties>
 		<enroute-version>2.0.0-SNAPSHOT</enroute-version>
 		<bnd-version>3.3.0-SNAPSHOT</bnd-version>
-    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<groupId>org.osgi</groupId>
 	<artifactId>osgi.enroute.pom.distro</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-  
+
 
 
 	<build>
@@ -21,7 +21,7 @@
 			<plugin>
 				<groupId>biz.aQute.bnd</groupId>
 				<artifactId>bnd-maven-plugin</artifactId>
-				<version>3.3.0-SNAPSHOT</version>
+				<version>3.3.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -222,13 +222,6 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.eclipse.equinox.coordinator</artifactId>
 			<version>1.3.100.v20150410-1453</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.eclipse.equinox.coordinator.source</artifactId>
-			<version>1.3.100.v20150410-1453</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -238,19 +231,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.eclipse.equinox.event.source</artifactId>
-			<version>1.3.100.v20140115-1647</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
 			<artifactId>org.eclipse.equinox.metatype</artifactId>
-			<version>1.4.100.v20150408-1437</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.eclipse.equinox.metatype.source</artifactId>
 			<version>1.4.100.v20150408-1437</version>
 			<scope>runtime</scope>
 		</dependency>
