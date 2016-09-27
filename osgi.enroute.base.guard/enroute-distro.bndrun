@@ -5,9 +5,7 @@
 
 -include: ${workspace}/cnf/enroute-distro.bnd
 
--runrepos: \
-	Workspace,\
-	Distro
+-runrepos: Distro
 
 -runrequires: osgi.identity;filter:='(osgi.identity=osgi.enroute.base.guard)'
 

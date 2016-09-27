@@ -12,5 +12,5 @@ public interface RestConstants {
 	/**
 	 * Version
 	 */
-	String REST_SPECIFICATION_VERSION = "1.0.0";
+	String REST_SPECIFICATION_VERSION = "1.1.0";
 }

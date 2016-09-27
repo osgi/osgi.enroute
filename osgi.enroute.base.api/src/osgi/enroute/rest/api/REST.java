@@ -35,5 +35,8 @@ import org.osgi.annotation.versioning.ConsumerType;
 
 @ConsumerType
 public interface REST {
-
+	/**
+	 * Service property specify the endpoint prefix. The default is /rest
+	 */
+	String ENDPOINT = "endpoint";
 }
