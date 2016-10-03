@@ -53,11 +53,15 @@ import osgi.enroute.logger.simple.provider.LoggerDispatcher.Eval;
 		configurationPolicy = ConfigurationPolicy.OPTIONAL,
 		property = {
 				Debug.COMMAND_SCOPE + "=logger", 
-				Debug.COMMAND_FUNCTION + "=add",
-				Debug.COMMAND_FUNCTION + "=remove",
+				Debug.COMMAND_FUNCTION + "=match",
+				Debug.COMMAND_FUNCTION + "=unmatch",
 				Debug.COMMAND_FUNCTION + "=settings",
-				Debug.COMMAND_FUNCTION + "=list",
-				Debug.COMMAND_FUNCTION + "=slf4j"
+				Debug.COMMAND_FUNCTION + "=loggers",
+				Debug.COMMAND_FUNCTION + "=slf4j",
+				Debug.COMMAND_FUNCTION + "=error",
+				Debug.COMMAND_FUNCTION + "=trace",
+				Debug.COMMAND_FUNCTION + "=warning",
+				Debug.COMMAND_FUNCTION + "=info"
 		})
 // @formatter:on
 public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
@@ -273,7 +277,11 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 		return infos;
 	}
 
-	public List<Info> list() throws Exception {
+	public List<Info> loggers(String glob) throws Exception {
+		return list(glob);
+	}
+	
+	public List<Info> loggers() throws Exception {
 		return list("*");
 	}
 
@@ -326,7 +334,7 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	 *            set of options: stacktrace, where
 	 * @return the Control added
 	 */
-	public Control add(Glob pattern, String level, String... options) throws Exception {
+	public Control match(Glob pattern, String level, String... options) throws Exception {
 		Settings settings = getSettings();
 		Control control = new Control();
 		control.level = toLevel(level);
@@ -363,7 +371,7 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	 *            exact pattern)
 	 * @return the controls removed
 	 */
-	public List<Control> remove(Glob pattern) throws Exception {
+	public List<Control> unmatch(Glob pattern) throws Exception {
 		Settings settings = getSettings();
 		List<Control> deleted = new ArrayList<>();
 
@@ -448,5 +456,18 @@ public class LoggerAdminImpl extends Thread implements LoggerAdmin, Eval {
 	 */
 	void removeLogService(LogService log) {
 		logs.remove(log);
+	}
+	
+	public void error(String msg) {
+		logger.error(msg);
+	}
+	public void info(String msg) {
+		logger.info(msg);
+	}
+	public void trace(String msg) {
+		logger.trace(msg);
+	}
+	public void warning(String msg) {
+		logger.warn(msg);
 	}
 }

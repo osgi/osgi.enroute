@@ -10,19 +10,21 @@ Export-Package:  \
 	org.slf4j.helpers;version=1.7.0,\
 	org.slf4j;provide:=true;-split-package:=merge-last;version=1.7.0
 
-Private-Package:  \
+Private-Package: \
 	osgi.enroute.logger.simple.provider,\
 	org.slf4j.impl;-split-package:=first,\
-	org.slf4j.spi
+	org.slf4j.spi,\
+	osgi.enroute.command.enroute.provider
 Bundle-License:			http://opensource.org/licenses/BSD-2-Clause
 Import-Package: \
 	aQute.bnd.annotation.metatype;resolution:=optional,\
 	*
 Conditional-Package: 	aQute.lib*
 	
--buildpath:  \
+-buildpath: \
 	osgi.enroute.base.api;version=1.0;packages=*,\
-	biz.aQute.bndlib;packages=*
+	biz.aQute.bndlib;packages=*,\
+	org.apache.felix.gogo.runtime
 
 -testpath: \
 	osgi.enroute.junit.wrapper
