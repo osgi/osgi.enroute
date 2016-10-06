@@ -463,7 +463,7 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>osgi.enroute</groupId>
+			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.executor.simple.provider</artifactId>
 			<version>${enroute-version}</version>
 			<scope>runtime</scope>
