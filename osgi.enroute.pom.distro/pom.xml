@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<properties>
 		<enroute-version>2.0.0-SNAPSHOT</enroute-version>
-		<bnd-version>3.3.0-SNAPSHOT</bnd-version>
+		<bnd-version>3.3.0</bnd-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<groupId>org.osgi</groupId>
@@ -399,7 +399,7 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.iot.circuit.provider</artifactId>
-			<version>2.0.1.201509161450</version>
+			<version>${enroute-version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -465,7 +465,7 @@
 		<dependency>
 			<groupId>osgi.enroute</groupId>
 			<artifactId>osgi.enroute.executor.simple.provider</artifactId>
-			<version>1.0.0</version>
+			<version>${enroute-version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -494,6 +494,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
+			<artifactId>osgi.enroute.updater.provider</artifactId>
+			<version>${enroute-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.web.simple.provider</artifactId>
 			<version>${enroute-version}</version>
 			<scope>runtime</scope>
@@ -514,19 +520,9 @@
 
 	<repositories>
 		<repository>
-			<releases>
-				<enabled>false</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
 			<id>org.osgi-snapshot</id>
 			<name>OSGi Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/osgi/org/osgi</url>
+			<url>https://oss.sonatype.org/content/groups/osgi</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
