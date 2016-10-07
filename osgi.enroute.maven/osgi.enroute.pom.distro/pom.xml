@@ -7,9 +7,14 @@
 		<bnd-version>3.3.0</bnd-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<groupId>org.osgi</groupId>
+	<parent>
+		<groupId>org.osgi</groupId>
+		<artifactId>osgi.enroute.maven</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
 	<artifactId>osgi.enroute.pom.distro</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<description>OSGi enRoute Distro POM</description>
@@ -527,20 +532,4 @@
 		</repository>
 	</repositories>
 
-	<distributionManagement>
-		<repository>
-			<uniqueVersion>true</uniqueVersion>
-			<id>org.osgi</id>
-			<name>OSGi</name>
-			<url>https://oss.sonatype.org/content/repositories/osgi/org/osgi</url>
-			<layout>default</layout>
-		</repository>
-		<snapshotRepository>
-			<uniqueVersion>true</uniqueVersion>
-			<id>org.osgi</id>
-			<name>OSGi Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
-			<layout>default</layout>
-		</snapshotRepository>
-	</distributionManagement>
 </project>

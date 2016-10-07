@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>osgi.enroute.maven</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+ 
+
+  <modules>
+    <module>osgi.enroute.pom.distro</module>
+    <module>osgi.enroute.verify</module>
+  </modules>
+  
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>org.osgi</id>
+			<name>OSGi</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>org.osgi</id>
+			<name>OSGi Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>
+ 
+
