@@ -6,6 +6,8 @@ install:
 - "./gradlew --version"
 script:
 - "./gradlew --continue build release"
+- cd osgi.enroute.maven
+- mvn install
 after_success:
 - git status
 cache:
