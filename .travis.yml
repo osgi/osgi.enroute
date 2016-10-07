@@ -1,19 +1,17 @@
 sudo: false
-
 language: java
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 install:
-  - ./gradlew --version
-
+- "./gradlew --version"
 script:
-  - ./gradlew --continue build release
-
+- "./gradlew --continue build release"
 after_success:
-  - git status
-
+- git status
 cache:
   directories:
-    - $HOME/.gradle
+  - "$HOME/.gradle"
+
+env:
+  global:
+    secure: h3TeZlSXo5RaHjd4q2rSj+xVoxiQmZAFY9QoGAjvFkogn5+PBIwbbQ08TBESrz2v+R1mRum5AoV3SRvohzWorXIBVWXM0N+/jhEWQ41UImJv3RrW87vN5v/gUmIjIXIUJx2w+6PzLpvhroD2un7UeQ29N5rNYj65xjYcKNmCQaE=
