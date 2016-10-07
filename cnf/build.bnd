@@ -29,14 +29,6 @@ Bundle-Developers: 		osgi; \
             pretty              =       true ; \
             local               =       ${build}/source
 
--plugin.4.Distro:  \
-\
-        aQute.bnd.deployer.repository.LocalIndexedRepo; \
-            name                =       Distro ; \
-            pretty              =       true ; \
-            local               =       ${build}/distro
-
-
 base.packages =  \
  	aQute.bnd.annotation.headers, \
 	aQute.bnd.annotation.licenses, \
@@ -131,9 +123,9 @@ usr = ${env;REPOSITORY_USERNAME;}
 		snapshotUrl=https://oss.sonatype.org/content/repositories/osgi-snapshots/; \
 		releaseUrl= https://oss.sonatype.org/service/local/staging/deploy/maven2/; \
 		index=${.}/osgi-nexus.maven; \
-		name="OSGiNexus"
+		name="Release"
 
--releaserepo: OSGiNexus
+-releaserepo: Release
 -baselinerepo: Distro
 
 

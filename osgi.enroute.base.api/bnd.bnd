@@ -64,12 +64,7 @@ Conditional-Package:	org.slf4j.*
 	biz.aQute.bnd.annotation;version=@3.0.0,\
 	org.apache.felix.http.servlet-api,\
 	slf4j.simple;version=@1.7,\
-	biz.aQute.junit,\
-	osgi.enroute.github.angular-ui.webresource,\
-	osgi.enroute.google.angular.webresource;version=1.5,\
-	osgi.enroute.jsplumb.webresource,\
-	osgi.enroute.stackexchange.pagedown.webresource,\
-	osgi.enroute.twitter.bootstrap.webresource
+	biz.aQute.junit
 
 -includeresource: {${build}/legal}, icon/${Bundle-Icon}
 
