@@ -12,6 +12,5 @@ Import-Package: ${filter;.*annotations.*;${base.packages}}, *
 	
 Private-Package: \
 	osgi.enroute.base.required
--runrequires: osgi.identity;filter:='(osgi.identity=org.apache.felix.http.api)'
--runfw: org.eclipse.osgi;version='[3.10.100.v20150529-1857,3.10.100.v20150529-1857]'
--runee: JavaSE-1.8
+
+	
