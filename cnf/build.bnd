@@ -123,7 +123,7 @@ usr = ${env;REPOSITORY_USERNAME;}
 \
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
 		snapshotUrl=https://oss.sonatype.org/content/repositories/osgi-snapshots/; \
-		releaseUrl= "https://oss.sonatype.org/service/local/staging/deploy/maven2/,http://repo1.maven.org/maven2/org/osgi/"; \
+		releaseUrl= "https://oss.sonatype.org/service/local/staging/deploy/maven2/,http://repo1.maven.org/maven2/"; \
 		index=${.}/osgi-nexus.maven; \
 		name="Release"
 
