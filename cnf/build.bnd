@@ -5,7 +5,9 @@ copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
 base.version:           2.0.0
-Bundle-Version:         ${base.version}.${tstamp}-SNAPSHOT
+Bundle-Version:         ${base.version}.${tstamp}
+
+#-SNAPSHOT
 
 # Documentation
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
