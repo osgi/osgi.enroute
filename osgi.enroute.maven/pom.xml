@@ -1,16 +1,117 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.osgi</groupId>
-  <artifactId>osgi.enroute.maven</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
- 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.osgi</groupId>
+	<artifactId>osgi.enroute.maven</artifactId>
+	<version>2.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-  <modules>
-    <module>osgi.enroute.pom.distro</module>
-    <module>osgi.enroute.verify</module>
-  </modules>
-  
+
+	<modules>
+		<module>osgi.enroute.pom.distro</module>
+		<module>osgi.enroute.verify</module>
+	</modules>
+
+	<url>http://bnd.bndtools.org/</url>
+
+	<organization>
+		<name>OSGi Alliance</name>
+		<url>http://enroute.osgi.org</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>Apache-2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+			<comments>Apache License, Version 2.0</comments>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/osgi/osgi.enroute</url>
+		<connection>scm:git:https://github.com/osgi/osgi.enroute</connection>
+		<developerConnection>scm:git:git@osgi/osgi.enroute.git</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>peter.kriens@aQute.biz</id>
+			<email>Peter.Kriens@aQute.biz</email>
+		</developer>
+	</developers>
+
+	<!-- Deploying to central requires -Pdeploy on the command line. This speeds 
+		up the normal builds until we're ready to deploy. $ mvn deploy -Dgpg.passphrase=xxxxx 
+		-Pdeploy -->
+	<profiles>
+		<profile>
+			<id>deploy</id>
+			<activation>
+				<property>
+					<name>gpg.passphrase</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.0.4</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.10</version>
+						<executions>
+							<execution>
+								<id>verify-repos</id>
+								<goals>
+									<goal>list-repositories</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>true</uniqueVersion>
