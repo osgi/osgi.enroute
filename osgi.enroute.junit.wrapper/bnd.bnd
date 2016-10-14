@@ -17,6 +17,6 @@ Import-Package:\
 	*
 	
 -buildpath: \
-	junit__junit
+	junit:junit
 	
 -includeresource: LICENSE.txt

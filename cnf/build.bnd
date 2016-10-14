@@ -42,6 +42,13 @@ usr = ${env;REPOSITORY_USERNAME;}
 		index=${.}/osgi-nexus.maven; \
 		name="OSGiNexus"
 
+-plugin.4.Central:  \
+	aQute.bnd.repository.maven.pom.provider.BndPomRepository; \
+		releaseUrls=https://repo1.maven.org/maven2/; \
+		pom=${.}/pom.xml; \
+		name=Central; \
+		location=${.}/target/cached.xml
+
 -releaserepo: OSGiNexus
 -baselinerepo: Distro
-
+ 

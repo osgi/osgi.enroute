@@ -9,7 +9,7 @@
 -plugin.enroute.distro = \
 	aQute.bnd.deployer.repository.FixedIndexedRepo; \
 	        name		=       Distro; \
-	        locations	=       https://raw.githubusercontent.com/osgi/osgi.enroute/master/cnf/distro/index.xml
+	        locations	=       https://raw.githubusercontent.com/osgi/osgi.enroute/v1.0.0/cnf/distro/index.xml
 	        
 
 -runblacklist.enroute:	\
