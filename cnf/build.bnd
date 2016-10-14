@@ -7,7 +7,8 @@ baseline.version:       1.0.0
 base.version:           2.0.0
 -groupid:               org.osgi
 -pom:                   version=${versionmask;===s;${@version}}
-Bundle-Version:         ${base.version}.${tstamp}-SNAPSHOT
+Bundle-Version:         ${base.version}.${tstamp}
+#-SNAPSHOT
 
 # Uncomment the following line to build the non-snapshot version.
 #-snapshot: REL
