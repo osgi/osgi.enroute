@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<properties>
-		<enroute-version>2.0.0-SNAPSHOT</enroute-version>
+		<enroute-version>2.0.0</enroute-version>
 		<bnd-version>3.3.0</bnd-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<parent>
 		<groupId>org.osgi</groupId>
 		<artifactId>osgi.enroute.maven</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>2.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -350,7 +350,7 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.bostock.d3.webresource</artifactId>
-			<version>3.5.6-SNAPSHOT</version>
+			<version>3.5.6</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -374,19 +374,19 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.google.angular.webresource</artifactId>
-			<version>1.5.7-SNAPSHOT</version>
+			<version>1.5.7</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.github.angular-ui.webresource</artifactId>
-			<version>0.13.3-SNAPSHOT</version>
+			<version>0.13.3</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.hamcrest.wrapper</artifactId>
-			<version>1.3.0-SNAPSHOT</version>
+			<version>1.3.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -422,13 +422,13 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.jsplumb.webresource</artifactId>
-			<version>1.7.6-SNAPSHOT</version>
+			<version>1.7.6</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.junit.wrapper</artifactId>
-			<version>4.12.0-SNAPSHOT</version>
+			<version>4.12.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -440,13 +440,13 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.stackexchange.pagedown.webresource</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
+			<version>1.1.1</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.twitter.bootstrap.webresource</artifactId>
-			<version>3.3.5-SNAPSHOT</version>
+			<version>3.3.5</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -499,12 +499,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>osgi.enroute.updater.provider</artifactId>
-			<version>${enroute-version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.web.simple.provider</artifactId>
 			<version>${enroute-version}</version>
 			<scope>runtime</scope>
@@ -527,14 +521,5 @@
 			<version>3.4.9</version>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>org.osgi-snapshot</id>
-			<name>OSGi Snapshots</name>
-			<url>https://oss.sonatype.org/content/groups/osgi</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 
 </project>
