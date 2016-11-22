@@ -516,17 +516,17 @@ public class DTOsProvider implements DTOs {
 
 		@Override
 		public void put(OutputStream out) throws Exception {
-			codec.enc().charset("UTF-8").to(out).put(source);
+			this.put(out, "UTF-8");
 		}
 
 		@Override
 		public void put(OutputStream out, String charset) throws Exception {
-			enc.charset(charset).put(out);
+			enc.charset(charset).to(out).put(source);
 		}
 
 		@Override
 		public void put(Appendable out) throws Exception {
-			enc.put(out);
+			enc.to(out).put(source);
 		}
 
 		@Override
