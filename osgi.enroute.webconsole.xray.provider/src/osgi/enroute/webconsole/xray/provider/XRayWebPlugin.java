@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Formatter;
@@ -89,7 +90,7 @@ public final class XRayWebPlugin extends AbstractWebConsolePlugin implements Bun
 	private BundleContext context;
 	private LogReaderService logReader;
 	private LogService log;
-	private MultiMap<String, Bundle> listeners = new MultiMap<String, Bundle>();
+	private MultiMap<String, BundleContext> listenerContexts = new MultiMap<String, BundleContext>();
 	private ServiceRegistration<ListenerHook> lhook;
 	private volatile ServiceComponentRuntime scr;
 	private volatile ConfigurationAdmin cfg;
@@ -340,7 +341,7 @@ public final class XRayWebPlugin extends AbstractWebConsolePlugin implements Bun
 			bundles.put(bundle, data);
 		}
 
-		for (String name : new HashSet<String>(listeners.keySet())) {
+		for (String name : new HashSet<String>(listenerContexts.keySet())) {
 			ServiceDef icon = services.get(name);
 			if (icon == null) {
 				icon = new ServiceDef();
@@ -348,10 +349,12 @@ public final class XRayWebPlugin extends AbstractWebConsolePlugin implements Bun
 				icon.name = name;
 				icon.shortName = from(TITLE_LENGTH, name);
 			}
-			for (Bundle b : listeners.get(name))
+
+			List<Bundle> listeners = getListeners(name);
+			for (Bundle b : listeners)
 				doClassspace(bundles, b, name, icon);
 
-			for (Iterator<Bundle> i = listeners.get(name).iterator(); i.hasNext();) {
+			for (Iterator<Bundle> i = listeners.iterator(); i.hasNext();) {
 				Bundle b = i.next();
 				BundleDef bdef = bundles.get(b);
 				if (bdef == null)
@@ -738,12 +741,28 @@ public final class XRayWebPlugin extends AbstractWebConsolePlugin implements Bun
 			this.cfg = cfg;
 	}
 
+	private synchronized List<Bundle> getListeners(String name) {
+		List<BundleContext> namedContexts = listenerContexts.get(name);
+		List<Bundle> listeners;
+		
+		if (namedContexts == null) {
+			listeners = Collections.emptyList();
+		} else {
+			listeners = new ArrayList<Bundle>(namedContexts.size());
+			for (BundleContext namedContext : namedContexts) {
+				listeners.add(namedContext.getBundle());
+			}
+		}
+
+		return listeners;
+	}
+
 	private synchronized void addListenerInfo(ListenerInfo o) {
 		String filter = o.getFilter();
 		if (filter != null) {
 			Matcher m = LISTENER_INFO_PATTERN.matcher(filter);
 			while (m.find()) {
-				listeners.add(m.group(1), o.getBundleContext().getBundle());
+				listenerContexts.add(m.group(1), o.getBundleContext());
 			}
 		}
 	}
@@ -753,7 +772,7 @@ public final class XRayWebPlugin extends AbstractWebConsolePlugin implements Bun
 		if (filter != null) {
 			Matcher m = LISTENER_INFO_PATTERN.matcher(filter);
 			while (m.find()) {
-				listeners.remove(m.group(1), o.getBundleContext().getBundle());
+				listenerContexts.remove(m.group(1), o.getBundleContext());
 			}
 		}
 	}
