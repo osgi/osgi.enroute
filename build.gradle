@@ -29,6 +29,11 @@ subprojects {
     plugins.apply 'biz.aQute.bnd'
     group bnd('groupid')
     version bnd('base.version')
+    test {
+      testLogging {
+        exceptionFormat 'full'
+      }
+    }
   }
 }
 
