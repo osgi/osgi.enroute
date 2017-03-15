@@ -39,6 +39,7 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	final RestMapper			mapper;
 
 	RestServlet(Config config, String namespace) {
+		this.config = config;
 		corsEnabled = config.corsEnabled();
 		this.mapper = new RestMapper(namespace);
 	}
