@@ -51,8 +51,6 @@ Provide-Capability: \
 
 -includeresource: \
 	{${path}=${base.version}}, \
-	${path}/enmarkdown.js; \
-		requires='${project}/${base.version}/enmarkdown.js,${project}/${base.version}/Markdown.Converter.js'; \
-		cmd='cat ${project}/${base.version}/enmarkdown.js ${project}/${base.version}/Markdown.Converter.js', \
+	{${path}/enmarkdown.js=enmarkdown.js.concat}, \
 	${base.version}/LICENSE.txt, \
 	{readme.md}
