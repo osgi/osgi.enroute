@@ -156,6 +156,9 @@ public class RestMapper {
 
 			Function function = new Function(resource, m, verb, path, ranking);
 			functions.add(function.getName(), function);
+
+			Collections.sort(functions.get(function.getName()),
+					(a, b) -> Integer.compare(a.ranking, b.ranking));
 		}
 		endpoints.add(resource);
 	}
@@ -258,9 +261,6 @@ public class RestMapper {
 			if (candidates == null || candidates.isEmpty())
 				throw new FileNotFoundException("No such method " + name + "/"
 						+ cardinality + ". Available: " + functions);
-
-			Collections.sort(candidates,
-					(a, b) -> Integer.compare(a.ranking, b.ranking));
 
 			//
 			// All values are arrays, turn them into singletons when
