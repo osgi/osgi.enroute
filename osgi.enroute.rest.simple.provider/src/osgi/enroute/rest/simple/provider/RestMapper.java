@@ -193,7 +193,7 @@ public class RestMapper {
 		//
 		// Skip last _ so we can escape keywords
 		//
-		if (sb.charAt(sb.length() - 1) == '-')
+		if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '-')
 			sb.setLength(sb.length() - 1);
 		return sb.toString();
 	}
@@ -229,10 +229,8 @@ public class RestMapper {
 		try {
 			String path = rq.getPathInfo();
 			if (path == null)
-				throw new IllegalArgumentException(
-						"The rest servlet requires that the name of the resource follows the servlet path ('rest'), like /rest/aQute.service.library.Program[/...]*[?...]");
-
-			if (path.startsWith("/"))
+				path = "";
+			else if (path.startsWith("/"))
 				path = path.substring(1);
 
 			if (path.equals("openapi.json")) {

@@ -122,6 +122,10 @@ class Function {
 			hasPayloadAsParameter = false;
 		}
 
+		if (path.equals("/") && cardinality > 0)
+			throw new IllegalArgumentException("Invalid " + verb
+					+ " method " + method.getName() + ". A method on the root path cannot have a non-zero cardinality.");
+
 		this.post = requestBody;
 
 		this.cardinality = cardinality;
