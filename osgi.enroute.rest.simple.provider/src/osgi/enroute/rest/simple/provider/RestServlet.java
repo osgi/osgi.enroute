@@ -49,14 +49,6 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	}
 
 	public void service(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
-		String pathInfo = rq.getPathInfo();
-		if (pathInfo == null) {
-			rsp.getWriter().println(
-					"The rest servlet requires that the name of the resource follows the servlet path ('rest'), like /rest/aQute.service.library.Program[/...]*[?...]");
-			rsp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
 		if (corsEnabled) {
 			addCorsHeaders(rsp);
 		}
