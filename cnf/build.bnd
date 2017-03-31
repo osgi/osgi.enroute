@@ -6,7 +6,7 @@ copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Re
 baseline.version:       2.0.0
 base.version:           2.1.0
 -groupid:               org.osgi
--pom:                   version=${versionmask;===s;${@version}}
+-pom:                   version=${versionmask;===s;${@version}}-SNAPSHOT
 Bundle-Version:         ${base.version}.${tstamp}
 #-SNAPSHOT
 
