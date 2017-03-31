@@ -3,8 +3,8 @@
 copyright.year = ${tstamp;yyyy}
 copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Reserved.
 
-baseline.version:       1.0.0
-base.version:           2.0.0
+baseline.version:       2.0.0
+base.version:           2.1.0
 -groupid:               org.osgi
 -pom:                   version=${versionmask;===s;${@version}}
 Bundle-Version:         ${base.version}.${tstamp}
