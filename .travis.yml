@@ -5,7 +5,7 @@ jdk:
 install:
 - "./gradlew --version"
 script:
-- "./gradlew --continue build"
+- "./gradlew --continue release"
 after_success:
 - echo $REPOSITORY_USERNAME
 - echo $TRAVIS_PULL_REQUEST
