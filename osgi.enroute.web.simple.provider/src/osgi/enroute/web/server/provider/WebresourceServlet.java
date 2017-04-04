@@ -58,9 +58,9 @@ import osgi.enroute.webserver.capabilities.WebServerConstants;
  * This class adds support for Web Resources. A Web Resource is a resource
  * delivered from a bundle that is controlled through Requirements and
  * Capabilities. It enables the use of web resources without having to know the
- * actual location of the web resource in the system. The path to the resource can even
- * be private. An application can refer to the web resources it needs by creating a
- * requirement to a webresource capability. The requirement has a
+ * actual location of the web resource in the system. The path to the resource
+ * can even be private. An application can refer to the web resources it needs
+ * by creating a requirement to a webresource capability. The requirement has a
  * {@code resource} and {@code priority} property. If the application now refers
  * to a URI {@value #OSGI_ENROUTE_WEBRESOURCE}{@code /<bundle>/<version>/<type>}
  * this code will append all the required resources in order of occurrence and
@@ -82,7 +82,7 @@ import osgi.enroute.webserver.capabilities.WebServerConstants;
  * &#064;RequireCapability(ns = &quot;osgi.enroute.webresource&quot;, filter = &quot;(osgi.enroute.webresource=/twitter/bootstrap)&quot;)
  * public @interface BootstrapWebResource {
  * 	String[] resource() default {
- * 		&quot;bootstrap.css&quot;
+ * 			&quot;bootstrap.css&quot;
  * 	};
  * 
  * 	int priority() default 1000;
@@ -104,7 +104,8 @@ import osgi.enroute.webserver.capabilities.WebServerConstants;
  * index.html
  *   <html>
  *     <head>
- *       <link href="/osgi.enroute.webresource/bundle/1.2.3/*.css" type="text/css" rel="stylesheet">
+ *       <link href="/osgi.enroute.webresource/bundle/1.2.3/*.css" type=
+"text/css" rel="stylesheet">
  *     </head>
  *     <body>
  *       ...
@@ -118,37 +119,24 @@ import osgi.enroute.webserver.capabilities.WebServerConstants;
  * <p>
  * <a href=
  * 'https://github.com/osgi/design/blob/master/rfps/rfp-0171-Web-Resources.pdf?raw=true'
- *  > RFP 171 Web Resources (PDF)</a>
+ * > RFP 171 Web Resources (PDF)</a>
  */
-@ProvideCapability(
-		ns = ExtenderNamespace.EXTENDER_NAMESPACE, 
-		name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, 
-		version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
+@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = WebServerConstants.WEB_SERVER_EXTENDER_NAME, version = WebServerConstants.WEB_SERVER_EXTENDER_VERSION)
 @RequireHttpImplementation
-@Component(
-		property = {
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/" + WebresourceServlet.OSGI_ENROUTE_WEBRESOURCE + "/*", 
-				Constants.SERVICE_RANKING + ":Integer=101",
-				"addTrailingSlash=true"
-		}, 
-		service = Servlet.class, 
-		immediate = true,
-		name = WebresourceServlet.NAME, 
-		configurationPid = BundleMixinServer.NAME,
-		configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(property = {
+		HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN + "=/" + WebresourceServlet.OSGI_ENROUTE_WEBRESOURCE
+				+ "/*",
+		Constants.SERVICE_RANKING + ":Integer=101", "addTrailingSlash=true"
+}, service = Servlet.class, immediate = true, name = WebresourceServlet.NAME, configurationPid = BundleMixinServer.NAME, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class WebresourceServlet extends HttpServlet {
 
-	private static final long			serialVersionUID	= 1L;
+	private static final long	serialVersionUID			= 1L;
 
-	static final String 				NAME = "osgi.enroute.simple.webresource";
-	public static final String			OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
+	static final String			NAME						= "osgi.enroute.simple.webresource";
+	public static final String	OSGI_ENROUTE_WEBRESOURCE	= "osgi.enroute.webresource";
 
-	final static Pattern				WEBRESOURCES_P				= Pattern
-																			.compile("osgi.enroute.webresource/(?<bsn>"
-																					+ Verifier.SYMBOLICNAME_STRING
-																					+ "+)/(?<version>"
-																					+ Verifier.VERSION_STRING
-																					+ ")/(?<glob>.+)");
+	final static Pattern		WEBRESOURCES_P				= Pattern.compile("osgi.enroute.webresource/(?<bsn>"
+			+ Verifier.SYMBOLICNAME_STRING + "+)/(?<version>" + Verifier.VERSION_STRING + ")/(?<glob>.+)");
 
 	/*
 	 * Helper class to sort the entries according to their priority and order.
@@ -174,13 +162,13 @@ public class WebresourceServlet extends HttpServlet {
 		}
 	}
 
-	final TypeReference<List<String>>				listOfStrings = new TypeReference<List<String>>() {};
-	WebServerConfig									config;
-	private Cache									cache;
-	private ResponseWriter							writer;
-	private ExceptionHandler						exceptionHandler;
-	private LogService								log;
-	boolean											proxy;
+	final TypeReference<List<String>>	listOfStrings	= new TypeReference<List<String>>() {};
+	WebServerConfig						config;
+	private Cache						cache;
+	private ResponseWriter				writer;
+	private ExceptionHandler			exceptionHandler;
+	private LogService					log;
+	boolean								proxy;
 
 	@Activate
 	void activate(WebServerConfig config, BundleContext context) throws Exception {
@@ -190,13 +178,12 @@ public class WebresourceServlet extends HttpServlet {
 		proxy = !config.noproxy();
 	}
 
-	
 	@Override
 	protected void doGet(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
 		try {
 			String path = rq.getRequestURI();
 
-			if (path == null )
+			if (path == null)
 				throw new NotFound404Exception(null);
 
 			if (path.startsWith("/"))
@@ -222,7 +209,8 @@ public class WebresourceServlet extends HttpServlet {
 					} else
 						cache.put(path, c);
 				}
-			} finally {
+			}
+			finally {
 				cache.unlock();
 			}
 
@@ -324,15 +312,21 @@ public class WebresourceServlet extends HttpServlet {
 					// Add all the resources to the list
 					//
 
-					for (String resource : resources) {
-						if (glob.matcher(resource).matches()) {
-							URL url = provider.getBundle().getEntry(root + resource);
-							if (url != null) {
-								webresources.add(new WR(url, priority, order++));
-							} else {
-								log.log(LogService.LOG_ERROR, "A web resource " + resource + " from " + requirement + " in bundle "
-										+ bsn + "-" + version);
-								return null;
+					for (String resourceWithCommas : resources) {
+
+						// Felix does not split comma separated List attributes
+						// as Equinox does. So we do it for them.
+						
+						for (String resource : resourceWithCommas.split("\\s*(?!\\\\),\\s*")) {
+							if (glob.matcher(resource).matches()) {
+								URL url = provider.getBundle().getEntry(root + resource);
+								if (url != null) {
+									webresources.add(new WR(url, priority, order++));
+								} else {
+									log.log(LogService.LOG_ERROR, "A web resource " + resource + " from " + requirement
+											+ " in bundle " + bsn + "-" + version);
+									return null;
+								}
 							}
 						}
 					}
@@ -385,13 +379,15 @@ public class WebresourceServlet extends HttpServlet {
 		//
 
 		try (FileOutputStream out = new FileOutputStream(tmp); PrintStream pout = new PrintStream(out);) {
-			webresources.stream().sorted().map((wr) -> wr.resource).distinct().forEach((url) -> {
+			webresources.stream().sorted().map((wr) -> wr.resource).distinct().forEach((url) ->
+			{
 				try {
 					IO.copy(url.openStream(), pout);
 					pout.println("\n");
 				}
 				catch (Exception e) {
-					log.log(LogService.LOG_ERROR, "A web resource fails " + url + " in bundle " + bsn + "-" + version, e);
+					log.log(LogService.LOG_ERROR, "A web resource fails " + url + " in bundle " + bsn + "-" + version,
+							e);
 				}
 			});
 		}
@@ -410,7 +406,7 @@ public class WebresourceServlet extends HttpServlet {
 	 * make sure the name does not contain any offending characters
 	 */
 
-	static Pattern	BADCHAR_P	= Pattern.compile("[^a-zA-Z-_.$@%+]");
+	static Pattern BADCHAR_P = Pattern.compile("[^a-zA-Z-_.$@%+]");
 
 	static String toValidFileName(String string) throws UnsupportedEncodingException {
 		StringBuffer sb = new StringBuffer();
@@ -442,8 +438,7 @@ public class WebresourceServlet extends HttpServlet {
 	}
 
 	@Deactivate
-	void deactivate() {
-	}
+	void deactivate() {}
 
 	@Reference
 	void setLog(LogService log) {
