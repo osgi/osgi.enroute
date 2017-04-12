@@ -87,7 +87,7 @@ public interface DTOs {
 	 * will also become a Map.
 	 * 
 	 * @param dto
-	 *            the DTO (see )
+	 *            the DTO
 	 * @return a Map where the keys map to the field names and the values to the
 	 *         field values. This map is not modifiable.
 	 * @throws Exception
@@ -95,7 +95,7 @@ public interface DTOs {
 	Map<String,Object> asMap(Object dto) throws Exception;
 
 	/**
-	 * This interface is a the builder for encoding a DTO to JSON.
+	 * This interface is a builder for encoding a DTO to JSON.
 	 */
 	interface Enc {
 		void put(OutputStream out) throws Exception;
