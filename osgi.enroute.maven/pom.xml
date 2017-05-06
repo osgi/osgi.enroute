@@ -9,6 +9,7 @@
 	<name>osgi.enroute.maven</name>
 
 	<modules>
+		<module>osgi.enroute.bndtools.templates</module>
 		<module>osgi.enroute.pom.distro</module>
 		<module>osgi.enroute.verify</module>
 	</modules>

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<properties>
+		<enroute-version>2.0.0</enroute-version>
+		<bnd-version>3.3.0</bnd-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<parent>
+		<groupId>org.osgi</groupId>
+		<artifactId>osgi.enroute.maven</artifactId>
+		<version>2.0.0</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<artifactId>osgi.enroute.bndtools.templates</artifactId>
+	<packaging>jar</packaging>
+
+	<description>OSGi Bndtools Project Templates</description>
+
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>bnd-process</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi.enroute.base.api</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+	</dependencies>
+
+</project>
