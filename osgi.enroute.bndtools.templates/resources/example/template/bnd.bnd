@@ -8,12 +8,6 @@ Bundle-Description: \
 	\
 	${warning;Please update this Bundle-Description in {{projectName}}/api.bnd}
 
-Export-Package:  \
-	{{basePackageName}}.api;-provide=true
-
-Private-Package:  \
-	{{basePackageName}}
-
 -includeresource: {readme.md}
 
 -buildpath:  \
@@ -23,3 +17,4 @@ Private-Package:  \
 	osgi.enroute.junit.wrapper;version=4.12, \
 	osgi.enroute.hamcrest.wrapper;version=1.3
 
+-sub: *.bnd

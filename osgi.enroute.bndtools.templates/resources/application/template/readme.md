@@ -1,4 +1,4 @@
-# {{projectName}} Provider
+# {{projectName}} Application
 
 ${Bundle-Description}
 

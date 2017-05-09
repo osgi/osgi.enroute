@@ -147,9 +147,9 @@ base.packages =  \
 #
 # Uncomment to always install the artifact
 #
-#-plugin.5.local: \
-#    aQute.bnd.repository.maven.provider.MavenBndRepository;\
-#        name='Local';\
-#        noupdateOnRelease=true
-#
-#-buildrepo: Local
+-plugin.5.local: \
+    aQute.bnd.repository.maven.provider.MavenBndRepository;\
+        name='Local';\
+        noupdateOnRelease=true
+
+-buildrepo: Local

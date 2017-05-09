@@ -8,17 +8,18 @@ Private-Package: osgi.enroute.bndtools.templates
 api-template:\
 	org.bndtools.template;\
 		org.bndtools.template=project; \
-		name=API Bundle; \
+		name="API Bundle"; \
 		category=${template-category}; \
 		dir=api/template; \
 		icon="${icondata}"; \
 		help=api/help.xml;\
-		engine=mustache
+		engine=mustache; \
+		metaType=OSGI-INF/metatype/osgi.enroute.bndtools.templates.api.xml
 
 provider-template:\
 	org.bndtools.template;\
 		org.bndtools.template=project; \
-		name=Provider/Adapter Bundle; \
+		name="Provider/Adapter Bundle"; \
 		category=${template-category}; \
 		dir=provider/template; \
 		icon="${icondata}"; \
@@ -28,25 +29,52 @@ provider-template:\
 test-template:\
 	org.bndtools.template;\
 		org.bndtools.template=project; \
-		name=Test; \
+		name="Test Bundle"; \
 		category=${template-category}; \
 		dir=test/template; \
 		icon="${icondata}"; \
 		help=test/help.xml;\
 		engine=mustache
 
-appl-template:\
+gogo-template:\
 	org.bndtools.template;\
 		org.bndtools.template=project; \
-		name=Application; \
+		name="Gogo Command Bundle"; \
 		category=${template-category}; \
-		dir=appl/template; \
+		dir=gogo/template; \
 		icon="${icondata}"; \
-		help=appl/help.xml;\
+		help=gogo/help.xml;\
+		engine=mustache
+
+example-template:\
+	org.bndtools.template;\
+		org.bndtools.template=project; \
+		name="Example with API, provider and Gogo command Bundle"; \
+		category=${template-category}; \
+		dir=example/template; \
+		icon="${icondata}"; \
+		help=example/help.xml;\
+		engine=mustache
+
+application-template:\
+	org.bndtools.template;\
+		org.bndtools.template=project; \
+		name="Application Bundle"; \
+		category=${template-category}; \
+		dir=application/template; \
+		icon="${icondata}"; \
+		help=application/help.xml;\
 		engine=mustache; \
 		metaType=OSGI-INF/metatype/osgi.enroute.bndtools.templates.application.xml
 
-Provide-Capability: ${api-template}, ${provider-template}, ${test-template}, ${appl-template}
+Provide-Capability: \
+	${api-template}, \
+	${provider-template}, \
+	${test-template}, \
+	${application-template}, \
+	${example-template}, \
+	${gogo-template}, \
+	${example-template}
 
 -resourceonly: true
 -includeresource: resources

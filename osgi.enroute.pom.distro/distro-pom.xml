@@ -319,6 +319,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
+			<artifactId>osgi.enroute.bndtools.templates</artifactId>
+			<version>$(enroute-version)</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.bostock.d3.webresource</artifactId>
 			<version>3.5.6</version>
 			<scope>runtime</scope>

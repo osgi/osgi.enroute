@@ -1,4 +1,4 @@
-# {{projectName}} Provider
+# {{projectName}} Gogo Command
 
 ${Bundle-Description}
 
