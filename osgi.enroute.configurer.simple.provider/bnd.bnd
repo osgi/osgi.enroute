@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE CONFIGURER SIMPLE PROVIDER BUNDLE 
+# OSGI ENROUTE CONFIGURER SIMPLE PROVIDER BUNDLE
 #
 
 
@@ -16,9 +16,9 @@ Export-Package: \
 
 Conditional-Package: aQute.lib*
 
-	
+
 -buildpath:  \
-	osgi.enroute.base.api;version=1.0,\
+	osgi.enroute.base.api;version=latest,\
 	biz.aQute.bndlib;packages=*
 
 -testpath: \

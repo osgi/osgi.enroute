@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE LOGGER SIMPLE PROVIDER BUNDLE 
+# OSGI ENROUTE LOGGER SIMPLE PROVIDER BUNDLE
 #
 
 
@@ -13,16 +13,16 @@ Export-Package:  \
 Private-Package: \
 	osgi.enroute.logger.simple.provider,\
 	org.slf4j.impl;-split-package:=first,\
-	org.slf4j.spi,\
-	osgi.enroute.command.enroute.provider
+	org.slf4j.spi
+
 Bundle-License:			http://opensource.org/licenses/BSD-2-Clause
 Import-Package: \
 	aQute.bnd.annotation.metatype;resolution:=optional,\
 	*
 Conditional-Package: 	aQute.lib*
-	
+
 -buildpath: \
-	osgi.enroute.base.api;version=1.0;packages=*,\
+	osgi.enroute.base.api;version=latest;packages=*,\
 	biz.aQute.bndlib;packages=*,\
 	org.apache.felix.gogo.runtime
 
@@ -42,8 +42,8 @@ Conditional-Package: 	aQute.lib*
 -fixupmessages: \
 	"Export org.slf4j*,  has 1,  private references \\[org.slf4j.spi\\]", \
 	"Version for package org.slf4j is set to different values in the source \\(1.7.0\\) and in the manifest \\(1.7.12\\)."
-	
-	
+
+
 Import-Package: \
 	aQute.bnd.annotation.metatype;resolution:=optional,\
 	*

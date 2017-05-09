@@ -1,10 +1,10 @@
 #
-# OSGI ENROUTE SCHEDULER SIMPLE PROVIDER BUNDLE 
+# OSGI ENROUTE SCHEDULER SIMPLE PROVIDER BUNDLE
 #
 
 
 Bundle-Description: 				\
-  This bundle implements a scheduler and some Promise support methods related to time.  
+  This bundle implements a scheduler and some Promise support methods related to time.
 Private-Package:  \
 	osgi.enroute.scheduler.simple.provider
 Export-Package: \
@@ -13,7 +13,7 @@ Export-Package: \
 Conditional-Package: aQute.lib*
 
 -buildpath: \
-	osgi.enroute.base.api;version=1.0,\
+	osgi.enroute.base.api;version=latest,\
 	biz.aQute.bndlib;packages=*
 
 -testpath: \
@@ -24,6 +24,6 @@ Conditional-Package: aQute.lib*
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.scheduler.simple.provider)'
-	
+
 -runbundles: \
 	${error;Resolve first}

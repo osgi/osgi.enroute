@@ -4,10 +4,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
@@ -16,22 +19,24 @@ import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.toolkit.Wave.WaveConfig;
 import osgi.enroute.scheduler.api.Scheduler;
 
-@Component(designateFactory = WaveConfig.class, provide = IC.class, name="osgi.enroute.iot.toolkit.wave")
+@Designate(ocd=WaveConfig.class, factory=true)
+@Component(service = IC.class, name="osgi.enroute.iot.toolkit.wave")
 public class Wave extends ICAdapter<Void, Analog> {
 	enum Shape {
 		unity, sin;
 	}
 
-	interface WaveConfig {
+	@ObjectClassDefinition
+	@interface WaveConfig {
 		String name();
 
-		int steps(int deflt);
+		int steps() default 100;
 
-		int stepTime(int defltMs);
+		int stepTime() default 10;
 
 		Shape shape();
 
-		double gain(double deflt);
+		double gain() default 1.0D;
 	}
 
 	private Scheduler	scheduler;
@@ -49,9 +54,9 @@ public class Wave extends ICAdapter<Void, Analog> {
 	@Activate
 	void activate(Map<String, Object> map) throws Exception {
 		cfg = getDTOs().convert(map).to(WaveConfig.class);
-		this.stepTime = Math.max(cfg.stepTime(10), 1);
-		this.steps = Math.max(cfg.steps(100), 1);
-		this.gain = cfg.gain(1.0D);
+		this.stepTime = Math.max(cfg.stepTime(), 1);
+		this.steps = Math.max(cfg.steps(), 1);
+		this.gain = cfg.gain();
 		switch (cfg.shape()) {
 		case sin:
 			this.delta = (2 * Math.PI) / this.steps;

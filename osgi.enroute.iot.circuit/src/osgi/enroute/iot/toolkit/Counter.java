@@ -3,10 +3,13 @@ package osgi.enroute.iot.toolkit;
 import java.io.Closeable;
 import java.util.Map;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
 import aQute.lib.converter.Converter;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
@@ -16,16 +19,18 @@ import osgi.enroute.iot.gpio.util.Octionary;
 import osgi.enroute.iot.toolkit.Counter.CounterConfig;
 import osgi.enroute.scheduler.api.Scheduler;
 
-@Component(designateFactory = CounterConfig.class, provide = IC.class, name="osgi.enroute.iot.toolkit.ctr8")
+@Designate(ocd=CounterConfig.class,factory=true)
+@Component(service = IC.class, name="osgi.enroute.iot.toolkit.ctr8")
 public class Counter extends ICAdapter<Digital, Octionary> implements Digital {
-	
-	interface CounterConfig {
+
+	@ObjectClassDefinition
+	@interface CounterConfig {
 		String name();
 
 		int period();
 
 		int modulo();
-		
+
 		String service_pid();
 	}
 
@@ -129,5 +134,5 @@ public class Counter extends ICAdapter<Digital, Octionary> implements Digital {
 		super.setCircuitBoard(board);
 	}
 
-	
+
 }

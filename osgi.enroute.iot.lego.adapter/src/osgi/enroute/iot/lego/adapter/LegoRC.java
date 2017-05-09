@@ -4,14 +4,17 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
+import aQute.lib.converter.Converter;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.gpio.util.Wave;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
-import aQute.lib.converter.Converter;
 
 
 enum Channel {
@@ -25,15 +28,17 @@ enum Channel {
 	}
 }
 
-interface LegoPowerFunctionsConfig {
-	Channel channel(Channel deflt);
+@ObjectClassDefinition
+@interface LegoPowerFunctionsConfig {
+	Channel channel() default Channel.CH1;
 }
 
 /**
  * http://www.philohome.com/pf/LEGO_Power_Functions_RC_v120.pdf
  *
  */
-@Component(designateFactory = LegoPowerFunctionsConfig.class, provide = IC.class)
+@Designate(ocd=LegoPowerFunctionsConfig.class,factory=true)
+@Component(service = IC.class)
 public class LegoRC extends ICAdapter<LegoPowerFunctions, Wave> implements
 		LegoPowerFunctions {
 
@@ -56,7 +61,7 @@ public class LegoRC extends ICAdapter<LegoPowerFunctions, Wave> implements
 	};
 
 	// From the specification:
-	
+
 	final int START_STOP = 1184 - 158; // 6 + 39 = 45 x 1/38K = 1184 us/
 	final int LOW = 421 - 158; // 6 + 10 = 16 x 1/38K = 421 us
 	final int HIGH = 711 - 158; // 6 + 21 = 27 x 1/38K = 711 us
@@ -78,7 +83,7 @@ public class LegoRC extends ICAdapter<LegoPowerFunctions, Wave> implements
 	void activate(Map<String, Object> map) throws Exception {
 		LegoPowerFunctionsConfig config = Converter.cnv(
 				LegoPowerFunctionsConfig.class, map);
-		channel = config.channel(Channel.CH1).ordinal();
+		channel = config.channel().ordinal();
 	}
 
 	@Override

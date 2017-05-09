@@ -13,7 +13,7 @@ Bundle-Description: 	\
 	it for declaring dynamic views in web-applications. AngularJS lets you extend HTML vocabulary for \
 	your application. The resulting environment is extraordinarily expressive, readable, and quick to \
 	develop.
-	
+
 Bundle-License: 		http://opensource.org/licenses/MIT
 Bundle-DocURL: 			http://angularjs.org/
 Bundle-Vendor: 			Google Inc. (bundled by OSGi enRoute)
@@ -33,7 +33,7 @@ Provide-Capability: \
 		root=${path}
 
 -buildpath: \
-	osgi.enroute.base.api
+	osgi.enroute.base.api;version=latest
 
 -includeresource: ${path}=${base.version}, angular.png, {readme.md}, LICENSE.txt
 

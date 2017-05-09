@@ -1,7 +1,10 @@
 package osgi.enroute.iot.toolkit;
 
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.Binary;
@@ -9,13 +12,16 @@ import osgi.enroute.iot.gpio.util.Digital;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.toolkit.And.AndConfig;
 
-@Component(designateFactory=AndConfig.class, provide=IC.class, name="osgi.enroute.iot.toolkit.and")
+@Designate(ocd=AndConfig.class, factory=true)
+@Component(service=IC.class, name="osgi.enroute.iot.toolkit.and")
 public class And extends ICAdapter<Binary, Digital> implements Binary {
 	boolean	a, b;
-	interface AndConfig {
+
+	@ObjectClassDefinition
+	@interface AndConfig {
 		String name();
 	}
-	
+
 	@Override
 	public synchronized void a(boolean value) throws Exception {
 		a = value;

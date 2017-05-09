@@ -1,5 +1,5 @@
 #
-# OSGI WEB REST PROVIDER BUNDLE 
+# OSGI WEB REST PROVIDER BUNDLE
 #
 
 
@@ -25,7 +25,7 @@ Conditional-Package: aQute.lib*
 
 
 -buildpath:  \
-	osgi.enroute.base.api;version=1.0,\
+	osgi.enroute.base.api;version=latest,\
 	biz.aQute.bndlib;packages=*;version=3.3
 
 -testpath: \

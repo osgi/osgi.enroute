@@ -3,9 +3,12 @@ package osgi.enroute.iot.toolkit;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
 import aQute.lib.converter.Converter;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
@@ -14,7 +17,8 @@ import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.toolkit.Debounce.DebounceConfig;
 import osgi.enroute.scheduler.api.Scheduler;
 
-@Component(designateFactory = DebounceConfig.class, provide = IC.class, name = "osgi.enroute.iot.toolkit.debounce")
+@Designate(ocd=DebounceConfig.class, factory=true)
+@Component(service = IC.class, name = "osgi.enroute.iot.toolkit.debounce")
 public class Debounce extends ICAdapter<Digital, Digital> implements Digital {
 
 	private AtomicBoolean	busy	= new AtomicBoolean();
@@ -22,16 +26,17 @@ public class Debounce extends ICAdapter<Digital, Digital> implements Digital {
 	private boolean			state;
 	private int				period;
 
-	interface DebounceConfig {
+	@ObjectClassDefinition
+	@interface DebounceConfig {
 		String name();
 
-		int period(int deflt);
+		int period() default 100;
 	}
 
 	@Activate
 	void activate(Map<String, Object> config) throws Exception {
 		DebounceConfig cfg = Converter.cnv(DebounceConfig.class, config);
-		period = cfg.period(100);
+		period = cfg.period();
 	}
 
 	@Override

@@ -6,20 +6,12 @@ import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-
-import osgi.enroute.dto.api.DTOs;
-import osgi.enroute.iot.gpio.api.CircuitBoard;
-import osgi.enroute.iot.gpio.api.IC;
-import osgi.enroute.iot.gpio.util.Analog;
-import osgi.enroute.iot.gpio.util.GPI;
-import osgi.enroute.iot.gpio.util.GPO;
-import osgi.enroute.iot.gpio.util.ICAdapter;
-import osgi.enroute.iot.pi.provider.Model2B_Rev1Impl.Model2B_Rev1;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
-import aQute.bnd.annotation.metatype.Meta;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPin;
@@ -36,13 +28,24 @@ import com.pi4j.io.serial.DataBits;
 import com.pi4j.io.serial.Parity;
 import com.pi4j.io.serial.StopBits;
 
+import aQute.bnd.annotation.metatype.Meta;
+import osgi.enroute.dto.api.DTOs;
+import osgi.enroute.iot.gpio.api.CircuitBoard;
+import osgi.enroute.iot.gpio.api.IC;
+import osgi.enroute.iot.gpio.util.Analog;
+import osgi.enroute.iot.gpio.util.GPI;
+import osgi.enroute.iot.gpio.util.GPO;
+import osgi.enroute.iot.gpio.util.ICAdapter;
+import osgi.enroute.iot.pi.provider.Model2B_Rev1Impl.Model2B_Rev1;
+
 /**
  * This component is initializing the Raspberry Pi. It should work for Model 1
  * B+ and Model 2B
- * 
+ *
  * TODO Refactor to use base class
  */
-@Component(designate = Model2B_Rev1.class)
+@Designate(ocd=Model2B_Rev1.class,factory=false)
+@Component
 public class Model2B_Rev1Impl {
 
 	public enum SPI {
@@ -77,11 +80,11 @@ public class Model2B_Rev1Impl {
 		ignore, none, low, high, pcm;
 	}
 
-	@Meta.OCD(description = "Raspberry Pi 2 Model B – The Raspberry Pi 2 Model B is the second "
+	@ObjectClassDefinition(description = "Raspberry Pi 2 Model B – The Raspberry Pi 2 Model B is the second "
 			+ "generation Raspberry Pi. It replaced the original Raspberry Pi 1 Model B+ in February 2015. "
 			+ "The Raspberry Pi 2 has an identical form factor to the previous (Pi 1) Model B+ and has "
 			+ "complete compatibility with Raspberry Pi 1", id = "Pi_2_B_OCD", name = "Pi 2 Model B")
-	public interface Model2B_Rev1 {
+	public @interface Model2B_Rev1 {
 		// 01 3.3 V
 		// 02 5 V
 
@@ -381,7 +384,7 @@ public class Model2B_Rev1Impl {
 				pwm(RaspiPin.GPIO_23);
 			else
 				gpio(RaspiPin.GPIO_23, c._33(), c._33_Level(), "GPIO23");
-			
+
 			if (c._35() == PWM.pwm)
 				pwm(RaspiPin.GPIO_24);
 			else

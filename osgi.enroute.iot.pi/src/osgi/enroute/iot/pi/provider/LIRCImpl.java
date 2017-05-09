@@ -9,17 +9,21 @@ import java.util.Map;
 
 import javax.naming.ConfigurationException;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
+import aQute.lib.converter.Converter;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
 import osgi.enroute.iot.gpio.util.ICAdapter;
 import osgi.enroute.iot.gpio.util.Wave;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
-import aQute.lib.converter.Converter;
 
-interface LircConfig {
+@ObjectClassDefinition
+@interface LircConfig {
 	int device();
 }
 
@@ -29,22 +33,23 @@ interface LircConfig {
  * sequence of int's where each int specifies the width of a pulse. The first
  * one is on, the second one off, third on. The total number must be odd, the
  * LIRC driver switches off at the end automatically.
- * 
+ *
  * According to our sources, the option softcarrier=1 must be chosen but not
  * found anywhere this is defined. On a Raspberry, make sure you configure the
  * Pi. On modern OS's this requires that you use the device tree.
- * 
+ *
  * <pre>
  * 	/boot/config.txt:
  * 	dtoverlay=dtoverlay=lirc-rpi,softcarrier=0
  * </pre>
- * 
+ *
  * By default the IR out signal is on GPIO17 (GPIO00 for Pi4J numbering).
  * However, with the dtoverlay you can override it.
- * 
+ *
  */
 
-@Component(designateFactory = LircConfig.class, name = "osgi.enroute.iot.lirc", provide = IC.class)
+@Designate(ocd=LircConfig.class, factory=true)
+@Component(name = "osgi.enroute.iot.lirc", service = IC.class)
 public class LIRCImpl extends ICAdapter<Wave, Void> implements Wave {
 	private ByteOrder endianness = ByteOrder.nativeOrder();
 	private File file;
@@ -58,7 +63,7 @@ public class LIRCImpl extends ICAdapter<Wave, Void> implements Wave {
 			throw new ConfigurationException(
 					path
 							+ " does not exist. LIRC requires device tree + dtoverlay=lirc-rpi,softcarrier=0 in /boot/config.txt");
-		
+
 		endianness = ByteOrder.LITTLE_ENDIAN;
 	}
 

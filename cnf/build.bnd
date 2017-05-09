@@ -33,10 +33,97 @@ Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 pwd = ${env;REPOSITORY_PASSWORD;}
 usr = ${env;REPOSITORY_USERNAME;}
 
+base.packages =  \
+ 	aQute.bnd.annotation.headers, \
+	aQute.bnd.annotation.licenses, \
+	aQute.bnd.annotation.metatype, \
+	javax.servlet, \
+	javax.servlet.http, \
+  	javax.servlet.annotation, \
+  	javax.servlet.descriptor, \
+  	org.osgi.dto, \
+	org.osgi.annotation.versioning, \
+	org.osgi.framework, \
+	org.osgi.framework.dto, \
+	org.osgi.framework.hooks.bundle, \
+	org.osgi.framework.hooks.resolver, \
+	org.osgi.framework.hooks.service, \
+	org.osgi.framework.hooks.weaving, \
+	org.osgi.framework.launch, \
+	org.osgi.framework.namespace, \
+	org.osgi.framework.startlevel, \
+	org.osgi.framework.startlevel.dto, \
+	org.osgi.framework.wiring, \
+	org.osgi.framework.wiring.dto, \
+	org.osgi.namespace.contract, \
+	org.osgi.namespace.extender, \
+    org.osgi.namespace.implementation, \
+	org.osgi.namespace.service, \
+    org.osgi.service.http.whiteboard, \
+    org.osgi.service.http.context, \
+    org.osgi.service.http.runtime, \
+    org.osgi.service.http.runtime.dto, \
+	org.osgi.resource, \
+	org.osgi.resource.dto, \
+	org.osgi.service.async, \
+	org.osgi.service.async.delegate, \
+	org.osgi.service.cm, \
+	org.osgi.service.component, \
+	org.osgi.service.component.runtime, \
+	org.osgi.service.component.runtime.dto, \
+	org.osgi.service.component.annotations, \
+	org.osgi.service.coordinator, \
+	org.osgi.service.event, \
+	org.osgi.service.http, \
+	org.osgi.service.log, \
+	org.osgi.service.metatype, \
+    org.osgi.service.metatype.annotations, \
+	org.osgi.service.remoteserviceadmin, \
+	org.osgi.service.url, \
+	org.osgi.service.useradmin, \
+	org.osgi.util.function, \
+	org.osgi.util.promise, \
+	org.osgi.util.tracker, \
+	org.slf4j, \
+	osgi.enroute.authentication.api, \
+	osgi.enroute.authorization.api, \
+	osgi.enroute.capabilities, \
+	osgi.enroute.configurer.api, \
+	osgi.enroute.debug.api, \
+	osgi.enroute.dto.api, \
+	osgi.enroute.eventadminserversentevents.capabilities, \
+	osgi.enroute.executor.capabilities, \
+	osgi.enroute.github.angular_ui.capabilities, \
+	osgi.enroute.google.angular.capabilities, \
+	osgi.enroute.http.capabilities, \
+	osgi.enroute.jsplumb.capabilities, \
+	osgi.enroute.iot.admin.api, \
+	osgi.enroute.iot.admin.dto, \
+	osgi.enroute.iot.gpio.api, \
+	osgi.enroute.iot.gpio.util, \
+	osgi.enroute.jsonrpc.api, \
+	osgi.enroute.jsonrpc.dto, \
+	osgi.enroute.launch.api, \
+	osgi.enroute.logger.api, \
+	osgi.enroute.namespace, \
+	osgi.enroute.rest.api,  \
+	osgi.enroute.rootservlet.api, \
+	osgi.enroute.scheduler.api, \
+	osgi.enroute.servlet.api, \
+	osgi.enroute.stackexchange.pagedown.capabilities, \
+	osgi.enroute.twitter.bootstrap.capabilities, \
+	osgi.enroute.webserver.capabilities
+
+
 -connection-settings: ${if;${pwd};server;-dummy};id=https://oss.sonatype.org;username=${usr};password=${pwd}, -bnd
 
+-plugin.enroute.distro = \
+	aQute.bnd.deployer.repository.FixedIndexedRepo; \
+	        name		=       Distro; \
+	        locations	=       https://raw.githubusercontent.com/osgi/osgi.enroute/v1.0.0/cnf/distro/index.xml
+
+
 -plugin.osgi.nexus: \
-\
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
 		snapshotUrl=https://oss.sonatype.org/content/repositories/osgi-snapshots/; \
 		releaseUrl= 'https://oss.sonatype.org/service/local/staging/deploy/maven2/,http://repo1.maven.org/maven2/'; \
@@ -52,4 +139,4 @@ usr = ${env;REPOSITORY_USERNAME;}
 
 -releaserepo: OSGiNexus
 -baselinerepo: Distro
- 
+

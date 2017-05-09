@@ -6,11 +6,14 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Modified;
-import aQute.bnd.annotation.component.Reference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
 import aQute.lib.converter.Converter;
 import osgi.enroute.iot.gpio.api.CircuitBoard;
 import osgi.enroute.iot.gpio.api.IC;
@@ -21,18 +24,20 @@ import osgi.enroute.iot.toolkit.Schedule.ScheduleConfig;
 import osgi.enroute.scheduler.api.CancellablePromise;
 import osgi.enroute.scheduler.api.Scheduler;
 
-@Component(designateFactory = ScheduleConfig.class, provide = IC.class,	 name="osgi.enroute.iot.toolkit.schedule")
+@Designate(ocd=ScheduleConfig.class,factory=true)
+@Component(service= IC.class,	 name="osgi.enroute.iot.toolkit.schedule")
 public class Schedule extends ICAdapter<Enable, Digital> implements Enable {
 
-	interface ScheduleConfig {
+	@ObjectClassDefinition
+	@interface ScheduleConfig {
 		String name();
 
 		int duration();
 
-		String cron(String deflt);
+		String cron() default "@hourly";
 
 		boolean on();
-		
+
 		String service_pid();
 	}
 
@@ -67,7 +72,7 @@ public class Schedule extends ICAdapter<Enable, Digital> implements Enable {
 		private void tick() throws Exception {
 			if ( active.getAndSet(true))
 				return;
-			
+
 			on(this);
 			activeSchedule = scheduler.after(duration * 1000L);
 			activeSchedule.then((p) -> {
@@ -96,7 +101,7 @@ public class Schedule extends ICAdapter<Enable, Digital> implements Enable {
 		config = Converter.cnv(ScheduleConfig.class, map);
 		cancel();
 
-		current = new State(config.cron("@hourly"), config.duration());
+		current = new State(config.cron(), config.duration());
 	}
 
 	void on(State state) throws Exception {

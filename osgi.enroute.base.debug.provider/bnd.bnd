@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE BASE DEBUG PROVIDER BUNDLE 
+# OSGI ENROUTE BASE DEBUG PROVIDER BUNDLE
 #
 
 
@@ -9,12 +9,12 @@ Bundle-Description: 				\
 
 Private-Package:  \
 	osgi.enroute.base.debug.provider
-	
+
 Export-Package: osgi.enroute.debug.api
 
-	
+
 -buildpath:  \
-	osgi.enroute.base.api;version=1.0
+	osgi.enroute.base.api;version=latest
 
 -testpath: \
 	osgi.enroute.junit.wrapper
