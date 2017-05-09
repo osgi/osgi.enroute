@@ -7,7 +7,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<groupId>$(groupid)</groupId>
+	<groupId>$(-groupid)</groupId>
 	<artifactId>osgi.enroute.pom.distro</artifactId>
 	<version>$(enroute-version)</version>
 	<packaging>jar</packaging>
