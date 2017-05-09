@@ -325,6 +325,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
+			<artifactId>osgi.enroute.bndtools.templates</artifactId>
+			<version>${enroute-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
 			<artifactId>osgi.enroute.base.guard</artifactId>
 			<version>${enroute-version}</version>
 			<scope>runtime</scope>
