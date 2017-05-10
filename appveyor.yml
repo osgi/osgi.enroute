@@ -9,7 +9,7 @@ install:
   - gradlew.bat --version
 
 build_script:
-  - gradlew.bat --continue release
+  - gradlew.bat --continue build
 
 on_success:
   - git status
