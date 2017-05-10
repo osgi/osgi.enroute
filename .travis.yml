@@ -5,7 +5,7 @@ jdk:
 install:
 - "./gradlew --version"
 script:
-- "./gradlew --continue release"
+- "./gradlew --continue build release"
 after_success:
 - git status
 - echo $REPOSITORY_USERNAME
