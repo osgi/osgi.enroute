@@ -1,0 +1,5 @@
+[
+	{ "service.pid": "singleton", "port": 10},
+	{ "service.pid": "logical-1", "service.factoryPid": "factory", "port": 1 },
+	{ "service.pid": "logical-2", "service.factoryPid": "factory", "port": 2 }
+]

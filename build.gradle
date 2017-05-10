@@ -38,6 +38,8 @@ subprojects {
             }
         }
     }
+    group bnd('groupid')
+    version bnd('base.version')
     test {
       testLogging {
         exceptionFormat 'full'

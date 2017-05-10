@@ -1,0 +1,13 @@
+#
+# OSGI ENROUTE IOT PI GOGO COMMAND BUNDLE (pi) 
+#
+
+Bundle-Description: \
+	Provide Gogo commands for manipulating the Raspberry Pi.
+	
+
+Private-Package:  \
+	osgi.enroute.iot.pi.command
+	
+	
+-includeresource: {readme.md}

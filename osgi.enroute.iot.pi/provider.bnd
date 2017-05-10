@@ -1,0 +1,23 @@
+#
+# OSGI ENROUTE IOT PI	BUNDLE 
+#
+
+
+Export-Package: \
+	osgi.enroute.iot.pi.api,\
+	com.pi4j.io,\
+	com.pi4j.io.gpio,\
+	com.pi4j.io.gpio.event,\
+	com.pi4j.io.gpio.exception,\
+	com.pi4j.io.gpio.trigger,\
+	com.pi4j.system
+
+Private-Package: osgi.enroute.iot.pi.provider, com.pi4j.*, lib*
+
+-includeresource: {readme.md}
+
+Provide-Capability: osgi.service;objectClass=com.pi4j.io.gpio.GpioController
+
+Import-Package: \
+	aQute.bnd.annotation.metatype;resolution:=optional,\
+	*

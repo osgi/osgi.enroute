@@ -1,0 +1,28 @@
+#
+#  {{projectName}} APPLICATION
+#
+
+Bundle-Version: 1.0.0.${tstamp}
+Bundle-Description: \
+	This is the  bundle. It carries the configuration for an application \
+	and provides some basic very much application specific stuff.  It provides a button \
+	that calls a REST function that turns a text into upper case. \
+	\
+	${warning;Please update this Bundle-Description in {{projectName}}/bnd.bnd}
+
+Private-Package:  \
+	{{basePackageName}}
+
+EnRoute-Application: 	{{projectName}}
+
+-includeresource: \
+	{readme.md}, \
+	{configuration=configuration}, \
+	{static=static}, \
+	web=web
+
+-buildpath: \
+	osgi.enroute.base.api;version=2.1
+
+-testpath: \
+	osgi.enroute.junit.wrapper;version=4.12

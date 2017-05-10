@@ -1,0 +1,30 @@
+#
+# {{projectName}} COMMAND
+#
+
+Bundle-Version:					1.0.0.${tstamp}
+Bundle-Description: \
+	A Gogo command {{projectName}}. \
+	\
+	${warning;Please update this Bundle-Description in {{projectName}}/api.bnd}
+
+Private-Package:  \
+	{{basePackageName}}.command
+
+-includeresource: {readme.md}
+
+-buildpath:  \
+	osgi.enroute.base.api;version=2.1
+
+-testpath: \
+	osgi.enroute.junit.wrapper;version=4.12, \
+	osgi.enroute.hamcrest.wrapper;version=1.3
+
+-runrequires: \
+	osgi.identity;filter:='(osgi.identity=foo.bar.gogo)', \
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.runtime)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)'
+
+-runbundles: \
+	${error;Resolve first}

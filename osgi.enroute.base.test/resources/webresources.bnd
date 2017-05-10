@@ -1,0 +1,33 @@
+Bundle-SymbolicName: 	test
+Bundle-Version:			1.2.3
+
+-resourceonly:			true
+-includeresource:		\
+	static/test.html;literal='<html><head> \
+		<link src="/osgi.enroute.webresource/test/1.2.3/*.css"> \
+		<link src="/osgi.enroute.webresource/test/1.2.3/css/bootstrap-theme.css"> \
+		</head><body ng-app=test>\
+		<script src=/osgi.enroute.webresource/test/1.2.3/*.js> </script>\
+		<script src=/osgi.enroute.webresource/test/1.2.3/angular-aria.js>  </script>\
+	</body></html>', \
+	web/js/test.js;literal='angular.module("test", ["ngResource", "enMarkdown", "ui.bootstrap", "ngAria"]).run(function($resource,en$markdown){ \
+		foo="Yes, we can"; \
+		console.log(foo); \
+	})', \
+	test.js
+	
+Require-Capability:		\
+	osgi.enroute.webresource; \
+		filter:='(osgi.enroute.webresource=/github/angular-ui)'; \
+		resource:List<String>='ui-bootstrap-tpls.js', \
+	osgi.enroute.webresource; \
+		filter:='(osgi.enroute.webresource=/google/angular)'; \
+		resource:List<String>='angular.js,angular-resource.js'; \
+		priority=1000, \
+	osgi.enroute.webresource; \
+		filter:='(osgi.enroute.webresource=/stackexchange/pagedown)'; \
+		resource:List<String>='enmarkdown.js', \
+	osgi.enroute.webresource; \
+		filter:='(osgi.enroute.webresource=/twitter/bootstrap)'; \
+		resource:List<String>='css/bootstrap.css'
+		

@@ -1,0 +1,5 @@
+<form>
+<p>Create an API project. Use this when you have a service API that should be shared
+with others, i.e. it must be releasable as a separate bundle. The bundle itself will not
+be installable. Recommended to let project names end in `.api`</p>
+</form>

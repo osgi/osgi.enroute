@@ -1,0 +1,3 @@
+<form>
+<p>Create an OSGi JUnit test project. Tests are run inside an OSGi framework. Recommended to end the project in '.test'</p>
+</form>
