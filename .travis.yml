@@ -3,9 +3,9 @@ language: java
 jdk:
 - oraclejdk8
 install:
-- "./gradlew --version"
+- ./gradlew --version
 script:
-- "./gradlew --continue build release"
+- ./gradlew --continue build
 after_success:
 - git status
 - echo $REPOSITORY_USERNAME
