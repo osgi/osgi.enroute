@@ -15,7 +15,5 @@ after_success:
 cache:
   directories:
   - "$HOME/.gradle"
-env:
-  global:
-  - secure: j9YcUfaC3DCdFeSM5Lo63uaM7OPBRbBmZgrV9nv2FjYprar7qmhCOOWYSOiK3KIy0+IfDhCEpenR04ENJOiVLXlv4L6VXtLWp8zzR8P74k6XlCN3sOUa4XhIwV3rY3uqTH8xjDFwbTVJodNf2RZfUYs3YlIriET9VvLpjYErOOk=
-  - secure: TgyTyOAXFbmgDZ0LeXp02eK7b9w3v3LtUBl1UU0yADrQHaxX8TAamEHy9GoJ2jCt+crRFdXmISIQuA/dTan4APBtOOokZsmTYYXB41lw8GumVkiIuKXJIUtgqTo/78RmUuOnP3thTx1x57U8KTIyelnNQZDdz48tfyRbmahA0LM=
+dd:
+  secure: hLr9fmoS31580iFLdPDIbbbTsmg4i8VFTueQtorlwX4JEs0ALGQNB3tYkbfBjJS0ErDMLyQ0bmsjQBMa3R+EV/dCKJP8G7UTjicD3BKUTCSIQEZkfeaXVMB6XwA0Qbr+x7ATD5fptLnCPbf3UxagBI4p4RKwhiF4OGgkzx9vB7k=
