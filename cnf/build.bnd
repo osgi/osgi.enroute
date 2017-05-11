@@ -33,6 +33,9 @@ Bundle-Developers: 		osgi; \
 Git-Descriptor:   		${system-allow-fail;git describe --dirty --always}
 Git-SHA:          		${system-allow-fail;git rev-list -1 HEAD}
 
+# On Travis, you can set the secret as follows
+# travis encrypt REPOSITORY_USERNAME=<user> REPOSITORY_PASSWORD=<passwd> -a env.secure
+
 pwd = ${env;REPOSITORY_PASSWORD;}
 usr = ${env;REPOSITORY_USERNAME;}
 
