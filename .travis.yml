@@ -3,17 +3,18 @@ language: java
 jdk:
 - oraclejdk8
 install:
-- ./gradlew --version
+- "./gradlew --version"
 script:
-- ./gradlew --continue build
+- "./gradlew --continue build"
 after_success:
 - git status
 - echo $REPOSITORY_USERNAME
 - echo $TRAVIS_PULL_REQUEST
 - echo $TRAVIS_BRANCH
-- if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a  ${REPOSITORY_USERNAME:=X} != X ]; then ./gradlew release; fi
+- if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a  ${REPOSITORY_USERNAME:=X}
+  != X ]; then ./gradlew release; fi
 cache:
   directories:
   - "$HOME/.gradle"
 dd:
-  secure: hLr9fmoS31580iFLdPDIbbbTsmg4i8VFTueQtorlwX4JEs0ALGQNB3tYkbfBjJS0ErDMLyQ0bmsjQBMa3R+EV/dCKJP8G7UTjicD3BKUTCSIQEZkfeaXVMB6XwA0Qbr+x7ATD5fptLnCPbf3UxagBI4p4RKwhiF4OGgkzx9vB7k=
+  secure: DL+A1fA/utr5Qf8aCb+708RsD3IPM9GO4DmrbfRiIufh1U1q0ABgsp4IugRcsG1uHsfwo31KA//KU/qA8qXT8z3TMF2dL2lAKTWYx7dwh8Vq1IOTpTIGXsH3QP0Fase8NAS7V9VzZJfKqaR/KBTfhDPtjIEUhi5AFqSsSMhVfoc=
