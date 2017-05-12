@@ -26,6 +26,7 @@ Provide-Capability: 	\
 		root=${path}; \
 		version:Version=${base.version}
 
+-workingset bundles,webresource
 -includeresource: ${path}=${base.version}, {readme.md}, LICENSE.txt
 
 -buildpath: \

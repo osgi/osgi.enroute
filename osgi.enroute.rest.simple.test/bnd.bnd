@@ -7,6 +7,7 @@ Conditional-Package: \
 	aQute.lib*
 
 -includeresource: configuration=configuration
+-workingset bundles,test
 
 -buildpath: \
 	osgi.enroute.rest.simple.provider;version=latest,\
@@ -17,7 +18,7 @@ Conditional-Package: \
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.rest.simple.test)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)'
-	
+
 -runbundles: \
 	com.springsource.org.json;version='[1.0.0,1.0.1)',\
 	org.apache.commons.fileupload;version='[1.3.1,1.3.2)',\

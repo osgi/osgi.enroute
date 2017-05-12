@@ -11,7 +11,7 @@ Bundle-Description: \
 	template for all the Pi's functions. The GPIO's are registered as components for the circuit. \
 	Regardless of the success of the configuration, this bundle \
 	will also register a GpioController service, which is the main Pi4J class.
-Bundle-License:					http://opensource.org/licenses/lgpl-3.0.html				
+Bundle-License:					http://opensource.org/licenses/lgpl-3.0.html
 Bundle-Copyright:				Copyright (C) 2012-2015 Pi4J.com, Gordon Henderson of wiringpi.com
 Bundle-DocURL: 					\
 	http://www.pi4j.com, \
@@ -19,7 +19,8 @@ Bundle-DocURL: 					\
 	http://www.savagehomeautomation.com
 
 Conditional-Package: aQute.lib*
-	
+
+-workingset bundles,provider,iot
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.junit,\

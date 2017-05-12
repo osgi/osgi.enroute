@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE EXECUTOR SIMPLE PROVIDER BUNDLE 
+# OSGI ENROUTE EXECUTOR SIMPLE PROVIDER BUNDLE
 #
 
 
@@ -7,7 +7,8 @@ Bundle-Description: 				\
 	This bundle provides an Executor service.
 Private-Package:  \
 	osgi.enroute.executor.simple.provider
-	
+
+-workingset bundles,provider
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0, \
 	biz.aQute.bndlib
@@ -17,7 +18,7 @@ Private-Package:  \
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.executor.simple.provider)'
-	
+
 -runbundles: \
 	${error;Resolve first}
 Import-Package: \

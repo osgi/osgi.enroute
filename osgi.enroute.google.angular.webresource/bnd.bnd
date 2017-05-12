@@ -32,6 +32,7 @@ Provide-Capability: \
 		version:Version=${base.version}; \
 		root=${path}
 
+-workingset bundles,webresource
 -buildpath: \
 	osgi.enroute.base.api;version=latest
 

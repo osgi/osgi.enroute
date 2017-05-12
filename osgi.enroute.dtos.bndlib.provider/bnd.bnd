@@ -1,15 +1,16 @@
 #
-# OSGI ENROUTE DTO BNDLIB PROVIDER BUNDLE 
+# OSGI ENROUTE DTO BNDLIB PROVIDER BUNDLE
 #
 
 
 Bundle-Description: 				\
-	A provider of the DTOs service 
+	A provider of the DTOs service
 Export-Package:  \
 	osgi.enroute.dto.api;provide:=true
-	
+
 Conditional-Package: aQute.lib*
 
+-workingset bundles,provider
 -buildpath:  \
 	osgi.enroute.base.api;version=1.6,\
 	biz.aQute.bndlib;packages=*

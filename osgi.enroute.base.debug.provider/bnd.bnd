@@ -12,6 +12,7 @@ Private-Package:  \
 
 Export-Package: osgi.enroute.debug.api
 
+-workingset base,provider
 
 -buildpath:  \
 	osgi.enroute.base.api;version=latest

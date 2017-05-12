@@ -24,6 +24,7 @@ Private-Package:  \
 Conditional-Package: aQute.lib*
 
 
+-workingset bundles,provider
 -buildpath:  \
 	osgi.enroute.base.api;version=latest,\
 	biz.aQute.bndlib;packages=*;version=3.3

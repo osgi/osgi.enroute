@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE JSONRPC SIMPLE PROVIDER BUNDLE 
+# OSGI ENROUTE JSONRPC SIMPLE PROVIDER BUNDLE
 #
 
 
@@ -14,7 +14,7 @@ Export-Package: \
 
 Private-Package:  \
 	osgi.enroute.jsonrpc.simple.provider
-	
+
 # TODO update once we got ${packageattribute}
 Provide-Capability: 	\
 	osgi.enroute.webresource; \
@@ -24,6 +24,7 @@ Provide-Capability: 	\
 
 Conditional-Package: aQute.lib*
 
+-workingset bundles,provider
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.bndlib;packages=*

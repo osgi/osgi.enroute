@@ -21,6 +21,7 @@ Import-Package: \
 	*
 Conditional-Package: 	aQute.lib*
 
+-workingset bundles,provider
 -buildpath: \
 	osgi.enroute.base.api;version=latest;packages=*,\
 	biz.aQute.bndlib;packages=*,\

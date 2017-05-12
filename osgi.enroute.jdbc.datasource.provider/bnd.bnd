@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE JDBC DATASOURCE PROVIDER BUNDLE 
+# OSGI ENROUTE JDBC DATASOURCE PROVIDER BUNDLE
 #
 -nobundles: true
 
@@ -9,9 +9,10 @@ Bundle-Description: 				\
 
 Private-Package:  \
 	osgi.enroute.jdbc.datasource.provider
-	
+
+-workingset bundles,provider
 -buildpath: osgi.cmpn
-	
+
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
 
@@ -20,6 +21,6 @@ Private-Package:  \
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.jdbc.datasource.provider)'
-	
+
 -runbundles: \
 	${error;Resolve first}

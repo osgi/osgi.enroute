@@ -10,7 +10,7 @@ Bundle-Description: \
 		bring data to life using HTML, SVG, and CSS. D3’s emphasis on web standards gives you \
 		the full capabilities of modern browsers without tying yourself to a proprietary framework, \
 		combining powerful visualization components and a data-driven approach to DOM manipulation.
-	
+
 
 Bundle-License: 	http://opensource.org/licenses/BSD-3-Clause
 Bundle-DocURL: 		http://d3js.org/
@@ -25,8 +25,9 @@ Provide-Capability:	\
 		osgi.enroute.webresource=/bostock/d3; \
 		version:Version=${base.version}; \
 		root=${path}
-		
 
+
+-workingset bundles,webresource
 
 -buildpath: \
 	osgi.enroute.base.api

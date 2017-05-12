@@ -9,6 +9,7 @@ Bundle-Description: \
 	line editing, it works there as usual.\
 	It was adapted by Neil Bartlett.
 
+-workingset bundles,provider
 -buildpath: \
 	osgi.enroute.base.api,\
 	jline; version=2.13,\

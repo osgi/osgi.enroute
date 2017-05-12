@@ -25,21 +25,21 @@ Import-Package: \
 #
 Export-Package: \
 	${base.packages}
-	
-	
+
+
 x=, \
 	javax.servlet;version=3.1, \
 	javax.servlet.http;version=3.1, \
   	javax.servlet.annotation;version=3.1, \
   	javax.servlet.descriptor;version=3.1
-	
+
 Provide-Capability: \
 	osgi.contract; \
 		osgi.contract=JavaServlet; \
 		version:Version="3.1"; \
 		uses:="javax.servlet,javax.servlet.http,javax.servlet.descriptor,javax.servlet.annotation"
 
-	
+
 
 #
 # This package provides the osgi.enroute.authentication.capabilities that should be
@@ -48,14 +48,15 @@ Provide-Capability: \
 # by the resolver.
 #
 # We also add org.slf4j's default implementation so we use logging
-# in JUnit tests. 
-# 
+# in JUnit tests.
+#
 
 Private-Package: \
 	osgi.enroute.base.provided
 
 Conditional-Package:	org.slf4j.*
 
+-workingset base
 -buildpath: \
 	osgi.annotation;version=@6.0.1,\
 	osgi.core;version=@6.0.0,\
@@ -71,3 +72,4 @@ Conditional-Package:	org.slf4j.*
 -fixupmessages: \
 	"Export org.slf4j,  has 1,  private references *org.slf4j.spi*", \
 	"Version for package javax.servlet* is set to different values in the source"
+

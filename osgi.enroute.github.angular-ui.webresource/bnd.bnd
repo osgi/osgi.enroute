@@ -3,7 +3,7 @@
 #
 
 #
-# Ensure that these constants are aligned with 
+# Ensure that these constants are aligned with
 # AngularUIConstants!
 #
 name = /github/angular-ui
@@ -15,13 +15,13 @@ Bundle-Description: 				\
 	Bootstrap components written in pure AngularJS by the AngularUI Team. Native AngularJS \
 	(Angular) directives for Bootstrap. Small footprint (5kB gzipped!), no 3rd party JS \
 	dependencies (jQuery, bootstrap JS) required!
-	
+
 Bundle-DocURL:			http://angular-ui.github.io/bootstrap/
 Bundle-SCM:				\
 						url=https://github.com/angular-ui/bootstrap, \
 						connection=https://github.com/angular-ui/bootstrap.git, \
                         developerConnection=scm:git@github.com:angular-ui/bootstrap.git
-                        
+
 Bundle-License:			http://opensource.org/licenses/MIT;link = "http://en.wikipedia.org/wiki/MIT_License";description = "MIT License"
 Bundle-Icon: 			https://2.gravatar.com/avatar/46d07086561c66caae16ce4d96bfd345?d=https%3A%2F%2Fidenticons.github.com%2F3902b30e7e55d0ffde5994d69bf8d4e6.png&s=64
 Export-Package: 		osgi.enroute.github.angular_ui.capabilities;-split-package:=first
@@ -33,6 +33,7 @@ Provide-Capability: \
 		root=${path}; \
 		version:Version=${base.version}
 
+-workingset bundles,provider
 -includeresource: ${path}=${base.version}, {readme.md}, LICENSE.txt
 -buildpath: \
 	osgi.enroute.base.api

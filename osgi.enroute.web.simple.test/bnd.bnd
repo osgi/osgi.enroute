@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE WEB SIMPLE TEST PROVIDER BUNDLE 
+# OSGI ENROUTE WEB SIMPLE TEST PROVIDER BUNDLE
 #
 
 
@@ -12,6 +12,7 @@ Private-Package:  \
 Conditional-Package: \
 	aQute.lib*
 
+-workingset bundles,provider
 -includeresource: static=static, configuration=configuration
 
 -buildpath: \
@@ -24,7 +25,7 @@ Conditional-Package: \
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.web.simple.test)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)'
-	
+
 -runbundles: \
 	biz.aQute.bndlib;version='[3.0.0,3.0.1)',\
 	com.springsource.org.json;version='[1.0.0,1.0.1)',\

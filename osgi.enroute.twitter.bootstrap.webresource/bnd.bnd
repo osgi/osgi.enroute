@@ -10,7 +10,7 @@ path = static${name}/${base.version}
 Bundle-Description: 	\
 	Bootstrap: Sleek, intuitive, and powerful front-end framework for faster and \
 	easier web development.
-	
+
 Bundle-Vendor: 			Twitter (bundled by OSGi enRoute)
 Bundle-DocURL: 			https://github.com/twbs/bootstrap/releases/download/v${base.version}/bootstrap-{base.version}-dist.zip
 Bundle-Icon: 			http://flipstorm.co.uk/bwb/img/logo-med.png
@@ -27,6 +27,7 @@ Bundle-SCM:				\
 						connection=scm:git@github.com:twbs/bootstrap.git, \
                         developerConnection=scm:git@github.com:twbs/bootstrap.git
 
+-workingset bundles,webresource
 -buildpath: \
 	osgi.enroute.base.api
 

@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE WEBCONSOLE XRAY PROVIDER BUNDLE 
+# OSGI ENROUTE WEBCONSOLE XRAY PROVIDER BUNDLE
 #
 
 
@@ -12,7 +12,7 @@ Bundle-Description: A plugin for the Apache Felix Webconsole. When installed, th
  with extra information and all objects can be clicked upon. Hovering over a bundle or \
  service shows only the conenections to/from the component. The display updates every 5 seconds \
  to provide a continuous view on the operations of the framework it runs on.
-	
+
 Bundle-Icon: xray.png
 
 Private-Package:  \
@@ -21,13 +21,14 @@ Bundle-Activator: 	osgi.enroute.webconsole.xray.provider.XRayWebPlugin
 
 Conditional-Package: aQute.lib*
 
+-workingset bundles,provider
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	org.apache.felix.webconsole;version=4.2,\
 	org.apache.felix.scr;version=2.0,\
 	biz.aQute.bndlib;version=2.0;packages='aQute.lib.*,aQute.libg.*',\
 	osgi.enroute.bostock.d3.webresource;version=latest
-	
+
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
 
@@ -36,7 +37,7 @@ Conditional-Package: aQute.lib*
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)'
-	
+
 -runbundles: \
 	biz.aQute.bndlib;version='[3.0.0,3.0.1)',\
 	com.springsource.org.json;version='[1.0.0,1.0.1)',\

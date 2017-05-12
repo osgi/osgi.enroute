@@ -17,6 +17,7 @@ Provide-Capability:	\
 		osgi.enroute.webresource=/osgi/enroute/polymer/app/webresource; \
 		version:Version=${vrs}; \
 		root=${path}
+-workingset bundles,webresource,polymer
 -buildpath: \
 	osgi.enroute.base.api,\
 	osgi.enroute.polymer.iron.webresource

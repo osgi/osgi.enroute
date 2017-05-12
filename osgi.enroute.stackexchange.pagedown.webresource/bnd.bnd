@@ -4,7 +4,7 @@
 # This is a github project at https://code.google.com/p/pagedown with an
 # additional angular module to make it usable in angular.
 #
-# To update to a new version, change the src directory. Replace the files with the 
+# To update to a new version, change the src directory. Replace the files with the
 # corresponding files at github: compressed and src. The enshowdown.js is the angular
 # module that includes the compressed showdown.
 #
@@ -46,6 +46,7 @@ Provide-Capability: \
 		root=${path}; \
 		version:Version=${base.version}
 
+-workingset bundles,webresource
 -buildpath: \
 	osgi.enroute.base.api
 

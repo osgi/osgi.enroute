@@ -1,11 +1,11 @@
 #
-# OSGI ENROUTE AUTHENTICATOR GITHUB PROVIDER BUNDLE 
+# OSGI ENROUTE AUTHENTICATOR GITHUB PROVIDER BUNDLE
 #
 
 
 Bundle-Description: 				\
 	OAuth2 tests
-	
+
 Private-Package: \
 	osgi.enroute.oauth2.basic.provider,\
 	osgi.enroute.oauth2.app,\
@@ -15,11 +15,13 @@ Private-Package: \
 
 Conditional-Package: aQute.lib*
 
+-workingset bundles
+
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.bndlib;version=3.0;packages=*,\
 	org.apache.felix.gogo.runtime
-	
+
 -testpath: \
 	osgi.enroute.junit.wrapper;version=4.12
 
@@ -31,7 +33,7 @@ Conditional-Package: aQute.lib*
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.gogo.shell.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.command.enroute.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)'
-	
+
 -runbundles: \
 	com.springsource.org.json;version='[1.0.0,1.0.1)',\
 	org.apache.commons.fileupload;version='[1.3.1,1.3.2)',\

@@ -8,18 +8,19 @@ Bundle-Description: \
 EnRoute-Application: osgi.enroute.iot.circuit
 Private-Package:  \
 	osgi.enroute.iot.circuit.application
-	
+
 -includeresource: \
 	{readme.md}, \
 	{configuration=configuration}, \
 	{static=static}, \
 	web=web, \
 	LICENSE.txt=${build}/licenses/ASL-2.0.txt
-	
+
+-workingset bundles,application,iot
 -buildpath: \
 	osgi.enroute.base.api
-	
-	
+
+
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.application)',\
 	osgi.identity;filter:='(osgi.identity=aQute.xray.plugin)'

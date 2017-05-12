@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE BASE TEST OSGi TEST BUNDLE 
+# OSGI ENROUTE BASE TEST OSGi TEST BUNDLE
 #
 
 Bundle-Description: \
@@ -11,6 +11,8 @@ Private-Package: osgi.enroute.*.test
 Import-Package: com.gargoylesoftware.*;version=0,*
 #Test-Cases: ${test-cases}
 
+
+-workingset base,test
 
 -includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 
@@ -25,7 +27,7 @@ Import-Package: com.gargoylesoftware.*;version=0,*
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.base.test)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.webconsole.xray.provider)'
-	
+
 
 runsystempackages: org.junit;version=4.11, junit.framework;version=3.8
 -runbundles: \
@@ -64,7 +66,7 @@ runsystempackages: org.junit;version=4.11, junit.framework;version=3.8
 	org.apache.commons.io;version='[2.5.0,2.5.1)',\
 	org.apache.felix.scr;version='[2.0.6,2.0.7)',\
 	org.apache.felix.webconsole;version='[4.2.16,4.2.17)'
-	
+
 -osgitest=true
 
 Require-Capability:		\
@@ -80,6 +82,6 @@ Require-Capability:		\
 	osgi.enroute.webresource; \
 		filter:='(osgi.enroute.webresource=/twitter/bootstrap)'; \
 		resource:List<String>='css/bootstrap.css'
-		
+
 -runtrace: true
--baseline: 
+-baseline:

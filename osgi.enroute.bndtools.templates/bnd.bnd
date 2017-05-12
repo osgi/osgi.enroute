@@ -1,3 +1,4 @@
+-workingset base
 -buildpath: osgi.enroute.base.api; version=1.7
 
 template-category: OSGi enRoute

@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE EASSE SIMPLE ADAPTER BUNDLE 
+# OSGI ENROUTE EASSE SIMPLE ADAPTER BUNDLE
 #
 
 
@@ -13,7 +13,7 @@ Export-Package: \
 	osgi.enroute.eventadminserversentevents.capabilities
 Private-Package:  \
 	osgi.enroute.easse.simple.adapter
-	
+
 # TODO update to packageattribute
 Provide-Capability: 	\
 	osgi.enroute.webresource; \
@@ -23,7 +23,8 @@ Provide-Capability: 	\
 
 Conditional-Package: aQute.lib*
 
-	
+
+-workingset bundles,provider
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.bndlib;packages=*
@@ -58,8 +59,8 @@ Conditional-Package: aQute.lib*
 	osgi.enroute.easse.simple.adapter;version='[1.3.1,1.3.2)',\
 	osgi.enroute.logger.simple.provider;version='[1.1.1,1.1.2)',\
 	osgi.enroute.web.simple.provider;version='[1.3.2,1.3.3)'
-	
-	
+
+
 -runproperties: enRoute.configurer.extra='[{ \
      "service.factoryPid":"osgi.eventadmin.sse", \
      "service.pid":"Server Side Events", \

@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE AUTHORIZATION SIMPLE PROVIDER BUNDLE 
+# OSGI ENROUTE AUTHORIZATION SIMPLE PROVIDER BUNDLE
 #
 
 
@@ -14,6 +14,8 @@ Private-Package:  \
 	osgi.enroute.authorization.simple.provider
 
 Conditional-Package: aQute.lib*
+
+-workingset bundles
 
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\

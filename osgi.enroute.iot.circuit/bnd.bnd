@@ -5,10 +5,11 @@
 Conditional-Package: aQute.lib*
 
 
+-workingset bundles,provider,iot
 -buildpath: \
 	osgi.enroute.base.api;version=1.0, \
 	biz.aQute.bndlib;packages=*
-	
+
 -testpath: \
 	osgi.enroute.junit.wrapper
 

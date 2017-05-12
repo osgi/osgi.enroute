@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE WEB SIMPLE PROVIDER BUNDLE 
+# OSGI ENROUTE WEB SIMPLE PROVIDER BUNDLE
 #
 
 
@@ -9,7 +9,7 @@ Export-Package: \
 	aQute.service.reporter,\
 	osgi.enroute.webserver.capabilities,\
 	osgi.enroute.servlet.api
-	
+
 Private-Package: \
 	osgi.enroute.web.server.provider,\
 	osgi.enroute.web.server.cache,\
@@ -17,7 +17,8 @@ Private-Package: \
 	osgi.enroute.web.server.config
 
 Conditional-Package: aQute.lib*
-	
+
+-workingset bundles,provider
 -buildpath:  \
 	osgi.enroute.base.api;version=1.8,\
 	biz.aQute.bndlib;packages=*
@@ -60,6 +61,6 @@ Conditional-Package: aQute.lib*
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.circuit.application)'
-	
-	
+
+
 -runtrace: true

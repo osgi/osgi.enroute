@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE IOT RF522 ADAPTER BUNDLE 
+# OSGI ENROUTE IOT RF522 ADAPTER BUNDLE
 #
 
 -nobundles: true
@@ -12,10 +12,11 @@ Bundle-Description: 				\
 
 Private-Package:  \
 	osgi.enroute.iot.rf522.adapter
-	
+
+-workingset bundles,provider,iot
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0
-	
+
 -testpath: \
 	osgi.enroute.junit.wrapper
 
@@ -24,6 +25,6 @@ Private-Package:  \
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.iot.rf522.adapter)'
-	
+
 -runbundles: \
 	${error;Resolve first}

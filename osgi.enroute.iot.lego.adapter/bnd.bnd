@@ -1,5 +1,5 @@
 #
-# OSGI ENROUTE IOT LIRC ADAPTER BUNDLE 
+# OSGI ENROUTE IOT LIRC ADAPTER BUNDLE
 #
 
 
@@ -9,10 +9,11 @@ Bundle-Description: 				\
 	the lirc adapter on the Raspberry PI.
 Private-Package:  \
 	osgi.enroute.iot.lego.adapter
-	
-	
+
+
 Conditional-Package: aQute.lib*
 
+-workingset bundles,provider,iot
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.bndlib;packages=*

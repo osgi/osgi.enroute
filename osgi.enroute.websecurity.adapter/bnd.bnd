@@ -1,18 +1,19 @@
 #
-# OSGI ENROUTE WEBSECURITY ADAPTER BUNDLE 
+# OSGI ENROUTE WEBSECURITY ADAPTER BUNDLE
 #
 
 
 Bundle-Description: 				\
-	Provides a filter that will start a Coordinator 
+	Provides a filter that will start a Coordinator
 
 
 Private-Package:  \
 	osgi.enroute.websecurity.adapter
-	
-	
+
+
 Conditional-Package: aQute.lib*
 
+-workingset bundles,provider
 -buildpath:  \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.bndlib;packages=*
