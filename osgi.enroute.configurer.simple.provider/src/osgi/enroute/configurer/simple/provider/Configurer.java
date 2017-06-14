@@ -294,12 +294,19 @@ public class Configurer implements ConfigurationDone {
 					configuration = cm.getConfiguration(pid, "?");
 				}
 
+				Dictionary<?, ?> current = configuration.getProperties();
+				if (current != null) {
+
+					Object policy = dictionary.remove(":configurator:policy");
+					if (!"force".equals(policy))
+						continue;
+
+					if (isEqual(dictionary, current))
+						continue;
+
+				}
+
 				configuration.setBundleLocation("?");
-
-				Dictionary< ? , ? > current = configuration.getProperties();
-				if (current != null && isEqual(dictionary, current))
-					continue;
-
 				configuration.update(dictionary);
 			}
 		}

@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.osgi.namespace.implementation.ImplementationNamespace;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
@@ -32,43 +31,48 @@ import org.osgi.util.promise.Success;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import aQute.bnd.annotation.headers.ProvideCapability;
+import aQute.lib.converter.Converter;
 import osgi.enroute.scheduler.api.CancelException;
 import osgi.enroute.scheduler.api.CronJob;
 import osgi.enroute.scheduler.api.Scheduler;
 import osgi.enroute.scheduler.api.SchedulerConstants;
 import osgi.enroute.scheduler.api.TimeoutException;
-import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.lib.converter.Converter;
 
 /**
- * 
+ *
  */
-@ProvideCapability(ns=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=SchedulerConstants.SCHEDULER_SPECIFICATION_NAME, version=SchedulerConstants.SCHEDULER_SPECIFICATION_VERSION)
-@Component(name = "osgi.enroute.scheduler.simple", service = InternalSchedulerImpl.class, immediate=true)
+@ProvideCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = SchedulerConstants.SCHEDULER_SPECIFICATION_NAME, version = SchedulerConstants.SCHEDULER_SPECIFICATION_VERSION)
+@Component(name = "osgi.enroute.scheduler.simple", service = InternalSchedulerImpl.class, immediate = true)
 public class InternalSchedulerImpl implements Scheduler {
-	final List<Cron<?>> crons = new ArrayList<>();
-	final Logger logger = LoggerFactory.getLogger(InternalSchedulerImpl.class);
+	final List<Cron<?>>			crons	= new ArrayList<>();
+	final Logger				logger	= LoggerFactory
+			.getLogger(InternalSchedulerImpl.class);
 
-	Clock clock = Clock.systemDefaultZone();
-	ScheduledExecutorService executor;
-
-	@Activate
-	void activate() {
-		executor = Executors.newScheduledThreadPool(10);
-	}
+	Clock						clock	= Clock.systemDefaultZone();
+	ScheduledExecutorService	executor;
 
 	@Deactivate
-	void deactivate() {
-		List<Runnable> shutdownNow = executor.shutdownNow();
-		if (shutdownNow != null && shutdownNow.size() > 0)
-			logger.warn("Shutdown executables " + shutdownNow);
+	synchronized void deactivate() {
+		if (executor != null) {
+			List<Runnable> shutdownNow = executor.shutdownNow();
+			if (shutdownNow != null && shutdownNow.size() > 0)
+				logger.warn("Shutdown executables " + shutdownNow);
+		}
+	}
+
+	private synchronized ScheduledExecutorService getExecutor() {
+		if (executor == null) {
+			executor = Executors.newScheduledThreadPool(10);
+		}
+		return executor;
 	}
 
 	@Override
 	public CancellablePromiseImpl<Instant> after(long ms) {
 		Deferred<Instant> deferred = new Deferred<>();
 		Instant start = Instant.now();
-		ScheduledFuture<?> schedule = executor.schedule(() -> {
+		ScheduledFuture<?> schedule = getExecutor().schedule(() -> {
 			deferred.resolve(start);
 		}, ms, TimeUnit.MILLISECONDS);
 
@@ -87,7 +91,7 @@ public class InternalSchedulerImpl implements Scheduler {
 	public <T> CancellablePromiseImpl<T> after(Callable<T> callable, long ms) {
 		Deferred<T> deferred = new Deferred<>();
 
-		ScheduledFuture<?> schedule = executor.schedule(() -> {
+		ScheduledFuture<?> schedule = getExecutor().schedule(() -> {
 			try {
 				deferred.resolve(callable.call());
 			} catch (Throwable e) {
@@ -138,7 +142,8 @@ public class InternalSchedulerImpl implements Scheduler {
 	 * {@link TimeoutException}
 	 */
 	// @Override
-	public <T> CancellablePromiseImpl<T> before(Promise<T> promise, long timeout) {
+	public <T> CancellablePromiseImpl<T> before(Promise<T> promise,
+			long timeout) {
 		Deferred<T> d = new Deferred<T>();
 		Unique only = new Unique();
 
@@ -165,10 +170,11 @@ public class InternalSchedulerImpl implements Scheduler {
 	}
 
 	static abstract class Schedule {
-		volatile CancellablePromiseImpl<?> promise;
-		volatile boolean canceled;
-		long start = System.currentTimeMillis();
-		Throwable exception;
+		volatile CancellablePromiseImpl<?>	promise;
+		volatile boolean					canceled;
+		long								start	= System
+				.currentTimeMillis();
+		Throwable							exception;
 
 		abstract long next();
 
@@ -176,10 +182,10 @@ public class InternalSchedulerImpl implements Scheduler {
 	}
 
 	static class PeriodSchedule extends Schedule {
-		long last;
-		PrimitiveIterator.OfLong iterator;
-		long rover;
-		RunnableWithException runnable;
+		long						last;
+		PrimitiveIterator.OfLong	iterator;
+		long						rover;
+		RunnableWithException		runnable;
 
 		long next() {
 			if (iterator.hasNext())
@@ -225,10 +231,10 @@ public class InternalSchedulerImpl implements Scheduler {
 	}
 
 	class ScheduleCron<T> extends Schedule {
-		CronAdjuster cron;
-		CronJob<T> job;
-		RunnableWithException runnable;
-		T env;
+		CronAdjuster			cron;
+		CronJob<T>				job;
+		RunnableWithException	runnable;
+		T						env;
 
 		@Override
 		long next() {
@@ -264,8 +270,8 @@ public class InternalSchedulerImpl implements Scheduler {
 		ScheduleCron<T> s = new ScheduleCron<>();
 		s.cron = new CronAdjuster(cronExpression);
 		s.job = job;
-		s.env = type != null && type != Object.class ? Converter.cnv(type,
-				s.cron.getEnv()) : null;
+		s.env = type != null && type != Object.class
+				? Converter.cnv(type, s.cron.getEnv()) : null;
 		schedule(s, s.cron.isReboot() ? 1 : s.next());
 		return () -> {
 			s.canceled = true;
@@ -280,15 +286,16 @@ public class InternalSchedulerImpl implements Scheduler {
 	}
 
 	@Override
-	public <T> CancellablePromiseImpl<T> at(Callable<T> callable, long epochTime) {
+	public <T> CancellablePromiseImpl<T> at(Callable<T> callable,
+			long epochTime) {
 		long delay = epochTime - System.currentTimeMillis();
 		return after(callable, delay);
 	}
 
 	class Cron<T> {
 
-		CronJob<T> target;
-		Closeable schedule;
+		CronJob<T>	target;
+		Closeable	schedule;
 
 		Cron(Class<T> type, CronJob<T> target, String cronExpression)
 				throws Exception {
