@@ -22,7 +22,6 @@ import org.osgi.annotation.versioning.ProviderType;
  * in the previous example one can add a {@code int[] abc()} method to the
  * extended interface. If the parameter is not present, null is returned or 0 if
  * it is a Number.
- * 
  */
 
 @ProviderType
