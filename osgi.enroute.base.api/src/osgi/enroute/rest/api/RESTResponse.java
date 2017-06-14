@@ -39,7 +39,7 @@ public class RESTResponse extends Exception {
 	 *            the status code
 	 */
 	public RESTResponse(String message, int statusCode) {
-		this(null, statusCode, null, null);
+		this(message, statusCode, null, null);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class RESTResponse extends Exception {
 	 *            the value
 	 */
 	public RESTResponse(int statusCode, Object value) {
-		this(null, 200, value, null);
+		this(null, statusCode, value, null);
 	}
 
 	/**
