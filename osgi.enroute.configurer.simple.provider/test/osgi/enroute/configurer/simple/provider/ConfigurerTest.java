@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.hamcrest.core.IsNot;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,6 +35,7 @@ import aQute.lib.io.IO;
 
 public class ConfigurerTest {
 
+	private static final long DELAY = 300;
 	static JUnitFramework juf;
 
 	@BeforeClass
@@ -81,7 +83,7 @@ public class ConfigurerTest {
 
 		bundle.start();
 
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		Configuration configuration = cm.getConfiguration("basic");
 		assertThat(configuration.getProperties().get("data"), is("data"));
 		bundle.uninstall();
@@ -101,7 +103,7 @@ public class ConfigurerTest {
 
 		bundle.start();
 
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		Configuration configuration = cm.getConfiguration("override");
 		assertThat(configuration.getProperties().get("data"), is("data"));
 		bundle.uninstall();
@@ -122,7 +124,7 @@ public class ConfigurerTest {
 
 		bundle.start();
 
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		Configuration configuration = cm.getConfiguration("precious");
 		assertThat(configuration.getProperties().get("a"), is("original"));
 		assertThat(configuration.getProperties().get("b"), is("B"));
@@ -144,7 +146,7 @@ public class ConfigurerTest {
 
 		bundle.start();
 
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		Configuration configuration = cm.getConfiguration("nooverride");
 		assertThat(configuration.getProperties().get("data"), is("original"));
 		bundle.uninstall();
@@ -152,7 +154,7 @@ public class ConfigurerTest {
 
 	@Test
 	public void testSystemPropertyExtra() throws Exception {
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		Configuration configuration = cm.getConfiguration("system");
 		assertThat(configuration.getProperties().get("data"), is("data"));
 	}
@@ -164,7 +166,7 @@ public class ConfigurerTest {
 						new URLResource(getClass().getResource("data/macro.json")))
 				.install();
 		bundle.start();
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		Dictionary<String, Object> configuration = cm.getConfiguration("macro", "?").getProperties();
 		assertThat(configuration.get("bundleid"), is(bundle.getBundleId() + ""));
 		assertThat(configuration.get("def"), is("--"));
@@ -182,14 +184,15 @@ public class ConfigurerTest {
 						new EmbeddedResource("FOO".getBytes(StandardCharsets.UTF_8), 0))
 				.install();
 		bundle.start();
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 
 		Dictionary<String, Object> configuration = cm.getConfiguration("resource", "?").getProperties();
-		String object = (String) configuration.get("resource");
-		File file = IO.getFile(object);
-		String collect = IO.collect(file);
+		assert  configuration != null;
+		String path = (String) configuration.get("resource");
+		File file = new File(path);
+		String content = IO.collect(file);
 
-		assertThat(collect, is("FOO"));
+		assertThat(content, is("FOO"));
 
 		bundle.uninstall();
 	}
@@ -203,7 +206,7 @@ public class ConfigurerTest {
 						new EmbeddedResource("FOO".getBytes(StandardCharsets.UTF_8), 0))
 				.install();
 		bundle.start();
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 
 		Configuration configuration = cm.getConfiguration("profile", "?");
 		Dictionary<String, Object> dict = configuration.getProperties();
@@ -217,9 +220,9 @@ public class ConfigurerTest {
 
 		configuration.update(new Hashtable<>());
 		
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		bundle.start();
-		Thread.sleep(100);
+		Thread.sleep(DELAY);
 		
 		configuration = cm.getConfiguration("profile", "?");
 		dict = configuration.getProperties();
