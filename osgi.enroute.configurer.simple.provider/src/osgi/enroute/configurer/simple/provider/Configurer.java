@@ -67,29 +67,32 @@ import osgi.enroute.configurer.api.ConfigurerConstants;
  * The configurer reads
  */
 
-@ProvideCapability(ns=ExtenderNamespace.EXTENDER_NAMESPACE, name=ConfigurerConstants.CONFIGURER_EXTENDER_NAME, version=ConfigurerConstants.CONFIGURER_EXTENDER_VERSION)
+@ProvideCapability(ns = ExtenderNamespace.EXTENDER_NAMESPACE, name = ConfigurerConstants.CONFIGURER_EXTENDER_NAME, version = ConfigurerConstants.CONFIGURER_EXTENDER_VERSION)
 @Component(service = {
 		ConfigurationDone.class, Object.class
 }, immediate = true)
 public class Configurer implements ConfigurationDone {
-	private static final String		LOGICAL_PID_KEY		= "._osgi.enroute.pid";
-	private static final String		BUNDLE_KEY			= "._osgi.enroute.bundle";
-	private static final String		EN_ROUTE_PROFILE	= "enRoute.profile";
-	private static final String		CONFIGURER_EXTRA	= "enRoute.configurer.extra";
-	private static final String		CONFIGURATION_LOC	= "configuration/configuration.json";
+	private static final String					FORCE				= "force";
+	private static final String					CONFIGURER_PRECIOUS	= ":configurer:precious";
+	private static final String					CONFIGURER_POLICY	= ":configurer:policy";
+	private static final String					LOGICAL_PID_KEY		= "._osgi.enroute.pid";
+	private static final String					BUNDLE_KEY			= "._osgi.enroute.bundle";
+	private static final String					EN_ROUTE_PROFILE	= "enRoute.profile";
+	private static final String					CONFIGURER_EXTRA	= "enRoute.configurer.extra";
+	private static final String					CONFIGURATION_LOC	= "configuration/configuration.json";
 
-	public static final JSONCodec	codec				= new JSONCodec();
-	public static final Converter	converter			= new Converter();
-	static Pattern					PROFILE_PATTERN		= Pattern.compile("\\[([a-zA-Z0-9]+)\\](.*)");
-	Settings						settings			= new Settings("~/.enRoute/settings.json");
-	LogService						log;
-	BundleTracker< ? >				tracker;
-	ConfigurationAdmin				cm;
-	String							profile;
-	File							dir;
-	Map<String,String>				base;
-	Bundle							currentBundle;
-	private final AtomicReference<Coordinator> coordinatorRef = new AtomicReference<>();
+	public static final JSONCodec				codec				= new JSONCodec();
+	public static final Converter				converter			= new Converter();
+	static Pattern								PROFILE_PATTERN		= Pattern.compile("\\[([a-zA-Z0-9]+)\\](.*)");
+	Settings									settings			= new Settings("~/.enRoute/settings.json");
+	LogService									log;
+	BundleTracker<?>							tracker;
+	ConfigurationAdmin							cm;
+	String										profile;
+	File										dir;
+	Map<String, String>							base;
+	Bundle										currentBundle;
+	private final AtomicReference<Coordinator>	coordinatorRef		= new AtomicReference<>();
 
 	/*
 	 * Track all bundles and read their configuration.
@@ -102,19 +105,23 @@ public class Configurer implements ConfigurationDone {
 		dir = context.getDataFile("resources");
 		dir.mkdirs();
 
-		Map<String,String> map = new HashMap<>();
+		Map<String, String> map = new HashMap<>();
 		map.putAll(settings);
-		map.putAll(converter.convert(new TypeReference<Map<String,String>>() {}, System.getProperties()));
+		map.putAll(converter.convert(new TypeReference<Map<String, String>>() {
+		}, System.getProperties()));
 		this.base = Collections.unmodifiableMap(map);
-		
+
 		Coordinator coordinator = coordinatorRef.get();
-		Coordination coordination = coordinator != null ? coordinator.begin("enRoute.configurer", TimeUnit.SECONDS.toMillis(20)) : null;
+		Coordination coordination = coordinator != null
+				? coordinator.begin("enRoute.configurer", TimeUnit.SECONDS.toMillis(20))
+				: null;
 		try {
 			tracker = new BundleTracker<Object>(context, Bundle.ACTIVE | Bundle.STARTING, null) {
 
 				@Override
 				public Object addingBundle(Bundle bundle, BundleEvent event) {
 					try {
+
 						boolean defined = true;
 						String h = bundle.getHeaders().get(ConfigurationDone.BUNDLE_CONFIGURATION);
 						if (h == null) {
@@ -134,26 +141,29 @@ public class Configurer implements ConfigurationDone {
 							//
 							return null;
 
-						log.log(LogService.LOG_INFO, "Reading configurations for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + h );
+						log.log(LogService.LOG_INFO, "Reading configurations for bundle " + bundle.getSymbolicName()
+								+ " " + bundle.getVersion() + " in " + h);
 						for (String entry : h.split(",")) {
 							URL url = bundle.getEntry(entry);
-							log.log(LogService.LOG_INFO, "Reading configuration for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + entry + " " + url);
+							log.log(LogService.LOG_INFO, "Reading configuration for bundle " + bundle.getSymbolicName()
+									+ " " + bundle.getVersion() + " in " + entry + " " + url);
 
 							if (url == null) {
 								return null;
 							}
-	
+
 							String s = IO.collect(url);
 							if (s == null) {
-								if ( defined )
-									log.log(LogService.LOG_INFO, "Cannot find configuration for bundle "+bundle.getSymbolicName() + " " + bundle.getVersion()+" in " + h + " " + url);
+								if (defined)
+									log.log(LogService.LOG_INFO,
+											"Cannot find configuration for bundle " + bundle.getSymbolicName() + " "
+													+ bundle.getVersion() + " in " + h + " " + url);
 								return null;
 							}
-	
+
 							configure(bundle, s);
 						}
-					}
-					catch (IOException e) {
+					} catch (IOException e) {
 						log.log(LogService.LOG_ERROR, "Failed to set configuration for " + bundle, e);
 					}
 
@@ -175,12 +185,12 @@ public class Configurer implements ConfigurationDone {
 			if (s != null)
 				configure(context.getBundle(), s);
 
-		}
-		catch (Exception e) {
-			if (coordination != null) coordination.fail(e);
-		}
-		finally {
-			if (coordination != null) coordination.end();
+		} catch (Exception e) {
+			if (coordination != null)
+				coordination.fail(e);
+		} finally {
+			if (coordination != null)
+				coordination.end();
 		}
 
 	}
@@ -227,18 +237,19 @@ public class Configurer implements ConfigurationDone {
 			// Dictionary).
 			//
 
-			final List<Hashtable<String,Object>> list = codec.dec().from(data)
-					.get(new TypeReference<List<Hashtable<String,Object>>>() {});
+			final List<Hashtable<String, Object>> list = codec.dec().from(data)
+					.get(new TypeReference<List<Hashtable<String, Object>>>() {
+					});
 
 			//
 			// Process each dictionary
 			//
 
-			for (Map<String,Object> d : list) {
+			for (Map<String, Object> d : list) {
 
-				Hashtable<String,Object> dictionary = new Hashtable<String,Object>();
+				Hashtable<String, Object> newer = new Hashtable<String, Object>();
 
-				getDict(d, dictionary);
+				getDict(d, newer);
 
 				//
 				// We now have a dictionary and should update config admin.
@@ -251,11 +262,11 @@ public class Configurer implements ConfigurationDone {
 				// by config admin.
 				//
 
-				String factory = (String) dictionary.get("service.factoryPid");
-				String pid = (String) dictionary.get("service.pid");
+				String factory = (String) newer.get("service.factoryPid");
+				String pid = (String) newer.get("service.pid");
 
 				if (pid == null) {
-					log.log(LogService.LOG_ERROR, "Invalid configuration, no PID specified: " + dictionary);
+					log.log(LogService.LOG_ERROR, "Invalid configuration, no PID specified: " + newer);
 					continue;
 				}
 
@@ -269,8 +280,8 @@ public class Configurer implements ConfigurationDone {
 					// now
 					//
 
-					dictionary.put(LOGICAL_PID_KEY, pid);
-					dictionary.put(BUNDLE_KEY, bundle.getBundleId());
+					newer.put(LOGICAL_PID_KEY, pid);
+					newer.put(BUNDLE_KEY, bundle.getBundleId());
 
 					//
 					// We use the symbolic PID to find an existing record.
@@ -297,21 +308,43 @@ public class Configurer implements ConfigurationDone {
 				Dictionary<?, ?> current = configuration.getProperties();
 				if (current != null) {
 
-					Object policy = dictionary.remove(":configurator:policy");
-					if (!"force".equals(policy))
+					Object policy = newer.remove(CONFIGURER_POLICY);
+					if (!FORCE.equals(policy))
 						continue;
 
-					if (isEqual(dictionary, current))
+					preservePreciousFields(bundle, newer, current);
+
+					if (isEqual(newer, current))
 						continue;
 
 				}
 
 				configuration.setBundleLocation("?");
-				configuration.update(dictionary);
+				configuration.update(newer);
 			}
+		} catch (Exception e) {
+			log.log(LogService.LOG_ERROR, "While configuring " + bundle.getBundleId() + ", configuration is " + data,
+					e);
 		}
-		catch (Exception e) {
-			log.log(LogService.LOG_ERROR, "While configuring " + bundle.getBundleId() + ", configuration is " + data, e);
+	}
+
+	private void preservePreciousFields(Bundle bundle, Hashtable<String, Object> newer, Dictionary<?, ?> current) {
+		Object precious = newer.remove(CONFIGURER_PRECIOUS);
+		if (precious instanceof Collection) {
+			for (Object field : ((Collection<?>) precious)) {
+				if (field instanceof String) {
+					Object value = current.get(field);
+					if (value != null) {
+						newer.put((String) field, value);
+					}
+				} else {
+					log.log(LogService.LOG_INFO, CONFIGURER_PRECIOUS + " field names must be a string, found: "
+							+ field.getClass() + " in bundle " + bundle);
+				}
+			}
+		} else if (precious != null) {
+			log.log(LogService.LOG_INFO, CONFIGURER_PRECIOUS + " must be a collection, it is a " + precious.getClass()
+					+ " in bundle " + bundle);
 		}
 	}
 
@@ -321,15 +354,15 @@ public class Configurer implements ConfigurationDone {
 	 * we add the non-profile key. Otherwise we do some other stuff like logging
 	 * and comments.
 	 */
-	private void getDict(Map<String,Object> d, Hashtable<String,Object> dictionary) throws Exception {
-		for (Entry<String,Object> e : d.entrySet()) {
+	private void getDict(Map<String, Object> d, Hashtable<String, Object> dictionary) throws Exception {
+		for (Entry<String, Object> e : d.entrySet()) {
 
 			String key = e.getKey();
 			Object value = e.getValue();
 
 			Matcher m = PROFILE_PATTERN.matcher(e.getKey());
 			boolean prfile = false;
-			
+
 			if (m.matches()) {
 
 				//
@@ -373,7 +406,7 @@ public class Configurer implements ConfigurationDone {
 			//
 			// Profile keys should always override, Otherwise, first one wins
 			//
-			if ( prfile || !dictionary.containsKey(key))
+			if (prfile || !dictionary.containsKey(key))
 				dictionary.put(key, value);
 
 		}
@@ -385,9 +418,9 @@ public class Configurer implements ConfigurationDone {
 	 */
 
 	@SuppressWarnings("unchecked")
-	private boolean isEqual(Hashtable<String,Object> a, Dictionary< ? , ? > b) {
+	private boolean isEqual(Hashtable<String, Object> a, Dictionary<?, ?> b) {
 
-		for (Entry<String,Object> e : a.entrySet()) {
+		for (Entry<String, Object> e : a.entrySet()) {
 			if (e.getKey().equals("service.pid"))
 				continue;
 
@@ -406,10 +439,10 @@ public class Configurer implements ConfigurationDone {
 
 			if (value.getClass().isArray()) {
 				Object[] aa = {
-					value
+						value
 				};
 				Object[] bb = {
-					e.getValue()
+						e.getValue()
 				};
 				if (!Arrays.deepEquals(aa, bb))
 					return false;
@@ -467,8 +500,7 @@ public class Configurer implements ConfigurationDone {
 
 		try {
 			IO.copy(url.openStream(), out);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.log(LogService.LOG_ERROR, "Cannot copy a resource " + out + " from bundle " + currentBundle
 					+ " resource " + url);
 		}
@@ -511,6 +543,7 @@ public class Configurer implements ConfigurationDone {
 	void setCoordinator(Coordinator coordinator) {
 		coordinatorRef.set(coordinator);
 	}
+
 	void unsetCoordinator(Coordinator coordinator) {
 		coordinatorRef.compareAndSet(coordinator, null);
 	}
@@ -524,11 +557,11 @@ public class Configurer implements ConfigurationDone {
 	 * We need the launcher's arguments to get a profile
 	 */
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL, target = "(launcher.arguments=*)")
-	synchronized void setLauncher(Object obj, Map<String,Object> props) {
+	synchronized void setLauncher(Object obj, Map<String, Object> props) {
 		String[] args = (String[]) props.get("launcher.arguments");
 		for (int i = 0; i < args.length - 1; i++) {
 			if (args[i].equals("--profile")) {
-				this.profile = args[i++];
+				this.profile = args[i+1];
 				return;
 			}
 		}

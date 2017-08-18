@@ -1,0 +1,9 @@
+[
+   { 
+      "service.pid":							"precious",
+      "a":									"A",
+      "b":									"B",
+      ":configurer:policy":					"force",
+      ":configurer:precious":				["a"]
+   }
+]

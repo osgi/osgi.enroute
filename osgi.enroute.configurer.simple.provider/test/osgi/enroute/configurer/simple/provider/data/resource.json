@@ -1,0 +1,6 @@
+[
+   { 
+      "service.pid":							"resource",
+      "resource":							"@{resource;foo.bar}"
+   }
+]

@@ -7,6 +7,7 @@ Bundle-Description: 		This component is an extender that reads the /configuratio
  and installs the list of maps in there as configuration. The configurer supports a number of features \
  like profiles, macro expansion, binary resource handling, and configuration through system properties. \
  See the readme.md file for more details.
+
 Private-Package: \
 	osgi.enroute.configurer.simple.provider,\
 	aQute.service.reporter
@@ -18,11 +19,13 @@ Conditional-Package: aQute.lib*
 
 -workingset bundles,provider
 -buildpath:  \
-	osgi.enroute.base.api;version=latest,\
-	biz.aQute.bndlib;packages=*
+	org.eclipse.osgi, \
+	biz.aQute.bnd.jar;version=file;packages=*, \
+	osgi.enroute.base.api;version=latest
 
 -testpath: \
-	osgi.enroute.junit.wrapper
+	osgi.enroute.junit.wrapper, \
+	osgi.enroute.hamcrest.wrapper, \
 
 -includeresource: {readme.md}, LICENSE.txt=${build}/licenses/ASL-2.0.txt
 

@@ -1,0 +1,7 @@
+[
+   { 
+      "service.pid":							"override",
+      "data":								"data",
+      ":configurer:policy":					"force"
+   }
+]
