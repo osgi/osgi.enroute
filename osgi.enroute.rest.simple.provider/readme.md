@@ -115,20 +115,6 @@ In REST protocols, the `PUT` verb would be used to store a new person. To create
 
 Since the REST methods provide full type safe access to the parameters and remaining URI segments a significant amount of validation is executed by the implementation of this service. These validations will result in the appropriate HTTP error and status code. Implementation should also add explanatory texts to the response.
 
-Additionally, the REST methods may throw any exception. You have two approaches: a "DDD-ish" approach, using a limited set of Exceptions that correspond directly to the most commonly used HTTP errors, or by using regular Java Exceptions, which get translated.
-
-Example of a "DDD-ish" approach:
-
-        Person putPerson( PersonRequest request ) throws BadRequest400Exception, NotFound404Exception {
-            ...
-        }
-        
-Using regular Exceptions would look more like this:
-
-        Person putPerson( PersonRequest request ) throws IllegalStateException, FileNotFoundException {
-            ...
-        }
-
 Regular Java Exceptions are translated to an HTTP error code. The conversions from exception to status code is as follows:
 
 * IllegalStateException <E2><80><93> 400 BAD REQUEST
