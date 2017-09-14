@@ -35,7 +35,7 @@ import aQute.lib.io.IO;
 
 public class ConfigurerTest {
 
-	private static final long DELAY = 300;
+	private static final long DELAY = 1000;
 	static JUnitFramework juf;
 
 	@BeforeClass
