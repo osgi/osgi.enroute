@@ -20,7 +20,7 @@ Conditional-Package: aQute.lib*
 -workingset bundles,provider
 -buildpath:  \
 	org.eclipse.osgi, \
-	biz.aQute.bnd.jar;version=file;packages=*, \
+	biz.aQute.bnd;version=3.5;packages=*, \
 	osgi.enroute.base.api;version=latest
 
 -testpath: \
