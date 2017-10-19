@@ -56,7 +56,7 @@
 		<dependency>
 		    <groupId>biz.aQute.bnd</groupId>
 		    <artifactId>biz.aQute.bnd</artifactId>
-		    <version>3.5.0-SNAPSHOT</version>
+		    <version>4.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
