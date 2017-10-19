@@ -18,9 +18,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
-import aQute.libg.reporter.slf4j.Slf4jReporter;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.http.capabilities.RequireHttpImplementation;
 import osgi.enroute.rest.api.REST;
@@ -41,8 +42,8 @@ import osgi.enroute.rest.api.RestConstants;
 @ProvideCapability(ns = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = RestConstants.REST_SPECIFICATION_NAME, version = RestConstants.REST_SPECIFICATION_VERSION)
 @Component(name = "osgi.enroute.rest.simple", immediate = true)
 public class RestControllerService {
-	private Slf4jReporter					log						= new Slf4jReporter(
-			RestControllerService.class);
+	Logger log = LoggerFactory.getLogger(RestControllerService.class);
+	
 	private static final String				DEFAULT_SERVLET_PATTERN	= "/rest/*";
 	
 	@Reference
@@ -86,7 +87,7 @@ public class RestControllerService {
 					}
 					return resourceManager;
 				} catch (Exception e) {
-					log.error("Failed to add rest endpoint %s", reference);
+					log.error("Failed to add rest endpoint {}", reference);
 					return null;
 				}
 			}
@@ -97,7 +98,7 @@ public class RestControllerService {
 				try {
 					String[] namespaces = getNamespaces(reference);
 					for (String namespace : namespaces) {
-						log.trace("removing REST %s on %s", resourceManager, namespace);
+						log.trace("removing REST {} on {}", resourceManager, namespace);
 						RestServlet rs = servlets.get(namespace);
 						rs.remove(resourceManager);
 
@@ -107,7 +108,7 @@ public class RestControllerService {
 					}
 					super.removedService(reference, resourceManager);
 				} catch (Exception e) {
-					log.error("Failed to remove rest endpoint %s from %s", resourceManager, reference);
+					log.error("Failed to remove rest endpoint {} from {}", resourceManager, reference);
 				}
 			}
 		};
