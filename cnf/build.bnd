@@ -138,7 +138,8 @@ base.packages =  \
 
 -plugin.4.Central:  \
 	aQute.bnd.repository.maven.pom.provider.BndPomRepository; \
-		releaseUrls="https://repo1.maven.org/maven2/,https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/dist/bundles/"; \
+		snapshotUrls="https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/dist/bundles/"; \
+		releaseUrls="https://repo1.maven.org/maven2/"; \
 		pom=${.}/pom.xml; \
 		name=Central; \
 		location=${.}/target/cached.xml
