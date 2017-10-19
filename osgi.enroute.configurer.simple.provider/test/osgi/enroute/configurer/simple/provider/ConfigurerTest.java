@@ -2,7 +2,7 @@ package osgi.enroute.configurer.simple.provider;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -186,9 +186,10 @@ public class ConfigurerTest {
 		Thread.sleep(DELAY);
 
 		Dictionary<String, Object> configuration = cm.getConfiguration("resource", "?").getProperties();
-		assert  configuration != null;
+		assertNotNull(  "Configuration must exist", configuration);
 		String path = (String) configuration.get("resource");
 		File file = new File(path);
+		assertTrue( "file must exist", file.isFile());
 		String content = IO.collect(file);
 
 		assertThat(content, is("FOO"));

@@ -505,7 +505,12 @@ public class Configurer implements ConfigurationDone {
 					+ " resource " + url);
 		}
 
-		return out.getAbsolutePath();
+		String s= out.getAbsolutePath();
+		
+		// since the value is used in a JSON file
+		// we must escape it
+		
+		return escapeToJsonString(s);
 	}
 
 	/*
@@ -531,7 +536,58 @@ public class Configurer implements ConfigurationDone {
 			return null;
 		}
 
-		return currentBundle.getLocation();
+		return escapeToJsonString(currentBundle.getLocation());
+	}
+
+	private String escapeToJsonString(String s) {
+		StringBuilder app = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			switch (c) {
+				case '"' :
+					app.append("\\\"");
+					break;
+
+				case '\\' :
+					app.append("\\\\");
+					break;
+
+				case '\b' :
+					app.append("\\b");
+					break;
+
+				case '\f' :
+					app.append("\\f");
+					break;
+
+				case '\n' :
+					app.append("\\n");
+					break;
+
+				case '\r' :
+					app.append("\\r");
+					break;
+
+				case '\t' :
+					app.append("\\t");
+					break;
+
+				default :
+					if (Character.isISOControl(c)) {
+						app.append("\\u");
+						app.append("0123456789ABCDEF".charAt(0xF & (c >> 12)));
+						app.append("0123456789ABCDEF".charAt(0xF & (c >> 8)));
+						app.append("0123456789ABCDEF".charAt(0xF & (c >> 4)));
+						app.append("0123456789ABCDEF".charAt(0xF & (c >> 0)));
+					} else {
+						app.append(c);
+					}
+			}
+		}
+		if ( app.length() == s.length())
+			return s;
+		else
+			return app.toString();
 	}
 
 	@Reference
