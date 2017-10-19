@@ -18,7 +18,7 @@ Bundle-Version:         ${base.version}.${tstamp}
 
 Bundle-Copyright: 		${copyright}
 Bundle-Vendor:    		OSGi Alliance http://www.osgi.org/
-Bundle-License: 		http://opensource.org/licenses/apache2.0.php; \
+Bundle-License: 			http://opensource.org/licenses/apache2.0.php; \
                 			link="http://www.apache.org/licenses/LICENSE-2.0"; \
                 			description="Apache License, Version 2.0"
 Bundle-DocURL:    		http://enroute.osgi.org/
@@ -131,14 +131,15 @@ base.packages =  \
 
 -plugin.osgi.nexus: \
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
-		snapshotUrl=https://oss.sonatype.org/content/repositories/osgi-snapshots/; \
+		snapshotUrl="https://oss.sonatype.org/content/repositories/osgi-snapshots/"; \
 		releaseUrl= 'https://oss.sonatype.org/service/local/staging/deploy/maven2/,http://repo1.maven.org/maven2/'; \
 		index=${.}/osgi-nexus.maven; \
 		name="OSGiNexus"
 
 -plugin.4.Central:  \
 	aQute.bnd.repository.maven.pom.provider.BndPomRepository; \
-		releaseUrls=https://repo1.maven.org/maven2/; \
+		snapshotUrls="https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/dist/bundles/"; \
+		releaseUrls="https://repo1.maven.org/maven2/"; \
 		pom=${.}/pom.xml; \
 		name=Central; \
 		location=${.}/target/cached.xml

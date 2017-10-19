@@ -1,0 +1,10 @@
+[
+   { 
+      "service.pid":							"profile",
+      "foos":								"FOOS",
+      "[bar]foos":							"BARS",
+      "[debug]foo":							"FOO",
+      "[bar]foo":							"BAR",
+      ":configurer:policy":       			"force"
+   }
+]

@@ -29,18 +29,14 @@ public class SchedulerTest extends TestCase {
 			@Override
 			public void run(TestData data) throws Exception {
 				// TODO Auto-generated method stub
-				
+
 			}
 		};
 		assertEquals(TestData.class, si.getType(cj));
 	}
-	
-	
-	
-	@Override
-	public void setUp() {
-		si.activate();
-	}
+
+
+
 
 	@Override
 	public void tearDown() {
