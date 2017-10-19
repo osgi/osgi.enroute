@@ -1,6 +1,7 @@
 package osgi.enroute.scheduler.simple.provider;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Semaphore;
@@ -137,22 +138,28 @@ public class SchedulerTest extends TestCase {
 	}
 
 	public void testSchedule() throws InterruptedException, IOException {
+		// Don't run on AppVeyor, probably too slow
+		//
+		if ( File.pathSeparatorChar == '\\')
+			return;
+		
 		long now = System.currentTimeMillis();
 
 		Semaphore s = new Semaphore(0);
-		Closeable c = si.schedule(() -> s.release(), 100, 200, 300, 400);
+		try (Closeable c = si.schedule(() -> s.release(), 100, 200, 300, 400)) {
 
-		s.acquire(3);
-		long diff = System.currentTimeMillis() - now;
-		assertEquals(6, (diff + 50) / 100);
+			s.acquire(3);
+			long diff = System.currentTimeMillis() - now;
+			assertEquals(6, (diff + 50) / 100);
 
-		int n = s.availablePermits();
-		Thread.sleep(3000);
-		assertEquals(n + 7, s.availablePermits());
-		c.close();
-		n = s.availablePermits();
-		Thread.sleep(3000);
-		assertEquals(n, s.availablePermits());
+			int n = s.availablePermits();
+			Thread.sleep(3000);
+			assertEquals(n + 7, s.availablePermits());
+			c.close();
+			n = s.availablePermits();
+			Thread.sleep(3000);
+			assertEquals(n, s.availablePermits());
+		}
 	}
 
 	public void testSimple() throws InterruptedException {
