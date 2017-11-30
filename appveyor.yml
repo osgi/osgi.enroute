@@ -1,0 +1,18 @@
+version: '{build}'
+
+clone_depth: 50
+
+environment:
+  JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+
+install:
+  - mvnw.cmd --version
+
+build_script:
+  - mvnw.cmd verify
+
+on_success:
+  - git status
+
+cache:
+  - C:\Users\appveyor\.m2\wrapper -> .mvn\wrapper\maven-wrapper.properties

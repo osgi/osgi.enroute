@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.osgi.enroute.examples.quickstart</groupId>
+        <artifactId>quickstart</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>app</artifactId>
+
+    <description>The application packaging project for the quickstart OSGi enRoute example</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi.enroute.examples.quickstart</groupId>
+            <artifactId>rest</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>impl-index</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>debug-bundles</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-indexer-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-export-maven-plugin</artifactId>
+                <configuration>
+                    <bndruns>
+                        <bndrun>app.bndrun</bndrun>
+                    </bndruns>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

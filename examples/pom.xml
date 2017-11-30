@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.osgi.enroute.examples</groupId>
+    <artifactId>examples</artifactId>
+    <name>OSGi enRoute examples parent</name>
+    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <description>The parent for the OSGi enRoute example projects</description>
+
+    <url>http://enroute.osgi.org/</url>
+
+    <organization>
+        <name>OSGi Alliance</name>
+        <url>https://osgi.org/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.opensource.org/licenses/apache2.0.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/osgi/osgi.enroute</url>
+        <connection>scm:git:https://github.com/osgi/osgi.enroute.git</connection>
+        <developerConnection>scm:git:https://github.com/osgi/osgi.enroute.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/osgi/osgi.enroute/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>OSGi Developer Mail List</name>
+            <post>osgi-dev@mail.osgi.org</post>
+            <subscribe>https://mail.osgi.org/mailman/listinfo/osgi-dev</subscribe>
+            <archive>https://mail.osgi.org/pipermail/osgi-dev/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <distributionManagement>
+        <repository>
+            <id>OSGi</id>
+        </repository>
+        <snapshotRepository>
+            <id>OSGi</id>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>quickstart</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>OSGi</id>
+            <name>OSGi public binaries</name>
+            <url>https://oss.sonatype.org/content/groups/osgi</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>Apache Snapshots</id>
+            <url>https://repository.apache.org/content/groups/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Bnd Snapshots</id>
+            <name>Bnd Latest build</name>
+            <url>https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/dist/bundles/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Use the bnd-maven-plugin and assemble the symbolic names -->
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-maven-plugin</artifactId>
+                    <version>4.0.0-SNAPSHOT</version>
+                    <configuration>
+                        <bnd><![CDATA[
+Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
+-sources: true
+-contract: *
+]]></bnd>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>bnd-process</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Required to make the maven-jar-plugin pick up the bnd 
+                    generated manifest. Also avoid packaging empty Jars -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
+                        <archive>
+                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        </archive>
+                        <skipIfEmpty>true</skipIfEmpty>
+                    </configuration>
+                </plugin>
+                <!-- Define the version of the export plugin we should use -->
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-export-maven-plugin</artifactId>
+                    <version>4.0.0-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>export</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Setup the indexer for running and testing -->
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-indexer-maven-plugin</artifactId>
+                    <version>4.0.0-SNAPSHOT</version>
+                    <configuration>
+                        <localURLs>REQUIRED</localURLs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>index</id>
+                            <goals>
+                                <goal>index</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>test-index</id>
+                            <goals>
+                                <goal>index</goal>
+                            </goals>
+                            <configuration>
+                                <outputFile>${project.build.directory}/test-index.xml</outputFile>
+                                <scopes>
+                                    <scope>test</scope>
+                                </scopes>
+                                <attach>false</attach>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
