@@ -63,10 +63,12 @@
 
     <distributionManagement>
         <repository>
-            <id>OSGi</id>
+            <id>OSGi Releases</id>
+            <url>https://oss.sonatype.org/content/groups/osgi</url>
         </repository>
         <snapshotRepository>
-            <id>OSGi</id>
+            <id>OSGi Snapshots</id>
+            <url>https://oss.sonatype.org/content/groups/osgi</url>
         </snapshotRepository>
     </distributionManagement>
 
