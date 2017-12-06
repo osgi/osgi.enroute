@@ -80,6 +80,7 @@
         <module>project</module>
         <module>ds-component</module>
         <module>rest-component</module>
+        <module>project-bare</module>
     </modules>
 
     <build>
