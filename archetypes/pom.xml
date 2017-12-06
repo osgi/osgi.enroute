@@ -79,6 +79,7 @@
     <modules>
         <module>project</module>
         <module>ds-component</module>
+        <module>rest-component</module>
     </modules>
 
     <build>
