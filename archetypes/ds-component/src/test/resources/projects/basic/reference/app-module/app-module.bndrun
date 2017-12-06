@@ -1,0 +1,7 @@
+index: target/index.xml
+
+-standalone: ${index}
+
+-runrequires: osgi.identity;filter:='(osgi.identity=archetype.it.impl-bundle)'
+-runfw: org.apache.felix.framework
+-runee: JavaSE-1.8

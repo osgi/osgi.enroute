@@ -78,6 +78,7 @@
 
     <modules>
         <module>project</module>
+        <module>ds-component</module>
     </modules>
 
     <build>
