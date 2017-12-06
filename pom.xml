@@ -51,6 +51,11 @@
         </mailingList>
     </mailingLists>
     
+    <!-- Do not deploy this project -->
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+    
     <modules>
         <module>indexes</module>
         <module>examples</module>

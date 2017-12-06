@@ -49,10 +49,12 @@
 
     <distributionManagement>
         <repository>
-            <id>OSGi</id>
+            <id>OSGi Releases</id>
+            <url>https://oss.sonatype.org/content/groups/osgi</url>
         </repository>
         <snapshotRepository>
-            <id>OSGi</id>
+            <id>OSGi Snapshots</id>
+            <url>https://oss.sonatype.org/content/groups/osgi</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -161,6 +163,7 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                     <version>4.0.0-SNAPSHOT</version>
                     <configuration>
                         <localURLs>REQUIRED</localURLs>
+                        <attach>false</attach>
                     </configuration>
                     <executions>
                         <execution>
@@ -179,12 +182,10 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                                 <scopes>
                                     <scope>test</scope>
                                 </scopes>
-                                <attach>false</attach>
                             </configuration>
                         </execution>
                     </executions>
                 </plugin>
-
             </plugins>
         </pluginManagement>
     </build>
