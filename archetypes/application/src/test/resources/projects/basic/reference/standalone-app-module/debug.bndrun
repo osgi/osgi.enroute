@@ -1,0 +1,12 @@
+-include: ~standalone-app-module.bndrun
+
+test-index: target/test-index.xml
+
+-standalone: ${index},${test-index}
+
+-runrequires.debug: osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole)',\
+ osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole.plugins.ds)',\
+ osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
+ osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.runtime)',\
+ osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)'
+ 

@@ -81,6 +81,7 @@
         <module>ds-component</module>
         <module>rest-component</module>
         <module>project-bare</module>
+        <module>application</module>
     </modules>
 
     <build>

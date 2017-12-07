@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.osgi.enroute.r7.archetype</groupId>
+        <artifactId>archetypes</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>application</artifactId>
+    <packaging>maven-archetype</packaging>
+
+    <description>An archetype for generating an OSGi enRoute R7 runnable application</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <target>
+                                <copy
+                                    file="src/test/resources/integration-test/run.properties"
+                                    tofile="${project.build.directory}/its/invoker.properties" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <failIfNoProjects>true</failIfNoProjects>
+                    <cloneClean>false</cloneClean>
+                    <pom>${project.build.directory}/test-classes/projects/basic/application-test/project/basic/pom.xml</pom>
+                    <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test-archetype</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
