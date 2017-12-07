@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>archetype.it</groupId>
+    <artifactId>rest-impl</artifactId>
+    <version>0.1-SNAPSHOT</version>
+
+    <description>The rest-impl DS component - built using OSGi enRoute R7</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>osgi-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>enterprise-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Expected to inherit configuration from a parent enRoute 
+                pom. This includes -contract definitions and maven-jar-plugin setup -->
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
