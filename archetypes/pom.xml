@@ -82,6 +82,7 @@
         <module>rest-component</module>
         <module>project-bare</module>
         <module>application</module>
+        <module>api</module>
     </modules>
 
     <build>

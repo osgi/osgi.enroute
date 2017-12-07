@@ -145,7 +145,7 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                         </execution>
                     </executions>
                 </plugin>
-                
+
                 <!-- Define the version of the export plugin we use -->
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
@@ -159,6 +159,24 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                         <execution>
                             <goals>
                                 <goal>export</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Define the version of the baseline plugin we use and avoid failing
+                    when no baseline jar exists. (for example before the first release) -->
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-baseline-maven-plugin</artifactId>
+                    <version>4.0.0-SNAPSHOT</version>
+                    <configuration>
+                        <failOnMissing>false</failOnMissing>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>baseline</goal>
                             </goals>
                         </execution>
                     </executions>

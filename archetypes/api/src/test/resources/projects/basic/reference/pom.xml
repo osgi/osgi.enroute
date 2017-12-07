@@ -3,12 +3,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>${groupId}</groupId>
-    <artifactId>${artifactId}</artifactId>
-    <version>${version}</version>
+    <groupId>archetype.it</groupId>
+    <artifactId>basic</artifactId>
+    <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <description>The ${artifactId} application - built using OSGi enRoute R7</description>
+    <description>The basic application - built using OSGi enRoute R7</description>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -53,6 +53,12 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <modules>
+        <module>impl-bundle</module>
+        <module>app-module</module>
+        <module>ds-impl</module>
+    </modules>
 
     <build>
         <pluginManagement>
@@ -154,24 +160,6 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                         <execution>
                             <goals>
                                 <goal>export</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                
-                <!-- Define the version of the baseline plugin we use and avoid failing
-                    when no baseline jar exists. (for example before the first release) -->
-                <plugin>
-                    <groupId>biz.aQute.bnd</groupId>
-                    <artifactId>bnd-baseline-maven-plugin</artifactId>
-                    <version>4.0.0-SNAPSHOT</version>
-                    <configuration>
-                        <failOnMissing>false</failOnMissing>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>baseline</goal>
                             </goals>
                         </execution>
                     </executions>
