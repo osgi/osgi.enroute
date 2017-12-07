@@ -41,7 +41,7 @@
                 <configuration>
                     <failIfNoProjects>true</failIfNoProjects>
                     <cloneClean>false</cloneClean>
-                    <pom>${project.build.directory}/test-classes/projects/basic/application-test/project/basic/pom.xml</pom>
+                    <pom>${project.build.directory}/test-classes/projects/build/application-test/project/basic/pom.xml</pom>
                     <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
                 </configuration>
                 <executions>
