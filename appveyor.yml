@@ -11,10 +11,7 @@ install:
   - mvnw.cmd --version
 
 build_script:
-  - mvnw.cmd verify
+  - mvn verify
 
 on_success:
   - git status
-
-cache:
-  - C:\Users\appveyor\.m2\wrapper -> .mvn\wrapper\maven-wrapper.properties
