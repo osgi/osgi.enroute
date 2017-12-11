@@ -74,6 +74,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <test.repo>${project.build.directory}/it-repo</test.repo>
+        <test.settings>../settings.xml</test.settings>
     </properties>
 
     <modules>
@@ -84,6 +86,35 @@
         <module>application</module>
         <module>api</module>
     </modules>
+
+    <!-- All archetypes depend on these to ensure the latest versions are 
+        used in testing -->
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>osgi-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>enterprise-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>impl-index</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute.r7</groupId>
+            <artifactId>debug-bundles</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
 
     <build>
         <extensions>
@@ -101,7 +132,29 @@
                     <version>3.0.1</version>
                     <configuration>
                         <ignoreEOLStyle>true</ignoreEOLStyle>
+                        <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+                        <settingsFile>${test.settings}</settingsFile>
                     </configuration>
+                </plugin>
+                <!-- Install the dependencies into the test repo so the latest 
+                    versions are used in testing -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-invoker-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <localRepositoryPath>${test.repo}</localRepositoryPath>
+                        <settingsFile>${test.settings}</settingsFile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>install-test-deps</id>
+                            <goals>
+                                <goal>install</goal>
+                            </goals>
+                            <phase>pre-integration-test</phase>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

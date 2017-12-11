@@ -38,18 +38,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-invoker-plugin</artifactId>
-                <version>3.0.1</version>
                 <configuration>
                     <failIfNoProjects>true</failIfNoProjects>
                     <cloneClean>false</cloneClean>
                     <pom>${project.build.directory}/test-classes/projects/basic/project/basic/pom.xml</pom>
-                    <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
                 </configuration>
                 <executions>
                     <execution>
                         <id>test-archetype</id>
                         <goals>
-                            <goal>install</goal>
                             <goal>run</goal>
                         </goals>
                     </execution>
