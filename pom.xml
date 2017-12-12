@@ -58,7 +58,7 @@
     
     <modules>
         <module>indexes</module>
-        <module>examples</module>
         <module>archetypes</module>
+        <module>examples</module>
     </modules>
 </project>

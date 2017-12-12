@@ -10,5 +10,12 @@
     <packaging>maven-archetype</packaging>
 
     <description>An archetype for generating an OSGi enRoute R7 JAX-RS Whiteboard Component module</description>
-    
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-invoker-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
