@@ -13,9 +13,7 @@
         <dependency>
             <groupId>org.osgi.enroute.r7</groupId>
             <artifactId>osgi-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
             <type>pom</type>
-            <scope>provided</scope>
         </dependency>
      </dependencies>
 

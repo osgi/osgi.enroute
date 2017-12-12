@@ -81,5 +81,6 @@
         <module>impl-index</module>
         <module>enterprise-api</module>
         <module>debug-bundles</module>
+        <module>test-bundles</module>
     </modules>
 </project>

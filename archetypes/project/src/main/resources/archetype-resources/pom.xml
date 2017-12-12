@@ -59,6 +59,46 @@
         <module>${app-artifactId}</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.osgi.enroute.r7</groupId>
+                <artifactId>osgi-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi.enroute.r7</groupId>
+                <artifactId>enterprise-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi.enroute.r7</groupId>
+                <artifactId>impl-index</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi.enroute.r7</groupId>
+                <artifactId>debug-bundles</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi.enroute.r7</groupId>
+                <artifactId>test-bundles</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -164,8 +204,9 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                     </executions>
                 </plugin>
 
-                <!-- Define the version of the baseline plugin we use and avoid failing
-                    when no baseline jar exists. (for example before the first release) -->
+                <!-- Define the version of the baseline plugin we use and 
+                    avoid failing when no baseline jar exists. (for example before the first 
+                    release) -->
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
                     <artifactId>bnd-baseline-maven-plugin</artifactId>
