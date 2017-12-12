@@ -14,20 +14,15 @@
             <artifactId>${impl-artifactId}</artifactId>
             <version>${impl-version}</version>
         </dependency>
-        
         <dependency>
             <groupId>org.osgi.enroute.r7</groupId>
             <artifactId>impl-index</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
-
         <dependency>
             <groupId>org.osgi.enroute.r7</groupId>
             <artifactId>debug-bundles</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
             <type>pom</type>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
