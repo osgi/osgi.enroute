@@ -4,11 +4,11 @@
     xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.osgi.enroute.r7.archetype</groupId>
+    <groupId>org.osgi.enroute.archetype</groupId>
     <artifactId>archetypes</artifactId>
     <name>OSGi enRoute Archetypes parent</name>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
 
     <description>The parent for generating the Maven archetypes for OSGi enRoute R7</description>
 
@@ -91,27 +91,27 @@
         used in testing -->
     <dependencies>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>osgi-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>7.0.0-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>enterprise-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>7.0.0-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>impl-index</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>7.0.0-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>debug-bundles</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>7.0.0-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
     </dependencies>

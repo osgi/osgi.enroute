@@ -12,17 +12,17 @@
     
     <dependencies>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>osgi-api</artifactId>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>enterprise-api</artifactId>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>test-bundles</artifactId>
             <type>pom</type>
         </dependency>
