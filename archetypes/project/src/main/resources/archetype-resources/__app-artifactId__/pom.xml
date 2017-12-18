@@ -19,12 +19,12 @@
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>impl-index</artifactId>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.osgi.enroute.r7</groupId>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>debug-bundles</artifactId>
             <type>pom</type>
         </dependency>

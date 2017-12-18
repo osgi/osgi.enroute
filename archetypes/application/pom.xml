@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.osgi.enroute.r7.archetype</groupId>
+        <groupId>org.osgi.enroute.archetype</groupId>
         <artifactId>archetypes</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>7.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>application</artifactId>
