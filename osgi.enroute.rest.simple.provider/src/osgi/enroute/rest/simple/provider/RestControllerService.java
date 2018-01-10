@@ -100,6 +100,7 @@ public class RestControllerService {
 						log.trace("removing REST %s on %s", resourceManager, namespace);
 						RestServlet rs = servlets.get(namespace);
 						rs.remove(resourceManager);
+						rs.close();
 
 						// we never clean them up. Seems to much work
 						// since it is likely that the namespace is reused.
