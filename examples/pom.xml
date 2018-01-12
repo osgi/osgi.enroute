@@ -66,6 +66,7 @@
 
     <modules>
         <module>quickstart</module>
+        <module>microservice</module>
     </modules>
 
     <repositories>
