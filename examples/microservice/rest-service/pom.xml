@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>microservice</artifactId>
+        <groupId>org.osgi.enroute.examples.microservice</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rest-service</artifactId>
+
+    <description>The rest-service DS component - built using OSGi enRoute R7</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>osgi-api</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>enterprise-api</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- In addition to the OSGi specifications and related JSR APIs 
+            we use JSONP and our own DAO APIs -->
+        <dependency>
+            <groupId>org.apache.servicemix.specs</groupId>
+            <artifactId>org.apache.servicemix.specs.json-api-1.1</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute.examples.microservice</groupId>
+            <artifactId>dao-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- We test against the Apache Johnzon JSONP implementation, but 
+            leave the runtime decision to the application assembler -->
+        <dependency>
+            <groupId>org.apache.johnzon</groupId>
+            <artifactId>johnzon-core</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>test-bundles</artifactId>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Expected to inherit configuration from a parent enRoute 
+                pom. This includes -contract definitions and maven-jar-plugin setup -->
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

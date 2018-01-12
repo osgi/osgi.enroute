@@ -1,0 +1,142 @@
+<link rel="import" href="https://polygit.org/polymer+v2.2.0/components/iron-ajax/iron-ajax.html">
+<link rel="import" href="https://polygit.org/polymer+v2.2.0/components/iron-input/iron-input.html">
+<link rel="import" href="https://polygit.org/polymer+v2.2.0/components/polymer/polymer-element.html">
+
+<dom-module id="person-app">
+  <template>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <iron-ajax id="xhr" handle-as="json" content-type="application/json"></iron-ajax>
+
+    <div>
+      <div class="list-group">
+        <template is="dom-repeat" items="[[data]]">
+          <div class="list-group-item">
+            <a href="#" on-click="selectPerson" class="[[item == selected ? 'active' : '']]">
+              <div>First name: <span>[[item.firstName]]</span></div>
+              <div>Last name: <span>[[item.lastName]]</span></div>
+            </a>
+            <button type="button" class="btn btn-danger" on-click="deletePerson">Delete</button>
+          </div>
+        </template>
+      </div>
+      <div>
+        <template is="dom-if" if="[[selected]]">
+          <h4>Addresses for [[selected.firstName]] [[selected.lastName]]:</h4>
+          <ul class="list-group">
+            <template is="dom-repeat" items="[[selected.addresses]]" as="address">
+              <li class="list-group-item">
+                <ul>
+                  <li>Email: <span>[[address.emailAddress]]</span></li>
+                  <li>City: <span>[[address.city]]</span></li>
+                  <li>Country: <span>[[address.country]]</span></li>
+                </ul>
+              </li>
+            </template>
+          </ul>
+        </template>
+      </div>
+    </div>
+
+    <div>
+      <h4>Add a Person</h4>
+      <input type="text" class="form-control" id="fName" placeholder="First Name">
+      <input type="text" class="form-control" id="lName" placeholder="Last Name">
+      <h5>Addresses</h5>
+      <button class="btn btn-default" type="button" on-click="addAddress">+</button>
+      <template is="dom-repeat" items="[[addresses]]" as="address">
+        <div class="input-group">
+          <input type="email" class="form-control" id="[[address]]-email" placeholder="Email">
+          <input type="text" class="form-control" id="[[address]]-city" placeholder="City">
+          <input type="text" class="form-control" id="[[address]]-country" placeholder="Country">
+        </div>
+      </template>
+      <button type="submit" class="btn btn-default" on-click="addPerson">Add</button>
+      </form>
+    </div>
+
+  </template>
+  <script>
+    class Person extends Polymer.Element {
+      static get is() {
+        return 'person-app';
+      }
+      
+      static get properties() {
+        return {
+          selected: {
+            type: Object
+          },
+          addresses: {
+            type: Array,
+            value: []
+          },
+          data: {
+            type: Array,
+            value: []
+          }
+        }
+      }
+      
+      ready() {
+        super.ready();
+        this.getData(this);
+      }
+      
+      getData(self) {
+        this.$.xhr.url = this.ownerDocument.location.origin + '/person';
+        this.$.xhr.method = 'GET';
+        this.$.xhr.body = null;
+        this.$.xhr.generateRequest().completes.then(function(request) { self.data = request.response;});
+      }
+
+      selectPerson(event) {
+        this.selected = event.model.item;
+      }
+
+      deletePerson(event) {
+      
+        if(this.selected && this.selected.personId == event.model.item.personId) {
+          selected = null;
+        }
+        
+        var self = this;
+
+        this.$.xhr.url = this.ownerDocument.location.origin + '/person/' + event.model.item.personId;
+        this.$.xhr.method = 'DELETE';
+        this.$.xhr.body = null;
+        this.$.xhr.generateRequest().completes.then(function() { self.getData(self); });
+      }
+      
+      addAddress() {
+        this.push('addresses', 'address' + this.addresses.length);
+      }
+      
+      addPerson() {
+        var person = { firstName: this.$.fName.value, lastName: this.$.lName.value, addresses: []};
+        
+        var shadowRoot = this.shadowRoot;
+        
+        this.addresses.forEach(function(id) {
+            person.addresses.push(
+              {
+                emailAddress: shadowRoot.getElementById(id + '-email').value,
+                city: shadowRoot.getElementById(id + '-city').value,
+                country: shadowRoot.getElementById(id + '-country').value
+              });
+          });
+          
+        this.addresses = [];
+        this.$.fName.value = null;
+        this.$.lName.value = null;
+      
+        var self = this;
+      
+        this.$.xhr.url = this.ownerDocument.location.origin + '/person/';
+        this.$.xhr.method = 'POST';
+        this.$.xhr.body = person;
+        this.$.xhr.generateRequest().completes.then(function() { self.getData(self); });
+      }
+    }
+    customElements.define(Person.is, Person);
+  </script>
+</dom-module>

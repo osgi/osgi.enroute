@@ -1,3 +1,3 @@
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("1.0.0")
-package api.pkg;
+package org.osgi.enroute.examples.microservice.dao.dto;
