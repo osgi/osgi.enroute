@@ -17,7 +17,9 @@
         <module>dao-api</module>
         <module>rest-service</module>
         <module>dao-impl</module>
-    <module>rest-app</module>
-  </modules>
+        <module>rest-app</module>
+        <module>dao-impl-jpa</module>
+        <module>rest-app-jpa</module>
+    </modules>
 
 </project>
