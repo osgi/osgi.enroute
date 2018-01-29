@@ -1,0 +1,20 @@
+{
+    // Global Settings
+    ":configurator:resource-version" : 1,
+    ":configurator:symbolicname" : "org.osgi.enroute.examples.microservice.jpa.config",
+    ":configurator:version" : "0.0.1.SNAPSHOT",
+    
+    
+    // Configure a JPA resource provider
+    "org.apache.aries.tx.control.jpa.xa~microservice": {
+           "name": "microservice.database",
+           "osgi.jdbc.driver.class": "org.h2.Driver",
+           "url": "jdbc:h2:./data/database",
+           "osgi.unit.name": "microservice-dao" },
+    
+    // Target the Dao impls at the provider we configured
+    "org.osgi.enroute.examples.microservice.dao.impl.jpa.PersonDaoImpl": {
+           "provider.target": "(name=microservice.database)" },
+    "org.osgi.enroute.examples.microservice.dao.impl.jpa.AddressDaoImpl": {
+           "provider.target": "(name=microservice.database)" }
+}

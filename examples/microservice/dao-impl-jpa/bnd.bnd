@@ -1,0 +1,7 @@
+# Due to a long standing bug in Hibernate's entity enhancement these packages must 
+# be imported when Hibernate is used (https://hibernate.atlassian.net/browse/HHH-10742)
+
+Import-Package: \
+	org.hibernate.proxy,\
+	javassist.util.proxy,\
+	*
