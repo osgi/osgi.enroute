@@ -1,0 +1,25 @@
+{
+    // Comments are permitted in configuration files, but they should be
+    // minified if they are going to be used as strict JSON
+    
+    // Global Settings
+    ":configurator:resource-version" : 1,
+    ":configurator:symbolicname" : "archetype.it.standalone-app-module.config",
+    ":configurator:version" : "0.1-SNAPSHOT",
+    
+    /*
+    // This defines a configuration
+    
+    "my.configuration.pid": {
+           "fizz": "buzz", 
+           "foo": "bar"},
+    */
+    
+    /*
+    // This defines a factory configuration
+    
+    "my.factory.configuration.pid~fizzbuzz": {
+           "fizz": "buzz", 
+           "foo": "bar"},
+    */
+}

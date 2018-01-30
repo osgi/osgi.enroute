@@ -20,6 +20,11 @@
         </dependency>
         <dependency>
             <groupId>org.osgi.enroute</groupId>
+            <artifactId>osgi-api</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
             <artifactId>impl-index</artifactId>
             <type>pom</type>
         </dependency>
@@ -34,7 +39,14 @@
         <plugins>
             <plugin>
                 <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
                 <artifactId>bnd-indexer-maven-plugin</artifactId>
+                <configuration>
+                    <includeJar>true</includeJar>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>biz.aQute.bnd</groupId>

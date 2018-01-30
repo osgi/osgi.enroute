@@ -14,11 +14,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.osgi.enroute</groupId>
-            <artifactId>osgi-api</artifactId>
-            <type>pom</type>
-        </dependency>
-        <dependency>
             <groupId>org.osgi.enroute.examples.microservice</groupId>
             <artifactId>dao-impl-jpa</artifactId>
             <version>0.0.1-SNAPSHOT</version>
@@ -28,11 +23,7 @@
             <artifactId>rest-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.osgi.enroute</groupId>
-            <artifactId>impl-index</artifactId>
-            <type>pom</type>
-        </dependency>
+        
         <!-- We choose the Apache Johnzon JSONP implementation, H2 and Hibernate 
             for our application -->
         <dependency>
@@ -51,6 +42,7 @@
             <artifactId>hibernate-osgi</artifactId>
             <version>5.2.12.Final</version>
         </dependency>
+        
         <!-- Needed by Hibernate, but not present as OSGi bundles in Hibernate's dependencies -->
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
@@ -63,7 +55,16 @@
             <version>1.6.1_5</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>osgi-api</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>impl-index</artifactId>
+            <type>pom</type>
+        </dependency>
         <dependency>
             <groupId>org.osgi.enroute</groupId>
             <artifactId>debug-bundles</artifactId>

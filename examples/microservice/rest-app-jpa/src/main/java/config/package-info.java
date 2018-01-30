@@ -1,2 +1,4 @@
-@org.osgi.annotation.bundle.Requirement(namespace="osgi.extender", name="osgi.configurator", version="1")
+@RequireConfigurator
 package config;
+
+import org.osgi.service.configurator.annotations.RequireConfigurator;
