@@ -15,14 +15,14 @@ import org.osgi.enroute.examples.microservice.dao.dto.PersonDTO;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardResource;
+import org.osgi.service.jaxrs.whiteboard.propertytypes.JSONRequired;
 import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsResource;
-import org.osgi.service.jaxrs.whiteboard.propertytypes.RequireJSON;
 
 @Component(service=RestComponentImpl.class)
 @JaxrsResource
 @Path("person")
 @Produces(MediaType.APPLICATION_JSON)
-@RequireJSON
+@JSONRequired
 @HttpWhiteboardResource(pattern="/microservice/*", prefix="static")
 public class RestComponentImpl {
     
