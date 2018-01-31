@@ -23,8 +23,10 @@ class ResponseException {
 	}
 
 	static ResponseException[] MATCH = {
-			new ResponseException(FileNotFoundException.class,
-					HttpServletResponse.SC_NOT_FOUND),
+            new ResponseException(FileNotFoundException.class,
+                    HttpServletResponse.SC_NOT_FOUND),
+            new ResponseException(NoSuchMethodException.class,
+                    HttpServletResponse.SC_METHOD_NOT_ALLOWED),
 			new ResponseException(SecurityException.class,
 					HttpServletResponse.SC_FORBIDDEN),
 			new ResponseException(UnsupportedOperationException.class,

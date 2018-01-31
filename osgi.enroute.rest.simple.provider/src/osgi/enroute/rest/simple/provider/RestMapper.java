@@ -122,6 +122,7 @@ public class RestMapper {
 	static {
 		codecNoNull.setIgnorenull(true);
 	}
+	Map<String, FunctionGroup>                             functionGroups   = new HashMap<String, FunctionGroup>(); 
 	MultiMap<String, Function>								functions		= new MultiMap<String, Function>();
 	boolean													diagnostics;
 
@@ -155,6 +156,10 @@ public class RestMapper {
 			String path = "/" + decode(matcher.group("path"));
 
 			Function function = new Function(resource, m, verb, path, ranking);
+			String groupName = function.getName().substring(function.getVerb().name().length());
+			if (!functionGroups.containsKey(groupName))
+			    functionGroups.put(groupName, new FunctionGroup(groupName, null, null, null, null));
+			functionGroups.put(groupName, new FunctionGroup(functionGroups.get(groupName), function, verb));
 			functions.add(function.getName(), function);
 
 			Collections.sort(functions.get(function.getName()),
@@ -227,7 +232,7 @@ public class RestMapper {
 	public boolean execute(HttpServletRequest rq, HttpServletResponse rsp)
 			throws IOException {
 		try {
-			String path = rq.getPathInfo();
+            String path = rq.getPathInfo();
 			if (path == null)
 				path = "";
 			else if (path.startsWith("/"))
@@ -241,9 +246,18 @@ public class RestMapper {
 			//
 			String[] segments = path.split("/");
 			ExtList<String> list = new ExtList<String>(segments);
-			String name = (rq.getMethod() + list.remove(0)).toLowerCase();
+            String first = list.remove(0).toLowerCase();
+            String actualMethod = rq.getMethod().toLowerCase();
+            boolean isHead = "head".equals(actualMethod);
+            String effectiveMethod = isHead ? "get" : actualMethod;
+			String name = (effectiveMethod + first);
 			int cardinality = list.size();
+            String group = first + "/" + cardinality;
 
+            if ("OPTIONS".equalsIgnoreCase(rq.getMethod())) {
+                doOptions(rq, rsp, group);
+                return true;
+            }
 			//
 			// We register methods with their cardinality to not have
 			// to wade through them one by one
@@ -256,9 +270,18 @@ public class RestMapper {
 			// check if we found a suitable candidate
 			//
 
-			if (candidates == null || candidates.isEmpty())
-				throw new FileNotFoundException("No such method " + name + "/"
-						+ cardinality + ". Available: " + functions);
+			if (candidates == null || candidates.isEmpty()) {
+			    if (functionGroups.containsKey(group)) {
+			        FunctionGroup g = functionGroups.get(group);
+			        // The URI exists, but not with this method. Return a 405.
+			        rsp.setHeader("Allow", g.getOptions());
+			        throw new NoSuchMethodException();			        
+			    } else {
+			        // Return a 404.
+	                throw new FileNotFoundException("No such method " + name + "/"
+	                        + cardinality + ". Available: " + functions);
+			    }
+			}
 
 			//
 			// All values are arrays, turn them into singletons when
@@ -328,13 +351,13 @@ public class RestMapper {
 				}
 
 				try {
-					Object result = f.invoke(parameters);
-					if (result != null) {
-						if ( result instanceof RESTResponse)
-							doRestResponse(rq, rsp, (RESTResponse) result);
-						else
-							printOutput(rq, rsp, result);
-					}
+                    Object result = f.invoke(parameters);
+                    if (result != null) {
+                        if ( result instanceof RESTResponse)
+                            doRestResponse(rq, rsp, (RESTResponse) result, isHead);
+                        else
+                            printOutput(rq, rsp, result, isHead);
+                    }
 				} catch (InvocationTargetException e1) {
 					throw e1.getTargetException();
 				}
@@ -342,7 +365,7 @@ public class RestMapper {
 
 		} catch (RESTResponse e) {
 
-			doRestResponse(rq, rsp, e);
+			doRestResponse(rq, rsp, e, false);
 
 		} catch (Throwable e) {
 			int code = ResponseException.getStatusCode(e.getClass());
@@ -352,8 +375,7 @@ public class RestMapper {
 		return true;
 	}
 
-	private void doRestResponse(HttpServletRequest rq, HttpServletResponse rsp,
-			RESTResponse e) {
+	private void doRestResponse(HttpServletRequest rq, HttpServletResponse rsp, RESTResponse e, boolean isHead) {
 		doResponseHeaders(rsp, e);
 
 		if (e.getContentType() != null)
@@ -365,18 +387,26 @@ public class RestMapper {
 
 		if (e.getValue() != null)
 			try {
-				printOutput(rq, rsp, e.getValue());
+				printOutput(rq, rsp, e.getValue(), isHead);
 			} catch (Exception e1) {
 				log.error("failed to marshall value", e1);
 				rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 	}
 
-	private boolean doOpenAPI(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
+    private void doOptions(HttpServletRequest rq, HttpServletResponse rsp, String groupName) throws FileNotFoundException {
+        rsp.setStatus(204);
+        FunctionGroup group = functionGroups.get(groupName);
+        if (group == null)
+            throw new FileNotFoundException();
+        rsp.setHeader("Allow", group.getOptions());
+    }
+
+    private boolean doOpenAPI(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
 		OpenAPI openAPI = 
 		new OpenAPI(this,
 				new URI(rq.getRequestURL().toString()));
-		printOutput(rq, rsp, openAPI);
+		printOutput(rq, rsp, openAPI, false);
 		return true;
 	}
 
@@ -429,14 +459,12 @@ public class RestMapper {
 		this.diagnostics = true;
 	}
 
-	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp,
-			Object result) throws Exception {
-		printOutput(rq, rsp, result, codec.enc());
+	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp, Object result, boolean isHead) throws Exception {
+		printOutput(rq, rsp, result, codec.enc(), isHead);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp,
-			Object result, Encoder enc) throws Exception {
+	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp, Object result, Encoder enc, boolean isHead) throws Exception {
 		//
 		// Check if we can compress the result
 		//
@@ -455,10 +483,10 @@ public class RestMapper {
 
 					if (gzip) {
 						out = new GZIPOutputStream(out);
-						rsp.setHeader("Content-Encoding", "gzip");
+						rsp.setHeader("Transfer-Encoding", "gzip");
 					} else if (deflate) {
 						out = new DeflaterOutputStream(out);
-						rsp.setHeader("Content-Encoding", "deflate");
+						rsp.setHeader("Transfer-Encoding", "deflate");
 					}
 				}
 			}
@@ -470,21 +498,26 @@ public class RestMapper {
 			// are written with json
 			//
 
-			if (result instanceof InputStream) {
+			if (result instanceof InputStream && !isHead) {
 				IO.copy((InputStream) result, out);
 			} else if (result instanceof byte[]) {
 				byte[] data = (byte[]) result;
 				rsp.setContentLength(data.length);
-				out.write(data);
+                if (!isHead)
+				    out.write(data);
 			} else if (result instanceof File) {
 				File fresult = (File) result;
 				rsp.setContentLength((int) fresult.length());
-				IO.copy(fresult, out);
+                if (!isHead)
+				    IO.copy(fresult, out);
 			} else {
 				rsp.setContentType("application/json;charset=UTF-8");
 				if (result instanceof Iterable)
 					result = new ExtList<Object>((Iterable<Object>) result);
-				enc.writeDefaults().to(out).put(result);
+                // TODO: Content-Length should be set properly (for both GET and HEAD)
+				// TODO: Consider using the new OSGi Converter??
+				if (!isHead)
+				    enc.writeDefaults().to(out).put(result);
 			}
 		}
 		out.close();
