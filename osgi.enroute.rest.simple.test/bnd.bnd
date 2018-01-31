@@ -11,7 +11,7 @@ Conditional-Package: \
 
 -buildpath: \
 	osgi.enroute.rest.simple.provider;version=latest,\
-	osgi.enroute.base.api;version=1.0,\
+	osgi.enroute.base.api;version=1.1,\
 	biz.aQute.bndlib;packages=*, \
 	osgi.enroute.junit.wrapper;version=4.12
 
