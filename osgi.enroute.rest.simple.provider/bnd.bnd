@@ -12,6 +12,8 @@ Bundle-Description: 				\
 	endpoint. The remaining path is mapped to the arguments of the method. The \
 	returned object is returned as JSON.
 
+Bundle-Version: 2.2.0
+
 Export-Package: \
 	osgi.enroute.rest.api;provide:=true,\
 	osgi.enroute.rest.jsonschema.api;provide:=true,\
@@ -25,6 +27,7 @@ Conditional-Package: aQute.lib*
 
 
 -workingset bundles,provider
+
 -buildpath:  \
 	osgi.enroute.base.api;version=latest,\
 	biz.aQute.bndlib;packages=*
