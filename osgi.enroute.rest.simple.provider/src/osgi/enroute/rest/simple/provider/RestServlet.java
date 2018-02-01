@@ -49,15 +49,16 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	}
 
 	public void service(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
-		if (corsEnabled) {
+        if (config.requireSSL() && !isSecure(rq)) {
+            rsp.sendError(config.notSecureError());
+            return;
+        }
+
+        if (corsEnabled) {
 			addCorsHeaders(rsp);
 		}
 
-		if ("OPTIONS".equalsIgnoreCase(rq.getMethod())) {
-			doOptions(rq, rsp);
-		} else {
-			mapper.execute(rq, rsp);
-		}
+        mapper.execute(rq, rsp);
 	}
 
 	/*
@@ -90,4 +91,13 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	synchronized void remove(REST resource) {
 		mapper.removeResource(resource);
 	}
+
+    private static boolean isSecure(HttpServletRequest hreq) {
+        if( hreq.isSecure() )
+            return true;
+
+        // If behind a proxy, check the "X-Forwarded-Proto" value set by the proxy server
+        final String schemeHeader = hreq.getHeader( "X-Forwarded-Proto" );
+        return "https".equals(schemeHeader);
+    }
 }

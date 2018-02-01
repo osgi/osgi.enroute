@@ -239,8 +239,11 @@ public class RestMapper {
 				path = path.substring(1);
 
 			if (path.equals("openapi.json")) {
+			    // TODO: is this true for all method types? Or should this be only for GET?
+			    // TODO: how do we treat CORS for this special response?
 				return doOpenAPI(rq, rsp);
 			}
+
 			//
 			// Find the method's arguments embedded in the url
 			//
