@@ -114,9 +114,8 @@ import osgi.enroute.rest.api.RESTResponse;
 public class RestMapper {
 	static Logger			log				= LoggerFactory
 			.getLogger(RestMapper.class);
-	// TODO: seems to be a duplication of ACCEPTED_METHOD_NAMES_P
-//	final static Pattern	METHOD_NAME_P	= Pattern
-//			.compile("(?<verb>get|post|put|delete|option|head)(?<path>.*)");
+	final static Pattern	METHOD_NAME_P	= Pattern
+			.compile("(?<verb>get|post|put|delete|option|head)(?<path>.*)");
 	final List<REST>		endpoints		= new CopyOnWriteArrayList<>();
 	final static JSONCodec	codec			= new JSONCodec();
 	final static JSONCodec	codecNoNull		= new JSONCodec();
@@ -166,7 +165,6 @@ public class RestMapper {
 			Collections.sort(functions.get(function.getName()),
 					(a, b) -> Integer.compare(a.ranking, b.ranking));
 		}
-
 		endpoints.add(resource);
 	}
 
@@ -215,18 +213,8 @@ public class RestMapper {
 			Iterator<Function> i = fs.iterator();
 			while (i.hasNext()) {
 				Function f = i.next();
-				if (f.target == resource) {
+				if (f.target == resource)
 					i.remove();
-					for (FunctionGroup fg : functionGroups.values()) {
-					    Verb v = fg.hasFunction(f);
-					    if (v != null) {
-					        FunctionGroup fg2 = new FunctionGroup(fg, null, v);
-					        functionGroups.put(fg.name, fg2);
-					           if (!fg2.hasFunction())
-					               functionGroups.remove(fg.name);
-					    }
-					}
-				}
 			}
 		}
 	}
@@ -269,7 +257,24 @@ public class RestMapper {
 			int cardinality = list.size();
             String group = first + "/" + cardinality;
 
-			//
+            boolean isOptions = "OPTIONS".equalsIgnoreCase(rq.getMethod());
+            if (isOptions)
+                doOptions(rq, rsp, group);
+
+            // CORS needs to be processed for all method types, so call before exiting from OPTIONS request
+            if (CORSUtil.isCORSEnabled()) {
+                // If Access-Control-Allow-Origin is a function, set "Vary: Origin" as a hint to proxy servers
+                if (CORSUtil.isCORS(rq)) {
+                    CORSUtil.doCORS(rq, rsp);
+                    return true;
+                }
+            }
+
+            // Don't need to do any more processing for OPTIONS requests
+            if (isOptions)
+                return true;
+
+            //
 			// We register methods with their cardinality to not have
 			// to wade through them one by one
 			//
@@ -277,18 +282,15 @@ public class RestMapper {
 			if (candidates == null)
 				candidates = functions.get(name);
 
-            // TODO: Consider implementing strict adherence (i.e. case-sensitivity) checks to methods.
-            //       (Methods are supposed to be all upper case.)
-            boolean isOptions = "OPTIONS".equalsIgnoreCase(rq.getMethod());
-
-            //
+			//
 			// check if we found a suitable candidate
 			//
-            FunctionGroup fg = functionGroups.get(group);
-            if ((candidates == null || candidates.isEmpty()) && !isOptions) {
-			    if (fg != null) {
+
+			if (candidates == null || candidates.isEmpty()) {
+			    if (functionGroups.containsKey(group)) {
+			        FunctionGroup g = functionGroups.get(group);
 			        // The URI exists, but not with this method. Return a 405.
-			        rsp.setHeader("Allow", fg.getOptions());
+			        rsp.setHeader("Allow", g.getOptions());
 			        throw new NoSuchMethodException();			        
 			    } else {
 			        // Return a 404.
@@ -329,23 +331,10 @@ public class RestMapper {
 			args.put("_host", rq.getHeader("Host"));
 			args.put("_response", rsp);
 
-			if (!isOptions && candidates.isEmpty())
+			if (candidates.isEmpty())
 				return false;
 
-			// The function should be null if and only if it is an OPTIONS request
-			Function f = isOptions ? null : candidates.get(0);
-
-			// Do OPTIONS before CORS
-            if (isOptions)
-                doOptions(rq, rsp, group);
-
-            // CORS needs to be processed for all method types, so call before exiting from OPTIONS request
-            doCORS(rq, rsp, f, fg, isOptions);
-
-            // Don't need to do any more processing for OPTIONS requests
-            if (isOptions)
-                return true;
-
+			Function f = candidates.get(0);
 			Object[] parameters = f.match(args, list);
 			if (parameters != null) {
 
@@ -427,36 +416,6 @@ public class RestMapper {
         if (group == null)
             throw new FileNotFoundException();
         rsp.setHeader("Allow", group.getOptions());
-    }
-
-    private void doCORS(HttpServletRequest rq, HttpServletResponse rsp, Function f, FunctionGroup fg, boolean isOptions) {
-        CORSUtil.CORSConfig cors = null;
-        // If it is an OPTIONS request, things are a bit more complicated.
-        // The configuration we actually use depends in part on the method requested.
-        if (isOptions) {
-            String requestedMethod = rq.getHeader("Access-Control-Request-Method");
-            Verb v = null;
-            try {
-                v = Verb.valueOf(requestedMethod.toLowerCase());
-                cors = fg.optionsConfig().apply(v);
-            } catch (Exception e) {
-                // Bad verb requested. Let the CORS request play out.
-            }
-            
-        } else {
-            cors = f.getCORS();
-        }
-        if (cors != null) {
-            // If Access-Control-Allow-Origin is determined dynamically, set "Vary: Origin" as a hint to proxy servers
-            if (cors.dynamicOrigin)
-                rsp.addHeader( "Vary", "Origin");
-            if (CORSUtil.isCORSRequest(rq))
-                CORSUtil.doCORS(rq, rsp, cors, fg);
-        } else if (CORSUtil.isCORSRequest(rq)) {
-            // If this is CORS request, but there is no CORS configuration, return a 403
-            // TODO: write to log
-            throw new SecurityException();
-        }
     }
 
     private boolean doOpenAPI(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
