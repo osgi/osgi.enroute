@@ -32,7 +32,6 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	String						servletPattern;
 	Config						config;
 	boolean						angular;
-	boolean						corsEnabled;
 	Closeable					closeable;
 	static Random				random				= new Random();
 	AtomicBoolean				closed				= new AtomicBoolean(false);
@@ -40,7 +39,6 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 
 	RestServlet(Config config, String namespace) {
 		this.config = config;
-		corsEnabled = config.corsEnabled();
 		this.mapper = new RestMapper(namespace);
 	}
 
@@ -54,27 +52,7 @@ class RestServlet extends HttpServlet implements REST, Closeable {
             return;
         }
 
-        if (corsEnabled) {
-			addCorsHeaders(rsp);
-		}
-
         mapper.execute(rq, rsp);
-	}
-
-	/*
-	 * this is required to handle the Client requests with Request METHOD
-	 * &quot;OPTIONS&quot; typically the preflight requests
-	 */
-	protected void doOptions(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
-		super.doOptions(rq, rsp);
-	}
-
-	private void addCorsHeaders(HttpServletResponse rsp) {
-		rsp.setHeader("Access-Control-Allow-Origin", config.allowOrigin());
-		rsp.setHeader("Access-Control-Allow-Methods", config.allowedMethods());
-		rsp.setHeader("Access-Control-Allow-Headers", config.allowHeaders());
-		rsp.addIntHeader("Access-Control-Max-Age", config.maxAge());
-		rsp.setHeader("Allow", config.allowedMethods());
 	}
 
 	public void close() throws IOException {
@@ -92,7 +70,11 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 		mapper.removeResource(resource);
 	}
 
-    private static boolean isSecure(HttpServletRequest hreq) {
+	synchronized int count() {
+	    return mapper.endpoints.size();
+	}
+
+	private static boolean isSecure(HttpServletRequest hreq) {
         if( hreq.isSecure() )
             return true;
 
