@@ -199,6 +199,20 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                     </executions>
                 </plugin>
                 
+                <!-- Define the version of the testing plugin that we use -->
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-testing-maven-plugin</artifactId>
+                    <version>4.0.0-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>testing</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                
                 <!-- Define the version of the baseline plugin we use and avoid failing
                     when no baseline jar exists. (for example before the first release) -->
                 <plugin>

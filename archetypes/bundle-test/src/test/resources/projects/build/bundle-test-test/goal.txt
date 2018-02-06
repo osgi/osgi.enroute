@@ -1,0 +1,1 @@
+package bnd-indexer:index@index bnd-resolver:resolve verify

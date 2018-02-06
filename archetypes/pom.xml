@@ -85,6 +85,7 @@
         <module>project-bare</module>
         <module>application</module>
         <module>api</module>
+        <module>bundle-test</module>
     </modules>
 
     <!-- All archetypes depend on these to ensure the latest versions are 
