@@ -20,6 +20,7 @@
         <module>rest-app</module>
         <module>dao-impl-jpa</module>
         <module>rest-app-jpa</module>
+        <module>rest-service-test</module>
     </modules>
 
 </project>
