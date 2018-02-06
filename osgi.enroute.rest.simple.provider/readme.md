@@ -161,12 +161,17 @@ The issue is that you cannot just convert a service since a service in general h
 
 ## CORS
 
-CORS support is provided for all endpoints. It is configured via the `@CORS` annotation. The REST implementation class can be
-annotated (in which case the configuration applies to all methods in that class), or each individual method can annotated.
-In the case that both are annotated, the method annotation takes priority. If no annotation exists, then CORS is disabled
-for that method call.
+CORS support is provided for all endpoints. It is configured via the `@CORS` annotation. The REST implementation class can be annotated (in which case the configuration applies to all methods in that class), or each individual method can annotated. In the case that both are annotated, the method annotation takes priority. If no annotation exists, then CORS is disabled for that method call.
 
+For public APIs, the simplest approach is to annotate the REST implementation class with a static
+configuration (i.e. `Allow: *`).
 
+For private APIs, it should usually be sufficient to provide a static configuration either on the
+class level, or in a more fine-grained matter on the method level (i.e. `Allow: https://example.com, https://example.org`).
+
+For more demanding cases, is possible to provide a dynamic configuration. This is done by implementing
+a method (like "allowOrigin()") in the REST implementation. The method will be invoked as necessary, thereby permitting the dynamic resolution on a request-by-request basis. See the CORS API 
+javadoc for details about how to implement these dynamic methods.
 
 ## Namespaces
 

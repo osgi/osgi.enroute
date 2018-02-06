@@ -57,10 +57,6 @@ public class CORSUtil {
         Optional<String> maxAge;
     }
 
-//    static Optional<CORS> isCORSEnabled(Function f) {
-//        return Optional.empty();
-//    }
-
     /**
      * A Request is identified as a CORS request simply by determining if there is an
      * "Origin" header. The presence of an "Origin" header indicates that the client is
@@ -136,29 +132,6 @@ public class CORSUtil {
         // The above two conditions are met, so this qualifies as a pre-flight request.
         return true;
     }
-
-//    /**
-//     * Determines if the provided Origin is permitted based on the configured mapper.
-//     * If it is permitted, returns the value with which the header should be set.
-//     */
-//    // Access-Control-Allow-Origin --> what is the policy? Don't set, *, specific (static), or function
-//    private static Optional<String> allowOrigin(String origin, CORSConfig config) {
-//        String allowed = config.allowOrigin.apply(origin);
-//        if (allowed != null && !allowed.isEmpty())
-//            return Op
-//        if (config.mapping() == CORS.Mapping.STATIC)
-//            return Optional.ofNullable(config.origin());
-////        if (origin == null || origin.isEmpty())
-////            return Optional.empty();
-////
-////        if ("null".equals(origin))
-////            return 
-//        return Optional.empty();
-//    }
-//
-//    private static String concatHeaders(String[] headers) {
-//        return Arrays.stream(headers).collect( Collectors.joining(", "));
-//    }
 
     /**
      * The Method config takes precedence over the class config.

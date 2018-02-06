@@ -150,6 +150,10 @@ public class FunctionGroup {
         return name;
     }
 
+    /**
+     * Preflight requests are a bit tricker than "normal" requests, requiring this
+     * extra bit of complexity, unfortunately.
+     */
     private static CORSUtil.CORSConfig cors(
             Optional<Function> get, 
             Optional<Function> put, 

@@ -7,20 +7,20 @@ import java.lang.annotation.Target;
 
 /**
  * Enable an HTTP method of a REST implementation for cross-scripting. To apply
- * CORS to a REST endpoint, annotate the endpoint method in the REST
+ * CORS to a specific REST endpoint, annotate the endpoint method in the REST
  * implementation with this annotation. To apply CORS to all endpoints in a REST
  * implementation, annotate the REST class. If both are applied, method
- * annotations take precendence over class annotation. Dynamic resolution of the
- * allowed origin, allowed methods, and allowed headers can be provided by
- * implementing a method within the REST implementation class. The method has
- * the naming scheme
- * <code>config (([+ method] + impl)|[+ method + impl]) [+cardinality]</code>
- * where <code>config = allowOrigin | allowMethods | allowHeaders</code>,
- * <code>impl is the name of the REST implementation method</code>,
- * <code>cardinality is the number of arguments (see REST spec)</code>. Use
- * <code>All</code> to match all methods. The method name is written in camel
- * case. Dynamic value resolution is attempted at runtime using the following
- * algorithm:
+ * annotations (when existing) take precedence over the class annotation.
+ * Dynamic resolution of the allowed origin, allowed methods, and allowed
+ * headers can be provided by implementing a method within the REST
+ * implementation class. The method has the naming scheme
+ * <code>config ([+ method] + impl) [+cardinality]</code> where
+ * <code>config = allowOrigin | allowMethods | allowHeaders</code>,
+ * <code>method</code> is the HTTP method, <code>impl</code> is the name of the
+ * REST implementation method, <code>cardinality</code> is the number of
+ * arguments (see REST implementation). Use <code>All</code> to match all
+ * methods. The method name is written in camel case. Dynamic value resolution
+ * is attempted at runtime using the following algorithm:
  * <ol>
  * <ul>
  * Look for the most specific method. Example: allowOriginPostUser0()
@@ -42,16 +42,18 @@ import java.lang.annotation.Target;
  * </ul>
  * </ol>
  * <code>allowOrigin</code> must have the signature
- * <code>java.util.Function<String, Optional<String>> methodName()</code> where
- * <code>methodName</code> is specified as described above, beginning with
- * "allowOrigin". <code>allowOrigin</code> must have the signature
- * <code>java.util.function.Function<HttpServletRequest, String> methodName()</code>
- * where <code>methodName</code> is specified as described above, beginning with
- * "allowMethods". <code>allowOrigin</code> must have the signature
- * <code>java.util.function.Function<HttpServletRequest, String> methodName()</code>
- * where <code>methodName</code> is specified as described above, beginning with
- * "allowHeaders". Example: <code>
- * java.util.Function<String, Optional<String>> allowOrigin()
+ * <code>java.util.function.Function<String, Optional<String>> allowOrigin[method][impl][cardinality]()</code>
+ * as specified above. <code>allowMethods</code> must have the signature
+ * <code>java.util.function.Function<String, String> allowMethods[method][impl][cardinality]()</code>
+ * as specified as described above. <code>allowHeaders</code> must have the
+ * signature
+ * <code>BiFunction<String, List<String>, String> allowHeaders[method][impl][cardinality]()</code>
+ * as specified as described above. Example: <code>
+ * java.util.Function<String, Optional<String>> allowOrigin() {
+ *   return origin -> {
+ *     ... // dynamic code here
+ *   };
+ * }
  * </code>
  */
 @Retention(RetentionPolicy.RUNTIME)

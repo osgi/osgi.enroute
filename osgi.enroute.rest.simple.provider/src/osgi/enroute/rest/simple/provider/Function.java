@@ -15,7 +15,7 @@ import osgi.enroute.rest.api.RESTRequest;
 
 /**
  * Cache for information about the discovered methods to speed up the mapping
- * process. Includes CORS configuration as well.
+ * process. Includes CORS configuration as well, if available.
  */
 class Function {
 	final Method						method;
