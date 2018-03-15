@@ -540,10 +540,10 @@ public class RestMapper {
 
 					if (gzip) {
 						out = new GZIPOutputStream(out);
-						rsp.setHeader("Transfer-Encoding", "gzip");
+						rsp.setHeader("Content-Encoding", "gzip");
 					} else if (deflate) {
 						out = new DeflaterOutputStream(out);
-						rsp.setHeader("Transfer-Encoding", "deflate");
+						rsp.setHeader("Content-Encoding", "deflate");
 					}
 				}
 			}
