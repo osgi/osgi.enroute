@@ -9,15 +9,21 @@ summary: Provides REST endpoints that are based on method naming pattern with ty
 
 ## Introduction
 
-The OSGi enRoute REST API specifies a service contract for components to provide REST _endpoints_. Representational State Transfer (REST) is an architectural style that allows the interchange of information between elements of a distributed system. A REST endpoint has an HTTP(S) URI and can thus be accessed from all modern computing environments. An endpoint defines the meaning of the segments of this URI, any specified parameters in the URI, as well as the used HTTP verb (GET, PUT, POST, etc). For example:
+The OSGi enRoute REST API specifies a service contract for components to provide REST _endpoints_. Representational State Transfer (REST) is an architectural style that allows the interchange of information between elements of a distributed system. A REST endpoint has an HTTPS URI and can thus be accessed from all modern computing environments. An endpoint defines the meaning of the segments of this URI, any specified parameters in the URI, as well as the used HTTP verb (GET, PUT, POST, etc). For example:
 
         GET /rest/upper/<word>?alphaonly=true
 
 This endpoint is mapped to the URI `/rest/upper` and the next segment specifies the word to translate to upper case. The `alphaonly` is a _parameter_ on the URI, in this case a boolean.
 
-A HTTP request can specify a _payload_, a payload can be associated with the `POST` or the `PUT` verb. in the response, the HTTP request can return a _body_.
+A HTTPS request can specify a _payload_, a payload can be associated with the `POST` or the `PUT` verb. in the response, the HTTPS request can return a _body_.
 
 Since having REST capability is of such major importance for many modern systems, it is crucial that the overhead for the programmer to support this interface be absolutely minimized. This specification leverages the Java type system to provide REST endpoints. It provides a deterministic mapping from a URI request to a REST method name of a restricted set of methods. Adding a method that is named according to a defined pattern is all that is required to add a new REST endpoint.
+
+## HTTP vs. HTTPS
+
+Today with free tools available for generating SSL/TLS certificates (https://letsencrypt.org/), there is no reason *not* to require HTTPS.
+Therefore, unless configured otherwise, HTTPS is required for each request. The default return method for an HTTP call is a 404, considering
+that `http://example.com/some_uri` and `https://example.com/some_uri` are actually different URIs. This error can be configured. For backwards compatibility, you can allow allow non-SSL requests as well.
 
 ## REST Methods
 
@@ -33,7 +39,7 @@ The first parameter of a REST method can be be an interface that is or extends t
                 String upper();
         }  
 
-        public String getUpper( UpperRequest rq ) {
+        public String getUpper(UpperRequest rq) {
                 return rq.upper().toUpperCase();
         }
 
@@ -64,6 +70,21 @@ Therefore, the previous example can be defined as:
         }
         
 Assuming a default root of `/rest`, this will provide a REST endpoint URI for the earlier example of `GET /rest/upper/<word>?alphaonly=true`.
+
+## Handling OPTIONS
+
+Except for OPTIONS requests, making a call to a non-implemented method on an existing endpoint will return a 405 error.
+Making a call on a non-existing endpoint will return a 404. Only OPTIONS requests are handled a little differently by default
+(i.e. unless implemented in the REST implementation as described above).
+
+Making an OPTIONS call against a non-existing endpoint will still return a 404, but making it against an existing endpoint will
+return a successful call (return value 204 no content) with the "Allow" header set to whichever methods are implemented
+for that endpoint in the REST implementation. Any GET method will also return an allowed HEAD value.
+
+Using the above example of the `UpperApplication`:
+
+ * A request to `GET /rest/upper/<word>` will return a 204 with "Allow: OPTIONS, GET, HEAD"
+ * A request to `GET /rest/lower/<word>` will return a 404
 
 ## Extra Conversions for the Body
 
@@ -115,25 +136,12 @@ In REST protocols, the `PUT` verb would be used to store a new person. To create
 
 Since the REST methods provide full type safe access to the parameters and remaining URI segments a significant amount of validation is executed by the implementation of this service. These validations will result in the appropriate HTTP error and status code. Implementation should also add explanatory texts to the response.
 
-Additionally, the REST methods may throw any exception. You have two approaches: a "DDD-ish" approach, using a limited set of Exceptions that correspond directly to the most commonly used HTTP errors, or by using regular Java Exceptions, which get translated.
-
-Example of a "DDD-ish" approach:
-
-        Person putPerson( PersonRequest request ) throws BadRequest400Exception, NotFound404Exception {
-            ...
-        }
-        
-Using regular Exceptions would look more like this:
-
-        Person putPerson( PersonRequest request ) throws IllegalStateException, FileNotFoundException {
-            ...
-        }
-
 Regular Java Exceptions are translated to an HTTP error code. The conversions from exception to status code is as follows:
 
 * IllegalStateException <E2><80><93> 400 BAD REQUEST
 * SecurityException <E2><80><93> 403 FORBIDDEN
 * FileNotFoundException <E2><80><93> 404 NOT FOUND
+* NoSuchMethodException <E2><80><93> 405 METHOD NOT ALLOWED
 * UnsupportedOperationException <E2><80><93> 501 NOT IMPLEMENTED
 * All other exceptions <E2><80><93> 500 SERVER ERROR
 
@@ -153,29 +161,17 @@ The issue is that you cannot just convert a service since a service in general h
 
 ## CORS
 
-It is possible to configure the service for CORS.
+CORS support is provided for all endpoints. It is configured via the `@CORS` annotation. The REST implementation class can be annotated (in which case the configuration applies to all methods in that class), or each individual method can annotated. In the case that both are annotated, the method annotation takes priority. If no annotation exists, then CORS is disabled for that method call.
 
-| Field | Type | Description |
-|----------|:-------------:|:-------------:|
-|corsEnabled | Boolean | Whether to enable or disable CORS headers, default is '__false__' |
-| allowOrigin	| String | The allowed origin hosts header '__Access-Control-Allow-Origin__', default '__*__' |
-| allowMethods | String | Allowed HTTP client methods header '__Access-Control-Allow-Methods__' as comma seperated values, default '__GET, POST, PUT__' |
-| allowHeaders | String | Allowed HTTP headers '__Access-Control-Allow-Headers__' as comma separated values, default '__Content-Type__'|
-| maxAge | int | The Max Age for Access-Control* header '__Access-Control-Max-Age__' in seconds, default '__86400__' (24 hrs) |
-| allowedMethods	| String | The methods that are allowed from client, Header '__Allow__', default '__GET, HEAD, POST, TRACE, OPTIONS__' |
-	
-e.g. to configure a REST service with CORS headers put the following in the configuration/configuration.json
-```
-{
-	"service.pid": "osgi.enroute.rest.simple",
-	"corsEnabled": true,
-	"allowOrigin": "*",
-	"allowMethods": "GET, POST, PUT, DELETE",
-	"allowHeaders": "Content-Type",
-	"maxAge": 86400,
-	"allowedMethods": "GET, HEAD, POST, TRACE, OPTIONS"
-}
-```
+For public APIs, the simplest approach is to annotate the REST implementation class with a static
+configuration (i.e. `Allow: *`).
+
+For private APIs, it should usually be sufficient to provide a static configuration either on the
+class level, or in a more fine-grained matter on the method level (i.e. `Allow: https://example.com, https://example.org`).
+
+For more demanding cases, is possible to provide a dynamic configuration. This is done by implementing
+a method (like "allowOrigin()") in the REST implementation. The method will be invoked as necessary, thereby permitting the dynamic resolution on a request-by-request basis. See the CORS API 
+javadoc for details about how to implement these dynamic methods.
 
 ## Namespaces
 

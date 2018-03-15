@@ -114,14 +114,16 @@ import osgi.enroute.rest.api.RESTResponse;
 public class RestMapper {
 	static Logger			log				= LoggerFactory
 			.getLogger(RestMapper.class);
-	final static Pattern	METHOD_NAME_P	= Pattern
-			.compile("(?<verb>get|post|put|delete|option|head)(?<path>.*)");
+	// TODO: seems to be a duplication of ACCEPTED_METHOD_NAMES_P
+//	final static Pattern	METHOD_NAME_P	= Pattern
+//			.compile("(?<verb>get|post|put|delete|option|head)(?<path>.*)");
 	final List<REST>		endpoints		= new CopyOnWriteArrayList<>();
 	final static JSONCodec	codec			= new JSONCodec();
 	final static JSONCodec	codecNoNull		= new JSONCodec();
 	static {
 		codecNoNull.setIgnorenull(true);
 	}
+	Map<String, FunctionGroup>                             functionGroups   = new HashMap<String, FunctionGroup>(); 
 	MultiMap<String, Function>								functions		= new MultiMap<String, Function>();
 	boolean													diagnostics;
 
@@ -155,11 +157,16 @@ public class RestMapper {
 			String path = "/" + decode(matcher.group("path"));
 
 			Function function = new Function(resource, m, verb, path, ranking);
+			String groupName = function.getName().substring(function.getVerb().name().length());
+			if (!functionGroups.containsKey(groupName))
+			    functionGroups.put(groupName, new FunctionGroup(groupName, null, null, null, null));
+			functionGroups.put(groupName, new FunctionGroup(functionGroups.get(groupName), function, verb));
 			functions.add(function.getName(), function);
 
 			Collections.sort(functions.get(function.getName()),
 					(a, b) -> Integer.compare(a.ranking, b.ranking));
 		}
+
 		endpoints.add(resource);
 	}
 
@@ -208,8 +215,18 @@ public class RestMapper {
 			Iterator<Function> i = fs.iterator();
 			while (i.hasNext()) {
 				Function f = i.next();
-				if (f.target == resource)
+				if (f.target == resource) {
 					i.remove();
+					for (FunctionGroup fg : functionGroups.values()) {
+					    Verb v = fg.hasFunction(f);
+					    if (v != null) {
+					        FunctionGroup fg2 = new FunctionGroup(fg, null, v);
+					        functionGroups.put(fg.name, fg2);
+					           if (!fg2.hasFunction())
+					               functionGroups.remove(fg.name);
+					    }
+					}
+				}
 			}
 		}
 	}
@@ -227,22 +244,30 @@ public class RestMapper {
 	public boolean execute(HttpServletRequest rq, HttpServletResponse rsp)
 			throws IOException {
 		try {
-			String path = rq.getPathInfo();
+            String path = rq.getPathInfo();
 			if (path == null)
 				path = "";
 			else if (path.startsWith("/"))
 				path = path.substring(1);
 
 			if (path.equals("openapi.json")) {
+			    // TODO: is this true for all method types? Or should this be only for GET?
+			    // TODO: how do we treat CORS for this special response?
 				return doOpenAPI(rq, rsp);
 			}
+
 			//
 			// Find the method's arguments embedded in the url
 			//
 			String[] segments = path.split("/");
 			ExtList<String> list = new ExtList<String>(segments);
-			String name = (rq.getMethod() + list.remove(0)).toLowerCase();
+            String first = list.remove(0).toLowerCase();
+            String actualMethod = rq.getMethod().toLowerCase();
+            boolean isHead = "head".equals(actualMethod);
+            String effectiveMethod = isHead ? "get" : actualMethod;
+			String name = (effectiveMethod + first);
 			int cardinality = list.size();
+            String group = first + "/" + cardinality;
 
 			//
 			// We register methods with their cardinality to not have
@@ -252,13 +277,25 @@ public class RestMapper {
 			if (candidates == null)
 				candidates = functions.get(name);
 
-			//
+            // TODO: Consider implementing strict adherence (i.e. case-sensitivity) checks to methods.
+            //       (Methods are supposed to be all upper case.)
+            boolean isOptions = "OPTIONS".equalsIgnoreCase(rq.getMethod());
+
+            //
 			// check if we found a suitable candidate
 			//
-
-			if (candidates == null || candidates.isEmpty())
-				throw new FileNotFoundException("No such method " + name + "/"
-						+ cardinality + ". Available: " + functions);
+            FunctionGroup fg = functionGroups.get(group);
+            if ((candidates == null || candidates.isEmpty()) && !isOptions) {
+			    if (fg != null) {
+			        // The URI exists, but not with this method. Return a 405.
+			        rsp.setHeader("Allow", fg.getOptions());
+			        throw new NoSuchMethodException();			        
+			    } else {
+			        // Return a 404.
+	                throw new FileNotFoundException("No such method " + name + "/"
+	                        + cardinality + ". Available: " + functions);
+			    }
+			}
 
 			//
 			// All values are arrays, turn them into singletons when
@@ -292,10 +329,23 @@ public class RestMapper {
 			args.put("_host", rq.getHeader("Host"));
 			args.put("_response", rsp);
 
-			if (candidates.isEmpty())
+			if (!isOptions && candidates.isEmpty())
 				return false;
 
-			Function f = candidates.get(0);
+			// The function should be null if and only if it is an OPTIONS request
+			Function f = isOptions ? null : candidates.get(0);
+
+			// Do OPTIONS before CORS
+            if (isOptions)
+                doOptions(rq, rsp, group);
+
+            // CORS needs to be processed for all method types, so call before exiting from OPTIONS request
+            doCORS(rq, rsp, f, fg, isOptions);
+
+            // Don't need to do any more processing for OPTIONS requests
+            if (isOptions)
+                return true;
+
 			Object[] parameters = f.match(args, list);
 			if (parameters != null) {
 
@@ -328,13 +378,13 @@ public class RestMapper {
 				}
 
 				try {
-					Object result = f.invoke(parameters);
-					if (result != null) {
-						if ( result instanceof RESTResponse)
-							doRestResponse(rq, rsp, (RESTResponse) result);
-						else
-							printOutput(rq, rsp, result);
-					}
+                    Object result = f.invoke(parameters);
+                    if (result != null) {
+                        if ( result instanceof RESTResponse)
+                            doRestResponse(rq, rsp, (RESTResponse) result, isHead);
+                        else
+                            printOutput(rq, rsp, result, isHead);
+                    }
 				} catch (InvocationTargetException e1) {
 					throw e1.getTargetException();
 				}
@@ -342,7 +392,7 @@ public class RestMapper {
 
 		} catch (RESTResponse e) {
 
-			doRestResponse(rq, rsp, e);
+			doRestResponse(rq, rsp, e, false);
 
 		} catch (Throwable e) {
 			int code = ResponseException.getStatusCode(e.getClass());
@@ -352,8 +402,7 @@ public class RestMapper {
 		return true;
 	}
 
-	private void doRestResponse(HttpServletRequest rq, HttpServletResponse rsp,
-			RESTResponse e) {
+	private void doRestResponse(HttpServletRequest rq, HttpServletResponse rsp, RESTResponse e, boolean isHead) {
 		doResponseHeaders(rsp, e);
 
 		if (e.getContentType() != null)
@@ -365,18 +414,56 @@ public class RestMapper {
 
 		if (e.getValue() != null)
 			try {
-				printOutput(rq, rsp, e.getValue());
+				printOutput(rq, rsp, e.getValue(), isHead);
 			} catch (Exception e1) {
 				log.error("failed to marshall value", e1);
 				rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 	}
 
-	private boolean doOpenAPI(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
+    private void doOptions(HttpServletRequest rq, HttpServletResponse rsp, String groupName) throws FileNotFoundException {
+        rsp.setStatus(204);
+        FunctionGroup group = functionGroups.get(groupName);
+        if (group == null)
+            throw new FileNotFoundException();
+        rsp.setHeader("Allow", group.getOptions());
+    }
+
+    private void doCORS(HttpServletRequest rq, HttpServletResponse rsp, Function f, FunctionGroup fg, boolean isOptions) {
+        CORSUtil.CORSConfig cors = null;
+        // If it is an OPTIONS request, things are a bit more complicated.
+        // The configuration we actually use depends in part on the method requested.
+        if (isOptions) {
+            String requestedMethod = rq.getHeader("Access-Control-Request-Method");
+            Verb v = null;
+            try {
+                v = Verb.valueOf(requestedMethod.toLowerCase());
+                cors = fg.optionsConfig().apply(v);
+            } catch (Exception e) {
+                // Bad verb requested. Let the CORS request play out.
+            }
+            
+        } else {
+            cors = f.getCORS();
+        }
+        if (cors != null) {
+            // If Access-Control-Allow-Origin is determined dynamically, set "Vary: Origin" as a hint to proxy servers
+            if (cors.dynamicOrigin)
+                rsp.addHeader( "Vary", "Origin");
+            if (CORSUtil.isCORSRequest(rq))
+                CORSUtil.doCORS(rq, rsp, cors, fg);
+        } else if (CORSUtil.isCORSRequest(rq)) {
+            // If this is CORS request, but there is no CORS configuration, return a 403
+            // TODO: write to log
+            throw new SecurityException();
+        }
+    }
+
+    private boolean doOpenAPI(HttpServletRequest rq, HttpServletResponse rsp) throws Exception {
 		OpenAPI openAPI = 
 		new OpenAPI(this,
 				new URI(rq.getRequestURL().toString()));
-		printOutput(rq, rsp, openAPI);
+		printOutput(rq, rsp, openAPI, false);
 		return true;
 	}
 
@@ -429,14 +516,12 @@ public class RestMapper {
 		this.diagnostics = true;
 	}
 
-	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp,
-			Object result) throws Exception {
-		printOutput(rq, rsp, result, codec.enc());
+	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp, Object result, boolean isHead) throws Exception {
+		printOutput(rq, rsp, result, codec.enc(), isHead);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp,
-			Object result, Encoder enc) throws Exception {
+	private void printOutput(HttpServletRequest rq, HttpServletResponse rsp, Object result, Encoder enc, boolean isHead) throws Exception {
 		//
 		// Check if we can compress the result
 		//
@@ -470,21 +555,26 @@ public class RestMapper {
 			// are written with json
 			//
 
-			if (result instanceof InputStream) {
+			if (result instanceof InputStream && !isHead) {
 				IO.copy((InputStream) result, out);
 			} else if (result instanceof byte[]) {
 				byte[] data = (byte[]) result;
 				rsp.setContentLength(data.length);
-				out.write(data);
+                if (!isHead)
+				    out.write(data);
 			} else if (result instanceof File) {
 				File fresult = (File) result;
 				rsp.setContentLength((int) fresult.length());
-				IO.copy(fresult, out);
+                if (!isHead)
+				    IO.copy(fresult, out);
 			} else {
 				rsp.setContentType("application/json;charset=UTF-8");
 				if (result instanceof Iterable)
 					result = new ExtList<Object>((Iterable<Object>) result);
-				enc.writeDefaults().to(out).put(result);
+                // TODO: Content-Length should be set properly (for both GET and HEAD)
+				// TODO: Consider using the new OSGi Converter??
+				if (!isHead)
+				    enc.writeDefaults().to(out).put(result);
 			}
 		}
 		out.close();

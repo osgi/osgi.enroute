@@ -83,6 +83,9 @@ public class RestControllerService {
 						RestServlet restServlet = servlets.computeIfAbsent(
 								namespace,
 								RestControllerService.this::createServlet);
+						if (restServlet.closed.get()) {
+						    reregister(restServlet, namespace);
+						}
 						restServlet.add(resourceManager, ranking);
 					}
 					return resourceManager;
@@ -101,6 +104,9 @@ public class RestControllerService {
 						log.trace("removing REST {} on {}", resourceManager, namespace);
 						RestServlet rs = servlets.get(namespace);
 						rs.remove(resourceManager);
+						rs.close();
+						if (rs.count() == 0)
+						    servlets.remove(rs);
 
 						// we never clean them up. Seems to much work
 						// since it is likely that the namespace is reused.
@@ -143,4 +149,13 @@ public class RestControllerService {
 		return rs;
 	}
 
+	private void reregister(RestServlet rs, String namespace) {
+        Hashtable<String, Object> p = new Hashtable<>();
+        p.put(HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
+                namespace);
+        ServiceRegistration<Servlet> reg = context
+                .registerService(Servlet.class, rs, p);
+        rs.setCloseable(() -> reg.unregister());
+        rs.closed.set(false);
+	}
 }

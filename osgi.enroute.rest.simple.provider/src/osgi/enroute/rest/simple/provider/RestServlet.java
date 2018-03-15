@@ -32,7 +32,6 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	String						servletPattern;
 	Config						config;
 	boolean						angular;
-	boolean						corsEnabled;
 	Closeable					closeable;
 	static Random				random				= new Random();
 	AtomicBoolean				closed				= new AtomicBoolean(false);
@@ -40,7 +39,6 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 
 	RestServlet(Config config, String namespace) {
 		this.config = config;
-		corsEnabled = config.corsEnabled();
 		this.mapper = new RestMapper(namespace);
 	}
 
@@ -49,31 +47,12 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	}
 
 	public void service(HttpServletRequest rq, HttpServletResponse rsp) throws IOException, ServletException {
-		if (corsEnabled) {
-			addCorsHeaders(rsp);
-		}
+        if (config.requireSSL() && !isSecure(rq)) {
+            rsp.sendError(config.notSecureError());
+            return;
+        }
 
-		if ("OPTIONS".equalsIgnoreCase(rq.getMethod())) {
-			doOptions(rq, rsp);
-		} else {
-			mapper.execute(rq, rsp);
-		}
-	}
-
-	/*
-	 * this is required to handle the Client requests with Request METHOD
-	 * &quot;OPTIONS&quot; typically the preflight requests
-	 */
-	protected void doOptions(HttpServletRequest rq, HttpServletResponse rsp) throws ServletException, IOException {
-		super.doOptions(rq, rsp);
-	}
-
-	private void addCorsHeaders(HttpServletResponse rsp) {
-		rsp.setHeader("Access-Control-Allow-Origin", config.allowOrigin());
-		rsp.setHeader("Access-Control-Allow-Methods", config.allowedMethods());
-		rsp.setHeader("Access-Control-Allow-Headers", config.allowHeaders());
-		rsp.addIntHeader("Access-Control-Max-Age", config.maxAge());
-		rsp.setHeader("Allow", config.allowedMethods());
+        mapper.execute(rq, rsp);
 	}
 
 	public void close() throws IOException {
@@ -90,4 +69,17 @@ class RestServlet extends HttpServlet implements REST, Closeable {
 	synchronized void remove(REST resource) {
 		mapper.removeResource(resource);
 	}
+
+	synchronized int count() {
+	    return mapper.endpoints.size();
+	}
+
+	private static boolean isSecure(HttpServletRequest hreq) {
+        if( hreq.isSecure() )
+            return true;
+
+        // If behind a proxy, check the "X-Forwarded-Proto" value set by the proxy server
+        final String schemeHeader = hreq.getHeader( "X-Forwarded-Proto" );
+        return "https".equals(schemeHeader);
+    }
 }

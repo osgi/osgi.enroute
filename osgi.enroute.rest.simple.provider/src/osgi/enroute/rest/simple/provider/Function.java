@@ -15,7 +15,7 @@ import osgi.enroute.rest.api.RESTRequest;
 
 /**
  * Cache for information about the discovered methods to speed up the mapping
- * process.
+ * process. Includes CORS configuration as well, if available.
  */
 class Function {
 	final Method						method;
@@ -32,6 +32,7 @@ class Function {
 	final String						path;
 	final int							ranking;
 	Map<String, String>					args		= Collections.emptyMap();
+	final CORSUtil.CORSConfig           cors;
 
 	static Converter					converter	= new Converter();
 	static EnumSet<Verb>				PAYLOAD		= EnumSet.of(Verb.post,
@@ -146,6 +147,8 @@ class Function {
 		this.parameters = new java.lang.reflect.Parameter[len];
 		System.arraycopy(method.getParameters(), offset, this.parameters, 0,
 				len);
+
+		cors = CORSUtil.parseCORS(target, method, name, verb, cardinality);
 	}
 
 	Type getPayloadType() {
@@ -217,5 +220,9 @@ class Function {
 
 	String getPath() {
 		return path;
+	}
+
+	CORSUtil.CORSConfig getCORS() {
+	    return cors;
 	}
 }
