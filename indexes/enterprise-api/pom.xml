@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.osgi.enroute</groupId>
+        <artifactId>indexes</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>enterprise-api</artifactId>
+    <packaging>pom</packaging>
+
+    <description>A convenience pom for anyone who wants to depend on the Enterprise APIs referenced in OSGi R7</description>
+
+    <repositories>
+        <repository>
+            <id>Apache Snapshots</id>
+            <url>https://repository.apache.org/content/groups/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.servlet-api</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.aries.spec</groupId>
+            <artifactId>org.apache.aries.javax.jax.rs-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.aries.jpa.javax.persistence</groupId>
+            <artifactId>javax.persistence_2.1</artifactId>
+            <version>2.7.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+</project>

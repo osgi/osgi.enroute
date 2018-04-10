@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.osgi.enroute</groupId>
+    <artifactId>enroute-all</artifactId>
+    <name>OSGi enRoute All</name>
+    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <description>
+        A top-level reactor for building all of the OSGi enRoute projects.
+        This project should not be released, and is provided for convenient
+        test builds both locally and in CI.
+    </description>
+
+    <url>http://enroute.osgi.org/</url>
+    
+    <organization>
+        <name>OSGi Alliance</name>
+        <url>https://osgi.org/</url>
+    </organization>
+    
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.opensource.org/licenses/apache2.0.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <scm>
+        <url>https://github.com/osgi/osgi.enroute</url>
+        <connection>scm:git:https://github.com/osgi/osgi.enroute.git</connection>
+        <developerConnection>scm:git:https://github.com/osgi/osgi.enroute.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/osgi/osgi.enroute/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>OSGi Developer Mail List</name>
+            <post>osgi-dev@mail.osgi.org</post>
+            <subscribe>https://mail.osgi.org/mailman/listinfo/osgi-dev</subscribe>
+            <archive>https://mail.osgi.org/pipermail/osgi-dev/</archive>
+        </mailingList>
+    </mailingLists>
+    
+    <!-- Do not deploy this project -->
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+    
+    <modules>
+        <module>indexes</module>
+        <module>archetypes</module>
+        <module>examples</module>
+    </modules>
+</project>

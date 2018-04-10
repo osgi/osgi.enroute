@@ -12,15 +12,15 @@ This information will help us review and fix your issue faster.
 
 ## Building
 
-The only thing you need to build is Java 8. We use Gradle to build and the repo 
-includes `gradlew`. You can use your system `gradle` but we require 
-at least version 2.3.
+The only thing you need to build is Java 8. We use Maven to build and the repo 
+includes `mvnw`. You can use your system `mvn` but we require 
+at least version 3.1.0.
 
-`./gradlew build`    - Assembles and tests the projects  
-`./gradlew release`  - Assembles and releases the projects into cnf/release.
+`./mvnw package`    - Assembles and tests the projects  
+`./mvnw install`  - Assembles and releases the projects into your local repository.
 
-We use [Travis CI](https://travis-ci.org/osgi/osgi.enroute) and the repo includes a
-`.travis.yml` file to build on Travis CI.
+We use [Travis CI](https://travis-ci.org/osgi/osgi.enroute) and [AppVeyor](https://ci.appveyor.com/project/osgi/osgi.enroute) and the repo includes
+`.travis.yml` and `appveyor.yml` files to build.
 
 ## Workflow
 

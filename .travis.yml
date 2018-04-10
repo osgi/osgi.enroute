@@ -3,18 +3,19 @@ language: java
 jdk:
 - oraclejdk8
 install:
-- "./gradlew --version"
+- "./mvnw --version"
 script:
-- "./gradlew --continue build"
+- "./mvnw verify"
 after_success:
 - git status
 - echo $REPOSITORY_USERNAME
 - echo $TRAVIS_PULL_REQUEST
 - echo $TRAVIS_BRANCH
 - if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a  ${REPOSITORY_USERNAME:=X}
-  != X ]; then ./gradlew release; fi
+  != X ]; then ./mvnw deploy --settings .travis-deploy-settings.xml; fi
 cache:
   directories:
-  - "$HOME/.gradle"
+  - "$HOME/.mvn"
+  - "$HOME/.m2/wrapper"
 env:
   secure: Viylj63KeNflVf01WfmEQymHSCdHLsQR6sOu0RqWrXVpqUDy71zRjQ2uKCtZioRTxvgrwukW2nbDm0nSvYhw9gbVeJ3dj5eiStrLaMtlEePCu29tCtuBomQShD562sxlsJmvAVCFJZgLGKIS5E2+wW6TCoJtJqhGmHd0RJkHonA=

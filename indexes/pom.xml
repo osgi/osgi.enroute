@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.osgi.enroute</groupId>
+    <artifactId>indexes</artifactId>
+    <name>OSGi enRoute indexes parent</name>
+    <packaging>pom</packaging>
+    <version>7.0.0-SNAPSHOT</version>
+
+    <description>The parent for generating the R7 OSGi indexes used by enRoute</description>
+
+    <url>http://enroute.osgi.org/</url>
+
+    <organization>
+        <name>OSGi Alliance</name>
+        <url>https://osgi.org/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.opensource.org/licenses/apache2.0.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/osgi/osgi.enroute</url>
+        <connection>scm:git:https://github.com/osgi/osgi.enroute.git</connection>
+        <developerConnection>scm:git:https://github.com/osgi/osgi.enroute.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/osgi/osgi.enroute/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>OSGi Developer Mail List</name>
+            <post>osgi-dev@mail.osgi.org</post>
+            <subscribe>https://mail.osgi.org/mailman/listinfo/osgi-dev</subscribe>
+            <archive>https://mail.osgi.org/pipermail/osgi-dev/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <repositories>
+        <repository>
+            <id>OSGi</id>
+            <name>OSGi public binaries</name>
+            <url>https://oss.sonatype.org/content/groups/osgi</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>OSGi Releases</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>OSGi Snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>osgi-api</module>
+        <module>impl-index</module>
+        <module>enterprise-api</module>
+        <module>debug-bundles</module>
+        <module>test-bundles</module>
+    </modules>
+</project>

@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.osgi.enroute.archetype</groupId>
+    <artifactId>archetypes</artifactId>
+    <name>OSGi enRoute Archetypes parent</name>
+    <packaging>pom</packaging>
+    <version>7.0.0-SNAPSHOT</version>
+
+    <description>The parent for generating the Maven archetypes for OSGi enRoute R7</description>
+
+    <url>http://enroute.osgi.org/</url>
+
+    <organization>
+        <name>OSGi Alliance</name>
+        <url>https://osgi.org/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.opensource.org/licenses/apache2.0.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/osgi/osgi.enroute</url>
+        <connection>scm:git:https://github.com/osgi/osgi.enroute.git</connection>
+        <developerConnection>scm:git:https://github.com/osgi/osgi.enroute.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/osgi/osgi.enroute/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>OSGi Developer Mail List</name>
+            <post>osgi-dev@mail.osgi.org</post>
+            <subscribe>https://mail.osgi.org/mailman/listinfo/osgi-dev</subscribe>
+            <archive>https://mail.osgi.org/pipermail/osgi-dev/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <repositories>
+        <repository>
+            <id>OSGi</id>
+            <name>OSGi public binaries</name>
+            <url>https://oss.sonatype.org/content/groups/osgi</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>OSGi Releases</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>OSGi Snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <test.repo>${project.build.directory}/it-repo</test.repo>
+        <test.settings>../settings.xml</test.settings>
+    </properties>
+
+    <modules>
+        <module>project</module>
+        <module>ds-component</module>
+        <module>rest-component</module>
+        <module>project-bare</module>
+        <module>application</module>
+        <module>api</module>
+        <module>bundle-test</module>
+    </modules>
+
+    <!-- All archetypes depend on these to ensure the latest versions are 
+        used in testing -->
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>osgi-api</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>enterprise-api</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>impl-index</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>debug-bundles</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.archetype</groupId>
+                <artifactId>archetype-packaging</artifactId>
+                <version>3.0.1</version>
+            </extension>
+        </extensions>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-archetype-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <ignoreEOLStyle>true</ignoreEOLStyle>
+                        <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+                        <settingsFile>${test.settings}</settingsFile>
+                    </configuration>
+                </plugin>
+                <!-- Install the dependencies into the test repo so the latest 
+                    versions are used in testing -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-invoker-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <localRepositoryPath>${test.repo}</localRepositoryPath>
+                        <settingsFile>${test.settings}</settingsFile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>install-test-deps</id>
+                            <goals>
+                                <goal>install</goal>
+                            </goals>
+                            <phase>pre-integration-test</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

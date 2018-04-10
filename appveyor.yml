@@ -6,13 +6,12 @@ environment:
   JAVA_HOME: C:\Program Files\Java\jdk1.8.0
 
 install:
-  - gradlew.bat --version
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
+  - ps: .\appveyor-maven-proxy.ps1
+  - mvnw.cmd --version
 
 build_script:
-  - gradlew.bat --continue build
+  - mvn verify
 
 on_success:
   - git status
-
-cache:
-  - C:\Users\appveyor\.gradle -> .gradle-wrapper\gradle-wrapper.properties

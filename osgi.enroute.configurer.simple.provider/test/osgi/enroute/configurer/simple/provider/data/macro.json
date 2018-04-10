@@ -1,8 +1,0 @@
-[
-   { 
-      "service.pid":							"macro",
-      "bundleid":							"@{bundleid}",
-      "location":							"@{location}",
-      "def":									"-@{def;foo}-"
-   }
-]
