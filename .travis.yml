@@ -11,7 +11,7 @@ after_success:
 - echo $REPOSITORY_USERNAME
 - echo $TRAVIS_PULL_REQUEST
 - echo $TRAVIS_BRANCH
-- if [ R7 == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a  ${REPOSITORY_USERNAME:=X}
+- if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a  ${REPOSITORY_USERNAME:=X}
   != X ]; then ./mvnw deploy --settings .travis-deploy-settings.xml; fi
 cache:
   directories:
