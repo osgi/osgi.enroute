@@ -20,4 +20,4 @@ index: target/index.xml
 	org.osgi.util.function;version='[1.1.0,1.1.1)',\
 	org.osgi.util.promise;version='[1.1.0,1.1.1)',\
 	slf4j.api;version='[1.7.25,1.7.26)',\
-	org.apache.felix.http.jetty;version='[3.4.7,3.4.8)'
+	org.apache.felix.http.jetty;version='[4.0.0,4.0.1)'
