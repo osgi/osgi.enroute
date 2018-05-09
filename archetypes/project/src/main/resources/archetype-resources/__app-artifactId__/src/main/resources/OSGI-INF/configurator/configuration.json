@@ -4,7 +4,7 @@
     
     // Global Settings
     ":configurator:resource-version" : 1,
-    ":configurator:symbolicname" : "${groupId}.${app-artifactId}.config",
+    ":configurator:symbolic-name" : "${groupId}.${app-artifactId}.config",
     ":configurator:version" : "${version}",
     
     /*

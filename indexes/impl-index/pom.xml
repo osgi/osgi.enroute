@@ -260,6 +260,12 @@
             <artifactId>org.apache.aries.jpa.container</artifactId>
             <version>2.7.0</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.aries.jpa.javax.persistence</groupId>
+                    <artifactId>javax.persistence_2.0</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Several implementations need to log using SLF4J -->
