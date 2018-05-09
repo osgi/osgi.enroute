@@ -8,7 +8,6 @@ index: target/index.xml
 -runbundles: \
 	ch.qos.logback.classic;version='[1.2.3,1.2.4)',\
 	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
-	javax.json-api;version='[1.0.0,1.0.1)',\
 	org.apache.aries.javax.annotation-api;version='[0.0.1,0.0.2)',\
 	org.apache.aries.javax.jax.rs-api;version='[0.0.1,0.0.2)',\
 	org.apache.aries.jax.rs.whiteboard;version='[0.0.1,0.0.2)',\
