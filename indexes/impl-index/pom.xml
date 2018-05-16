@@ -297,7 +297,7 @@
             <plugin>
                 <groupId>biz.aQute.bnd</groupId>
                 <artifactId>bnd-indexer-maven-plugin</artifactId>
-                <version>4.0.0-SNAPSHOT</version>
+                <version>4.0.0</version>
                 <executions>
                     <execution>
                         <id>index</id>
