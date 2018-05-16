@@ -1,21 +1,31 @@
 sudo: false
+
 language: java
+
 jdk:
-- oraclejdk8
+  - oraclejdk8
+
+before_install:
+  - unset _JAVA_OPTIONS
+
 install:
-- "./mvnw --version"
+  - ./mvnw --version
+
 script:
-- "./mvnw verify"
+  - ./mvnw verify
+
 after_success:
-- git status
-- echo $REPOSITORY_USERNAME
-- echo $TRAVIS_PULL_REQUEST
-- echo $TRAVIS_BRANCH
-- if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a  ${REPOSITORY_USERNAME:=X}
-  != X ]; then ./mvnw deploy --settings .travis-deploy-settings.xml; fi
+  - echo $REPOSITORY_USERNAME
+  - echo $TRAVIS_PULL_REQUEST
+  - echo $TRAVIS_BRANCH
+  - if [ master == $TRAVIS_BRANCH -a $TRAVIS_PULL_REQUEST == false -a ${REPOSITORY_USERNAME:=X} != X ]; then ./mvnw deploy --settings .travis-deploy-settings.xml; fi
+
+before_cache:
+  - git status
+
 cache:
   directories:
-  - "$HOME/.mvn"
-  - "$HOME/.m2/wrapper"
+  - $HOME/.m2/wrapper
+
 env:
   secure: Viylj63KeNflVf01WfmEQymHSCdHLsQR6sOu0RqWrXVpqUDy71zRjQ2uKCtZioRTxvgrwukW2nbDm0nSvYhw9gbVeJ3dj5eiStrLaMtlEePCu29tCtuBomQShD562sxlsJmvAVCFJZgLGKIS5E2+wW6TCoJtJqhGmHd0RJkHonA=
