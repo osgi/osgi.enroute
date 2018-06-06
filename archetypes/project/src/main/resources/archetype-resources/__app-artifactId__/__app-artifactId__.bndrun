@@ -5,3 +5,6 @@ index: target/index.xml
 -runrequires: osgi.identity;filter:='(osgi.identity=${groupId}.${impl-artifactId})'
 -runfw: org.apache.felix.framework
 -runee: JavaSE-1.8
+-runbundles: \
+        org.apache.felix.scr;version='[2.1.0,2.1.1)',\
+        ${groupId}.${impl-artifactId};version='[1.0.0,1.0.1)'
