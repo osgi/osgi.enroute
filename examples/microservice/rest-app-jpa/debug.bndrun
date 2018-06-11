@@ -1,6 +1,6 @@
 -include: ~rest-app-jpa.bndrun
 
-test-index: target/test-index.xml
+test-index: target/test-index.xml;name="rest-app-jpa Test"
 
 -standalone: ${index},${test-index}
 

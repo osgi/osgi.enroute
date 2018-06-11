@@ -1,6 +1,6 @@
 -include: ~${app-artifactId}.bndrun
 
-test-index: target/test-index.xml
+test-index: target/test-index.xml;name="${app-artifactId} Test"
 
 -standalone: ${index},${test-index}
 

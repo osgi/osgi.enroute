@@ -1,4 +1,4 @@
-index: target/index.xml
+index: target/index.xml;name="${app-artifactId}"
 
 -standalone: ${index}
 

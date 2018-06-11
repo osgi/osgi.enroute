@@ -1,6 +1,6 @@
 -include: ~app.bndrun
 
-test-index: target/test-index.xml
+test-index: target/test-index.xml;name="app Test"
 
 -standalone: ${index},${test-index}
 
