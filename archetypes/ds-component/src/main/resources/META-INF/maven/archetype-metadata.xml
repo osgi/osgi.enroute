@@ -5,6 +5,11 @@
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+    <requiredProperties>
+        <requiredProperty key="package">
+            <defaultValue>${groupId.replaceAll('-','.')}.${artifactId.replaceAll('-','.')}</defaultValue>
+        </requiredProperty>
+    </requiredProperties>
 
     <fileSets>
         <fileSet filtered="true" packaged="true"
