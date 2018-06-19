@@ -12,6 +12,9 @@
         <requiredProperty key="app-artifactId">
             <defaultValue>app</defaultValue>
         </requiredProperty>
+        <requiredProperty key="package">
+            <defaultValue>${groupId.replaceAll('-','.')}.${artifactId.replaceAll('-','.')}</defaultValue>
+        </requiredProperty>
     </requiredProperties>
 
     <fileSets>
