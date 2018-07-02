@@ -39,12 +39,11 @@
     </pluginRepositories>
 
     <dependencies>
-        <!-- The OSGi framework RI is Equinox but that doesn't have a snapshot 
-            available -->
+        <!-- The OSGi framework RI is Equinox -->
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>5.7.0-SNAPSHOT</version>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+            <version>3.13.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -66,7 +65,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.2</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -74,7 +73,14 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.equinox.metatype</artifactId>
-            <version>1.4.200</version>
+            <version>1.4.400</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.metatype</artifactId>
+            <version>1.4.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -82,18 +88,18 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.equinox.event</artifactId>
-            <version>1.3.200</version>
+            <version>1.4.200</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.event</artifactId>
-            <version>1.3.1</version>
+            <version>1.4.0</version>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Log Service - it's not clear whether this is the RI -->
+        <!-- Log Stream Service -->
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.log</artifactId>
@@ -101,20 +107,9 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.log</artifactId>
-            <version>1.0.1</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.osgi</groupId>
-                    <artifactId>org.osgi.core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.osgi</groupId>
-                    <artifactId>org.osgi.compendium</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.log.stream</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- Http Whiteboard -->
@@ -185,7 +180,7 @@
         <dependency>
             <groupId>org.apache.aries.jax.rs</groupId>
             <artifactId>org.apache.aries.jax.rs.whiteboard</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -193,7 +188,7 @@
         <dependency>
             <groupId>org.apache.aries.spec</groupId>
             <artifactId>org.apache.aries.javax.jax.rs-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -266,6 +261,13 @@
                     <artifactId>javax.persistence_2.0</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- Used heavily in conjunction with JDBC -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.jdbc</artifactId>
+            <version>1.0.0</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Several implementations need to log using SLF4J -->

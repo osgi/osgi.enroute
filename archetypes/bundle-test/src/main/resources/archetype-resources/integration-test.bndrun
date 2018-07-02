@@ -12,7 +12,7 @@ Import-Package: org.osgi.framework.*;version="[1.8,2)",*
 # Used by Objenesis/Mockito and not actually optional
 -runsystempackages: sun.reflect
 
--runfw: org.apache.felix.framework
+-runfw: org.eclipse.osgi
 -runee: JavaSE-1.8
 
 -runrequires: \
