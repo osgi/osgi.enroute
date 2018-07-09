@@ -23,7 +23,7 @@ import org.osgi.service.log.LogService;
 
 import aQute.bnd.junit.JUnitFramework;
 import aQute.bnd.osgi.EmbeddedResource;
-import aQute.bnd.osgi.URLResource;
+import aQute.bnd.osgi.Resource;
 import aQute.lib.io.IO;
 
 /*
@@ -77,7 +77,7 @@ public class ConfigurerTest {
 	public void testBasic() throws Exception {
 		Bundle bundle = juf.bundle()
 				.addResource("configuration/configuration.json",
-						new URLResource(getClass().getResource("data/basic.json")))
+						Resource.fromURL(getClass().getResource("data/basic.json")))
 				.install();
 
 		bundle.start();
@@ -97,7 +97,7 @@ public class ConfigurerTest {
 
 		Bundle bundle = juf.bundle()
 				.addResource("configuration/configuration.json",
-						new URLResource(getClass().getResource("data/override.json")))
+						Resource.fromURL(getClass().getResource("data/override.json")))
 				.install();
 
 		bundle.start();
@@ -118,7 +118,7 @@ public class ConfigurerTest {
 
 		Bundle bundle = juf.bundle()
 				.addResource("configuration/configuration.json",
-						new URLResource(getClass().getResource("data/precious.json")))
+						Resource.fromURL(getClass().getResource("data/precious.json")))
 				.install();
 
 		bundle.start();
@@ -140,7 +140,7 @@ public class ConfigurerTest {
 
 		Bundle bundle = juf.bundle()
 				.addResource("configuration/configuration.json",
-						new URLResource(getClass().getResource("data/nooverride.json")))
+						Resource.fromURL(getClass().getResource("data/nooverride.json")))
 				.install();
 
 		bundle.start();
@@ -162,7 +162,7 @@ public class ConfigurerTest {
 	public void testMacros() throws Exception {
 		Bundle bundle = juf.bundle()
 				.addResource("configuration/configuration.json",
-						new URLResource(getClass().getResource("data/macro.json")))
+						Resource.fromURL(getClass().getResource("data/macro.json")))
 				.install();
 		bundle.start();
 		Thread.sleep(DELAY);
@@ -178,7 +178,7 @@ public class ConfigurerTest {
 	public void testResource() throws Exception {
 		Bundle bundle = juf.bundle()
 				.addResource("configuration/configuration.json",
-						new URLResource(getClass().getResource("data/resource.json")))
+						Resource.fromURL(getClass().getResource("data/resource.json")))
 				.addResource("foo.bar",
 						new EmbeddedResource("FOO".getBytes(StandardCharsets.UTF_8), 0))
 				.install();
@@ -201,7 +201,7 @@ public class ConfigurerTest {
 	public void testProfile() throws Exception {
 		Bundle bundle = juf.bundle()
 				.addResource("configuration/configuration.json",
-						new URLResource(getClass().getResource("data/profile.json")))
+						Resource.fromURL(getClass().getResource("data/profile.json")))
 				.addResource("foo.bar",
 						new EmbeddedResource("FOO".getBytes(StandardCharsets.UTF_8), 0))
 				.install();
