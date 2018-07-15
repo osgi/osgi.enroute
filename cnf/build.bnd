@@ -5,7 +5,7 @@ copyright = Copyright (c) OSGi Alliance (2014, ${copyright.year}). All Rights Re
 
 baseline.version:       2.0.0
 base.version:           2.1.0
-bnd-version				3.3.0
+bnd-version				4.0.0
 
 # To release, remove the -SNAPSHOT
 
@@ -124,7 +124,7 @@ base.packages =  \
 -connection-settings: ${if;${pwd};server;-dummy};id=https://oss.sonatype.org;username=${usr};password=${pwd}, -bnd
 
 -plugin.enroute.distro = \
-	aQute.bnd.deployer.repository.FixedIndexedRepo; \
+	aQute.bnd.repository.osgi.OSGiRepository; \
 	        name		=       Distro; \
 	        locations	=       https://raw.githubusercontent.com/osgi/osgi.enroute/v1.0.0/cnf/distro/index.xml
 

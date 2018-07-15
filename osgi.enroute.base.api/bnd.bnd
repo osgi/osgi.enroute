@@ -62,7 +62,7 @@ Conditional-Package:	org.slf4j.*
 	osgi.core;version=@6.0.0,\
 	osgi.cmpn;version=@6.0.0,\
 	slf4j.api;version=@1.7.0,\
-	biz.aQute.bnd.annotation;version=@3.0.0,\
+	biz.aQute.bnd.annotation;version=@4.0.0,\
 	org.apache.felix.http.servlet-api,\
 	slf4j.simple;version=@1.7,\
 	biz.aQute.junit
