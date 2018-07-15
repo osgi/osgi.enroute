@@ -9,7 +9,8 @@ bnd-version				4.0.0
 
 # To release, remove the -SNAPSHOT
 
-enroute-version			${base.version}-SNAPSHOT
+enroute-version			${base.version}
+#-SNAPSHOT
 -groupid:               org.osgi
 -pom:                   version=${enroute-version}
 
