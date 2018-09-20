@@ -5,3 +5,5 @@ index: target/index.xml;name="standalone-app-module"
 -runrequires: osgi.identity;filter:='(osgi.identity=archetype.it.impl-bundle)'
 -runfw: org.eclipse.osgi
 -runee: JavaSE-1.8
+
+-resolve.effective: active

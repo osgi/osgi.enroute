@@ -5,6 +5,9 @@ index: target/index.xml;name="app"
 -runrequires: osgi.identity;filter:='(osgi.identity=org.osgi.enroute.examples.quickstart.rest)'
 -runfw: org.eclipse.osgi
 -runee: JavaSE-1.8
+
+-resolve.effective: active
+
 -runbundles: \
 	ch.qos.logback.classic;version='[1.2.3,1.2.4)',\
 	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
