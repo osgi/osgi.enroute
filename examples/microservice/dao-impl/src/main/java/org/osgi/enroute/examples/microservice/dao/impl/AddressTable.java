@@ -26,7 +26,7 @@ public interface AddressTable {
 
 	String INIT = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" //
 			+ "email_address varchar(255) NOT NULL," //
-			+ "person_id  mediumint(9) NOT NULL," //
+			+ "person_id  bigint NOT NULL," //
 			+ "city varchar(100) NOT NULL," //
 			+ "country varchar(2) NOT NULL," //
 			+ "PRIMARY KEY (email_address)" + ") ;";
