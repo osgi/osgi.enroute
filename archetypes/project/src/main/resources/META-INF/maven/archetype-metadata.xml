@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archetype-descriptor
-    xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+    xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 https://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
     name="OSGi enRoute R7 project build"
-    xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+    xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <requiredProperties>
@@ -14,6 +14,10 @@
         </requiredProperty>
         <requiredProperty key="package">
             <defaultValue>${groupId.replaceAll('-','.')}.${artifactId.replaceAll('-','.')}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="app-target-java-version">
+            <defaultValue>8</defaultValue>
+            <validationRegex>^([89])$|^(1[0-9])$</validationRegex>
         </requiredProperty>
     </requiredProperties>
 
