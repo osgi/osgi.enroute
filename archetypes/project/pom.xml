@@ -41,14 +41,52 @@
                 <configuration>
                     <failIfNoProjects>true</failIfNoProjects>
                     <cloneClean>false</cloneClean>
-                    <pom>${project.build.directory}/test-classes/projects/basic/project/basic/pom.xml</pom>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>test-archetype</id>
+                        <id>test-archetype-8</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <pom>${project.build.directory}/test-classes/projects/basic-8/project/basic/pom.xml</pom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-archetype-9</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <pom>${project.build.directory}/test-classes/projects/basic-9/project/basic/pom.xml</pom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-archetype-10</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <pom>${project.build.directory}/test-classes/projects/basic-10/project/basic/pom.xml</pom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-archetype-11</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <pom>${project.build.directory}/test-classes/projects/basic-11/project/basic/pom.xml</pom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-archetype-12</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <pom>${project.build.directory}/test-classes/projects/basic-12/project/basic/pom.xml</pom>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

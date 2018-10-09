@@ -4,4 +4,18 @@ index: target/index.xml;name="${app-artifactId}"
 
 -runrequires: osgi.identity;filter:='(osgi.identity=${groupId}.${impl-artifactId})'
 -runfw: org.eclipse.osgi
+#if ($app-target-java-version == '8')
 -runee: JavaSE-1.8
+#elseif ($app-target-java-version == '9')
+-runee: JavaSE-9
+#elseif ($app-target-java-version == '10')
+-runee: JavaSE-10
+#elseif ($app-target-java-version == '11')
+-runee: JavaSE-11
+#else
+
+# There is no current platform definition for Java ${app-target-java-version} so Java 11 will be used
+-runee: JavaSE-11
+#end
+
+-resolve.effective: active

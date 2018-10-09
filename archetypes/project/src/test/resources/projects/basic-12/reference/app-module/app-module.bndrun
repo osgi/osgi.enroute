@@ -1,0 +1,11 @@
+index: target/index.xml;name="app-module"
+
+-standalone: ${index}
+
+-runrequires: osgi.identity;filter:='(osgi.identity=archetype.it.impl-bundle)'
+-runfw: org.eclipse.osgi
+
+# There is no current platform definition for Java 12 so Java 11 will be used
+-runee: JavaSE-11
+
+-resolve.effective: active

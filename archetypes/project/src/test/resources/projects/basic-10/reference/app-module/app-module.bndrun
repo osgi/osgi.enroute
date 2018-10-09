@@ -1,0 +1,9 @@
+index: target/index.xml;name="app-module"
+
+-standalone: ${index}
+
+-runrequires: osgi.identity;filter:='(osgi.identity=archetype.it.impl-bundle)'
+-runfw: org.eclipse.osgi
+-runee: JavaSE-10
+
+-resolve.effective: active
