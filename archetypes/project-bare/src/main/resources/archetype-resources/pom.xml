@@ -14,6 +14,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bnd.version>4.1.0-SNAPSHOT</bnd.version>
     </properties>
 
     <repositories>
@@ -101,7 +102,7 @@
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
                     <artifactId>bnd-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>${bnd.version}</version>
                     <configuration>
                         <bnd><![CDATA[
 Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
@@ -135,7 +136,7 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
                     <artifactId>bnd-indexer-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>${bnd.version}</version>
                     <configuration>
                         <localURLs>REQUIRED</localURLs>
                         <attach>false</attach>
@@ -170,7 +171,7 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
                     <artifactId>bnd-resolver-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>${bnd.version}</version>
                     <configuration>
                         <failOnChanges>false</failOnChanges>
                         <bndruns>
@@ -189,7 +190,7 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
                     <artifactId>bnd-export-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>${bnd.version}</version>
                     <configuration>
                         <resolve>true</resolve>
                         <failOnChanges>true</failOnChanges>
@@ -207,7 +208,7 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
                     <artifactId>bnd-testing-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>${bnd.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -222,7 +223,7 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
                     <artifactId>bnd-baseline-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>${bnd.version}</version>
                     <configuration>
                         <failOnMissing>false</failOnMissing>
                     </configuration>
