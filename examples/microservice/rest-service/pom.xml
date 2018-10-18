@@ -5,7 +5,7 @@
     <parent>
         <artifactId>microservice</artifactId>
         <groupId>org.osgi.enroute.examples.microservice</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>rest-service</artifactId>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.osgi.enroute.examples.microservice</groupId>
             <artifactId>dao-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
 
         <!-- We test against the Apache Johnzon JSONP implementation, but 

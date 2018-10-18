@@ -5,7 +5,7 @@
     <parent>
         <artifactId>microservice</artifactId>
         <groupId>org.osgi.enroute.examples.microservice</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>dao-impl</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.osgi.enroute.examples.microservice</groupId>
             <artifactId>dao-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

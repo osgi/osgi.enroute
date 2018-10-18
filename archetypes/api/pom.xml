@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.osgi.enroute.archetype</groupId>
         <artifactId>archetypes</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>7.0.0</version>
     </parent>
     <artifactId>api</artifactId>
     <packaging>maven-archetype</packaging>

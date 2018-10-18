@@ -8,7 +8,7 @@
     <artifactId>indexes</artifactId>
     <name>OSGi enRoute indexes parent</name>
     <packaging>pom</packaging>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.0</version>
 
     <description>The parent for generating the R7 OSGi indexes used by enRoute</description>
 
