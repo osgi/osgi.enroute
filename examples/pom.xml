@@ -8,7 +8,7 @@
     <artifactId>examples</artifactId>
     <name>OSGi enRoute examples parent</name>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <description>The parent for the OSGi enRoute example projects</description>
 
@@ -113,35 +113,35 @@
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>osgi-api</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>enterprise-api</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>impl-index</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>debug-bundles</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>test-bundles</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>test</scope>
             </dependency>
