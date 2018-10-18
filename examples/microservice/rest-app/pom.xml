@@ -5,12 +5,12 @@
     <parent>
         <artifactId>microservice</artifactId>
         <groupId>org.osgi.enroute.examples.microservice</groupId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.osgi.enroute.examples.microservice</groupId>
     <artifactId>rest-app</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <description>The rest-app application packaging project - using OSGi enRoute R7</description>
 
@@ -18,12 +18,12 @@
         <dependency>
             <groupId>org.osgi.enroute.examples.microservice</groupId>
             <artifactId>dao-impl</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.osgi.enroute.examples.microservice</groupId>
             <artifactId>rest-service</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         
         <!-- We choose the Apache Johnzon JSONP implementation and H2 for 

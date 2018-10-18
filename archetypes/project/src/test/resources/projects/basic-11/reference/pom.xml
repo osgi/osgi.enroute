@@ -65,35 +65,35 @@
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>osgi-api</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>enterprise-api</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>impl-index</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>debug-bundles</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi.enroute</groupId>
                 <artifactId>test-bundles</artifactId>
-                <version>7.0.0</version>
+                <version>7.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>test</scope>
             </dependency>

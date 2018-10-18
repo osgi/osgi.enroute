@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.osgi.enroute</groupId>
         <artifactId>indexes</artifactId>
-        <version>7.0.0</version>
+        <version>7.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>debug-bundles</artifactId>
     <packaging>pom</packaging>

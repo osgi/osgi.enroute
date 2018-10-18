@@ -5,7 +5,7 @@
     <parent>
         <artifactId>microservice</artifactId>
         <groupId>org.osgi.enroute.examples.microservice</groupId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>rest-app-jpa</artifactId>
@@ -16,12 +16,12 @@
         <dependency>
             <groupId>org.osgi.enroute.examples.microservice</groupId>
             <artifactId>dao-impl-jpa</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.osgi.enroute.examples.microservice</groupId>
             <artifactId>rest-service</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         
         <!-- We choose the Apache Johnzon JSONP implementation, H2 and Hibernate 
