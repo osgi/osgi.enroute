@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>test-bundles</artifactId>
+    <packaging>pom</packaging>
 
     <description>An index containing bundles useful for unit testing and component testing</description>
 
@@ -23,37 +24,4 @@
             <version>2.13.0</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <!-- Generate the indexes -->
-            <plugin>
-                <groupId>biz.aQute.bnd</groupId>
-                <artifactId>bnd-indexer-maven-plugin</artifactId>
-                <version>4.1.0</version>
-                <executions>
-                    <execution>
-                        <id>index</id>
-                        <goals>
-                            <goal>index</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Skip Empty Jar creation -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <configuration>
-                            <skipIfEmpty>true</skipIfEmpty>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

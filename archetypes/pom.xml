@@ -18,6 +18,16 @@
         <name>OSGi Alliance</name>
         <url>https://osgi.org/</url>
     </organization>
+    
+    <developers>
+        <developer>
+            <id>osgi</id>
+            <name>OSGi Alliance</name>
+            <email>info@osgi.org</email>
+            <organization>OSGi Alliance</organization>
+            <organizationUrl>https://www.osgi.org/</organizationUrl>
+        </developer>
+    </developers>
 
     <licenses>
         <license>
@@ -160,4 +170,28 @@
             </plugins>
         </pluginManagement>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
