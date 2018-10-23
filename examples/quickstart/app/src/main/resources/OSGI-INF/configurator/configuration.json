@@ -1,0 +1,11 @@
+{
+    // Comments are permitted in configuration files, but they should be
+    // minified if they are going to be used as strict JSON
+    
+    // Global Settings
+    ":configurator:resource-version" : 1,
+    ":configurator:symbolic-name" : "org.osgi.enroute.examples.quickstart.config",
+    ":configurator:version" : "0.0.2.SNAPSHOT",
+    
+    // There is no configuration for the quickstart application
+}
