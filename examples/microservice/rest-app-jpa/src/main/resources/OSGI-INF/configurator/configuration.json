@@ -2,7 +2,7 @@
     // Global Settings
     ":configurator:resource-version" : 1,
     ":configurator:symbolic-name" : "org.osgi.enroute.examples.microservice.jpa.config",
-    ":configurator:version" : "0.0.1.SNAPSHOT",
+    ":configurator:version" : "0.0.1",
     
     
     // Configure a JPA resource provider
