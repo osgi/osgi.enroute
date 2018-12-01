@@ -1,7 +1,7 @@
 <h1><img src="http://enroute.osgi.org/img/enroute-logo-64.png" witdh=40px style="float:left;margin: 0 1em 1em 0;width:40px">
 OSGi enRoute</h1>
 
-[![Gitpod - Code Now](https://img.shields.io/badge/Gitpod-code%20now-blue.svg?longCache=true)](https://gitpod.io#https://github.com/osgi/osgi.enroute/tree/master/examples/quickstart)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/Sandared/jmh-benchmarks/blob/master/benchmarks/src/main/java/io/jatoms/jmh/OSGiBenchmark2.java)
 
 Interested in developing agile & maintainable Enterprise or highly distributed IoT solutions? In either case, [OSGi enRoute](http://enroute.osgi.org) provides a simple on-ramp for developing such modular distributed applications and exploring the power of OSGi.
 
