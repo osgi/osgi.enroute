@@ -1,0 +1,12 @@
+index: target/index.xml;name="app"
+
+-standalone: ${index}
+
+-runrequires: osgi.identity;filter:='(osgi.identity=org.osgi.enroute.examples.gogo.command)', \
+ osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
+ osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)'
+
+-runfw: org.eclipse.osgi
+-runee: JavaSE-1.8
+
+-resolve.effective: active
