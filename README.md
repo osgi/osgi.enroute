@@ -1,7 +1,7 @@
 <h1><img src="http://enroute.osgi.org/img/enroute-logo-64.png" witdh=40px style="float:left;margin: 0 1em 1em 0;width:40px">
 OSGi enRoute</h1>
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/Sandared/jmh-benchmarks/blob/master/benchmarks/src/main/java/io/jatoms/jmh/OSGiBenchmark2.java)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/osgi/osgi.enroute/blob/master/examples/quickstart/rest/src/main/java/org/osgi/enroute/examples/quickstart/rest/Upper.java)
 
 Interested in developing agile & maintainable Enterprise or highly distributed IoT solutions? In either case, [OSGi enRoute](http://enroute.osgi.org) provides a simple on-ramp for developing such modular distributed applications and exploring the power of OSGi.
 
@@ -11,7 +11,7 @@ This repository contains the code for the enRoute tutorials, and also defines us
 
 ## Contributing
 
-Want to contribute to osgi.enroute? See [CONTRIBUTING.md](CONTRIBUTING.md) for information on building, testing and contributing changes.
+Want to contribite to osgi.enroute? See [CONTRIBUTING.md](CONTRIBUTING.md) for information on building, testing and contributing changes.
 
 ## License
 
