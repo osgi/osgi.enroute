@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.osgi.annotation.bundle.Requirement;
-import org.osgi.namespace.implementation.ImplementationNamespace;
+import org.osgi.annotation.bundle.Requirements;
 
 /**
  * This annotation can be used to require the OSGi command implementation.
@@ -21,9 +21,10 @@ import org.osgi.namespace.implementation.ImplementationNamespace;
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target({ ElementType.TYPE, ElementType.PACKAGE })
-@Requirement(namespace = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, //
-        name = CommandConstants.COMMAND_IMPLEMENTATION, //
-        version = CommandConstants.COMMAND_SPECIFICATION_VERSION)
-public @interface RequireGogo {
+@Requirements(value = { //
+        @Requirement(namespace = "osgi.wiring.bundle", name = "org.apache.felix.gogo.shell"), //
+        @Requirement(namespace = "osgi.identity", name = "org.apache.felix.gogo.command"), //
+})
+public @interface RequireCommand {
     // This is a marker annotation.
 }
