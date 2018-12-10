@@ -22,7 +22,7 @@ import org.osgi.annotation.bundle.Requirements;
 @Retention(RetentionPolicy.CLASS)
 @Target({ ElementType.TYPE, ElementType.PACKAGE })
 @Requirements(value = { //
-        @Requirement(namespace = "osgi.wiring.bundle", name = "org.apache.felix.gogo.shell"), //
+        @Requirement(namespace = "osgi.identity", name = "org.apache.felix.gogo.shell"), //
         @Requirement(namespace = "osgi.identity", name = "org.apache.felix.gogo.command"), //
 })
 public @interface RequireCommand {
