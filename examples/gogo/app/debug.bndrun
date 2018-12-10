@@ -1,0 +1,12 @@
+-include: ~app.bndrun
+
+test-index: target/test-index.xml;name="app Test"
+
+-standalone: ${index},${test-index}
+
+-runproperties: \
+	osgi.console=,\
+	osgi.console.enable.builtin=false
+
+-runrequires.debug: osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole)',\
+ osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole.plugins.ds)'

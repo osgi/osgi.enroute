@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>gogo</artifactId>
+    <groupId>org.osgi.enroute.examples.gogo</groupId>
+    <version>0.0.2-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>app</artifactId>
+
+  <description>The application packaging project for the Gogo OSGi enRoute example</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi.enroute.examples.gogo</groupId>
+      <artifactId>command</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi.enroute</groupId>
+      <artifactId>osgi-api</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi.enroute</groupId>
+      <artifactId>impl-index</artifactId>
+      <type>pom</type>
+    </dependency>
+
+    <!-- The Gogo Shell -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.gogo.shell</artifactId>
+      <version>1.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.gogo.runtime</artifactId>
+      <version>1.0.10</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.gogo.command</artifactId>
+      <version>1.0.2</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.compendium</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-indexer-maven-plugin</artifactId>
+        <configuration>
+          <includeJar>true</includeJar>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-export-maven-plugin</artifactId>
+        <configuration>
+          <bndruns>
+            <bndrun>app.bndrun</bndrun>
+          </bndruns>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-resolver-maven-plugin</artifactId>
+        <configuration>
+          <bndruns>
+            <bndrun>app.bndrun</bndrun>
+            <bndrun>debug.bndrun</bndrun>
+          </bndruns>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
