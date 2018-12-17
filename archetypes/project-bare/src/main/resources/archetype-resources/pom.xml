@@ -45,7 +45,7 @@
         <pluginRepository>
             <id>Bnd Snapshots</id>
             <name>Bnd Latest build</name>
-            <url>https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/dist/bundles/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
