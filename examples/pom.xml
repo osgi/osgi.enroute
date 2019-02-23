@@ -85,9 +85,20 @@
         <repository>
             <id>OSGi</id>
             <name>OSGi public binaries</name>
-            <url>https://oss.sonatype.org/content/groups/osgi</url>
+            <url>https://oss.sonatype.org/content/repositories/osgi-releases/</url>
             <releases>
                 <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>OSGi Snapshots</id>
+            <name>OSGi public snapshot binaries</name>
+            <url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
