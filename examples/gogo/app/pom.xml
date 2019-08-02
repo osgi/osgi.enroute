@@ -11,6 +11,18 @@
 
   <description>The application packaging project for the Gogo OSGi enRoute example</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.gogo.bom</artifactId>
+        <version>1.0.2</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.osgi.enroute.examples.gogo</groupId>
@@ -32,25 +44,21 @@
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.gogo.command</artifactId>
-      <version>1.1.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.gogo.jline</artifactId>
-      <version>1.1.2</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.gogo.runtime</artifactId>
-      <version>1.1.2</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.gogo.shell</artifactId>
-      <version>1.1.2</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
