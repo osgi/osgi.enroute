@@ -6,5 +6,14 @@ index: target/index.xml;name="app"
 
 -runfw: org.eclipse.osgi
 -runee: JavaSE-1.8
+-runproperties: \
+	osgi.console=,\
+	osgi.console.enable.builtin=false
 
 -resolve.effective: active
+-runbundles: \
+	org.apache.felix.gogo.command;version='[1.1.0,1.1.1)',\
+	org.apache.felix.gogo.runtime;version='[1.1.2,1.1.3)',\
+	org.apache.felix.gogo.shell;version='[1.1.2,1.1.3)',\
+	org.apache.felix.scr;version='[2.1.10,2.1.11)',\
+	org.osgi.enroute.examples.gogo.command;version='[0.0.2,0.0.3)'

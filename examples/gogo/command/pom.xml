@@ -17,6 +17,12 @@
       <artifactId>osgi-api</artifactId>
       <type>pom</type>
     </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.gogo.runtime</artifactId>
+      <version>1.1.2</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
