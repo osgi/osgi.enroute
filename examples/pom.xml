@@ -64,7 +64,7 @@
         </repository>
         <snapshotRepository>
             <id>OSGi Snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -96,7 +96,7 @@
         <repository>
             <id>OSGi Snapshots</id>
             <name>OSGi public snapshot binaries</name>
-            <url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>

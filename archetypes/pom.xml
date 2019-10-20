@@ -78,7 +78,7 @@
         </repository>
         <snapshotRepository>
             <id>OSGi Snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/osgi-snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
