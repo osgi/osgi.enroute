@@ -116,7 +116,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.http.jetty</artifactId>
-            <version>4.0.6</version>
+            <version>4.0.14</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
