@@ -9,6 +9,9 @@ index: target/index.xml;name="rest-app-jpa"
 # the JTA API is always provided from outside the OSGi framework
 -runpath: org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec;version=1.0.1.Final
 
+-runproperties: \
+	logback.configurationFile=file:${.}/logback.xml
+
 # Hibernate has versioned imports for JTA, and its dependency dom4j has versioned
 # imports for the STAX API. Both of these should come from the JRE
 -runsystempackages: \
