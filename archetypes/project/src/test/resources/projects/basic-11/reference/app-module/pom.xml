@@ -67,6 +67,24 @@
                     </bndruns>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-run-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>app-module</id>
+                        <configuration>
+                            <bndrun>app-module.bndrun</bndrun>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>app-module-debug</id>
+                        <configuration>
+                            <bndrun>debug.bndrun</bndrun>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

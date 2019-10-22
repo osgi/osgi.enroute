@@ -4,6 +4,9 @@ index: target/index.xml;name="rest-app"
 
 -resolve.effective: active
 
+-runproperties: \
+	logback.configurationFile=file:${.}/logback.xml
+
 -runrequires: \
 	osgi.identity;filter:='(osgi.identity=org.osgi.enroute.examples.microservice.rest-service)',\
 	osgi.identity;filter:='(osgi.identity=org.osgi.enroute.examples.microservice.rest-app)',\

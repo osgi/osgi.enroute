@@ -6,7 +6,7 @@ test-index: target/test-index.xml;name="rest-app-jpa Test"
 
 -runproperties: \
 	osgi.console=,\
-	osgi.console.enable.builtin=false
+	logback.configurationFile=file:${.}/logback.xml
 
 -runrequires.debug: osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole)',\
  osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole.plugins.ds)',\

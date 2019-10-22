@@ -307,6 +307,18 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
                 </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <!-- Bind the run plugin globally. It requires direct invocation and explicit
+                executions so in all other scenarios it is a noop. Also, it _should_ be run
+                from the reactor level in order to be able to observe as many built modules
+                as possible so that the running instance can react to build changes. -->
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-run-maven-plugin</artifactId>
+                <version>${bnd.version}</version>
+            </plugin>
+        </plugins>
     </build>
     
     <profiles>
