@@ -11,8 +11,8 @@
     <description>The basic application - built using OSGi enRoute R7</description>
 
     <properties>
-        <maven.compiler.source>12</maven.compiler.source>
-        <maven.compiler.target>12</maven.compiler.target>
+        <maven.compiler.source>13</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bnd.version>5.0.1</bnd.version>
     </properties>

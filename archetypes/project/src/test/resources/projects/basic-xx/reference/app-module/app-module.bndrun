@@ -4,6 +4,8 @@ index: target/index.xml;name="app-module"
 
 -runrequires: osgi.identity;filter:='(osgi.identity=archetype.it.impl-bundle)'
 -runfw: org.eclipse.osgi
--runee: JavaSE-12
+
+# There is no current platform definition for Java xx so Java 11 will be used
+-runee: JavaSE-11
 
 -resolve.effective: active

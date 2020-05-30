@@ -12,6 +12,12 @@ index: target/index.xml;name="${app-artifactId}"
 -runee: JavaSE-10
 #elseif ($app-target-java-version == '11')
 -runee: JavaSE-11
+#elseif ($app-target-java-version == '12')
+-runee: JavaSE-12
+#elseif ($app-target-java-version == '13')
+-runee: JavaSE-13
+#elseif ($app-target-java-version == '14')
+-runee: JavaSE-14
 #else
 
 # There is no current platform definition for Java ${app-target-java-version} so Java 11 will be used
