@@ -9,7 +9,7 @@ This repository contains the code for the enRoute tutorials, and also defines us
 
 ## Contributing
 
-Want to contribite to osgi.enroute? See [CONTRIBUTING.md](CONTRIBUTING.md) for information on building, testing and contributing changes.
+Want to contribute to osgi.enroute? See [CONTRIBUTING.md](CONTRIBUTING.md) for information on building, testing and contributing changes.
 
 ## License
 
