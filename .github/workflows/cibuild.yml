@@ -36,7 +36,7 @@ jobs:
       run: |
         ./.github/scripts/build.sh
     - name: Publish
-      if: success() && (matrix.java == '11') && (matrix.os == 'ubuntu-latest') && (github.repository == 'osgi/osgi.enroute') && (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request')
+      if: success() && (matrix.java == '11') && (matrix.os == 'ubuntu-latest') && (github.repository == 'osgi/osgi.enroute') && (github.ref == 'refs/heads/main') && (github.event_name != 'pull_request')
       run: |
         ./.github/scripts/publish.sh
       env:
