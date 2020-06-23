@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-osgi</artifactId>
-            <version>5.2.12.Final</version>
+            <version>5.2.18.Final</version>
         </dependency>
         
         <!-- Needed by Hibernate, but not present as OSGi bundles in Hibernate's dependencies -->
