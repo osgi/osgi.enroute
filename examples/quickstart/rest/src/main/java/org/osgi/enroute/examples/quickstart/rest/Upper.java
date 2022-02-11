@@ -11,8 +11,9 @@ import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsResource;
 @Component(service=Upper.class)
 @JaxrsResource
 @HttpWhiteboardResource(pattern="/quickstart/*", prefix="static")
+@org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect("(osgi.http.whiteboard.context.name=org.osgi.service.http)")
 public class Upper {
-    
+
     @Path("rest/upper/{param}")
     @GET
     public String toUpper(@PathParam("param") String param) {
