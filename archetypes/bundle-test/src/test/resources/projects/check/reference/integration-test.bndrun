@@ -13,7 +13,7 @@ Import-Package: org.osgi.framework.*;version="[1.8,2)",*
 -runsystempackages: sun.reflect
 
 -runfw: org.eclipse.osgi
--runee: JavaSE-1.8
+-runee: JavaSE-17
 
 -runrequires: \
 	 osgi.identity;filter:='(osgi.identity=archetype.it.bundle-testing)'

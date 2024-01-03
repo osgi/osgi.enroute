@@ -15,7 +15,7 @@ Import-Package: org.osgi.framework.*;version="[1.8,2)",*
 -runsystempackages: sun.reflect
 
 -runfw: org.eclipse.osgi
--runee: JavaSE-1.8
+-runee: JavaSE-17
 
 -runrequires: \
 	bnd.identity;id='org.osgi.enroute.examples.microservice.rest-service',\

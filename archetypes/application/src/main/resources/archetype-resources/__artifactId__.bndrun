@@ -5,7 +5,7 @@ index: target/index.xml;name="${artifactId}"
 -runrequires: osgi.identity;filter:='(osgi.identity=${impl-groupId}.${impl-artifactId})'
 -runfw: org.eclipse.osgi
 #if ($target-java-version == '8')
--runee: JavaSE-1.8
+-runee: JavaSE-17
 #elseif ($target-java-version == '9')
 -runee: JavaSE-9
 #elseif ($target-java-version == '10')

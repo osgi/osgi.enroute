@@ -27,7 +27,7 @@ index: target/index.xml;name="rest-app-jpa"
 	osgi.identity;filter:='(osgi.identity=org.apache.johnzon.core)',\
 	osgi.identity;filter:='(osgi.identity=org.h2)'
 -runfw: org.eclipse.osgi
--runee: JavaSE-1.8
+-runee: JavaSE-17
 -runbundles: \
 	ch.qos.logback.classic;version='[1.2.3,1.2.4)',\
 	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
